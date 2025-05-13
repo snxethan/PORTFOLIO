@@ -15,7 +15,7 @@ interface Project {
   updated_at: string
   source: "github" | "manual"
   ctaLabel?: string
-  ctaIcon?: "github" | "external" | "youtube"
+  ctaIcon?: "github" | "external" | "youtube" | "private"
 }
 
 const getCTAIcon = (icon?: string) => {
