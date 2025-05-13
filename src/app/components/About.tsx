@@ -55,7 +55,7 @@ const skills = [
         <div className="grid grid-cols-1 gap-8">
           <div>
             <p className="text-lg text-gray-300 mb-4">
-I'm Ethan Townsend, a 19-year-old software engineer passionate about creating high-quality projects across both frontend and backend development.            </p>
+I'm Ethan Townsend, a Software Engineer passionate about creating high-quality projects across both frontend and backend development.            </p>
             <p className="text-lg text-gray-300 mb-4">
               I have experience working with a variety of technologies, including Java, & C#, Node.js & React, and various cloud and databasing
               platforms. I am always eager to learn new things and stay up-to-date with the latest industry trends.
