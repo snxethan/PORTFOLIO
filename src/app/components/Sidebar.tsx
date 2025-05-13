@@ -1,5 +1,6 @@
 import { FaDiscord, FaEnvelope, FaGithub, FaInstagram, FaLinkedin, FaSteam } from "react-icons/fa"
 import { useRef } from "react"
+import Image from "next/image"
 
 const Sidebar = () => {
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
@@ -19,11 +20,13 @@ const Sidebar = () => {
         onClick={handleAvatarClick}
       >
         <div className="absolute -inset-0.5 rounded-full opacity-0 blur-sm transition duration-300 group-hover:opacity-5 group-hover:bg-gradient-to-r group-hover:from-red-700 group-hover:to-red-500"></div>
-        <img
-          src="/images/avatar.png"
-          alt="Ethan Townsend"
-          className="w-full h-full object-cover rounded-full relative"
-        />
+        <Image
+            src="/images/avatar.png"
+            alt="Ethan Townsend"
+            width={128}
+            height={128}
+            className="w-full h-full object-cover rounded-full"
+          />
       </div>
 
       <div className="mt-4 text-center">
