@@ -54,7 +54,7 @@ const downloadAs = (type: string) => {
         <div className="relative mb-16">
                <div className="flex flex-col items-center relative mb-8">
   <h2 className="text-3xl font-bold text-white z-10">Experience</h2>
-  <span className="w-32 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
+  <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
 </div>
 
           <div className="absolute left-1/2 -ml-[2px] w-[2px] bg-gray-700 h-full"></div>
@@ -62,7 +62,7 @@ const downloadAs = (type: string) => {
           <div className="flex flex-col gap-12">
             {/* Neumont */}
             <div className="flex items-center">
-              <div className="w-1/2 text-right pr-4">
+              <div className="w-1/2 text-right pr-8">
                 <h3 className="text-xl font-semibold">Neumont College of Computer Science</h3>
                 <p className="text-gray-400">Salt Lake City, UT | Apr 2024 – Present</p>
                 <ul className="list-disc list-inside mt-2 text-sm text-gray-300">
@@ -84,7 +84,7 @@ const downloadAs = (type: string) => {
 
             {/* Romano's */}
             <div className="flex items-center">
-              <div className="w-1/2 text-right pr-4">
+              <div className="w-1/2 text-right pr-8">
                 <h3 className="text-xl font-semibold">Romano’s Chicago Pizzeria</h3>
                 <p className="text-gray-400">Lake Havasu City, AZ | Sep 2021 – Sep 2023</p>
                 <ul className="list-disc list-inside mt-2 text-sm text-gray-300">
@@ -104,7 +104,7 @@ const downloadAs = (type: string) => {
 
             {/* Parks & Rec */}
             <div className="flex items-center">
-              <div className="w-1/2 text-right pr-4">
+              <div className="w-1/2 text-right pr-8">
                 <h3 className="text-xl font-semibold">Parks & Rec</h3>
                 <p className="text-gray-400">Lake Havasu City, AZ | Jun 2023 – Aug 2023</p>
                 <ul className="list-disc list-inside mt-2 text-sm text-gray-300">
@@ -124,7 +124,7 @@ const downloadAs = (type: string) => {
 
             {/* Jack in the Box */}
             <div className="flex items-center">
-              <div className="w-1/2 text-right pr-4">
+              <div className="w-1/2 text-right pr-8">
                 <h3 className="text-xl font-semibold">Jack in the Box</h3>
                 <p className="text-gray-400">Lake Havasu City, AZ | Jun 2020 – Jun 2021</p>
                 <ul className="list-disc list-inside mt-2 text-sm text-gray-300">
@@ -157,7 +157,7 @@ const downloadAs = (type: string) => {
           <div className="flex flex-col gap-12">
             {/* Neumont */}
             <div className="flex items-center">
-              <div className="w-1/2 text-right pr-4">
+              <div className="w-1/2 text-right pr-8">
                 <h3 className="text-xl font-semibold">Neumont College of Computer Science</h3>
                 <p className="text-gray-400">Salt Lake City, UT | Sep 2023 – Present</p>
                 <ul className="list-disc list-inside mt-2 text-sm text-gray-300">
@@ -178,7 +178,7 @@ const downloadAs = (type: string) => {
 
             {/* Lake Havasu Highschool */}
             <div className="flex items-center">
-              <div className="w-1/2 text-right pr-4">
+              <div className="w-1/2 text-right pr-8">
                 <h3 className="text-xl font-semibold">Lake Havasu High School</h3>
                 <p className="text-gray-400">Lake Havasu City, AZ | Aug 2019 – May 2023</p>
                 <ul className="list-disc list-inside mt-2 text-sm text-gray-300">
@@ -197,7 +197,7 @@ const downloadAs = (type: string) => {
 
             {/* Mohave Community College */}
             <div className="flex items-center">
-              <div className="w-1/2 text-right pr-4">
+              <div className="w-1/2 text-right pr-8">
                 <h3 className="text-xl font-semibold">Mohave Community College</h3>
                 <p className="text-gray-400">Lake Havasu City, AZ | Aug 2021 – Nov 2022</p>
                 <ul className="list-disc list-inside mt-2 text-sm text-gray-300">
@@ -216,7 +216,7 @@ const downloadAs = (type: string) => {
 
             {/* WAVE Culinary */}
             <div className="flex items-center">
-              <div className="w-1/2 text-right pr-4">
+              <div className="w-1/2 text-right pr-8">
                 <h3 className="text-xl font-semibold">WAVE (Western Arizona Vocational Education)</h3>
                 <p className="text-gray-400">Lake Havasu City, AZ | Aug 2020 – May 2021</p>
                 <ul className="list-disc list-inside mt-2 text-sm text-gray-300">
