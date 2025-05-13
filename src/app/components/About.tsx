@@ -22,11 +22,11 @@ const skills = [
   { name: "React", icon: FaReact, highlight: true },
   { name: "JavaScript", icon: SiJavascript, },
   { name: "TypeScript", icon: SiTypescript, highlight: true },
-  { name: "Node.js", icon: FaNodeJs },
+  { name: "Node.js", icon: FaNodeJs, highlight:true },
   { name: "Next.js", icon: SiNextdotjs },
   { name: "Tailwind CSS", icon: SiTailwindcss },
   { name: "MongoDB", icon: SiMongodb },
-  { name: "Python", icon: FaPython, highlight: true },
+  { name: "Python", icon: FaPython },
   { name: "Git", icon: FaGitAlt, highlight:true},
   { name: "Docker", icon: SiDocker, highlight:true },
   { name: "Java", icon: FaJava, highlight:true},
@@ -36,7 +36,7 @@ const skills = [
   { name: "SQL", icon: SiMysql, highlight:true },
   { name: "Neo4J", icon: GiSharpLips },
   { name: "Unity", icon: BsUnity },
-  { name: "Postman", icon: SiPostman, highlight:true },
+  { name: "Postman", icon: SiPostman, highlight:true }
   ]
   const sortedSkills = [...skills].sort((a, b) => (b.highlight ? 1 : 0) - (a.highlight ? 1 : 0));
   const unrelatedSkills = [

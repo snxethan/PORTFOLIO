@@ -1,4 +1,4 @@
-import { FaDiscord, FaEnvelope, FaGithub, FaInstagram, FaLinkedin, FaSteam } from "react-icons/fa"
+import { FaDiscord, FaEnvelope, FaGithub, FaInstagram, FaLinkedin, FaSpotify, FaSteam } from "react-icons/fa"
 import { useRef } from "react"
 import Image from "next/image"
 
@@ -100,6 +100,15 @@ const Sidebar = () => {
             className="text-gray-400 hover:text-red-500 transition-colors text-lg"
           >
             <FaSteam />
+          </a>
+          <a
+            href="https://open.spotify.com/user/l7ypevjdnoaz97kdqkkwf832d"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Spotify"
+            className="text-gray-400 hover:text-red-500 transition-colors text-lg"
+          >
+            <FaSpotify />
           </a>
         </div>
       </div>
