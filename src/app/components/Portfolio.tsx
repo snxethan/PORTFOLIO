@@ -41,8 +41,8 @@ const getCTAIcon = (icon?: string) => {
 const manualProjects: Project[] = [
   {
     id: 1,
-    name: "Artic Cone",
-    description: "Built and deployed a web-app based game desined around the hit game 'Gartic Phone', a one-to-one recreation.",
+    name: "CSC130-ArticCone",
+    description: "Built and deployed a web-app based game designed around the hit game 'Gartic Phone', a one-to-one recreation.",
     html_url: "https://github.com/Neumont-VictorKeeler/Artic_Cone",
     language: "TypeScript",
     topics: ["neumont", "game-development"],
@@ -54,7 +54,7 @@ const manualProjects: Project[] = [
   },
   {
     id: 2,
-    name: "UNO",
+    name: "CSC130-UNO",
     description: "Built, designed, and deployed a Java game based on the classic card game 'UNO'.",
     html_url: "https://github.com/MasterDash5/UnoProject",
     language: "JavaScript",
@@ -67,7 +67,7 @@ const manualProjects: Project[] = [
   },
   {
     id: 3,
-    name: "Notepad",
+    name: "CSC110-Notepad",
     description: "Contributed and built a simple notepad application using Android Studio and Java.",
     html_url: "https://github.com/Tomonator1000/Notepad",
     language: "Java",
@@ -80,7 +80,7 @@ const manualProjects: Project[] = [
   },
   {
     id: 4,
-    name: "Casino CLI",
+    name: "CSC150-Casino",
     description: "Built and designed a simple casino CLI game using Java.",
     html_url: "https://github.com/Stat3132/CasinoTeamProject",
     language: "Java",
@@ -93,7 +93,7 @@ const manualProjects: Project[] = [
   },
   {
     id: 5,
-    name: "Rollio",
+    name: "CSC280-Rollio",
     description: "Built and designed a modular portfolio creation tool using React, TypeScript, and Tailwind CSS.",
     html_url: "https://github.com/Ghussy/Rollio",
     language: "TypeScript",
