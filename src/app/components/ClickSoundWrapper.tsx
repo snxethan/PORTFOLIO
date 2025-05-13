@@ -1,20 +1,21 @@
-import React, { ReactElement, cloneElement } from "react";
+import {
+  ReactElement,
+  cloneElement,
+  MouseEvent,
+  isValidElement,
+} from "react";
 
 interface ClickSoundWrapperProps {
-  children: ReactElement;
+  children: ReactElement<{ onClick?: (e: MouseEvent) => void }>;
 }
 
 const ClickSoundWrapper = ({ children }: ClickSoundWrapperProps) => {
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: MouseEvent) => {
     const clickSound = new Audio("/click.mp3");
     clickSound.play();
 
-    // @ts-expect-error
-    if (children.props.onClick) {
-      // @ts-expect-error
-      children.props.onClick(e);
-    }
-
+    // Call child’s original onClick if it exists
+    children.props.onClick?.(e);
   };
 
   return cloneElement(children, {
