@@ -230,8 +230,8 @@ setTags(["All", ...Array.from(uniqueTags)])
           </select>
         </div>
 
-<div className="overflow-x-auto whitespace-nowrap px-2 mb-8">
-  <div className="inline-flex gap-3">
+<div className="flex flex-wrap gap-3 mb-8">
+
     {tags.map((tag) => (
       <button
         key={tag}
@@ -246,7 +246,6 @@ setTags(["All", ...Array.from(uniqueTags)])
       </button>
     ))}
   </div>
-</div>
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
