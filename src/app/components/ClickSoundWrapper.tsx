@@ -9,7 +9,7 @@ interface ClickSoundWrapperProps {
 const ClickSoundWrapper = ({ children }: ClickSoundWrapperProps) => {
   const handleClick = useCallback(() => {
     // Play the click sound
-    const clickSound = new Audio("/click.mp3")
+    const clickSound = new Audio("sounds/click.mp3")
     clickSound.volume = 0.5 // You can adjust volume as needed
     clickSound.play().catch((err) => {
       // Handle any errors with audio playback silently
