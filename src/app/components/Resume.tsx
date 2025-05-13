@@ -1,5 +1,5 @@
 "use client"
-import { FaDownload, FaGithub, FaLinkedin, FaEnvelope } from "react-icons/fa"
+import { FaDownload } from "react-icons/fa"
 
 const Resume = () => {
 const downloadAs = (type: string) => {

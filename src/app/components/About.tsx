@@ -1,7 +1,7 @@
 import { BiChild, BiFirstAid, BiFork } from "react-icons/bi"
 import { BsUnity } from "react-icons/bs"
 import { DiJava } from "react-icons/di"
-import { FaReact, FaNodeJs, FaPython, FaGitAlt, FaJava, FaGithub } from "react-icons/fa"
+import { FaReact, FaNodeJs, FaPython, FaGitAlt, FaJava } from "react-icons/fa"
 import { GiSharpLips } from "react-icons/gi"
 import {
   SiJavascript,
