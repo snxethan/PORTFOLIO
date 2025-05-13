@@ -4,6 +4,11 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
 
+interface PortfolioProps {
+  projects: any[];
+  loading: boolean;
+}
+
 interface Project {
   id: number
   name: string
@@ -15,7 +20,7 @@ interface Project {
   updated_at: string
   source: "github" | "manual"
   ctaLabel?: string
-  ctaIcon?: "github" | "external" | "youtube" | "private"
+  ctaIcon?: "github" | "external" | "youtube" | "private" | undefined
 }
 
 const getCTAIcon = (icon?: string) => {

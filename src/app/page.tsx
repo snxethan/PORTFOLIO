@@ -48,12 +48,7 @@ export default function Home() {
             <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 md:p-8 min-h-[600px] transition-all duration-300 ease-in-out">
               {activeTab === "about" && <About />}
               {activeTab === "resume" && <Resume />}
-              {activeTab === "portfolio" &&
-                (loading ? (
-                  <p className="text-gray-400">Loading projects...</p>
-                ) : (
-                  <Portfolio projects={githubProjects} loading={loading} />
-                ))}
+              {activeTab === "portfolio" && <Portfolio />}
             </div>
           </main>
         </div>
