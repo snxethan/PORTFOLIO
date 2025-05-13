@@ -1,27 +1,28 @@
-import { type ReactElement, cloneElement, type MouseEvent, type JSXElementConstructor } from "react"
+"use client"
+
+import { type ReactNode, useCallback } from "react"
 
 interface ClickSoundWrapperProps {
-  children: ReactElement<any, string | JSXElementConstructor<any>>
+  children: ReactNode
 }
 
 const ClickSoundWrapper = ({ children }: ClickSoundWrapperProps) => {
-  if (!children) {
-    return null
-  }
-
-  const handleClick = (e: MouseEvent) => {
+  const handleClick = useCallback(() => {
+    // Play the click sound
     const clickSound = new Audio("/click.mp3")
-    clickSound.play()
+    clickSound.volume = 0.5 // You can adjust volume as needed
+    clickSound.play().catch((err) => {
+      // Handle any errors with audio playback silently
+      console.log("Audio playback error:", err)
+    })
+  }, [])
 
-    // Call child's original onClick if it exists
-    if (children.props.onClick) {
-      children.props.onClick(e)
-    }
-  }
-
-  return cloneElement(children, {
-    onClick: handleClick,
-  } as any)
+  // Wrap the children in a div with the click handler
+  return (
+    <div onClick={handleClick} style={{ display: "contents" }} data-click-sound-wrapper>
+      {children}
+    </div>
+  )
 }
 
 export default ClickSoundWrapper
