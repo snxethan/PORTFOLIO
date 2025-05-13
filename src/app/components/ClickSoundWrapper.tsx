@@ -1,37 +1,25 @@
-"use client"
-import React, { useRef } from "react"
+import React, { ReactElement, cloneElement } from "react";
 
 interface ClickSoundWrapperProps {
-  children: React.ReactElement
-  sound?: string // optional override
+  children: ReactElement;
 }
 
-const ClickSoundWrapper: React.FC<ClickSoundWrapperProps> = ({
-  children,
-  sound = "/sounds/click.mp3",
-}) => {
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-
+const ClickSoundWrapper = ({ children }: ClickSoundWrapperProps) => {
   const handleClick = (e: React.MouseEvent) => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = 0
-      audioRef.current.play().catch(() => {})
-    }
+    const clickSound = new Audio("/click.mp3");
+    clickSound.play();
 
-    // Call child's onClick if it exists
+    // @ts-expect-error
     if (children.props.onClick) {
-      children.props.onClick(e)
+      // @ts-expect-error
+      children.props.onClick(e);
     }
-  }
 
-  return (
-    <>
-      <audio ref={audioRef} src={sound} preload="auto" />
-      {React.cloneElement(children, {
-        onClick: handleClick,
-      })}
-    </>
-  )
-}
+  };
 
-export default ClickSoundWrapper
+  return cloneElement(children, {
+    onClick: handleClick,
+  });
+};
+
+export default ClickSoundWrapper;
