@@ -1,0 +1,320 @@
+"use client"
+
+import type React from "react"
+import { useState, useEffect } from "react"
+import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
+
+interface Project {
+  id: number
+  name: string
+  description: string
+  html_url: string
+  language: string
+  topics: string[]
+  created_at: string
+  updated_at: string
+  source: "github" | "manual"
+  ctaLabel?: string
+  ctaIcon?: "github" | "external" | "youtube"
+}
+
+const getCTAIcon = (icon?: string) => {
+  switch (icon) {
+    case "github":
+      return <FaGithub className="w-5 h-5" />
+    case "external":
+      return <FaExternalLinkAlt className="w-5 h-5" />
+    case "youtube":
+      return <FaYoutube className="w-5 h-5" />
+    case "private":
+      return <FaLock className="w-5 h-5" />
+    default:
+      return <FaGithub className="w-5 h-5" />
+  }
+}
+
+const manualProjects: Project[] = [
+  {
+    id: 1,
+    name: "Artic Cone",
+    description: "Built and deployed a web-app based game desined around the hit game 'Gartic Phone', a one-to-one recreation.",
+    html_url: "https://github.com/Neumont-VictorKeeler/Artic_Cone",
+    language: "TypeScript",
+    topics: ["neumont", "game-development"],
+    created_at: "2025-01-20T00:00:00Z",
+    updated_at: "2025-01-30T00:00:00Z",
+    source: "github",
+    ctaLabel: "View on GitHub",
+    ctaIcon: "github"
+  },
+  {
+    id: 2,
+    name: "UNO",
+    description: "Built, designed, and deployed a Java game based on the classic card game 'UNO'.",
+    html_url: "https://github.com/MasterDash5/UnoProject",
+    language: "JavaScript",
+    topics: ["neumont", "java", "javafx"],
+    created_at: "2025-01-21T00:00:00Z",
+    updated_at: "2025-01-28T00:00:00Z",
+    source: "github",
+    ctaLabel: "This repository is private",
+    ctaIcon: "private"
+  },
+  {
+    id: 3,
+    name: "Notepad",
+    description: "Contributed and built a simple notepad application using Android Studio and Java.",
+    html_url: "https://github.com/Tomonator1000/Notepad",
+    language: "Java",
+    topics: ["java", "android studio", "neumont"],
+    created_at: "2023-10-15T00:00:00Z",
+    updated_at: "2023-11-30T00:00:00Z",
+    source: "github",
+    ctaLabel: "View on GitHub",
+    ctaIcon: "github"
+  },
+  {
+    id: 4,
+    name: "Casino CLI",
+    description: "Built and designed a simple casino CLI game using Java.",
+    html_url: "https://github.com/Stat3132/CasinoTeamProject",
+    language: "Java",
+    topics: ["neumont", "java"],
+    created_at: "2024-02-15T00:00:00Z",
+    updated_at: "2024-03-04T00:00:00Z",
+    source: "github",
+    ctaLabel: "View on GitHub",
+    ctaIcon: "github"
+  },
+  {
+    id: 5,
+    name: "Rollio",
+    description: "Built and designed a modular portfolio creation tool using React, TypeScript, and Tailwind CSS.",
+    html_url: "https://github.com/Ghussy/Rollio",
+    language: "TypeScript",
+    topics: ["react", "typescript", "tailwind", "neumont"],
+    created_at: "2024-11-13T00:00:00Z",
+    updated_at: "2024-12-04T00:00:00Z",
+    source: "github",
+    ctaLabel: "This repository is private",
+    ctaIcon: "private"
+  }
+]
+
+const Portfolio: React.FC = () => {
+  const [projects, setProjects] = useState<Project[]>([])
+  const [search, setSearch] = useState("")
+  const [sortBy, setSortBy] = useState("newest")
+  const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [tags, setTags] = useState<string[]>([])
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch("https://api.github.com/users/snxethan/repos?sort=created&direction=asc")
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+
+        const data = await response.json()
+        const githubProjects: Project[] = data.map((project: any) => ({
+          id: project.id,
+          name: project.name,
+          description: project.description,
+          html_url: project.html_url,
+          language: project.language,
+          topics: project.topics || [],
+          created_at: project.created_at,
+          updated_at: project.updated_at,
+          source: "github",
+          stargazers_count: project.stargazers_count,
+          ctaLabel: "View on GitHub",
+          ctaIcon: "github",
+        }))
+
+        const allProjects = [...githubProjects, ...manualProjects]
+        setProjects(allProjects)
+
+  const uniqueTags = new Set<string>()
+
+allProjects.forEach((project) => {
+  const projectTags = new Set<string>()
+
+  if (project.language) {
+    projectTags.add(project.language.toLowerCase())
+  }
+
+  project.topics?.forEach((tag) => {
+    projectTags.add(tag.toLowerCase())
+  })
+
+  projectTags.forEach((tag) => uniqueTags.add(tag))
+})
+
+setTags(["All", ...Array.from(uniqueTags)])
+
+      } catch (error) {
+        console.error("Could not fetch projects:", error)
+      }
+    }
+
+    fetchProjects()
+  }, [])
+
+  const filteredProjects = projects.filter((project) => {
+    const nameMatch = project.name.toLowerCase().includes(search.toLowerCase())
+    const descMatch = project.description?.toLowerCase().includes(search.toLowerCase()) ?? false
+    const tagMatch = project.topics?.some((tag) => tag.toLowerCase().includes(search.toLowerCase())) ?? false
+    return nameMatch || descMatch || tagMatch
+  })
+
+  const sortedProjects = [...filteredProjects].sort((a, b) => {
+    const aDate = new Date(a.created_at).getTime()
+    const bDate = new Date(b.created_at).getTime()
+
+    switch (sortBy) {
+      case "name-asc":
+        return a.name.localeCompare(b.name)
+      case "name-desc":
+        return b.name.localeCompare(a.name)
+      case "oldest":
+        return aDate - bDate
+      case "newest":
+        return bDate - aDate
+      default:
+        return 0
+    }
+  })
+
+  const tagFilteredProjects =
+    selectedTag === null || selectedTag === "All"
+      ? sortedProjects
+      : sortedProjects.filter(
+          (project) =>
+            project.topics.includes(selectedTag) ||
+            project.language?.toLowerCase() === selectedTag
+        )
+
+  return (
+    <section id="portfolio" className="py-20 bg-[#121212]">
+      <div className="container mx-auto px-4">
+        <h2 className="text-3xl md:text-4xl font-semibold text-white text-center mb-8">
+          Projects & Contributions
+          <span className="relative block w-max mx-auto">
+          <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
+          </span>
+        </h2>
+        
+
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <input
+            type="text"
+            placeholder="Search projects..."
+            className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <select
+            className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white appearance-none"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="name-asc">Project Name (A–Z)</option>
+            <option value="name-desc">Project Name (Z–A)</option>
+            <option value="oldest">Created (Oldest)</option>
+            <option value="newest">Created (Newest)</option>
+          </select>
+        </div>
+
+<div className="overflow-x-auto whitespace-nowrap px-2 mb-8">
+  <div className="inline-flex gap-3">
+    {tags.map((tag) => (
+      <button
+        key={tag}
+        onClick={() => setSelectedTag(tag === "All" ? null : tag)}
+        className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
+          selectedTag === tag || (tag === "All" && selectedTag === null)
+            ? "bg-gradient-to-r from-red-600 to-red-500 text-white"
+            : "bg-[#333333] text-gray-300 hover:bg-[#444444]"
+        }`}
+      >
+        {tag}
+      </button>
+    ))}
+  </div>
+</div>
+
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {tagFilteredProjects.map((project) => (
+            <div
+              key={project.id}
+              className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-all duration-300 flex flex-col"
+            >
+              <div className="p-6 flex-grow">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-xl font-semibold text-white group-hover:text-red-500 transition-colors duration-300">
+                    {project.name}
+                  </h3>
+                  {project.source === "manual" && (
+                    <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>
+                  )}
+                  {project.source === "github" && (
+                    <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">GITHUB</span>
+                  )}
+                  {project.topics.includes("neumont") && (
+                    <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">NEU</span>
+                  )}
+                </div>
+                <p className="text-gray-300 mb-2">{project.description}</p>
+                <p className="text-sm text-gray-400 mb-1">
+                  Created On: {new Date(project.created_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+                <p className="text-sm text-gray-400 mb-2">
+                  Last Updated: {new Date(project.updated_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+
+<div className="flex flex-wrap gap-2 mt-2">
+  {[...new Set(
+    [...(project.topics || []), project.language]
+      .filter(Boolean)
+      .map((tag) => tag.toLowerCase())
+  )].map((tag) => (
+    <span
+      key={tag}
+      className="bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full"
+    >
+      {tag.toUpperCase()}
+    </span>
+  ))}
+</div>
+ 
+
+              </div>
+              <div className="px-6 py-4 border-t border-[#333333] bg-[#1a1a1a]">
+                <a
+                  href={project.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all"
+                >
+                  {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
+                  {project.ctaLabel ?? "View on GitHub"}
+                </a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default Portfolio
