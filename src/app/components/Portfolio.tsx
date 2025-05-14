@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
+import { useExternalLink } from "./ExternalLinkHandler"
 
 interface PortfolioProps {
   projects: any[];
@@ -22,6 +23,8 @@ interface Project {
   ctaLabel?: string
   ctaIcon?: "github" | "external" | "youtube" | "private" | undefined
 }
+
+
 
 const getCTAIcon = (icon?: string) => {
   switch (icon) {
@@ -106,12 +109,16 @@ const manualProjects: Project[] = [
   }
 ]
 
+
+
 const Portfolio: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([])
   const [search, setSearch] = useState("")
   const [sortBy, setSortBy] = useState("newest")
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [tags, setTags] = useState<string[]>([])
+  const { handleExternalClick } = useExternalLink();
+
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -199,14 +206,15 @@ setTags(["All", ...Array.from(uniqueTags)])
         )
 
   return (
+    <div>
+          <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
+          Projects & Contributions
+          <span className="absolute bottom-[-8px]  left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
+        </h2>
     <section id="portfolio" className="py-20 bg-[#121212]">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-semibold text-white text-center mb-8">
-          Projects & Contributions
-          <span className="relative block w-max mx-auto">
-          <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
-          </span>
-        </h2>
+    
+
         
 
         <div className="flex flex-col md:flex-row gap-4 mb-8">
@@ -285,39 +293,40 @@ setTags(["All", ...Array.from(uniqueTags)])
                   })}
                 </p>
 
-<div className="flex flex-wrap gap-2 mt-2">
-  {[...new Set(
-    [...(project.topics || []), project.language]
-      .filter(Boolean)
-      .map((tag) => tag.toLowerCase())
-  )].map((tag) => (
-    <span
-      key={tag}
-      className="bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full"
-    >
-      {tag.toUpperCase()}
-    </span>
-  ))}
-</div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {[...new Set(
+                    [...(project.topics || []), project.language]
+                      .filter(Boolean)
+                      .map((tag) => tag.toLowerCase())
+                  )].map((tag) => (
+                    <span
+                      key={tag}
+                      className="bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full"
+                    >
+                      {tag.toUpperCase()}
+                    </span>
+                  ))}
+                </div>
  
 
               </div>
               <div className="px-6 py-4 border-t border-[#333333] bg-[#1a1a1a]">
-                <a
-                  href={project.html_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => handleExternalClick(project.html_url,true)}
                   className="flex items-center justify-center gap-2 w-full py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all"
                 >
                   {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
-                  {project.ctaLabel ?? "View on GitHub"}
-                </a>
+                  {project.name.toLowerCase() === "portfolio"
+                    ? "View this site's repository!"
+                    : (project.ctaLabel ?? "View on GitHub")}
+                </button>
               </div>
             </div>
           ))}
         </div>
       </div>
     </section>
+    </div>
   )
 }
 

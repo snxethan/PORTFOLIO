@@ -7,7 +7,7 @@ const Navbar = ({ onTabChange, activeTab }: NavbarProps) => {
   const tabs = ["about", "resume", "portfolio"];
 
   return (
-    <nav className="bg-[#222222] py-4 w-full">
+<nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 lg:static lg:top-auto lg:left-auto lg:z-0">
       <div className="container mx-auto flex items-center justify-center">
         <ul className="flex space-x-4">
           {tabs.map((tab) => (

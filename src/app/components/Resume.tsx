@@ -25,11 +25,18 @@ const downloadAs = (type: string) => {
 
 
   return (
+    <div>
+          <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
+          Resume
+          <span className="absolute bottom-[-8px] left-0 w-full h-1 b-2 bg-gradient-to-r from-red-600 to-red-500"></span>
+        </h2>
     <div className="bg-[#121212] text-white py-20">
+
+          
       <div className="container mx-auto px-4">
         {/* Header */}
         <header className="text-center mb-16">
-          <h1 className="text-4xl font-bold mb-2">Ethan Townsend</h1>
+          <h1 className="text-4xl mb-2">Ethan Townsend</h1>
           <p className="text-gray-400">Software Engineer | Salt Lake City, UT (84102)</p>
           <p className="text-gray-400">(928) 600-3351 | ethantownsend73@gmail.com</p>
         </header>
@@ -149,7 +156,7 @@ const downloadAs = (type: string) => {
         <div className="relative mb-16">
       <div className="flex flex-col items-center relative mb-8">
   <h2 className="text-3xl font-bold text-white z-10">Education</h2>
-  <span className="w-32 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
+  <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
 </div>
 
           <div className="absolute left-1/2 -ml-[2px] w-[2px] bg-gray-700 h-full"></div>
@@ -235,6 +242,7 @@ const downloadAs = (type: string) => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   )
 }

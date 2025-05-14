@@ -7,6 +7,7 @@ import About from "./components/About"
 import Resume from "./components/Resume"
 import Portfolio from "./components/Portfolio"
 import ClickSoundWrapper from "./components/ClickSoundWrapper"
+import SpotifyWidget from "./components/SpotifyWidget"
 
 
 export default function Home() {
@@ -33,8 +34,8 @@ export default function Home() {
 
   return (
     <ClickSoundWrapper>
-    <div className="min-h-screen bg-[#1a1a1a] text-white font-sans">
-      <div className="container mx-auto px-4 py-8 md:py-12">
+<div className="min-h-screen pt-20 md:pt-0 bg-gradient-to-b from-[#1a1a1a] via-[#121212] to- text-white font-sans">
+<div className="container mx-auto px-4 pt-15 lg:pt-12">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <Sidebar />
