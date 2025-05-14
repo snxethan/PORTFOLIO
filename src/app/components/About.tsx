@@ -1,3 +1,4 @@
+import { url } from "inspector"
 import { BiChild, BiFirstAid, BiFork } from "react-icons/bi"
 import { BsUnity } from "react-icons/bs"
 import { FaReact, FaNodeJs, FaPython, FaGitAlt, FaJava } from "react-icons/fa"
@@ -16,34 +17,73 @@ import {
   SiHtml5,
   SiMysql,
 } from "react-icons/si"
+import { useExternalLink } from "./ExternalLinkHandler"
+import { BsPatchCheckFill } from "react-icons/bs" // check-marked badge
+
 
 const About = () => {
+    const { handleExternalClick } = useExternalLink()
+  
 const skills = [
-  { name: "React", icon: FaReact, highlight: true },
-  { name: "JavaScript", icon: SiJavascript, },
-  { name: "TypeScript", icon: SiTypescript, highlight: true },
-  { name: "Node.js", icon: FaNodeJs, highlight:true },
-  { name: "Next.js", icon: SiNextdotjs, highlight:true },
-  { name: "Tailwind CSS", icon: SiTailwindcss },
-  { name: "MongoDB", icon: SiMongodb },
-  { name: "Python", icon: FaPython },
-  { name: "Git", icon: FaGitAlt, highlight:true},
-  { name: "Docker", icon: SiDocker, highlight:true },
-  { name: "Java", icon: FaJava, highlight:true},
-  { name: "C#", icon: SiDotnet, highlight:true },
-  { name: "HTML", icon: SiHtml5 },
-  { name: "C++", icon: SiC, highlight:true},
-  { name: "SQL", icon: SiMysql, highlight:true },
-  { name: "Neo4J", icon: GiSharpLips },
-  { name: "Unity", icon: BsUnity },
-  { name: "Postman", icon: SiPostman, highlight:true },
+  { name: "React", icon: FaReact, highlight: true, url: "https://reactjs.org/" },
+  { name: "JavaScript", icon: SiJavascript, url : "https://www.javascript.com/" },
+  { name: "TypeScript", icon: SiTypescript, highlight: true, url: "https://www.typescriptlang.org/" },
+  { name: "Node.js", icon: FaNodeJs, highlight:true , url: "https://nodejs.org/en/" },
+  { name: "Next.js", icon: SiNextdotjs, highlight:true , url: "https://nextjs.org/" },
+  { name: "Tailwind CSS", icon: SiTailwindcss, url: "https://tailwindcss.com/" },
+  { name: "MongoDB", icon: SiMongodb , url : "https://www.mongodb.com/" },
+  { name: "Python", icon: FaPython, url: "https://www.python.org/" },
+  { name: "Git", icon: FaGitAlt, highlight:true, url: "https://git-scm.com/" },
+  { name: "Docker", icon: SiDocker, highlight:true , url: "https://www.docker.com/" },
+  { name: "Java", icon: FaJava, highlight:true, url: "https://www.java.com/en/" },
+  { name: "C#", icon: SiDotnet, highlight:true, url: "https://dotnet.microsoft.com/en-us/languages/csharp" },
+  { name: "HTML", icon: SiHtml5, url: "https://html.spec.whatwg.org/multipage/" },
+  { name: "C++", icon: SiC, url: "https://isocpp.org/" },
+  { name: "SQL", icon: SiMysql, highlight:true, url: "https://www.mysql.com/" },
+  { name: "Neo4J", icon: GiSharpLips, highlight:true, url: "https://neo4j.com/" },
+  { name: "Unity", icon: BsUnity, url: "https://unity.com/" },
+  { name: "Postman", icon: SiPostman, highlight:true, url: "https://www.postman.com/" },
   ]
-  const sortedSkills = [...skills].sort((a, b) => (b.highlight ? 1 : 0) - (a.highlight ? 1 : 0));
+const sortedSkills = [...skills].sort((a, b) => {
+  if (a.highlight === b.highlight) {
+    return a.name.localeCompare(b.name);
+  }
+  return b.highlight ? 1 : -1;
+});
   const unrelatedSkills = [
-    { name: "Pediatric Care", icon: BiChild },
-    { name: "First Aid Certified", icon: BiFirstAid },
-    { name: "Culinary Expertise", icon: BiFork },
+    { name: "Pediatric Care", icon: BiChild},
+    { name: "Culiinary Expertise", icon: BiFork, url:"/certificates/foodhandlers_certification.pdf" },
+    { name: "First Aid", icon: BiFirstAid, highlight:true, url: "/certificates/firstaid_certification.pdf" }
   ]
+
+  const sortedUnrelatedSkills = [...unrelatedSkills].sort((a, b) => {
+  if (a.highlight === b.highlight) {
+    return a.name.localeCompare(b.name);
+  }
+  return b.highlight ? 1 : -1;
+});
+
+
+const certifications = [
+  // { name: "First Aid Certified", icon: BiFirstAid, url: "/certificates/firstaid_certification.pdf" },
+  // { name: "Food Handlers Certified", icon: BiFork, url: "/certificates/foodhandlers_certification.pdf" },
+  { name: "Cybersecurity Certified", icon: BsPatchCheckFill, highlight: true, url: "/certificates/cybersecurity_certification.pdf" },
+  { name: "Network Security Certified", icon: BsPatchCheckFill, highlight: true, url: "/certificates/networksecurity_certification.pdf" },
+  { name: "Computational Thinking Certified", icon: BsPatchCheckFill, highlight: true, url: "/certificates/computationalthinking_certification.pdf" },
+  { name: "Arizona Technical Skills Standard 2021 Certified", icon: BsPatchCheckFill, highlight:true },
+  { name: "Highschool Graduate 2023", icon: BsPatchCheckFill },
+
+
+]
+
+const sortedCertifications = [...certifications].sort((a, b) => {
+  if (a.highlight === b.highlight) {
+    return a.name.localeCompare(b.name);
+  }
+  return b.highlight ? 1 : -1;
+}
+);
+
 
   return (
     <div>
@@ -70,6 +110,42 @@ const skills = [
         </p>
       </div>
 
+
+  {/* Certifications Section */}
+        <div>
+            <div className="flex flex-col items-center relative mb-8">
+              <h2 className="text-3xl font-bold text-white z-10">Certifications</h2>
+            <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {sortedCertifications.map(({ name, icon: Icon, highlight, url }) => {
+            const SkillCard = (
+              <div
+                className="group bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300"
+              >
+                <div className={`p-3 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300
+                  ${highlight 
+                    ? "bg-gradient-to-br from-red-500 to-red-700" 
+                    : "bg-red-600/40 hover:bg-red-600/60"
+                  }`}>
+                  <Icon className="text-white text-2xl" />
+                </div>
+                <p className="text-white mt-3 font-semibold">{name}</p>
+              </div>
+            );
+
+            return url ? (
+              <div key={name} onClick={() => handleExternalClick(url, true)} className="cursor-pointer">
+                {SkillCard}
+              </div>
+            ) : (
+              <div key={name}>{SkillCard}</div>
+            );
+          })}
+        </div>
+      </div>
+
+
       {/* Skills Section */}
         <div>
             <div className="flex flex-col items-center relative mb-8">
@@ -77,21 +153,30 @@ const skills = [
             <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {sortedSkills.map(({ name, icon: Icon, highlight }) => (
-            <div
-              key={name}
-              className="group bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300"
-            >
-              <div className={`p-3 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300
-                ${highlight 
-                  ? "bg-gradient-to-br from-red-500 to-red-700" 
-                  : "bg-red-600/40 hover:bg-red-600/60"
-                }`}>
-                <Icon className="text-white text-2xl" />
+          {sortedSkills.map(({ name, icon: Icon, highlight, url }) => {
+            const SkillCard = (
+              <div
+                className="group bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300"
+              >
+                <div className={`p-3 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300
+                  ${highlight 
+                    ? "bg-gradient-to-br from-red-500 to-red-700" 
+                    : "bg-red-600/40 hover:bg-red-600/60"
+                  }`}>
+                  <Icon className="text-white text-2xl" />
+                </div>
+                <p className="text-white mt-3 font-semibold">{name}</p>
               </div>
-              <p className="text-white mt-3 font-semibold">{name}</p>
-            </div>
-          ))}
+            );
+
+            return url ? (
+              <div key={name} onClick={() => handleExternalClick(url, true)} className="cursor-pointer">
+                {SkillCard}
+              </div>
+            ) : (
+              <div key={name}>{SkillCard}</div>
+            );
+          })}
         </div>
       </div>
 
@@ -102,17 +187,31 @@ const skills = [
                   <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {unrelatedSkills.map(({ name, icon: Icon }) => (
-            <div
-              key={name}
-              className="group bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300"
-            >
-              <div className="p-3 bg-red-600/40 hover:bg-red-600/60 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300">
-                <Icon className="text-white text-2xl" />
+        {sortedUnrelatedSkills.map(({ name, icon: Icon, url, highlight}) => {
+       const SkillCard = (
+              <div
+                className="group bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300"
+              >
+                <div className={`p-3 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300
+                  ${highlight 
+                    ? "bg-gradient-to-br from-red-500 to-red-700" 
+                    : "bg-red-600/40 hover:bg-red-600/60"
+                  }`}>
+                  <Icon className="text-white text-2xl" />
+                </div>
+                <p className="text-white mt-3 font-semibold">{name}</p>
               </div>
-              <p className="text-white mt-3 font-semibold">{name}</p>
+            );
+
+          return url ? (
+            <div key={name} onClick={() => handleExternalClick(url, true)} className="cursor-pointer">
+              {SkillCard}
             </div>
-          ))}
+          ) : (
+            <div key={name}>{SkillCard}</div>
+          );
+        })}
+
         </div>
       </div>
     </div>
