@@ -34,7 +34,7 @@ export default function Home() {
 
   return (
     <ClickSoundWrapper>
-<div className="min-h-screen pt-20 md:pt-0 bg-gradient-to-b from-[#1a1a1a] via-[#121212] to- text-white font-sans">
+<div className="min-h-screen pt-20 md:pt-0 bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans">
 <div className="container mx-auto px-4 pt-15 lg:pt-12">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
