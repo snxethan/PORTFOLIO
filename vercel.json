@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "snex.dev" }],
+      "destination": "https://snxethan.dev/$1",
+      "permanent": true
+    }
+  ]
+}

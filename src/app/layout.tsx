@@ -11,11 +11,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Ethan Townsend | Portfolio",
     description: "Explore my projects, resume, and about me section.",
-    url: "https://www.snex.dev",
+    url: "https://www.snxethan.dev",
     siteName: "Ethan's Portfolio",
     images: [
       {
-        url: "https://www.snex.dev/images/avatar.png", // Upload a suitable OG image
+        url: "https://www.snxethan.dev/images/avatar.png", 
         width: 1200,
         height: 630,
         alt: "Ethan Townsend Portfolio Preview",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ethan Townsend | Portfolio",
     description: "Explore my projects, resume, and more.",
-    images: ["https://www.snex.dev/images/preview.png"],
+    images: ["https://www.snxethan.dev/images/preview.png"],
   },
 }
 
