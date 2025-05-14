@@ -37,7 +37,6 @@ SPOTIFY_CLIENT_ID=your_client_id
 SPOTIFY_CLIENT_SECRET=your_client_secret
 SPOTIFY_REFRESH_TOKEN=your_refresh_token
 SPOTIFY_REDIRECT_URI=http://localhost:3000/api/spotify/callback
-GITHUB_TOKEN=your_github_pat
 ```
 
 ⚠️ Never expose .env.local or these secrets in a public repo. ⚠️
