@@ -72,7 +72,10 @@ const skills = [
 
       {/* Skills Section */}
       <div>
-        <h3 className="text-2xl font-semibold text-white mb-4">Skills</h3>
+      <div className="flex flex-col items-center relative mb-8">
+        <h2 className="text-2xl font-semibold text-white mb-4 text-center">Skills</h2>
+          <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
+</div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {sortedSkills.map(({ name, icon: Icon, highlight }) => (
             <div
@@ -94,7 +97,10 @@ const skills = [
 
       {/* Unrelated Skills */}
       <div>
+        <div className="flex flex-col items-center relative mb-8">
         <h3 className="text-2xl font-semibold text-white mb-4 mt-12">Unrelated Skills</h3>
+                  <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {unrelatedSkills.map(({ name, icon: Icon }) => (
             <div

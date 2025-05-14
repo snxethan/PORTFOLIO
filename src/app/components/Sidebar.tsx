@@ -12,6 +12,7 @@ import {
   FaSteam,
 } from "react-icons/fa"
 import { useExternalLink } from "../components/ExternalLinkHandler" 
+import Status from "./Status"
 
 const Sidebar = () => {
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
@@ -109,6 +110,10 @@ const Sidebar = () => {
 
         <div className="mt-6">
           <SpotifyWidget/>
+        </div>
+
+        <div className="mt-6">
+          <Status/>
         </div>
       </aside>
     </>

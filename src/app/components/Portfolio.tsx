@@ -87,7 +87,7 @@ const manualProjects: Project[] = [
     description: "Built and designed a simple casino CLI game using Java.",
     html_url: "https://github.com/Stat3132/CasinoTeamProject",
     language: "Java",
-    topics: ["neumont", "java", "javafx"],
+    topics: ["neumont", "java"],
     created_at: "2024-02-15T00:00:00Z",
     updated_at: "2024-03-04T00:00:00Z",
     source: "github",
