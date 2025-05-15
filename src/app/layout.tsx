@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ExternalLinkHandler } from "./components/ExternalLinkHandler"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -10,14 +12,14 @@ export const metadata: Metadata = {
   description: "Software Engineer Portfolio",
   openGraph: {
     title: "Ethan Townsend | Portfolio",
-    description: "Explore my projects, resume, and about me section.",
+    description: "Explore my website! Find my portfolio, education & experience, and more.",
     url: "https://www.snxethan.dev",
     siteName: "Ethan's Portfolio",
     images: [
       {
         url: "https://www.snxethan.dev/images/avatar.png",
-        width: 1200,
-        height: 630,
+        width: 512,
+        height: 512,
         alt: "Ethan Townsend Portfolio Preview",
       },
     ],
@@ -26,8 +28,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Ethan Townsend | Portfolio",
-    description: "Explore my projects, resume, and more.",
-    images: ["https://www.snxethan.dev/images/preview.png"],
+    description: "Explore my website! Find my portfolio, education & experience, and more.",
+    images: ["https://www.snxethan.dev/images/avatar.png"],
   },
 }
 
@@ -44,8 +46,10 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body suppressHydrationWarning className={`${inter.className} bg-[#1a1a1a] text-white`}>
         <ExternalLinkHandler>
-        {children}
+          {children}
         </ExternalLinkHandler>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
