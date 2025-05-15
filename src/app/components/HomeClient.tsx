@@ -22,9 +22,8 @@ export default function HomeClient() {
     setActiveTab(resolvedTab)
     localStorage.setItem("activeTab", resolvedTab)
 
-    if (queryTab) {
-      router.replace("/", { scroll: false })
-    }
+    // Strip query param from URL
+    if (queryTab) router.replace("/", { scroll: false })
   }, [searchParams, router])
 
   const handleTabChange = (tab: string) => {
