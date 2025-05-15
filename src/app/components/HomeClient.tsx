@@ -22,7 +22,6 @@ export default function HomeClient() {
     setActiveTab(resolvedTab)
     localStorage.setItem("activeTab", resolvedTab)
 
-    // Strip query param from URL
     if (queryTab) router.replace("/", { scroll: false })
   }, [searchParams, router])
 
@@ -36,15 +35,13 @@ export default function HomeClient() {
       <div className="container mx-auto px-4 pt-15 lg:pt-12">
         <div className="flex flex-col lg:flex-row gap-8">
           <Sidebar />
-
           <main className="flex-1 flex flex-col gap-6">
             <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg overflow-hidden">
               {activeTab && (
                 <Navbar onTabChange={handleTabChange} activeTab={activeTab} />
               )}
             </div>
-
-            <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 md:p-8 min-h-[600px] transition-all duration-300 ease-in-out">
+            <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 md:p-8 min-h-[600px]">
               {activeTab === "about" && <About />}
               {activeTab === "resume" && <Resume />}
               {activeTab === "portfolio" && <Portfolio />}
