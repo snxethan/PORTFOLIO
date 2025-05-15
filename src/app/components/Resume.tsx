@@ -1,28 +1,57 @@
 "use client"
+import { useEffect, useState } from "react"
 import { FaDownload } from "react-icons/fa"
 
 const Resume = () => {
-const downloadAs = (type: string) => {
-  const fileMap: Record<string, string> = {
-    pdf: "/EthanTownsend_Resume.pdf",
-    // csv: "/ethan_resume.csv", // make sure you have this
+  const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+      setLoading(false)
+    }, [])
+
+  const downloadAs = (type: string) => {
+    const fileMap: Record<string, string> = {
+      pdf: "/resume/EthanTownsend_Resume.pdf",
+    }
+
+    const fileURL = fileMap[type]
+    if (!fileURL) {
+      alert("Unsupported file type")
+      return
+    }
+
+    const link = document.createElement("a")
+    link.href = fileURL
+    link.download = fileURL.split("/").pop() ?? "download"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
-  const fileURL = fileMap[type]
-
-  if (!fileURL) {
-    alert("Unsupported file type")
-    return
-  }
-
-  const link = document.createElement("a")
-  link.href = fileURL
-  link.download = fileURL.split("/").pop() ?? "download"
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-}
-
+  // if (loading) {
+  //   return (
+  //     <div className="bg-[#121212] text-white py-20 animate-pulse">
+  //       <div className="container mx-auto px-4 space-y-10">
+  //         <div className="h-10 bg-[#333333] w-64 mx-auto rounded" />
+  //         <div className="flex justify-center gap-4">
+  //           <div className="h-10 w-40 bg-[#333333] rounded" />
+  //         </div>
+  //         {[...Array(3)].map((_, i) => (
+  //           <div key={i} className="flex items-center gap-4">
+  //             <div className="w-1/2 space-y-2 pr-8">
+  //               <div className="h-4 bg-[#333333] w-2/3 rounded" />
+  //               <div className="h-3 bg-[#333333] w-1/2 rounded" />
+  //               <div className="h-3 bg-[#333333] w-full rounded" />
+  //             </div>
+  //             <div className="w-1/2">
+  //               <div className="bg-[#1e1e1e] h-24 rounded border border-[#333333]" />
+  //             </div>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   return (
     <div>

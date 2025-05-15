@@ -1,49 +1,48 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Sidebar from "./components/Sidebar"
 import Navbar from "./components/Navbar"
 import About from "./components/About"
 import Resume from "./components/Resume"
 import Portfolio from "./components/Portfolio"
-import ClickSoundWrapper from "./components/ClickSoundWrapper"
-import SpotifyWidget from "./components/SpotifyWidget"
-
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("about")
-  const [githubProjects, setGithubProjects] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+  const router = useRouter()
 
   useEffect(() => {
-    async function loadProjects() {
-      setLoading(true)
-      try {
-        const res = await fetch("/api/github-projects")
-        const data = await res.json()
-        setGithubProjects(data)
-      } catch (error) {
-        console.error("Failed to fetch projects:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
+    const queryTab = searchParams.get("tab")
+    const storedTab = localStorage.getItem("activeTab")
+    const fallbackTab = "about"
 
-    loadProjects()
-  }, [])
+    const resolvedTab = queryTab || storedTab || fallbackTab
+    setActiveTab(resolvedTab)
+    localStorage.setItem("activeTab", resolvedTab)
+
+    if (queryTab) {
+      router.replace("/", { scroll: false })
+    }
+  }, [searchParams, router])
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab)
+    localStorage.setItem("activeTab", tab)
+  }
 
   return (
-    <ClickSoundWrapper>
-<div className="min-h-screen pt-20 md:pt-0 bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans">
-<div className="container mx-auto px-4 pt-15 lg:pt-12">
+    <div className="min-h-screen pt-20 md:pt-0 bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans">
+      <div className="container mx-auto px-4 pt-15 lg:pt-12">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
           <Sidebar />
 
-          {/* Main Content */}
           <main className="flex-1 flex flex-col gap-6">
             <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg overflow-hidden">
-              <Navbar onTabChange={setActiveTab} activeTab={activeTab} />
+              {activeTab && (
+                <Navbar onTabChange={handleTabChange} activeTab={activeTab} />
+              )}
             </div>
 
             <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 md:p-8 min-h-[600px] transition-all duration-300 ease-in-out">
@@ -55,6 +54,5 @@ export default function Home() {
         </div>
       </div>
     </div>
-    </ClickSoundWrapper>
   )
 }

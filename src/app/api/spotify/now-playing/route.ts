@@ -1,4 +1,3 @@
-// src/app/api/spotify/now-playing/route.ts
 import { NextResponse } from "next/server"
 
 export async function GET() {
@@ -33,6 +32,14 @@ export async function GET() {
   )
 
   if (nowPlayingRes.status === 204 || nowPlayingRes.status > 400) {
+    return NextResponse.json({ isPlaying: false })
+  }
+
+  // ✅ Prevent crash if response is HTML or invalid JSON
+  const contentType = nowPlayingRes.headers.get("content-type")
+  if (!contentType?.includes("application/json")) {
+    const text = await nowPlayingRes.text()
+    console.warn("Spotify returned non-JSON:", text.slice(0, 100))
     return NextResponse.json({ isPlaying: false })
   }
 
