@@ -93,7 +93,7 @@ const Sidebar = () => {
               </button>
               <button
                 onClick={() =>
-                  handleExternalClick("https://www.linkedin.com/in/ethan-townsend-630aa4294/", true)
+                  handleExternalClick("https://www.linkedin.com/in/snxethan/", true)
                 }
                 aria-label="LinkedIn"
                 className="text-gray-300 hover:text-red-600 transition-colors text-2xl"
