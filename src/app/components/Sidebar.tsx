@@ -68,7 +68,7 @@ const Sidebar = () => {
             <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
               Ethan Townsend
             </h2>
-            <p className="text-gray-400">Software Engineer</p>
+            <p className="text-gray-400">Software Engineer | Full Stack Developerr</p>
           </div>
 
           {/* Professional Links */}
