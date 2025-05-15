@@ -11,6 +11,15 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Ethan Townsend | Portfolio",
   description: "Software Engineer Portfolio",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", type: "image/x-icon" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "Ethan Townsend | Portfolio",
     description: "Explore my website! Find my portfolio, education & experience, and more.",
@@ -33,6 +42,7 @@ export const metadata: Metadata = {
     images: ["https://www.snxethan.dev/images/avatar/avatar.png"],
   },
 }
+
 
 export const viewport: Viewport = {
   themeColor: "#1a1a1a",
