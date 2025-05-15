@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     siteName: "Ethan's Portfolio",
     images: [
       {
-        url: "https://www.snxethan.dev/images/avatar.png",
+        url: "https://www.snxethan.dev/images/avatar/avatar.png",
         width: 512,
         height: 512,
         alt: "Ethan Townsend Portfolio Preview",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ethan Townsend | Portfolio",
     description: "Explore my website! Find my portfolio, education & experience, and more.",
-    images: ["https://www.snxethan.dev/images/avatar.png"],
+    images: ["https://www.snxethan.dev/images/avatar/avatar.png"],
   },
 }
 

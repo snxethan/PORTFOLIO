@@ -56,7 +56,7 @@ const Resume = () => {
   return (
     <div>
           <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
-          Resume
+           Experience & Education Timeline
           <span className="absolute bottom-[-8px] left-0 w-full h-1 b-2 bg-gradient-to-r from-red-600 to-red-500"></span>
         </h2>
     <div className="bg-[#121212] text-white py-20">
