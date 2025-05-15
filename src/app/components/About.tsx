@@ -109,7 +109,7 @@ const [loading, setLoading] = useState(true)
   return (
     <div>
       <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
-        About Me
+        Information, Certifications, and Skills.
         <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
       </h2>
       <section id="about" className="py-20 bg-[#121212] text-white">
