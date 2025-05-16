@@ -105,7 +105,7 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
               )}
               <iframe
                 src={pdfUrl}
-                className="w-full h-[calc(100vh-150px)] max-h-[75vh] border-none"
+              className="w-full min-h-[600px] h-[calc(100vh-150px)] max-h-[75vh] border-none"
                 onLoad={() => setIsLoading(false)}
                 loading="lazy"
               />

@@ -34,7 +34,7 @@ const Sidebar = () => {
   return (
     <>
       {loading ? (
-      <aside className="w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 lg:sticky lg:top-8 self-start relative z-10 animate-elastic-in">
+      <aside className="w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 lg:sticky lg:top-8 self-start relative z-10">
           <div className="w-32 h-32 mx-auto rounded-full bg-[#333333]" />
           <div className="mt-4 text-center space-y-2">
             <div className="h-6 w-40 bg-[#333333] mx-auto rounded" />

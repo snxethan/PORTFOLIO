@@ -1,48 +1,52 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
+import React, {
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+  ReactNode,
+} from "react"
 import { Loader2 } from "lucide-react"
 
 interface PdfThumbnailTooltipProps {
   label: string
-  children: React.ReactNode
+  children: ReactNode
   url?: string
-  fullWidth?: boolean 
+  fullWidth?: boolean
 }
 
 const TooltipWrapper = ({ label, children, url, fullWidth = false }: PdfThumbnailTooltipProps) => {
   const [visible, setVisible] = useState(false)
-  const [isPdf, setIsPdf] = useState(false)
   const [thumbnailLoading, setThumbnailLoading] = useState(false)
   const [thumbnailError, setThumbnailError] = useState(false)
+
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const isHovering = useRef(false)
 
-  useEffect(() => {
-    if (url) {
-      setIsPdf(url.toLowerCase().endsWith(".pdf"))
-    }
-  }, [url])
+  const isPdf = useMemo(() => url?.toLowerCase().endsWith(".pdf") ?? false, [url])
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = useCallback(() => {
+    isHovering.current = true
     timeoutRef.current = setTimeout(() => {
-      setVisible(true)
-      if (isPdf) {
-        setThumbnailLoading(true)
-        setThumbnailError(false)
+      if (isHovering.current) {
+        setVisible(true)
+        if (isPdf) {
+          setThumbnailLoading(true)
+          setThumbnailError(false)
+        }
       }
     }, 500)
-  }
+  }, [isPdf])
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
+    isHovering.current = false
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
     setVisible(false)
     setThumbnailLoading(false)
-  }
+  }, [])
 
-  const handleThumbnailLoad = () => {
-    setThumbnailLoading(false)
-  }
-
+  const handleThumbnailLoad = () => setThumbnailLoading(false)
   const handleThumbnailError = () => {
     setThumbnailLoading(false)
     setThumbnailError(true)
@@ -58,7 +62,11 @@ const TooltipWrapper = ({ label, children, url, fullWidth = false }: PdfThumbnai
       {visible && (
         <>
           {isPdf ? (
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-[#1a1a1a] border border-[#333] rounded-md shadow-xl z-50 p-2 w-[220px] max-w-[90vw] animate-elastic-in">
+            <div
+              role="tooltip"
+              aria-label={label}
+              className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-[#1a1a1a] border border-[#333] rounded-md shadow-xl z-50 p-2 w-[220px] max-w-[90vw] transition-all duration-200 ease-out opacity-100 scale-100 animate-elastic-in"
+            >
               <div className="flex flex-col items-center">
                 <div className="text-xs text-white mb-1 font-medium">{label}</div>
                 <div className="relative w-full h-[260px] bg-[#111] rounded overflow-hidden">
@@ -76,7 +84,7 @@ const TooltipWrapper = ({ label, children, url, fullWidth = false }: PdfThumbnai
                     <embed
                       src={url}
                       type="application/pdf"
-                      className="w-full h-full"
+                      className="w-full h-full min-h-[260px]"
                       onLoad={handleThumbnailLoad}
                       onError={handleThumbnailError}
                     />
@@ -92,7 +100,11 @@ const TooltipWrapper = ({ label, children, url, fullWidth = false }: PdfThumbnai
               </div>
             </div>
           ) : (
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs bg-red-600 text-white rounded-md shadow-md z-50 whitespace-nowrap animate-elastic-in">
+            <div
+              role="tooltip"
+              aria-label={label}
+              className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs bg-red-600 text-white rounded-md shadow-md z-50 whitespace-nowrap transition-all duration-200 ease-out opacity-100 scale-100 animate-elastic-in"
+            >
               {label}
             </div>
           )}

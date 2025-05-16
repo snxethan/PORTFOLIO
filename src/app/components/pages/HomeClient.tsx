@@ -52,12 +52,24 @@ export default function HomeClient() {
               )}
               </div>
                 <div
-                  key={activeTab} // 🔁 key ensures re-mount to trigger animation
+                  key={activeTab}
                   className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 md:p-8 min-h-[600px] animate-elastic-light"
                 >
-                  {activeTab === "about" && <About />}
-                  {activeTab === "resume" && <Resume />}
-                  {activeTab === "portfolio" && <Portfolio />}
+                 {!activeTab ? (
+                    <div className="w-full h-full space-y-4 animate-pulse">
+                      <div className="h-6 w-1/2 bg-[#333333] rounded" />
+                      <div className="h-4 w-full bg-[#333333] rounded" />
+                      <div className="h-4 w-5/6 bg-[#333333] rounded" />
+                      <div className="h-4 w-2/3 bg-[#333333] rounded" />
+                    </div>
+                  ) : (
+                    <>
+                      {activeTab === "about" && <About />}
+                      {activeTab === "resume" && <Resume />}
+                      {activeTab === "portfolio" && <Portfolio />}
+                    </>
+                  )}
+
                 </div>
 
             </section>
