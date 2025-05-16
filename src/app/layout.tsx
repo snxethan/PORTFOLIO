@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Ethan Townsend | Portfolio",
-  description: "Software Engineer Portfolio",
+  description: "Full Stack Developer Portfolio",
   icons: {
     icon: [
       { url: "/favicon.ico", type: "image/x-icon" },
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     title: "Ethan Townsend | Portfolio",
     description: "Explore my website! Find my portfolio, education & experience, and more.",
     url: "https://www.snxethan.dev",
-    siteName: "Ethan's Portfolio",
+    siteName: "snex.dev",
     images: [
       {
         url: "https://www.snxethan.dev/images/avatar/avatar.png",

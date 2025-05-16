@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useRef } from "react"
 import { FaSpotify } from "react-icons/fa"
-import { useExternalLink } from "../components/ExternalLinkHandler"
+import { useExternalLink } from "../../ExternalLinkHandler"
+import TooltipWrapper from "../../ToolTipWrapper"
 
 interface Track {
   isPlaying: boolean
@@ -90,6 +91,7 @@ export default function SpotifyWidget() {
     <div className="bg-[#222222] border border-[#333333] rounded-xl p-4 shadow-md">
       {/* Top: Spotify icon + label centered */}
       <div className="flex justify-center items-center gap-2 mb-2">
+        <TooltipWrapper label="My Spotify Profile">
         <button
           onClick={() =>
             handleExternalClick("https://open.spotify.com/user/l7ypevjdnoaz97kdqkkwf832d")
@@ -99,10 +101,12 @@ export default function SpotifyWidget() {
         >
           <FaSpotify />
         </button>
+        </TooltipWrapper>
         <span className="text-gray-400 text-sm">now listening:</span>
       </div>
 
       {/* Track info */}
+      <TooltipWrapper label={track.songUrl}>
       <button
         onClick={() => handleExternalClick(track.songUrl)}
         className="relative flex items-center justify-center gap-4 p-2 rounded-lg transition group w-full"
@@ -119,6 +123,9 @@ export default function SpotifyWidget() {
 
         <div className="absolute -inset-0.5 rounded-lg opacity-10 blur-sm transition duration-300 group-hover:opacity-10 group-hover:bg-gradient-to-r group-hover:from-red-700 group-hover:to-red-500 z-0"></div>
       </button>
+      </TooltipWrapper>
+
+  
     </div>
   )
 }

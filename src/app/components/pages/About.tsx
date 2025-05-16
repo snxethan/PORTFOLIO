@@ -18,7 +18,8 @@ import {
   SiHtml5,
   SiMysql,
 } from "react-icons/si"
-import { useExternalLink } from "./ExternalLinkHandler"
+import { useExternalLink } from "../ExternalLinkHandler"
+import TooltipWrapper from "../ToolTipWrapper"
 
 const About = () => {
 const [loading, setLoading] = useState(true)
@@ -88,9 +89,15 @@ const [loading, setLoading] = useState(true)
             <p className="text-white mt-3 font-semibold">{name}</p>
           </div>
         )
-        return url ? (
-          <div key={name} onClick={() => handleExternalClick(url, true)} className="cursor-pointer">{Card}</div>
-        ) : <div key={name}>{Card}</div>
+          return url ? (
+            <TooltipWrapper key={name} label={url}>
+              <div onClick={() => handleExternalClick(url, true)} className="cursor-pointer">
+                {Card}
+              </div>
+            </TooltipWrapper>
+          ) : (
+            <div key={name}>{Card}</div>
+          )
       })}
     </div>
   )

@@ -3,7 +3,8 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
-import { useExternalLink } from "./ExternalLinkHandler"
+import { useExternalLink } from "../ExternalLinkHandler"
+import TooltipWrapper from "../ToolTipWrapper"
 
 interface Project {
   id: number
@@ -316,6 +317,7 @@ const Portfolio: React.FC = () => {
                       </div>
                     </div>
                     <div className="px-6 py-4 border-t border-[#333333] bg-[#1a1a1a]">
+                      <TooltipWrapper label={project.html_url}>
                       <button
                         onClick={() => handleExternalClick(project.html_url, true)}
                         className="flex items-center justify-center gap-2 w-full py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all"
@@ -325,6 +327,7 @@ const Portfolio: React.FC = () => {
                           ? "View this site's repository!"
                           : project.ctaLabel ?? "View on GitHub"}
                       </button>
+                      </TooltipWrapper>
                     </div>
                   </div>
                 ))}

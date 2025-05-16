@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import { FaDownload } from "react-icons/fa"
+import TooltipWrapper from "../ToolTipWrapper"
 
 const Resume = () => {
   const [loading, setLoading] = useState(true)
@@ -78,12 +79,14 @@ const Resume = () => {
           >
             <FaDownload /> Download as CSV
           </button> */}
+          <TooltipWrapper label="Download Resume">
           <button
             onClick={() => downloadAs("pdf")}
             className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all"
           >
             <FaDownload /> Download as PDF
           </button>
+          </TooltipWrapper>
         </div>
 
         {/* Timeline Experience */}

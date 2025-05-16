@@ -10,9 +10,10 @@ import {
   FaLinkedin,
   FaSteam,
 } from "react-icons/fa"
-import { useExternalLink } from "../components/ExternalLinkHandler" 
+import { useExternalLink } from "../../ExternalLinkHandler"
 import Status from "./Status"
 import Avatar from "./Avatar"
+import TooltipWrapper from "../../ToolTipWrapper"
 
 const Sidebar = () => {
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
@@ -75,6 +76,7 @@ const Sidebar = () => {
           <div className="mt-6">
             <div className="w-full h-px bg-gradient-to-r from-transparent via-[#333333] to-transparent"></div>
             <div className="flex justify-center space-x-6 mt-4">
+              <TooltipWrapper label="ethantownsend73@gmail.com">
               <a
                 href="mailto:ethantownsend73@gmail.com"
                 target="_blank"
@@ -84,6 +86,8 @@ const Sidebar = () => {
               >
                 <FaEnvelope />
               </a>
+              </TooltipWrapper>
+              <TooltipWrapper label="My GitHub Profile">
               <button
                 onClick={() => handleExternalClick("https://github.com/snxethan", true)}
                 aria-label="GitHub"
@@ -91,6 +95,8 @@ const Sidebar = () => {
               >
                 <FaGithub />
               </button>
+              </TooltipWrapper>
+              <TooltipWrapper label="My LinkedIn Profile">
               <button
                 onClick={() =>
                   handleExternalClick("https://www.linkedin.com/in/snxethan/", true)
@@ -100,6 +106,7 @@ const Sidebar = () => {
               >
                 <FaLinkedin />
               </button>
+              </TooltipWrapper>
             </div>
           </div>
 
@@ -107,6 +114,7 @@ const Sidebar = () => {
           <div className="mt-6">
             <div className="w-full h-px bg-gradient-to-r from-transparent via-[#333333] to-transparent"></div>
             <div className="flex justify-center space-x-5 mt-4">
+            <TooltipWrapper label="My Instagram Profile">
               <button
                 onClick={() => handleExternalClick("https://instagram.com/snxethan")}
                 aria-label="Instagram"
@@ -114,6 +122,8 @@ const Sidebar = () => {
               >
                 <FaInstagram />
               </button>
+              </TooltipWrapper>
+              <TooltipWrapper label="My Discord Profile">
               <button
                 onClick={() => handleExternalClick("http://discord.com/users/250059394799239169")}
                 aria-label="Discord"
@@ -121,6 +131,8 @@ const Sidebar = () => {
               >
                 <FaDiscord />
               </button>
+              </TooltipWrapper>
+              <TooltipWrapper label="My Steam Profile">
               <button
                 onClick={() => handleExternalClick("https://steamcommunity.com/id/snxethan/")}
                 aria-label="Steam"
@@ -128,6 +140,7 @@ const Sidebar = () => {
               >
                 <FaSteam />
               </button>
+              </TooltipWrapper>
             </div>
           </div>
 
