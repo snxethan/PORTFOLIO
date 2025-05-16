@@ -2,92 +2,49 @@
 import { useEffect, useState } from "react"
 import { FaDownload } from "react-icons/fa"
 import TooltipWrapper from "../ToolTipWrapper"
+import PDFModalViewer from "../PDFModalViewer"
 
 const Resume = () => {
   const [loading, setLoading] = useState(true)
+  const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
+  const resumePDF = "/resume/EthanTownsend_Resume.pdf"
 
-    useEffect(() => {
-      setLoading(false)
-    }, [])
+  useEffect(() => {
+    setLoading(false)
 
-  const downloadAs = (type: string) => {
-    const fileMap: Record<string, string> = {
-      pdf: "/resume/EthanTownsend_Resume.pdf",
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedPDF(null)
     }
 
-    const fileURL = fileMap[type]
-    if (!fileURL) {
-      alert("Unsupported file type")
-      return
-    }
-
-    const link = document.createElement("a")
-    link.href = fileURL
-    link.download = fileURL.split("/").pop() ?? "download"
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
-  // if (loading) {
-  //   return (
-  //     <div className="bg-[#121212] text-white py-20 animate-pulse">
-  //       <div className="container mx-auto px-4 space-y-10">
-  //         <div className="h-10 bg-[#333333] w-64 mx-auto rounded" />
-  //         <div className="flex justify-center gap-4">
-  //           <div className="h-10 w-40 bg-[#333333] rounded" />
-  //         </div>
-  //         {[...Array(3)].map((_, i) => (
-  //           <div key={i} className="flex items-center gap-4">
-  //             <div className="w-1/2 space-y-2 pr-8">
-  //               <div className="h-4 bg-[#333333] w-2/3 rounded" />
-  //               <div className="h-3 bg-[#333333] w-1/2 rounded" />
-  //               <div className="h-3 bg-[#333333] w-full rounded" />
-  //             </div>
-  //             <div className="w-1/2">
-  //               <div className="bg-[#1e1e1e] h-24 rounded border border-[#333333]" />
-  //             </div>
-  //           </div>
-  //         ))}
-  //       </div>
-  //     </div>
-  //   )
-  // }
+    document.addEventListener("keydown", handleEscape)
+    return () => document.removeEventListener("keydown", handleEscape)
+  }, [])
 
   return (
     <div>
-          <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
-           Experience & Education Timeline
-          <span className="absolute bottom-[-8px] left-0 w-full h-1 b-2 bg-gradient-to-r from-red-600 to-red-500"></span>
-        </h2>
-    <div className="bg-[#121212] text-white py-20">
+      <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
+        Experience & Education Timeline
+        <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
+      </h2>
 
-          
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <header className="text-center mb-16">
-          <h1 className="text-4xl mb-2">Ethan Townsend</h1>
-          <p className="text-gray-400">Software Engineer | Salt Lake City, UT (84102)</p>
-          <p className="text-gray-400">(928) 600-3351 | ethantownsend73@gmail.com</p>
-        </header>
+      <div className="bg-[#121212] text-white py-20">
+        <div className="container mx-auto px-4">
+          <header className="text-center mb-16">
+            <h1 className="text-4xl mb-2">Ethan Townsend</h1>
+            <p className="text-gray-400">Software Engineer | Salt Lake City, UT (84102)</p>
+            <p className="text-gray-400">(928) 600-3351 | ethantownsend73@gmail.com</p>
+          </header>
 
-        {/* Download Buttons */}
-        <div className="flex justify-center gap-4 mb-8">
-          {/* <button
-            onClick={() => downloadAs("csv")}
-            className="bg-[#333333] hover:bg-[#444444] text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-          >
-            <FaDownload /> Download as CSV
-          </button> */}
-          <TooltipWrapper label="Download Resume">
-          <button
-            onClick={() => downloadAs("pdf")}
-            className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all"
-          >
-            <FaDownload /> Download as PDF
-          </button>
-          </TooltipWrapper>
-        </div>
+          <div className="flex justify-center gap-4 mb-8">
+            <TooltipWrapper label="Preview Resume">
+              <button
+                onClick={() => setSelectedPDF(resumePDF)}
+                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all"
+              >
+                <FaDownload /> View Resume
+              </button>
+            </TooltipWrapper>
+          </div>
 
         {/* Timeline Experience */}
         <div className="relative mb-16">
@@ -275,8 +232,12 @@ const Resume = () => {
         </div>
       </div>
     </div>
+      <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />
+
+
     </div>
   )
 }
+
 
 export default Resume

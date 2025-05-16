@@ -12,7 +12,6 @@ import {
   SiMongodb,
   SiDocker,
   SiC,
-  SiCachet,
   SiDotnet,
   SiPostman,
   SiHtml5,
@@ -20,15 +19,21 @@ import {
 } from "react-icons/si"
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
+import PDFModalViewer from "../PDFModalViewer"
 
 const About = () => {
-const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const { handleExternalClick } = useExternalLink()
 
-    useEffect(() => {
-      setLoading(false)
-    }, [])
-
+  useEffect(() => {
+    setLoading(false)
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedPDF(null)
+    }
+    document.addEventListener("keydown", handleEscape)
+    return () => document.removeEventListener("keydown", handleEscape)
+  }, [])
 
   const skills = [
     { name: "React", icon: FaReact, highlight: true, url: "https://reactjs.org/" },
@@ -50,20 +55,12 @@ const [loading, setLoading] = useState(true)
     { name: "Unity", icon: BsUnity, url: "https://unity.com/" },
     { name: "Postman", icon: SiPostman, highlight: true, url: "https://www.postman.com/" },
   ]
-  const sortedSkills = [...skills].sort((a, b) => {
-    if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
-    return b.highlight ? 1 : -1
-  })
 
   const unrelatedSkills = [
     { name: "Pediatric Care", icon: BiChild },
     { name: "Culiinary Expertise", icon: BiFork, url: "/certificates/foodhandlers_certification.pdf" },
-    { name: "First Aid", icon: BiFirstAid, highlight: true, url: "/certificates/firstaid_certification.pdf" }
+    { name: "First Aid", icon: BiFirstAid, highlight: true, url: "/certificates/firstaid_certification.pdf" },
   ]
-  const sortedUnrelatedSkills = [...unrelatedSkills].sort((a, b) => {
-    if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
-    return b.highlight ? 1 : -1
-  })
 
   const certifications = [
     { name: "Cybersecurity Certified", icon: BsPatchCheckFill, highlight: true, url: "/certificates/cybersecurity_certification.pdf" },
@@ -72,35 +69,41 @@ const [loading, setLoading] = useState(true)
     { name: "Arizona Technical Skills Standard 2021 Certified", icon: BsPatchCheckFill, highlight: true },
     { name: "Highschool Graduate 2023", icon: BsPatchCheckFill },
   ]
-  const sortedCertifications = [...certifications].sort((a, b) => {
-    if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
-    return b.highlight ? 1 : -1
-  })
 
-  const renderSkillGrid = (items: any[]) => (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-      {items.map(({ name, icon: Icon, highlight, url }: any) => {
-        const Card = (
-          <div className="group bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300">
-            <div className={`p-3 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300
-              ${highlight ? "bg-gradient-to-br from-red-500 to-red-700" : "bg-red-600/40 hover:bg-red-600/60"}`}>
-              <Icon className="text-white text-2xl" />
+  const renderSkillGrid = (items: any[]) => {
+    const sortedItems = [...items].sort((a, b) => a.name.localeCompare(b.name))
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {sortedItems.map(({ name, icon: Icon, highlight, url }: any) => {
+          const Card = (
+            <div className="group bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+              <div className={`p-3 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300
+                ${highlight ? "bg-gradient-to-br from-red-500 to-red-700" : "bg-red-600/40 hover:bg-red-600/60"}`}>
+                <Icon className="text-white text-2xl" />
+              </div>
+              <p className="text-white mt-3 font-semibold">{name}</p>
             </div>
-            <p className="text-white mt-3 font-semibold">{name}</p>
-          </div>
-        )
+          )
+
+          if (url?.endsWith(".pdf")) {
+            return (
+              <TooltipWrapper key={name} label="View Certification">
+                <div onClick={() => setSelectedPDF(url)} className="cursor-pointer">{Card}</div>
+              </TooltipWrapper>
+            )
+          }
+
           return url ? (
             <TooltipWrapper key={name} label={url}>
-              <div onClick={() => handleExternalClick(url, true)} className="cursor-pointer">
-                {Card}
-              </div>
+              <div onClick={() => handleExternalClick(url, true)} className="cursor-pointer">{Card}</div>
             </TooltipWrapper>
           ) : (
             <div key={name}>{Card}</div>
           )
-      })}
-    </div>
-  )
+        })}
+      </div>
+    )
+  }
 
   const renderSkeletonGrid = (count: number) => (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -121,41 +124,39 @@ const [loading, setLoading] = useState(true)
       </h2>
       <section id="about" className="py-20 bg-[#121212] text-white">
         <div className="container mx-auto px-4 grid grid-cols-1 gap-16">
-          {/* Intro */}
           <div className="text-center space-y-4">
             <p className="text-lg text-gray-100">I'm Ethan Townsend, a Software Engineer passionate about creating high-quality projects across both frontend and backend development.</p>
             <p className="text-lg text-gray-400">I have experience working with a variety of technologies, including Java & C#, Node.js & React, and various cloud and databasing platforms. I am always eager to learn new things and stay up-to-date with the latest industry trends.</p>
             <p className="text-lg text-gray-400">In my free time, I enjoy contributing to open-source projects and exploring new technologies, and having fun with my friends. I believe that collaboration and sharing knowledge are key to personal and professional growth.</p>
           </div>
 
-          {/* Certifications */}
           <div>
             <div className="flex flex-col items-center mb-6">
               <h2 className="text-3xl font-bold text-white">Certifications</h2>
               <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
             </div>
-            {loading ? renderSkeletonGrid(6) : renderSkillGrid(sortedCertifications)}
+            {loading ? renderSkeletonGrid(6) : renderSkillGrid(certifications)}
           </div>
 
-          {/* Skills */}
           <div>
             <div className="flex flex-col items-center mb-6">
               <h2 className="text-3xl font-bold text-white">Skills</h2>
               <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
             </div>
-            {loading ? renderSkeletonGrid(9) : renderSkillGrid(sortedSkills)}
+            {loading ? renderSkeletonGrid(9) : renderSkillGrid(skills)}
           </div>
 
-          {/* Unrelated Skills */}
           <div>
             <div className="flex flex-col items-center mb-6">
               <h2 className="text-3xl font-bold text-white">Unrelated Skills</h2>
               <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
             </div>
-            {loading ? renderSkeletonGrid(3) : renderSkillGrid(sortedUnrelatedSkills)}
+            {loading ? renderSkeletonGrid(3) : renderSkillGrid(unrelatedSkills)}
           </div>
         </div>
       </section>
+
+      <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />
     </div>
   )
 }
