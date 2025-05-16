@@ -51,11 +51,15 @@ export default function HomeClient() {
                 <Navbar onTabChange={handleTabChange} activeTab={activeTab} />
               )}
               </div>
-              <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 md:p-8 min-h-[600px]">
-                {activeTab === "about" && <About />}
-                {activeTab === "resume" && <Resume />}
-                {activeTab === "portfolio" && <Portfolio />}
-              </div>
+                <div
+                  key={activeTab} // 🔁 key ensures re-mount to trigger animation
+                  className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 md:p-8 min-h-[600px] animate-elastic-light"
+                >
+                  {activeTab === "about" && <About />}
+                  {activeTab === "resume" && <Resume />}
+                  {activeTab === "portfolio" && <Portfolio />}
+                </div>
+
             </section>
           </div>
         </div>

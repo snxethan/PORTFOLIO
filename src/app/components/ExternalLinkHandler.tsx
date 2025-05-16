@@ -21,25 +21,29 @@ const ExternalLinkContext = createContext<ExternalLinkContextType | undefined>(
 )
 
 export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
-  const [showWarning, setShowWarning] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+  const [isAnimatingOut, setIsAnimatingOut] = useState(false)
   const [targetUrl, setTargetUrl] = useState("")
   const [isProfessional, setIsProfessional] = useState(false)
 
   const handleExternalClick = (url: string, isProfessional: boolean = false) => {
     setTargetUrl(url)
     setIsProfessional(isProfessional)
-    setShowWarning(true)
+    setIsVisible(true)
   }
 
   const closeWarning = () => {
-    setShowWarning(false)
-    setTargetUrl("")
-    setIsProfessional(false)
+    setIsAnimatingOut(true)
+    setTimeout(() => {
+      setIsAnimatingOut(false)
+      setIsVisible(false)
+      setTargetUrl("")
+      setIsProfessional(false)
+    }, 300) // match elastic-out duration
   }
 
-  // 🔒 Disable scroll when modal is open
   useEffect(() => {
-    if (showWarning) {
+    if (isVisible) {
       document.body.classList.add("overflow-hidden")
     } else {
       document.body.classList.remove("overflow-hidden")
@@ -48,16 +52,31 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
     return () => {
       document.body.classList.remove("overflow-hidden")
     }
-  }, [showWarning])
+  }, [isVisible])
 
   return (
     <ExternalLinkContext.Provider
-      value={{ showWarning, targetUrl, isProfessional, handleExternalClick, closeWarning }}
+      value={{
+        showWarning: isVisible,
+        targetUrl,
+        isProfessional,
+        handleExternalClick,
+        closeWarning,
+      }}
     >
       {children}
-      {showWarning && (
-        <div className="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-[#1a1a1a] border border-[#333] rounded-xl p-6 max-w-md w-full text-center relative">
+        {isVisible && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40 animate-fade-in"
+            onClick={closeWarning}
+          >
+            <div
+              className={`bg-[#1a1a1a] border border-[#333] rounded-xl p-6 max-w-md w-full text-center relative ${
+                isAnimatingOut ? "animate-elastic-out" : "animate-elastic-in"
+              }`}
+              onClick={(e) => e.stopPropagation()} // Prevent clicks inside the modal from closing it
+            >
+
             <button
               onClick={closeWarning}
               aria-label="Close"
@@ -66,24 +85,31 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
               &times;
             </button>
 
-            <h3 className="text-xl font-semibold text-white mb-2">External Link Notice</h3>
+            <h3 className="text-xl font-semibold text-white mb-2">
+              External Link Notice
+            </h3>
 
             {isProfessional ? (
               <>
                 <p className="text-gray-300 text-sm mb-4">
-                  You are about to visit a <b>professional platform</b> or external resource.
+                  You are about to visit a <b>professional platform</b> or
+                  external resource.
                 </p>
                 <p className="text-gray-200 text-sm mb-4">
-                  The content on this platform may not reflect my personal views and is owned by a third party.
+                  The content on this platform may not reflect my personal views
+                  and is owned by a third party.
                 </p>
               </>
             ) : (
               <>
                 <p className="text-gray-300 text-sm mb-4">
-                  You are about to visit a <b>social platform</b> or external resource.
+                  You are about to visit a <b>social platform</b> or external
+                  resource.
                 </p>
                 <p className="text-gray-200 text-sm mb-4">
-                  Please note that the content on this platform does not reflect my professional identity or represent me in any official capacity.
+                  Please note that the content on this platform does not reflect
+                  my professional identity or represent me in any official
+                  capacity.
                 </p>
               </>
             )}

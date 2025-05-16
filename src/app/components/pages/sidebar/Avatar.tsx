@@ -16,11 +16,10 @@ const getSeasonalAvatar = (): string => {
   return "/images/avatar/avatar.png"
 }
 
-const Avatar = () => {
+const Avatar = ({ isAnimated = false }: { isAnimated?: boolean }) => {
   const [avatarSrc, setAvatarSrc] = useState<string | null>(null)
 
   useEffect(() => {
-    // Prevent mismatch with SSR by determining avatar on client
     setAvatarSrc(getSeasonalAvatar())
   }, [])
 
@@ -38,8 +37,10 @@ const Avatar = () => {
       alt="Ethan Townsend"
       width={512}
       height={512}
-      className="w-full h-full object-cover rounded-full"
-      unoptimized={isGif} // GIFs work better unoptimized
+      className={`w-full h-full object-cover rounded-full transition-all duration-300 ${
+        isAnimated ? "animate-elastic-in" : ""
+      }`}
+      unoptimized={isGif}
       priority
     />
   )

@@ -96,17 +96,34 @@ body {
   animation: elastic-in 0.4s ease-out forwards;
 }
 
-
-@keyframes float-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px) scale(0.95);
-  }
-  to {
+@keyframes elastic-out {
+  0% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1);
+  }
+  50% {
+    transform: scaleX(1.1) scaleY(0.9);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(0.6) scaleY(1.4);
   }
 }
-.animate-float-in {
-  animation: float-in 0.3s ease-out forwards;
+.animate-elastic-out {
+  animation: elastic-out 0.3s ease-in forwards;
+}
+
+
+@keyframes elastic-light {
+  0% {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-elastic-light {
+  animation: elastic-light 0.3s ease-out forwards;
 }

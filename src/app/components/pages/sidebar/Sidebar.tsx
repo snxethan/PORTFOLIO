@@ -18,6 +18,7 @@ import TooltipWrapper from "../../ToolTipWrapper"
 const Sidebar = () => {
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
   const { handleExternalClick } = useExternalLink()
+  const [isHovered, setIsHovered] = useState(false)
 
   const handleAvatarClick = () => {
     clickSoundRef.current?.play()
@@ -33,7 +34,7 @@ const Sidebar = () => {
   return (
     <>
       {loading ? (
-        <aside className="w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 animate-pulse">
+      <aside className="w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 lg:sticky lg:top-8 self-start relative z-10 animate-elastic-in">
           <div className="w-32 h-32 mx-auto rounded-full bg-[#333333]" />
           <div className="mt-4 text-center space-y-2">
             <div className="h-6 w-40 bg-[#333333] mx-auto rounded" />
@@ -57,18 +58,22 @@ const Sidebar = () => {
           <audio ref={clickSoundRef} src="/sounds/yippe.mp3" preload="auto" />
 
           {/* Avatar */}
-          <div
-            className="relative w-32 h-32 mx-auto rounded-full overflow-hidden group cursor-pointer"
-            onClick={handleAvatarClick}
-          >
-            <div className="absolute -inset-0.5 rounded-full opacity-0 blur-sm transition duration-300 group-hover:opacity-5 group-hover:bg-gradient-to-r group-hover:from-red-700 group-hover:to-red-500"></div>
-            <Avatar />
-          </div>
+              <div
+                className="relative w-32 h-32 mx-auto rounded-full overflow-hidden group cursor-pointer"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                onClick={handleAvatarClick}
+              >
+                <div className="absolute -inset-0.5 rounded-full opacity-0 blur-sm transition duration-300 group-hover:opacity-5 group-hover:bg-gradient-to-r group-hover:from-red-700 group-hover:to-red-500"></div>
+                <Avatar isAnimated={isHovered} />
+              </div>
+
 
           <div className="mt-4 text-center">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-              Ethan Townsend
-            </h2>
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
+          Ethan Townsend
+        </h2>
+
             <p className="text-gray-400">Full Stack Software Developer</p>
           </div>
 
@@ -82,27 +87,28 @@ const Sidebar = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Email"
-                className="text-gray-300 hover:text-red-600 transition-colors text-2xl"
+                className="text-gray-300 hover:text-red-600 text-2xl transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
               >
                 <FaEnvelope />
               </a>
               </TooltipWrapper>
-              <TooltipWrapper label="My GitHub Profile">
-              <button
-                onClick={() => handleExternalClick("https://github.com/snxethan", true)}
-                aria-label="GitHub"
-                className="text-gray-300 hover:text-red-600 transition-colors text-2xl"
-              >
-                <FaGithub />
-              </button>
-              </TooltipWrapper>
+            <TooltipWrapper label="My GitHub Profile">
+            <button
+              onClick={() => handleExternalClick("https://github.com/snxethan", true)}
+              aria-label="GitHub"
+              className="text-gray-300 hover:text-red-600 text-2xl transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
+            >
+              <FaGithub />
+            </button>
+          </TooltipWrapper>
+
               <TooltipWrapper label="My LinkedIn Profile">
               <button
                 onClick={() =>
                   handleExternalClick("https://www.linkedin.com/in/snxethan/", true)
                 }
                 aria-label="LinkedIn"
-                className="text-gray-300 hover:text-red-600 transition-colors text-2xl"
+              className="text-gray-300 hover:text-red-600 text-2xl transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
               >
                 <FaLinkedin />
               </button>
@@ -118,7 +124,7 @@ const Sidebar = () => {
               <button
                 onClick={() => handleExternalClick("https://instagram.com/snxethan")}
                 aria-label="Instagram"
-                className="text-gray-400 hover:text-red-500 transition-colors text-lg"
+              className="text-gray-400 hover:text-red-600 text-lg transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
               >
                 <FaInstagram />
               </button>
@@ -127,7 +133,7 @@ const Sidebar = () => {
               <button
                 onClick={() => handleExternalClick("http://discord.com/users/250059394799239169")}
                 aria-label="Discord"
-                className="text-gray-400 hover:text-red-500 transition-colors text-lg"
+              className="text-gray-400 hover:text-red-600 text-lg transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
               >
                 <FaDiscord />
               </button>
@@ -136,7 +142,7 @@ const Sidebar = () => {
               <button
                 onClick={() => handleExternalClick("https://steamcommunity.com/id/snxethan/")}
                 aria-label="Steam"
-                className="text-gray-400 hover:text-red-500 transition-colors text-lg"
+              className="text-gray-400 hover:text-red-600 text-lg transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
               >
                 <FaSteam />
               </button>

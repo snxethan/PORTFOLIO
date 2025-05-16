@@ -1,14 +1,27 @@
+"use client"
+
+import { useState } from "react"
+
 interface NavbarProps {
-  onTabChange: (tab: string) => void;
-  activeTab: string | null;
+  onTabChange: (tab: string) => void
+  activeTab: string | null
 }
 
 const Navbar = ({ onTabChange, activeTab }: NavbarProps) => {
-  const tabs = ["about", "resume", "portfolio"];
-  const isLoading = !activeTab;
+  const tabs = ["about", "resume", "portfolio"]
+  const isLoading = !activeTab
+  const [clickedTab, setClickedTab] = useState<string | null>(null)
+
+  const handleClick = (tab: string) => {
+    setClickedTab(tab)
+    onTabChange(tab)
+
+    // Remove animation class after it finishes (~300ms)
+    setTimeout(() => setClickedTab(null), 300)
+  }
 
   return (
-    <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 lg:static lg:top-auto lg:left-auto lg:z-0">
+    <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 lg:static lg:top-auto lg:left-auto lg:z-0 animate-elastic-in">
       <div className="container mx-auto flex items-center justify-center">
         {isLoading ? (
           <ul className="flex space-x-4 animate-pulse">
@@ -23,12 +36,12 @@ const Navbar = ({ onTabChange, activeTab }: NavbarProps) => {
             {tabs.map((tab) => (
               <li key={tab}>
                 <button
-                  onClick={() => onTabChange(tab)}
-                  className={`capitalize px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out ${
+                  onClick={() => handleClick(tab)}
+                  className={`capitalize px-4 py-2 rounded-lg text-sm font-medium transition-transform duration-200 ease-out ${
                     activeTab === tab
                       ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg"
-                      : "text-gray-300 hover:bg-[#333333] hover:text-white"
-                  }`}
+                      : "text-gray-300 hover:bg-[#333333] hover:text-white hover:scale-105"
+                  } ${clickedTab === tab ? "animate-elastic-in" : ""}`}
                 >
                   {tab}
                 </button>
@@ -38,7 +51,7 @@ const Navbar = ({ onTabChange, activeTab }: NavbarProps) => {
         )}
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

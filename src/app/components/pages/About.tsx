@@ -25,6 +25,7 @@ const About = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const { handleExternalClick } = useExternalLink()
+  const [clickedCard, setClickedCard] = useState<string | null>(null)
 
   useEffect(() => {
     setLoading(false)
@@ -70,40 +71,66 @@ const About = () => {
     { name: "Highschool Graduate 2023", icon: BsPatchCheckFill },
   ]
 
-  const renderSkillGrid = (items: any[]) => {
-    const sortedItems = [...items].sort((a, b) => a.name.localeCompare(b.name))
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {sortedItems.map(({ name, icon: Icon, highlight, url }: any) => {
-          const Card = (
-            <div className="group bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300">
-              <div className={`p-3 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300
-                ${highlight ? "bg-gradient-to-br from-red-500 to-red-700" : "bg-red-600/40 hover:bg-red-600/60"}`}>
-                <Icon className="text-white text-2xl" />
-              </div>
-              <p className="text-white mt-3 font-semibold">{name}</p>
+const renderSkillGrid = (items: any[]) => {
+  const sortedItems = [...items].sort((a, b) => {
+    if (a.highlight === b.highlight) {
+      return a.name.localeCompare(b.name)
+    }
+    return a.highlight ? -1 : 1
+  })
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {sortedItems.map(({ name, icon: Icon, highlight, url }: any) => {
+        const isClicked = clickedCard === name
+        const Card = (
+          <div
+            className={`group bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300 ${
+              isClicked ? "animate-elastic-in" : ""
+            }`}
+          >
+            <div
+              className={`p-3 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300 ${
+                highlight ? "bg-gradient-to-br from-red-500 to-red-700" : "bg-red-600/40 hover:bg-red-600/60"
+              }`}
+            >
+              <Icon className="text-white text-2xl" />
             </div>
-          )
+            <p className="text-white mt-3 font-semibold">{name}</p>
+          </div>
+        )
 
-          if (url?.endsWith(".pdf")) {
-            return (
-              <TooltipWrapper key={name} label="View Certification">
-                <div onClick={() => setSelectedPDF(url)} className="cursor-pointer">{Card}</div>
-              </TooltipWrapper>
-            )
-          }
+        const handleClick = () => {
+          setClickedCard(name)
+          setTimeout(() => setClickedCard(null), 300)
+        }
 
-          return url ? (
-            <TooltipWrapper key={name} label={url}>
-              <div onClick={() => handleExternalClick(url, true)} className="cursor-pointer">{Card}</div>
+        if (url?.endsWith(".pdf")) {
+          return (
+            <TooltipWrapper key={name} label="View Certification" url={url}>
+              <div onClick={() => { setSelectedPDF(url); handleClick() }} className="cursor-pointer">
+                {Card}
+              </div>
             </TooltipWrapper>
-          ) : (
-            <div key={name}>{Card}</div>
           )
-        })}
-      </div>
-    )
-  }
+        }
+
+        return url ? (
+          <TooltipWrapper key={name} label={url}>
+            <div onClick={() => { handleExternalClick(url, true); handleClick() }} className="cursor-pointer">
+              {Card}
+            </div>
+          </TooltipWrapper>
+        ) : (
+          <div key={name} onClick={handleClick} className="cursor-pointer">
+            {Card}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 
   const renderSkeletonGrid = (count: number) => (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

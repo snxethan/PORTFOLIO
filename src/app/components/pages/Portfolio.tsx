@@ -104,7 +104,9 @@ const Portfolio: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [tags, setTags] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
+  const [isFocused, setIsFocused] = useState(false)
   const { handleExternalClick } = useExternalLink()
+  const [activeTag, setActiveTag] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -218,41 +220,54 @@ const Portfolio: React.FC = () => {
         <div className="container mx-auto px-4">
           {/* Search & Sort */}
           <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <input
-              type="text"
-              placeholder="Search projects..."
-              className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <select
-              className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white appearance-none"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="name-asc">Project Name (A–Z)</option>
-              <option value="name-desc">Project Name (Z–A)</option>
-              <option value="oldest">Created (Oldest)</option>
-              <option value="newest">Created (Newest)</option>
-            </select>
+          <input
+          type="text"
+          placeholder={isFocused ? "(Name, Description or Tags)" : "Search projects..."}
+          className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-105"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+/>
+        <select
+            className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white appearance-none transition-transform duration-200 ease-out hover:scale-105"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="" disabled hidden>Filter...</option>
+            <option value="name-asc">Project Name (A–Z)</option>
+            <option value="name-desc">Project Name (Z–A)</option>
+            <option value="oldest">Created (Oldest)</option>
+            <option value="newest">Created (Newest)</option>
+          </select>
+
           </div>
 
           {/* Filter Tags */}
           {!loading && (
             <div className="flex flex-wrap gap-3 mb-8">
-              {tags.map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => setSelectedTag(tag === "All" ? null : tag)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                    selectedTag === tag || (tag === "All" && selectedTag === null)
-                      ? "bg-gradient-to-r from-red-600 to-red-500 text-white"
-                      : "bg-[#333333] text-gray-300 hover:bg-[#444444]"
-                  }`}
-                >
-                  {tag}
-                </button>
-              ))}
+            {tags.map((tag) => {
+  const isSelected = selectedTag === tag || (tag === "All" && selectedTag === null)
+  const isActive = activeTag === tag
+
+  return (
+    <button
+      key={tag}
+      onClick={() => {
+        setSelectedTag(tag === "All" ? null : tag)
+        setActiveTag(tag)
+        setTimeout(() => setActiveTag(null), 500) // remove animation class after it runs
+      }}
+      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
+        isSelected
+          ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
+          : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
+      } ${isActive ? "animate-elastic-in" : ""}`}
+    >
+      {tag}
+    </button>
+  )
+})}
             </div>
           )}
 
@@ -272,10 +287,11 @@ const Portfolio: React.FC = () => {
                   </div>
                 ))
               : tagFilteredProjects.map((project) => (
-                  <div
-                    key={project.id}
-                    className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-all duration-300 flex flex-col"
-                  >
+                              <div
+                      key={project.id}
+                      className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 flex flex-col"
+                    >
+
                     <div className="p-6 flex-grow">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="text-xl font-semibold text-white group-hover:text-red-500 transition-colors duration-300">
@@ -317,11 +333,12 @@ const Portfolio: React.FC = () => {
                       </div>
                     </div>
                     <div className="px-6 py-4 border-t border-[#333333] bg-[#1a1a1a]">
-                      <TooltipWrapper label={project.html_url}>
-                      <button
-                        onClick={() => handleExternalClick(project.html_url, true)}
-                        className="flex items-center justify-center gap-2 w-full py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all"
+                      <TooltipWrapper label={project.html_url} fullWidth>
+                   <button
+                        onClick={() => handleExternalClick(project.html_url, true, )}
+                        className="flex items-center justify-center gap-2 w-full py-2 min-h-[48px] whitespace-nowrap bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all"
                       >
+
                         {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
                         {project.name.toLowerCase() === "portfolio"
                           ? "View this site's repository!"

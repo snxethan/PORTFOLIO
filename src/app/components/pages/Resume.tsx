@@ -36,10 +36,10 @@ const Resume = () => {
           </header>
 
           <div className="flex justify-center gap-4 mb-8">
-            <TooltipWrapper label="Preview Resume">
+            <TooltipWrapper label="View Resume" url={resumePDF}>
               <button
                 onClick={() => setSelectedPDF(resumePDF)}
-                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all"
+                  className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95 "
               >
                 <FaDownload /> View Resume
               </button>
@@ -49,9 +49,9 @@ const Resume = () => {
         {/* Timeline Experience */}
         <div className="relative mb-16">
                <div className="flex flex-col items-center relative mb-8">
-  <h2 className="text-3xl font-bold text-white z-10">Experience</h2>
-  <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
-</div>
+              <h2 className="text-3xl font-bold text-white z-10">Experience</h2>
+              <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
+            </div>
 
           <div className="absolute left-1/2 -ml-[2px] w-[2px] bg-gray-700 h-full"></div>
 
@@ -72,7 +72,7 @@ const Resume = () => {
                 <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-red-600"></div>
               </div>
               <div className="w-1/2 pl-4">
-                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                   <p>Held 4 concurrent student leadership and academic support roles to increase involvement, mentorship, and academic performance at NCCS.</p>
                 </div>
               </div>
@@ -92,7 +92,7 @@ const Resume = () => {
                 <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-red-600"></div>
               </div>
               <div className="w-1/2 pl-4">
-                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                   <p>Gained high-intensity culinary experience and built strong work ethic while assisting the head chef during peak hours.</p>
                 </div>
               </div>
@@ -112,7 +112,7 @@ const Resume = () => {
                 <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-red-600"></div>
               </div>
               <div className="w-1/2 pl-4">
-                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                   <p>Provided supervision and leadership to groups of children in a summer program, utilizing first aid and recreation management.</p>
                 </div>
               </div>
@@ -132,7 +132,7 @@ const Resume = () => {
                 <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-red-600"></div>
               </div>
               <div className="w-1/2 pl-4">
-                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+               <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                   <p>First job experience that sparked interest in culinary work and customer satisfaction.</p>
                 </div>
               </div>
@@ -166,7 +166,7 @@ const Resume = () => {
                 <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-red-600"></div>
               </div>
               <div className="w-1/2 pl-4">
-                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                   <p>Actively engaged in student government, projects, and mentoring while maintaining a perfect GPA in a rigorous computer science program.</p>
                 </div>
               </div>
@@ -185,7 +185,7 @@ const Resume = () => {
                 <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-red-600"></div>
               </div>
               <div className="w-1/2 pl-4">
-                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                   <p>Graduated with academic distinction while participating in dual enrollment and career elective programs.</p>
                 </div>
               </div>
@@ -204,7 +204,7 @@ const Resume = () => {
                 <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-red-600"></div>
               </div>
               <div className="w-1/2 pl-4">
-                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+              <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                   <p>Earned college credits while in high school through dual enrollment, accelerating progress in computer science education.</p>
                 </div>
               </div>
@@ -223,7 +223,7 @@ const Resume = () => {
                 <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-red-600"></div>
               </div>
               <div className="w-1/2 pl-4">
-                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                   <p>Developed culinary skills through hands-on training in a vocational setting, combining creativity and technical food preparation techniques.</p>
                 </div>
               </div>
@@ -232,9 +232,7 @@ const Resume = () => {
         </div>
       </div>
     </div>
-      <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />
-
-
+    <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />
     </div>
   )
 }
