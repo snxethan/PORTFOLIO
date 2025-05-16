@@ -2,9 +2,10 @@
 
 This is the codebase for my personal developer portfolio, built with **Next.js**, **TypeScript**, and **Tailwind CSS**. It showcases my skills, experience, and selected projects, and integrates with APIs like **GitHub** and **Spotify**.
 
-[snxethan.dev
-](https://www.snxethan.dev/) OR 
-[snex.dev](https://www.snex.dev)
+DOMAINS:
+* [snxethan.dev](https://www.snxethan.dev/)
+* [snex.dev](https://www.snex.dev) 
+* [ethantownsend.dev](https://www.ethantownsend.dev)
 ---
 
 ## Features
