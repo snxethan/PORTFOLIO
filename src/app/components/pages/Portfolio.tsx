@@ -33,7 +33,7 @@ const getCTAIcon = (icon?: string) => {
 const manualProjects: Project[] = [
   {
     id: 1,
-    name: "CSC130-ArticCone",
+    name: "CSC130-FINAL",
     description: "Built and deployed a web-app based game designed around the hit game 'Gartic Phone', a one-to-one recreation.",
     html_url: "https://github.com/Neumont-VictorKeeler/Artic_Cone",
     language: "TypeScript",
@@ -46,7 +46,7 @@ const manualProjects: Project[] = [
   },
   {
     id: 2,
-    name: "CSC130-UNO",
+    name: "CSC130-FINAL",
     description: "Built, designed, and deployed a Java game based on the classic card game 'UNO'.",
     html_url: "https://github.com/MasterDash5/UnoProject",
     language: "Java",
@@ -59,8 +59,8 @@ const manualProjects: Project[] = [
   },
   {
     id: 3,
-    name: "CSC110-Notepad",
-    description: "Contributed and built a simple and unefficient notepad application using Android Studio and Java. This was my first ever project in Java.",
+    name: "CSC110-FINAL",
+    description: "Contributed and built a simple and inefficient notepad application using Android Studio and Java. This was my first ever project in Java.",
     html_url: "https://github.com/Tomonator1000/Notepad",
     language: "Java",
     topics: ["java", "android studio", "neumont"],
@@ -72,7 +72,7 @@ const manualProjects: Project[] = [
   },
   {
     id: 4,
-    name: "CSC150-Casino",
+    name: "CSC150-FINAL",
     description: "Built and designed a simple casino CLI game using Java.",
     html_url: "https://github.com/Stat3132/CasinoTeamProject",
     language: "Java",
@@ -85,7 +85,7 @@ const manualProjects: Project[] = [
   },
   {
     id: 5,
-    name: "CSC280-Rollio",
+    name: "CSC280-FINAL",
     description: "Built and designed a modular portfolio creation tool using React, TypeScript, and Tailwind CSS.",
     html_url: "https://github.com/Ghussy/Rollio",
     language: "TypeScript",
@@ -247,8 +247,8 @@ const Portfolio: React.FC = () => {
           {!loading && (
             <div className="flex flex-wrap gap-3 mb-8">
             {tags.map((tag) => {
-  const isSelected = selectedTag === tag || (tag === "All" && selectedTag === null)
-  const isActive = activeTag === tag
+            const isSelected = selectedTag === tag || (tag === "All" && selectedTag === null)
+            const isActive = activeTag === tag
 
   return (
     <button
@@ -272,12 +272,12 @@ const Portfolio: React.FC = () => {
           )}
 
           {/* Project Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
             {loading
               ? [...Array(6)].map((_, i) => (
                   <div
                     key={i}
-                    className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4"
+                    className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4 "
                   >
                     <div className="h-6 bg-[#333333] rounded w-3/4" />
                     <div className="h-4 bg-[#333333] rounded w-2/3" />
@@ -289,7 +289,8 @@ const Portfolio: React.FC = () => {
               : tagFilteredProjects.map((project) => (
                               <div
                       key={project.id}
-                      className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 flex flex-col"
+                      className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 flex flex-col active:scale-95
+"
                     >
 
                     <div className="p-6 flex-grow">

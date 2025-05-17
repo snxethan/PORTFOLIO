@@ -81,9 +81,9 @@ const Sidebar = () => {
           <div className="mt-6">
             <div className="w-full h-px bg-gradient-to-r from-transparent via-[#333333] to-transparent"></div>
             <div className="flex justify-center space-x-6 mt-4">
-              <TooltipWrapper label="ethantownsend73@gmail.com">
+              <TooltipWrapper label="snxethan@gmail.com">
               <a
-                href="mailto:ethantownsend73@gmail.com"
+                href="mailto:snxethan@gmail.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Email"

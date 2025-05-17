@@ -32,7 +32,7 @@ const Resume = () => {
           <header className="text-center mb-16">
             <h1 className="text-4xl mb-2">Ethan Townsend</h1>
             <p className="text-gray-400">Software Engineer | Salt Lake City, UT (84102)</p>
-            <p className="text-gray-400">(928) 600-3351 | ethantownsend73@gmail.com</p>
+            <p className="text-gray-400">(928) 600-3351 | snxethan@gmail.com</p>
           </header>
 
           <div className="flex justify-center gap-4 mb-8">
