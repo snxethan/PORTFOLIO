@@ -9,6 +9,7 @@ import ClickSoundWrapper from "./components/ClickSoundWrapper"
 
 const inter = Inter({ subsets: ["latin"] })
 
+
 export const metadata: Metadata = {
   title: "Ethan Townsend | Portfolio",
   description: "Full Stack Developer Portfolio",
@@ -40,13 +41,26 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ethan Townsend | Portfolio",
     description: "Explore my website! Find my portfolio, education & experience, and more.",
-    images: ["https://www.snxethan.dev/images/avatar/avatar.png"],
+    images: ["https://www.snxethan.dev/images/avatar/snex.png"],
   },
 }
-
-
 export const viewport: Viewport = {
   themeColor: "#1a1a1a",
+}
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ethan Townsend",
+  "url": "https://www.snxethan.dev",
+  "image": "https://www.snxethan.dev/images/avatar/snex.png",
+  "jobTitle": "Software Engineer",
+  "sameAs": [
+    "https://github.com/snxethan",
+    "https://www.linkedin.com/in/ethantownsend",
+    "https://www.instagram.com/snxethan",
+
+  ]
 }
 
 export default function RootLayout({
@@ -56,12 +70,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
+      <head>
+        {/* Inject structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body suppressHydrationWarning className={`${inter.className} bg-[#1a1a1a] text-white`}>
-      <Toaster position="top-center" />
+        <Toaster position="top-center" />
         <ExternalLinkHandler>
-              <ClickSoundWrapper>
-          {children}
-              </ClickSoundWrapper>
+          <ClickSoundWrapper>
+            {children}
+          </ClickSoundWrapper>
         </ExternalLinkHandler>
         <Analytics />
         <SpeedInsights />
