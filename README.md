@@ -15,8 +15,9 @@ DOMAINS:
 - **Project Filtering** – Tags, languages, and search functionality  
 - **External Link Warning** – Custom warnings for social vs. professional links  
 - **GitHub API Integration** – Displays live public repositories  
-- **Responsive Design** – Fully mobile-friendly and desktop-optimized  
-- **Environment-Aware** – Secure management of secrets via `.env.local`  
+- **Responsive Design** – Fully mobile-friendly and desktop-optimized with smooth animations
+- **Environment-Aware** – Secure management of secrets via `.env.local`
+- **PDF Display** - Display previews & modals of PDFs for certificates & resume
 
 ---
 
