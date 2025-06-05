@@ -10,12 +10,12 @@ const getSeasonalAvatar = (): string => {
   const day = now.getDate()
 
   // Check for special dates and return the corresponding avatar
-  if (month === 12 && day <= 25) return "/images/avatar/avatar_christmas2.gif"
-  if (month === 12 && day >= 15) return "/images/avatar/avatar_christmas.png"
-  if (month === 10 && day >= 25) return "/images/avatar/avatar_halloween.png"
-  if (month === 8 && day === 11) return "/images/avatar/avatar_birthday.png"
-  if (month === 7 || month === 8 && day !== 11) return "/images/avatar/avatar_summer.png" // Summer months
-  if (month === 6) return "/images/avatar/avatar_pride.png"
+  if (month == 12 && day < 25) return "/images/avatar/avatar_christmas.png" // Christmas
+  if (month == 12 && day >= 25) return "/images/avatar/avatar_christmas2.gif" // Christmas & snowing
+  if (month == 10) return "/images/avatar/avatar_halloween.png" // Halloween
+  if (month == 8 && day == 11) return "/images/avatar/avatar_birthday.png" // Birthday
+  if (month == 7) return "/images/avatar/avatar_summer.png" // Summer
+  if (month == 6) return "/images/avatar/avatar_pride.png" // Pride month
 
   return "/images/avatar/avatar.png"
 }
