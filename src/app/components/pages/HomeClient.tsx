@@ -76,8 +76,6 @@ export default function HomeClient() {
           </div>
         </div>
       </main>
-
-      {/* Always pinned to bottom */}
       <Footer />
     </div>
   )

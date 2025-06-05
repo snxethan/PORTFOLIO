@@ -1,39 +1,61 @@
-# Ethan Townsend – Developer Portfolio
+# Ethan Townsend – Portfolio
 
-This is the codebase for my personal developer portfolio, built with **Next.js**, **TypeScript**, and **Tailwind CSS**. It showcases my skills, experience, and selected projects, and integrates with APIs like **GitHub** and **Spotify**.
+A modern, responsive portfolio built with **Next.js 14**, **TypeScript**, and **Tailwind CSS**. Features real-time integrations with Spotify and GitHub APIs, dynamic content loading, and smooth animations.
 
-DOMAINS:
-* [snxethan.dev](https://www.snxethan.dev/)
-* [snex.dev](https://www.snex.dev) 
-* [ethantownsend.dev](https://www.ethantownsend.dev)
----
+## Live Domains
+- [snxethan.dev](https://www.snxethan.dev/) (Primary)
+- [snex.dev](https://www.snex.dev) (Alias)
+- [ethantownsend.dev](https://www.ethantownsend.dev) (Social Landing)
 
-## Features
+## Core Features
 
-- **Dynamic Portfolio Tabs** – About Me, Resume, Projects  
-- **Live Spotify Widget** – Displays currently playing music  
-- **Project Filtering** – Tags, languages, and search functionality  
-- **External Link Warning** – Custom warnings for social vs. professional links  
-- **GitHub API Integration** – Displays live public repositories  
-- **Responsive Design** – Fully mobile-friendly and desktop-optimized with smooth animations
-- **Environment-Aware** – Secure management of secrets via `.env.local`
-- **PDF Display** - Display previews & modals of PDFs for certificates & resume
+- **Dynamic UI Components**
+  - Responsive sidebar with seasonal avatars
+  - Tab-based navigation system
+  - Real-time Spotify integration
+  - Project filtering and search
+  - PDF preview system
+  - Modal-based contact form
 
----
+- **Technical Features**
+  - SSR with Next.js 14
+  - Type-safe development with TypeScript
+  - Responsive design with Tailwind CSS
+  - Custom animations and transitions
+  - API route handling
+  - Environment variable management
 
-# Getting Started
+- **Security & Performance**
+  - API rate limiting
+  - Secure form handling
+  - Image optimization
+  - PDF previews
+  - External link warnings
 
-### 1. Clone and Install Dependencies
+## Setup & Development
 
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Git
+
+### Installation
+
+1. Clone the repository:
 ```bash
 git clone https://github.com/snxethan/portfolio.git
 cd portfolio
-npm install
 ```
-### 2. Set Environment Variables
 
-Create a `.env.local` file in the root directory with the following content:
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
 
+3. Configure environment variables:
+Create a `.env.local` file:
 ```env
 SPOTIFY_CLIENT_ID=your_client_id
 SPOTIFY_CLIENT_SECRET=your_client_secret
@@ -44,28 +66,37 @@ GMAIL_PASS=your_custom_token
 RECEIVER_EMAIL=youremail@email.com
 ```
 
-⚠️ Never expose .env.local or these secrets in a public repo. ⚠️
-
-### 3. Start Development Server
-
+4. Start development server:
 ```bash
 npm run dev
+# or
+yarn dev
 ```
-Visit http://localhost:3000 in your browser.
 
-# Deployment
+Visit [http://localhost:3000](http://localhost:3000)
 
-This project is built for deployment on [Vercel](https://vercel.com)
+## API Endpoints
 
-⚠️ Be sure to set your environment variables in the Vercel dashboard.⚠️
+- `/api/spotify`
+  - `/now-playing` - Get current Spotify track
+  - `/login` - Spotify OAuth flow
+- `/api/github-projects` - Fetch GitHub repositories
+- `/api/contact` - Handle contact form submissions
 
+## Deployment
 
+This project is optimized for deployment on [Vercel](https://vercel.com).
 
-# API Endpoints
+Important deployment steps:
+1. Connect your GitHub repository
+2. Configure environment variables in Vercel dashboard
+3. Set up custom domains and SSL
+4. Configure project settings
 
-- `/api/spotify/now-playing` – Returns the currently playing Spotify track  
-- `/api/spotify/login` – Starts Spotify OAuth flow  
-- `/api/github-projects` – Returns GitHub repository data
+## Contributing
 
-
-
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request

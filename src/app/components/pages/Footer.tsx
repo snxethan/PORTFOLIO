@@ -34,21 +34,32 @@ const Footer = () => {
               className="rounded-full"
             />
             <TooltipWrapper label="Social Page">
-              <Link href="/social" className="text-sm text-gray-400 hover:text-white transition-colors">
+              <a href="/social" className="text-sm text-gray-400 hover:text-white transition-colors">
                 Ethan Townsend &copy; {new Date().getFullYear()}
-              </Link>
+              </a>
             </TooltipWrapper>
           </div>
 
-          {/* Right: Domain Links */}
+{/* Right: Domain Links */}
           <div className="order-2 lg:order-3">
-            <TooltipWrapper label="My Domains">
-              <div className="footer-links flex flex-col sm:flex-row gap-2">
-                <a href="https://snex.dev" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">snex.dev</a>
-                <a href="https://snxethan.dev" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">snxethan.dev</a>
-                <a href="https://ethantownsend.dev" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">ethantownsend.dev</a>
-              </div>
-            </TooltipWrapper>
+            <div className="footer-links flex flex-col sm:flex-row items-center gap-2">
+              <TooltipWrapper label="Portfolio">
+                <div className="flex gap-4">
+                  <Link href="https://snex.dev" className="hover:text-white transition-colors">
+                    snex.dev    
+                  </Link>
+                  <Link href="https://snxethan.dev" className="hover:text-white transition-colors">
+                    snxethan.dev
+                  </Link>
+                </div>
+              </TooltipWrapper>
+              <span className="hidden sm:block text-gray-600">|</span>
+              <TooltipWrapper label="Social Page">
+                <Link href="https://ethantownsend.dev" className="hover:text-white transition-colors">
+                  ethantownsend.dev
+                </Link>
+              </TooltipWrapper>
+            </div>
           </div>
         </div>
       </div>

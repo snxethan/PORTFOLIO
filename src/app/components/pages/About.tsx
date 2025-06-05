@@ -72,23 +72,21 @@ const About = () => {
     { name: "Highschool Graduate 2023", icon: BsPatchCheckFill },
   ]
 
-const renderSkillGrid = (items: any[]) => {
-  const sortedItems = [...items].sort((a, b) => {
-    if (a.highlight === b.highlight) {
-      return a.name.localeCompare(b.name)
-    }
-    return a.highlight ? -1 : 1
-  })
+  const renderSkillGrid = (items: any[]) => {
+    const sortedItems = [...items].sort((a, b) => {
+      if (a.highlight === b.highlight) {
+        return a.name.localeCompare(b.name)
+      }
+      return a.highlight ? -1 : 1
+    })
 
   return (
-    // Grid columns remain the same to allow 4-5 items on wider screens
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
       {sortedItems.map(({ name, icon: Icon, highlight, url }: any) => {
         const isClicked = clickedCard === name 
         const Card = (
           <div
-            className={`group relative flex flex-col items-center bg-[#1e1e1e] hover:bg-[#252525] p-3 sm:p-4 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300 mx-auto
-            }`} 
+            className={`group relative flex flex-col items-center bg-[#1e1e1e] hover:bg-[#252525] p-3 sm:p-4 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.09] active:scale-95`} 
           >
             <div // Icon container
               className={`inline-block p-1.5 sm:p-2 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300 ${

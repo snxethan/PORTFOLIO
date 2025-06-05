@@ -26,7 +26,7 @@ export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProp
     }, 300) // match animation duration
   }
 
-  return (
+return (
     <div 
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
       onClick={(e) => {
@@ -54,7 +54,7 @@ export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProp
         </h1>
 
         <div className="space-y-8">
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
             <div className="flex items-center gap-3 mb-4">
               <FaShieldAlt className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
@@ -77,7 +77,7 @@ export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProp
             </div>
           </section>
 
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
             <div className="flex items-center gap-3 mb-4">
               <FaUserShield className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
@@ -97,7 +97,7 @@ export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProp
             </div>
           </section>
 
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
             <div className="flex items-center gap-3 mb-4">
               <FaLink className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
@@ -117,7 +117,7 @@ export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProp
             </div>
           </section>
 
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-all duration-300">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
             <div className="flex items-center gap-3 mb-4">
               <FaCookie className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
