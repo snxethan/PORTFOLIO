@@ -15,14 +15,15 @@
   ],
   "rewrites": [
     {
-      "source": "/",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "ethantownsend.dev" }],
       "destination": "/social"
     },
     {
-      "source": "/",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "www.ethantownsend.dev" }],
       "destination": "/social"
     }
   ]
+
 }
