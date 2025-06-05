@@ -1,18 +1,4 @@
 {
-  "redirects": [
-    {
-      "source": "/(.*)",
-      "has": [{ "type": "host", "value": "snex.dev" }],
-      "destination": "https://snxethan.dev/$1",
-      "permanent": true
-    },
-    {
-      "source": "/(.*)",
-      "has": [{ "type": "host", "value": "www.snex.dev" }],
-      "destination": "https://snxethan.dev/$1",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     {
       "source": "/:path*",
