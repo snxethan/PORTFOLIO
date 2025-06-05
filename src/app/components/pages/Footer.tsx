@@ -34,7 +34,7 @@ const Footer = () => {
               className="rounded-full"
             />
             <TooltipWrapper label="Social Page">
-              <a href="/social" className="text-sm text-gray-400 hover:text-white transition-colors">
+              <a href="https://ethantownsend.dev" className="text-sm text-gray-400 hover:text-white transition-colors">
                 Ethan Townsend &copy; {new Date().getFullYear()}
               </a>
             </TooltipWrapper>
