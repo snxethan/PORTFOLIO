@@ -5,6 +5,24 @@
       "has": [{ "type": "host", "value": "snex.dev" }],
       "destination": "https://snxethan.dev/$1",
       "permanent": true
-    } 
+    },
+    {
+      "source": "/(.*)",
+      "has": [{ "type": "host", "value": "www.snex.dev" }],
+      "destination": "https://snxethan.dev/$1",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "ethantownsend.dev" }],
+      "destination": "/social"
+    },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.ethantownsend.dev" }],
+      "destination": "/social"
+    }
   ]
 }
