@@ -18,7 +18,7 @@ export default function SocialPage() {
                 <div className="mt-2 md:mt-5 w-full md:max-w-sm">
           <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 flex flex-col items-center">
             <a
-              href="/"
+              href="https://snex.dev/"
               className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
               style={{ fontFamily: "var(--font-sans)" }}
             >
@@ -32,21 +32,21 @@ export default function SocialPage() {
             {/* Navigation buttons to sections */}
             <div className="mt-4 flex justify-center space-x-3">
               <a
-                href="/?tab=about" // Assuming your main page handles /?tab=about
+                href="https://snex.dev/?tab=about" // Assuming your main page handles /?tab=about
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 About
               </a>
               <a
-                href="/?tab=resume" // Assuming your main page handles /?tab=resume
+                href="https://snex.dev/?tab=resume" // Assuming your main page handles /?tab=resume
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 Resume
               </a>
               <a
-                href="/?tab=portfolio" // Assuming your main page handles /?tab=portfolio
+                href="https://snex.dev/?tab=portfolio" // Assuming your main page handles /?tab=portfolio
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
