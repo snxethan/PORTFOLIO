@@ -194,7 +194,8 @@ const Resume = () => {
         <div className="container mx-auto px-4">
           <header className="text-center mb-16">
             <h1 className="text-4xl mb-2">Ethan Townsend</h1>
-            <p className="text-gray-400">Software Engineer | Salt Lake City, UT (84102)</p>
+            <p className="text-gray-300">Software Engineer</p>
+            <p className="text-gray-400">Salt Lake City, UT</p>
             <p className="text-gray-400">snxethan@gmail.com</p>
           </header>
 
