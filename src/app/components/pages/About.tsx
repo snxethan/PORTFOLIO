@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { BiChild, BiFirstAid, BiFork } from "react-icons/bi"
 import { BsUnity, BsPatchCheckFill } from "react-icons/bs"
-import { FaReact, FaNodeJs, FaPython, FaGitAlt, FaJava } from "react-icons/fa"
+import { FaReact, FaNodeJs, FaPython, FaGitAlt, FaJava, FaFilePdf, FaExternalLinkAlt } from "react-icons/fa"
 import { GiSharpLips } from "react-icons/gi"
 import {
   SiJavascript,
@@ -17,6 +17,7 @@ import {
   SiHtml5,
   SiMysql,
 } from "react-icons/si"
+
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
@@ -64,10 +65,10 @@ const About = () => {
   ]
 
   const certifications = [
-    { name: "Cybersecurity Certified", icon: BsPatchCheckFill, highlight: true, url: "/certificates/cybersecurity_certification.pdf" },
-    { name: "Network Security Certified", icon: BsPatchCheckFill, highlight: true, url: "/certificates/networksecurity_certification.pdf" },
-    { name: "Computational Thinking Certified", icon: BsPatchCheckFill, highlight: true, url: "/certificates/computationalthinking_certification.pdf" },
-    { name: "Arizona Technical Skills Standard 2021 Certified", icon: BsPatchCheckFill, highlight: true },
+    { name: "Cybersecurity Certified 2023", icon: BsPatchCheckFill, highlight: true, url: "/certificates/cybersecurity_certification.pdf" },
+    { name: "Network Security Certified 2023", icon: BsPatchCheckFill, highlight: true, url: "/certificates/networksecurity_certification.pdf" },
+    { name: "Computational Thinking Certified 2022", icon: BsPatchCheckFill, highlight: true, url: "/certificates/computationalthinking_certification.pdf" },
+    { name: "Arizona Technical Skills Standard Certified 2021", icon: BsPatchCheckFill, highlight: true },
     { name: "Highschool Graduate 2023", icon: BsPatchCheckFill },
   ]
 
@@ -80,29 +81,37 @@ const renderSkillGrid = (items: any[]) => {
   })
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+    // Grid columns remain the same to allow 4-5 items on wider screens
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
       {sortedItems.map(({ name, icon: Icon, highlight, url }: any) => {
-        const isClicked = clickedCard === name
+        const isClicked = clickedCard === name 
         const Card = (
           <div
-            className={`group bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300 ${
-              isClicked ? "animate-elastic-in" : ""
-            }`}
+            className={`group relative flex flex-col items-center bg-[#1e1e1e] hover:bg-[#252525] p-3 sm:p-4 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300 mx-auto
+            }`} 
           >
-            <div
-              className={`p-3 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300 ${
-                highlight ? "bg-gradient-to-br from-red-500 to-red-700" : "bg-red-600/40 hover:bg-red-600/60"
-              }`}
+            <div // Icon container
+              className={`inline-block p-1.5 sm:p-2 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300 ${
+                highlight ? "bg-gradient-to-br from-red-500 to-red-700" : "bg-red-600/40 group-hover:bg-red-600/50"
+              }`} 
             >
-              <Icon className="text-white text-2xl" />
+              <Icon className="text-white text-lg sm:text-xl" /> 
             </div>
-            <p className="text-white mt-3 font-semibold">{name}</p>
+            {/* Removed whitespace-nowrap to allow text to wrap */}
+            <p className="text-white mt-1.5 sm:mt-2 font-semibold text-xs sm:text-sm text-center">{name}</p> 
+            
+            {(url?.endsWith(".pdf") || (url && !url.endsWith(".pdf"))) && (
+              <div className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 text-gray-400 group-hover:text-red-400 transition-colors duration-300"> 
+                {url?.endsWith(".pdf") && <FaFilePdf size={14} aria-label="View Certification" />} 
+                {url && !url.endsWith(".pdf") && <FaExternalLinkAlt size={14} aria-label="Open external link" />} 
+              </div>
+            )}
           </div>
         )
 
         const handleClick = () => {
           setClickedCard(name)
-          setTimeout(() => setClickedCard(null), 300)
+          setTimeout(() => setClickedCard(null), 300) 
         }
 
         if (url?.endsWith(".pdf")) {
@@ -131,17 +140,17 @@ const renderSkillGrid = (items: any[]) => {
   )
 }
 
-
   const renderSkeletonGrid = (count: number) => (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
       {[...Array(count)].map((_, i) => (
-        <div key={i} className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse">
-          <div className="w-10 h-10 bg-[#333333] rounded mb-3" />
-          <div className="h-4 bg-[#333333] rounded w-3/4" />
+        <div key={i} className="bg-[#1e1e1e] border border-[#333333] p-3 sm:p-4 rounded-xl animate-pulse flex flex-col items-center mx-auto">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#333333] rounded mb-1.5 sm:mb-2" /> 
+          <div className="h-2.5 sm:h-3 bg-[#333333] rounded w-16 sm:w-20" />
         </div>
       ))}
     </div>
   )
+
 
   return (
     <div>
@@ -175,7 +184,7 @@ const renderSkillGrid = (items: any[]) => {
 
           <div>
             <div className="flex flex-col items-center mb-6">
-              <h2 className="text-3xl font-bold text-white">Unrelated Skills</h2>
+              <h2 className="text-3xl font-bold text-white">Misc. Skills</h2>
               <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
             </div>
             {loading ? renderSkeletonGrid(3) : renderSkillGrid(unrelatedSkills)}

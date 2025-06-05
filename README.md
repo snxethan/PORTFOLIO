@@ -39,6 +39,9 @@ SPOTIFY_CLIENT_ID=your_client_id
 SPOTIFY_CLIENT_SECRET=your_client_secret
 SPOTIFY_REFRESH_TOKEN=your_refresh_token
 SPOTIFY_REDIRECT_URI=http://localhost:3000/api/spotify/callback
+GMAIL_USER=yourgoogleuser@gmail.com
+GMAIL_PASS=your_custom_token
+RECEIVER_EMAIL=youremail@email.com
 ```
 
 ⚠️ Never expose .env.local or these secrets in a public repo. ⚠️

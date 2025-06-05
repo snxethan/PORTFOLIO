@@ -1,8 +1,8 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 import { useState, useEffect } from "react"
-import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
+import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevronUp } from "react-icons/fa"
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 
@@ -41,7 +41,7 @@ const manualProjects: Project[] = [
     created_at: "2025-01-20T00:00:00Z",
     updated_at: "2025-01-30T00:00:00Z",
     source: "github",
-    ctaLabel: "View on GitHub",
+    ctaLabel: "View Repository",
     ctaIcon: "github"
   },
   {
@@ -50,7 +50,7 @@ const manualProjects: Project[] = [
     description: "Built, designed, and deployed a Java game based on the classic card game 'UNO'.",
     html_url: "https://github.com/MasterDash5/UnoProject",
     language: "Java",
-    topics: ["neumont", "java", "javafx"],
+    topics: ["neumont", "java", "javafx", "cli"],
     created_at: "2025-01-21T00:00:00Z",
     updated_at: "2025-01-28T00:00:00Z",
     source: "github",
@@ -67,7 +67,7 @@ const manualProjects: Project[] = [
     created_at: "2023-10-15T00:00:00Z",
     updated_at: "2023-11-30T00:00:00Z",
     source: "github",
-    ctaLabel: "View on GitHub",
+    ctaLabel: "View Repository",
     ctaIcon: "github"
   },
   {
@@ -80,7 +80,7 @@ const manualProjects: Project[] = [
     created_at: "2024-02-15T00:00:00Z",
     updated_at: "2024-03-04T00:00:00Z",
     source: "github",
-    ctaLabel: "View on GitHub",
+    ctaLabel: "View Repository",
     ctaIcon: "github"
   },
   {
@@ -102,6 +102,7 @@ const Portfolio: React.FC = () => {
   const [search, setSearch] = useState("")
   const [sortBy, setSortBy] = useState("newest")
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [showAllTags, setShowAllTags] = useState(false);
   const [tags, setTags] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [isFocused, setIsFocused] = useState(false)
@@ -160,7 +161,7 @@ const Portfolio: React.FC = () => {
         updated_at: project.updated_at,
         source: "github",
         stargazers_count: project.stargazers_count,
-        ctaLabel: "View on GitHub",
+        ctaLabel: "View Repository",
         ctaIcon: "github",
       }))
       const allProjects = [...githubProjects, ...manualProjects]
@@ -176,7 +177,7 @@ const Portfolio: React.FC = () => {
         project.topics?.forEach((tag) => projectTags.add(tag.toLowerCase()))
         projectTags.forEach((tag) => uniqueTags.add(tag))
       })
-      setTags(["All", ...Array.from(uniqueTags)])
+      setTags(["ALL", ...Array.from(uniqueTags)])
     }
 
     fetchProjects()
@@ -201,8 +202,17 @@ const Portfolio: React.FC = () => {
     }
   })
 
+  const sortedTags = React.useMemo(() => {
+    if (!tags.length) return [];
+    const [first, ...rest] = tags;
+    const sortedRest = rest.slice().sort((a, b) => a.localeCompare(b));
+    return first === "ALL" ? [first, ...sortedRest] : tags.slice().sort((a, b) => a.localeCompare(b));
+  }, [tags]);
+
+  const TAG_LIMIT = 8;
+
   const tagFilteredProjects =
-    selectedTag === null || selectedTag === "All"
+    selectedTag === null || selectedTag === "ALL"
       ? sortedProjects
       : sortedProjects.filter(
           (project) =>
@@ -219,6 +229,9 @@ const Portfolio: React.FC = () => {
       <section id="portfolio" className="py-20 bg-[#121212]">
         <div className="container mx-auto px-4">
           {/* Search & Sort */}
+              <div className="mb-4 text-center text-gray-400 text-sm">
+            Showing {tagFilteredProjects.length} project{tagFilteredProjects.length !== 1 && "s"}
+          </div>
           <div className="flex flex-col md:flex-row gap-4 mb-8">
           <input
           type="text"
@@ -246,30 +259,48 @@ const Portfolio: React.FC = () => {
           {/* Filter Tags */}
           {!loading && (
             <div className="flex flex-wrap gap-3 mb-8">
-            {tags.map((tag) => {
-            const isSelected = selectedTag === tag || (tag === "All" && selectedTag === null)
-            const isActive = activeTag === tag
+              {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag) => {
+                const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
+                const isActive = activeTag === tag
 
-  return (
-    <button
-      key={tag}
-      onClick={() => {
-        setSelectedTag(tag === "All" ? null : tag)
-        setActiveTag(tag)
-        setTimeout(() => setActiveTag(null), 500) // remove animation class after it runs
-      }}
-      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
-        isSelected
-          ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
-          : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
-      } ${isActive ? "animate-elastic-in" : ""}`}
-    >
-      {tag}
-    </button>
-  )
-})}
+                return (
+                  <button
+                    key={tag}
+                    onClick={() => {
+                      setSelectedTag(tag === "ALL" ? null : tag)
+                      setActiveTag(tag)
+                      setTimeout(() => setActiveTag(null), 500)
+                    }}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
+                      isSelected
+                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
+                        : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
+                    } ${isActive && !isSelected ? "animate-elastic-in" : ""}`}
+                  >
+                    {tag}
+                  </button>
+                )
+              })}
+            {sortedTags.length > TAG_LIMIT && (
+              <button
+                onClick={() => setShowAllTags((v) => !v)}
+                className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
+                aria-label={showAllTags ? "Show less tags" : "Show more tags"}
+              >
+                {showAllTags ? (
+                  <>
+                    <FaChevronUp className="w-4 h-4 text-red-500" />
+                  </>
+                ) : (
+                  <>
+                    <FaChevronDown className="w-4 h-4 text-red-500" />
+                  </>
+                )}
+              </button>
+            )}
             </div>
           )}
+          
 
           {/* Project Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
@@ -286,11 +317,11 @@ const Portfolio: React.FC = () => {
                     <div className="h-10 bg-[#292929] rounded w-full" />
                   </div>
                 ))
+
               : tagFilteredProjects.map((project) => (
                               <div
                       key={project.id}
-                      className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 flex flex-col active:scale-95
-"
+                      className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 flex flex-col active:scale-95"
                     >
 
                     <div className="p-6 flex-grow">
@@ -333,24 +364,25 @@ const Portfolio: React.FC = () => {
                         ))}
                       </div>
                     </div>
-                    <div className="px-6 py-4 border-t border-[#333333] bg-[#1a1a1a]">
-                      <TooltipWrapper label={project.html_url} fullWidth>
-                   <button
-                        onClick={() => handleExternalClick(project.html_url, true, )}
-                        className="flex items-center justify-center gap-2 w-full py-2 min-h-[48px] whitespace-nowrap bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all"
-                      >
-
-                        {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
+                      <div className="px-6 py-4 border-t border-[#333333] bg-[#1a1a1a]">
+                        <TooltipWrapper label={project.html_url} fullWidth>
+                      <button
+                      onClick={() => handleExternalClick(project.html_url, true)}
+                      className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all text-sm sm:text-base"
+                    >
+                      {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
+                      <span className="flex-1 break-words text-center leading-tight">
                         {project.name.toLowerCase() === "portfolio"
-                          ? "View this site's repository!"
-                          : project.ctaLabel ?? "View on GitHub"}
-                      </button>
-                      </TooltipWrapper>
-                    </div>
+                          ? "View (This website!) Repository"
+                          : project.ctaLabel ?? "View Repository"}
+                      </span>
+                    </button>
+                        </TooltipWrapper>
+                      </div>
                   </div>
                 ))}
           </div>
-        </div>
+        </div>  
       </section>
     </div>
   )

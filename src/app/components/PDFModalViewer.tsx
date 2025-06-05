@@ -1,7 +1,8 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { X, Download, Loader2 } from "lucide-react"
+import { X, Download, Loader2, ExternalLinkIcon } from "lucide-react"
+import { FaExternalLinkAlt } from "react-icons/fa";
 import ReactDOM from "react-dom"
 
 interface PDFModalViewerProps {
@@ -58,14 +59,14 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
   if (!pdfUrl || !isVisible) return null
 
   return ReactDOM.createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+ <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-16"
       onClick={(e) => {
         if (e.target === e.currentTarget) initiateClose()
       }}
     >
       <div
-        className={`relative bg-[#1a1a1a] border border-[#333] rounded-xl w-full max-w-5xl max-h-[90vh] shadow-xl overflow-hidden flex flex-col ${
+        className={`relative bg-[#1a1a1a] border border-[#333] rounded-xl w-full max-w-4xl max-h-[90vh] shadow-xl overflow-hidden flex flex-col ${
           isAnimatingOut ? "animate-elastic-out" : "animate-elastic-in"
         }`}
         onClick={(e) => e.stopPropagation()}
@@ -77,7 +78,7 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
             className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all"
             aria-label="Download or open in new tab"
           >
-            <Download size={16} />
+            <FaExternalLinkAlt size={16} />
             <span className="hidden sm:inline">Open in new tab</span>
           </button>
           <button
@@ -92,10 +93,10 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
         {/* PDF View / Fallback */}
         <div className="flex-1 overflow-auto relative bg-[#1a1a1a]">
           {isUnsupported ? (
-            <div className="flex items-center justify-center h-full text-white text-sm p-6 text-center">
-              PDF preview is not supported on this device or browser.
-              
-            </div>
+           <div className="flex flex-col items-center justify-center h-full text-white text-sm p-6 text-center space-y-2">
+            <p>PDF preview is not supported on this device or browser.</p>
+            <p>Please open the PDF in a new tab or download it to view.</p>
+          </div>
           ) : (
             <>
               {isLoading && (

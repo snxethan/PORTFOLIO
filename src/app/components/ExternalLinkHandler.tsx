@@ -67,14 +67,14 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
       {children}
         {isVisible && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40 animate-fade-in"
+            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40 animate-fade-in p-4"
             onClick={closeWarning}
           >
             <div
               className={`bg-[#1a1a1a] border border-[#333] rounded-xl p-6 max-w-md w-full text-center relative ${
                 isAnimatingOut ? "animate-elastic-out" : "animate-elastic-in"
               }`}
-              onClick={(e) => e.stopPropagation()} // Prevent clicks inside the modal from closing it
+              onClick={(e) => e.stopPropagation()}
             >
 
             <button

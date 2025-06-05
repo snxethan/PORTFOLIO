@@ -42,7 +42,13 @@ export const metadata: Metadata = {
     title: "Ethan Townsend | Portfolio",
     description: "Explore my website! Find my portfolio, education & experience, and more.",
     images: ["https://www.snxethan.dev/images/avatar/snex.png"],
-  },
+  },  other: {
+    'X-Frame-Options': 'SAMEORIGIN',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Robots-Tag': 'index, follow, noimageai, noimageindex',
+    'Permissions-Policy': 'browsing-topics=(), interest-cohort=()',
+    'Content-Security-Policy': "default-src 'self'",
+  }
 }
 export const viewport: Viewport = {
   themeColor: "#1a1a1a",
@@ -80,9 +86,9 @@ export default function RootLayout({
       <body suppressHydrationWarning className={`${inter.className} bg-[#1a1a1a] text-white`}>
         <Toaster position="top-center" />
         <ExternalLinkHandler>
-          <ClickSoundWrapper>
+          {/* <ClickSoundWrapper> */}
             {children}
-          </ClickSoundWrapper>
+          {/* </ClickSoundWrapper> */}
         </ExternalLinkHandler>
         <Analytics />
         <SpeedInsights />

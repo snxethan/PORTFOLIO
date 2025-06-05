@@ -7,18 +7,25 @@ interface NavbarProps {
   activeTab: string | null
 }
 
+
+
 const Navbar = ({ onTabChange, activeTab }: NavbarProps) => {
   const tabs = ["about", "resume", "portfolio"]
   const isLoading = !activeTab
   const [clickedTab, setClickedTab] = useState<string | null>(null)
 
-  const handleClick = (tab: string) => {
-    setClickedTab(tab)
-    onTabChange(tab)
 
-    // Remove animation class after it finishes (~300ms)
-    setTimeout(() => setClickedTab(null), 300)
-  }
+  
+const handleClick = (tab: string) => {
+  if (tab === activeTab) return; // prevent redundant clicks
+
+  setClickedTab(tab);
+  onTabChange(tab);
+
+  // Remove animation class after it finishes (~300ms)
+  setTimeout(() => setClickedTab(null), 300);
+};
+
 
   return (
     <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 lg:static lg:top-auto lg:left-auto lg:z-0 animate-elastic-in">
