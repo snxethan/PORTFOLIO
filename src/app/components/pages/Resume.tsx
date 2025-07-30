@@ -120,7 +120,7 @@ const timelineData: TimelineItem[] = [
 const Resume = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
-  const resumePDF = "/resume/EthanTownsend_Resume.pdf"
+  const resumePDF = "/resume/EthanTownsend_Resume_v2.pdf"
 
   useEffect(() => {
     setLoading(false)
