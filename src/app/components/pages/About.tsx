@@ -60,7 +60,7 @@ const About = () => {
 
   const unrelatedSkills = [
     { name: "Pediatric Care", icon: BiChild },
-    { name: "Culiinary Expertise", icon: BiFork, url: "/certificates/foodhandlers_certification.pdf" },
+    { name: "Culinary Expertise", icon: BiFork, url: "/certificates/foodhandlers_certification.pdf" },
     { name: "First Aid", icon: BiFirstAid, highlight: true, url: "/certificates/firstaid_certification.pdf" },
   ]
 
