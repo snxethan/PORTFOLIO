@@ -6,6 +6,10 @@ import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevro
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 
+/**
+ * TypeScript interface defining the structure of project objects
+ * Supports both GitHub API projects and manually defined projects
+ */
 interface Project {
   id: number
   name: string
@@ -20,6 +24,10 @@ interface Project {
   ctaIcon?: "github" | "external" | "youtube" | "private" | undefined
 }
 
+/**
+ * Returns the appropriate icon component based on the CTA icon type
+ * Used for project action buttons (GitHub, external links, YouTube, private repos)
+ */
 const getCTAIcon = (icon?: string) => {
   switch (icon) {
     case "github": return <FaGithub className="w-5 h-5" />
@@ -30,6 +38,10 @@ const getCTAIcon = (icon?: string) => {
   }
 }
 
+/**
+ * Manually defined projects that are not available through GitHub API
+ * Used to supplement GitHub projects with additional context or private repositories
+ */
 const manualProjects: Project[] = [
   {
     id: 1,
@@ -97,7 +109,14 @@ const manualProjects: Project[] = [
     ctaIcon: "private"
   }
 ]
+
+/**
+ * Portfolio component that displays a comprehensive list of projects
+ * Features GitHub API integration, caching, search, filtering, and sorting
+ * Combines both public GitHub repositories and manually defined projects
+ */
 const Portfolio: React.FC = () => {
+  // State management for projects and UI controls
   const [projects, setProjects] = useState<Project[]>([])
   const [search, setSearch] = useState("")
   const [sortBy, setSortBy] = useState("newest")
@@ -109,7 +128,12 @@ const Portfolio: React.FC = () => {
   const { handleExternalClick } = useExternalLink()
   const [activeTag, setActiveTag] = useState<string | null>(null)
 
+  // Fetch and process projects on component mount
   useEffect(() => {
+    /**
+     * Fetches projects from GitHub API with caching mechanism
+     * Falls back to cache if API is unavailable or rate limited
+     */
     const fetchProjects = async () => {
       setLoading(true)
       const CACHE_KEY = "githubProjectsCache"
@@ -118,6 +142,7 @@ const Portfolio: React.FC = () => {
       const expiry = parseInt(localStorage.getItem(EXPIRY_KEY) || "0")
       const cache = localStorage.getItem(CACHE_KEY)
 
+    // Use cached data if available and not expired
     if (cache && now < expiry) {
       try {
         const data = JSON.parse(cache)
@@ -129,7 +154,7 @@ const Portfolio: React.FC = () => {
       }
     }
 
-
+      // Fetch fresh data from GitHub API
       try {
         const response = await fetch("https://api.github.com/users/snxethan/repos?sort=created&direction=asc")
         const contentType = response.headers.get("content-type")
@@ -139,8 +164,9 @@ const Portfolio: React.FC = () => {
           throw new Error("GitHub API did not return valid JSON")
         }
         const data = await response.json()
+        // Cache the response for 5 minutes to reduce API calls
         localStorage.setItem(CACHE_KEY, JSON.stringify(data))
-        localStorage.setItem(EXPIRY_KEY, (now + 1000 * 60 * 5).toString()) // 5 minutes
+        localStorage.setItem(EXPIRY_KEY, (now + 1000 * 60 * 5).toString()) 
         processProjects(data)
       } catch (error) {
         console.error("Could not fetch projects:", error)
@@ -149,6 +175,10 @@ const Portfolio: React.FC = () => {
       }
     }
 
+    /**
+     * Processes raw GitHub API data and combines with manual projects
+     * Normalizes data structure and extracts tags for filtering
+     */
     const processProjects = (data: any[]) => {
       const githubProjects: Project[] = data.map((project: any) => ({
         id: project.id,
@@ -164,11 +194,16 @@ const Portfolio: React.FC = () => {
         ctaLabel: "View Repository",
         ctaIcon: "github",
       }))
+      // Combine GitHub projects with manually defined projects
       const allProjects = [...githubProjects, ...manualProjects]
       setProjects(allProjects)
       extractTags(allProjects)
     }
 
+    /**
+     * Extracts unique tags from all projects for filtering
+     * Includes both programming languages and topic tags
+     */
     const extractTags = (allProjects: Project[]) => {
       const uniqueTags = new Set<string>()
       allProjects.forEach((project) => {
@@ -183,6 +218,7 @@ const Portfolio: React.FC = () => {
     fetchProjects()
   }, [])
 
+  // Filter projects based on search query (name, description, or tags)
   const filteredProjects = projects.filter((project) => {
     const nameMatch = project.name.toLowerCase().includes(search.toLowerCase())
     const descMatch = project.description?.toLowerCase().includes(search.toLowerCase()) ?? false
@@ -190,6 +226,7 @@ const Portfolio: React.FC = () => {
     return nameMatch || descMatch || tagMatch
   })
 
+  // Sort filtered projects based on selected criteria
   const sortedProjects = [...filteredProjects].sort((a, b) => {
     const aDate = new Date(a.created_at).getTime()
     const bDate = new Date(b.created_at).getTime()
@@ -202,6 +239,7 @@ const Portfolio: React.FC = () => {
     }
   })
 
+  // Memoized sorting of tags with "ALL" first, then alphabetical
   const sortedTags = React.useMemo(() => {
     if (!tags.length) return [];
     const [first, ...rest] = tags;
@@ -211,6 +249,7 @@ const Portfolio: React.FC = () => {
 
   const TAG_LIMIT = 8;
 
+  // Apply tag filtering to the sorted projects
   const tagFilteredProjects =
     selectedTag === null || selectedTag === "ALL"
       ? sortedProjects

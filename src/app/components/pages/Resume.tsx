@@ -5,6 +5,10 @@ import { FaDownload } from "react-icons/fa"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
 
+/**
+ * TypeScript interface defining the structure of timeline items
+ * Used for both work experience and education entries
+ */
 interface TimelineItem {
   type: "experience" | "education"
   institution: string
@@ -15,6 +19,11 @@ interface TimelineItem {
   summary: string
 }
 
+/**
+ * Static data array containing all work experience and education entries
+ * Organized chronologically and categorized by type
+ * Each entry includes key accomplishments and contextual summary
+ */
 const timelineData: TimelineItem[] = [
   {
     type: "experience",
@@ -117,11 +126,17 @@ const timelineData: TimelineItem[] = [
   
 ]
 
+/**
+ * Resume component that displays a comprehensive timeline of experience and education
+ * Features chronological organization, PDF resume viewing, and responsive design
+ * Includes both work experience and academic achievements
+ */
 const Resume = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const resumePDF = "/resume/EthanTownsend_Resume_v2.pdf"
 
+  // Initialize component and set up keyboard shortcuts for PDF modal
   useEffect(() => {
     setLoading(false)
 
@@ -133,12 +148,19 @@ const Resume = () => {
     return () => document.removeEventListener("keydown", handleEscape)
   }, [])
 
+  // Sort timeline items in reverse chronological order (most recent first)
   const sortedTimeline = [...timelineData].sort((a, b) =>
     new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
   )
 
+  /**
+   * Renders a timeline section for either experience or education
+   * Creates a responsive timeline layout with center line and alternating cards
+   * @param type - Either "experience" or "education" to filter timeline items
+   */
   const renderTimeline = (type: "experience" | "education") => (
     <div className="relative mb-16 w-full max-w-4xl mx-auto px-4">
+      {/* Section header with title and accent line */}
       <div className="flex flex-col items-center relative mb-8 text-center">
         <h2 className="text-3xl font-bold text-white z-10">
           {type === "experience" ? "Experience" : "Education"}
@@ -146,13 +168,16 @@ const Resume = () => {
         <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
       </div>
 
+      {/* Vertical timeline line (hidden on mobile) */}
       <div className="absolute left-1/2 -ml-[2px] w-[2px] bg-gray-700 h-full hidden md:block"></div>
 
+      {/* Timeline items container */}
       <div className="flex flex-col gap-12">
         {sortedTimeline
           .filter((item) => item.type === type)
           .map((item, idx) => (
             <div key={idx} className="flex flex-col md:flex-row md:items-center relative">
+              {/* Left side: Institution details and highlights */}
               <div className="md:w-1/2 text-center md:text-center md:pr-8">
                 <h3 className="text-xl font-semibold text-white">
                   {item.institution}
@@ -163,15 +188,20 @@ const Resume = () => {
                 <p className="text-gray-500 text-sm italic">
                   {item.location}
                 </p>
+                {/* Key highlights as bullet points */}
                 <ul className="list-disc list-inside mt-2 text-sm text-gray-300 text-left md:text-center mx-auto md:mx-auto max-w-xs">
                   {item.highlights.map((hl, i) => (
                     <li key={i}>{hl}</li>
                   ))}
                 </ul>
               </div>
+              
+              {/* Center: Timeline dot (hidden on mobile) */}
               <div className="hidden md:block absolute left-1/2 -translate-x-1/2">
                 <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-red-600"></div>
               </div>
+              
+              {/* Right side: Summary card with hover effects */}
               <div className="md:w-1/2 md:pl-4 mt-4 md:mt-0">
                 <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                   <p>{item.summary}</p>
@@ -185,6 +215,7 @@ const Resume = () => {
 
   return (
     <div>
+      {/* Page title with gradient accent line */}
       <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
         Experience & Education Timeline
         <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
@@ -192,6 +223,7 @@ const Resume = () => {
 
       <div className="bg-[#121212] text-white py-20">
         <div className="container mx-auto px-4">
+          {/* Personal information header */}
           <header className="text-center mb-16">
             <h1 className="text-4xl mb-2">Ethan Townsend</h1>
             <p className="text-gray-300">Software Engineer</p>
@@ -199,6 +231,7 @@ const Resume = () => {
             <p className="text-gray-400">snxethan@gmail.com</p>
           </header>
 
+          {/* Resume PDF download button */}
           <div className="flex justify-center gap-4 mb-8">
             <TooltipWrapper label="View Resume" url={resumePDF}>
               <button
@@ -210,11 +243,13 @@ const Resume = () => {
             </TooltipWrapper>
           </div>
 
+          {/* Render experience and education timelines */}
           {renderTimeline("experience")}
           {renderTimeline("education")}
         </div>
       </div>
 
+      {/* PDF modal viewer for resume display */}
       <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />
     </div>
   )
