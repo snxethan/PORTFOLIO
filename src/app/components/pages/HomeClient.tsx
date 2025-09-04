@@ -8,9 +8,12 @@ import About from "./About"
 import Resume from "./Resume"
 import Portfolio from "./Portfolio"
 import Footer from "./Footer"
+import BirthdayBalloons from "../BirthdayBalloons"
+import { isBirthday } from "../../utils/birthday"
 
 export default function HomeClient() {
   const [activeTab, setActiveTab] = useState<string | null>(null)
+  const [showBalloons, setShowBalloons] = useState(false)
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -24,6 +27,11 @@ export default function HomeClient() {
     localStorage.setItem("activeTab", resolvedTab)
 
     if (queryTab) router.replace("/", { scroll: false })
+
+    // Check if it's birthday and show balloons
+    if (isBirthday()) {
+      setShowBalloons(true)
+    }
   }, [searchParams, router])
 
   const handleTabChange = (tab: string) => {
@@ -33,6 +41,9 @@ export default function HomeClient() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans">
+      {/* Birthday Balloons */}
+      {showBalloons && <BirthdayBalloons />}
+      
       {/* Main Page Content */}
       <main className="flex-grow pt-20 md:pt-0">
         <div className="container mx-auto px-4 pt-15 lg:pt-12">
