@@ -8,6 +8,10 @@ import React, {
   ReactNode,
 } from "react"
 
+/**
+ * TypeScript interface for the external link context
+ * Defines the shape of data and functions available to consuming components
+ */
 interface ExternalLinkContextType {
   showWarning: boolean
   targetUrl: string
@@ -16,22 +20,42 @@ interface ExternalLinkContextType {
   closeWarning: () => void
 }
 
+/**
+ * React context for managing external link warnings throughout the app
+ * Provides a centralized way to handle external navigation with user consent
+ */
 const ExternalLinkContext = createContext<ExternalLinkContextType | undefined>(
   undefined
 )
 
+/**
+ * ExternalLinkHandler component that provides security warnings for external links
+ * Distinguishes between professional and social/personal platforms
+ * Includes modal overlay with smooth animations and accessibility features
+ * 
+ * @param children - React components to wrap with external link handling
+ */
 export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
   const [targetUrl, setTargetUrl] = useState("")
   const [isProfessional, setIsProfessional] = useState(false)
 
+  /**
+   * Handles external link clicks by showing appropriate warning modal
+   * @param url - The external URL to navigate to
+   * @param isProfessional - Whether this is a professional platform (affects warning text)
+   */
   const handleExternalClick = (url: string, isProfessional: boolean = false) => {
     setTargetUrl(url)
     setIsProfessional(isProfessional)
     setIsVisible(true)
   }
 
+  /**
+   * Closes the warning modal with animation
+   * Resets all state after animation completes
+   */
   const closeWarning = () => {
     setIsAnimatingOut(true)
     setTimeout(() => {
@@ -39,9 +63,10 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
       setIsVisible(false)
       setTargetUrl("")
       setIsProfessional(false)
-    }, 300) // match elastic-out duration
+    }, 300) // Match CSS animation duration
   }
 
+  // Prevent body scrolling when modal is open
   useEffect(() => {
     if (isVisible) {
       document.body.classList.add("overflow-hidden")
@@ -65,6 +90,8 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
+      
+      {/* External link warning modal */}
         {isVisible && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40 animate-fade-in p-4"
@@ -77,6 +104,7 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
               onClick={(e) => e.stopPropagation()}
             >
 
+            {/* Close button */}
             <button
               onClick={closeWarning}
               aria-label="Close"
@@ -85,10 +113,12 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
               &times;
             </button>
 
+            {/* Modal header */}
             <h3 className="text-xl font-semibold text-white mb-2">
               External Link Notice
             </h3>
 
+            {/* Conditional warning text based on platform type */}
             {isProfessional ? (
               <>
                 <p className="text-gray-300 text-sm mb-4">
@@ -118,6 +148,7 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
               Please proceed with <b>caution</b>.
             </p>
 
+            {/* Continue button that opens external link */}
             <div className="flex justify-center gap-4">
               <a
                 href={targetUrl}
@@ -136,6 +167,13 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
   )
 }
 
+/**
+ * Custom hook for accessing external link context
+ * Must be used within components wrapped by ExternalLinkHandler
+ * 
+ * @returns ExternalLinkContextType object with state and functions
+ * @throws Error if used outside of ExternalLinkHandler context
+ */
 export const useExternalLink = () => {
   const context = useContext(ExternalLinkContext)
   if (!context) {
