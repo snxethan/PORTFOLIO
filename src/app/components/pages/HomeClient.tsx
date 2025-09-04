@@ -53,7 +53,7 @@ export default function HomeClient() {
               </div>
                 <div
                   key={activeTab}
-                  className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 md:p-8 min-h-[600px] animate-elastic-light"
+                  className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 md:p-8 min-h-[600px] animate-fade-in-gentle"
                 >
                  {!activeTab ? (
                     <div className="w-full h-full space-y-4 animate-pulse">

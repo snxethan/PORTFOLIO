@@ -28,7 +28,7 @@ const handleClick = (tab: string) => {
 
 
   return (
-    <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 lg:static lg:top-auto lg:left-auto lg:z-0 animate-elastic-in">
+    <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 lg:static lg:top-auto lg:left-auto lg:z-0 animate-fade-in-nav">
       <div className="container mx-auto flex items-center justify-center">
         {isLoading ? (
           <ul className="flex space-x-4 animate-pulse">
@@ -44,11 +44,11 @@ const handleClick = (tab: string) => {
               <li key={tab}>
                 <button
                   onClick={() => handleClick(tab)}
-                  className={`capitalize px-4 py-2 rounded-lg text-sm font-medium transition-transform duration-200 ease-out ${
+                  className={`capitalize px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-out ${
                     activeTab === tab
-                      ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
-                      : "text-gray-300 hover:bg-[#333333] hover:text-white hover:scale-105"
-                  } ${clickedTab === tab ? "animate-elastic-in" : ""}`}
+                      ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30"
+                      : "text-gray-300 hover:bg-[#333333] hover:text-white"
+                  } ${clickedTab === tab ? "animate-fade-in-nav" : ""}`}
                 >
                   {tab}
                 </button>

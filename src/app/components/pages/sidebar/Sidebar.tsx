@@ -60,7 +60,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
 
           {/* Avatar */}
             <div
-            className="relative w-32 h-32 mx-auto rounded-full overflow-hidden group cursor-pointer transition-transform duration-300 ease-out hover:scale-105 active:scale-100"
+            className="relative w-32 h-32 mx-auto rounded-full overflow-hidden group cursor-pointer transition-all duration-300 ease-out hover:brightness-110"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={handleAvatarClick}
@@ -72,7 +72,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
 
 
           <div className="mt-4 text-center">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-all duration-200 ease-out hover:brightness-110">
           Ethan Townsend
         </h2>
 
@@ -91,7 +91,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                       <a
                         href={url}
                         aria-label={label}
-                        className="text-gray-300 hover:text-red-600 text-2xl transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
+                        className="text-gray-300 hover:text-red-600 text-2xl transition-colors duration-200 ease-out"
                       >
                         <Icon />
                       </a>
@@ -99,7 +99,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                       <button
                         onClick={() => handleExternalClick(url)}
                         aria-label={label}
-                        className="text-gray-300 hover:text-red-600 text-2xl transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
+                        className="text-gray-300 hover:text-red-600 text-2xl transition-colors duration-200 ease-out"
                       >
                         <Icon />
                       </button>
@@ -120,7 +120,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                     <button
                       onClick={() => handleExternalClick(url)}
                       aria-label={label}
-                      className="text-gray-400 hover:text-red-600 text-lg transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
+                      className="text-gray-400 hover:text-red-600 text-lg transition-colors duration-200 ease-out"
                     >
                       <Icon />
                     </button>

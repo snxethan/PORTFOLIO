@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next"
-// Font temporarily disabled due to network issues
-// import { Inter } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import { ExternalLinkHandler } from "./components/ExternalLinkHandler"
 import { Analytics } from "@vercel/analytics/next"
@@ -8,8 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from 'react-hot-toast'
 import ClickSoundWrapper from "./components/ClickSoundWrapper"
 
-// const inter = Inter({ subsets: ["latin"] })
-const inter = { className: "font-sans" }
+const inter = Inter({ subsets: ["latin"] })
 
 
 export const metadata: Metadata = {

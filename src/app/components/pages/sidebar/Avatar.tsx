@@ -47,7 +47,7 @@ const Avatar = ({ isAnimated = false }: { isAnimated?: boolean }) => {
         alt="Ethan Townsend"
         width={512}
         height={512}
-className={`w-full h-full object-cover rounded-full transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:scale-105
+className={`w-full h-full object-cover rounded-full transition-transform duration-300 ease-in-out hover:-translate-y-1
 }`}
         unoptimized={isGif}
         priority

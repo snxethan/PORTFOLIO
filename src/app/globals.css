@@ -79,21 +79,18 @@ body {
 }
 
 
-@keyframes elastic-in {
+@keyframes fade-in-nav {
   0% {
     opacity: 0;
-    transform: scaleX(0.6) scaleY(1.4);
-  }
-  50% {
-    transform: scaleX(1.1) scaleY(0.9);
+    transform: translateY(-4px);
   }
   100% {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
-.animate-elastic-in {
-  animation: elastic-in 0.4s ease-out forwards;
+.animate-fade-in-nav {
+  animation: fade-in-nav 0.2s ease-out forwards;
 }
 
 @keyframes elastic-out {
@@ -114,16 +111,16 @@ body {
 }
 
 
-@keyframes elastic-light {
+@keyframes fade-in-gentle {
   0% {
     opacity: 0;
-    transform: scale(0.97);
+    transform: translateY(4px);
   }
   100% {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
-.animate-elastic-light {
-  animation: elastic-light 0.3s ease-out forwards;
+.animate-fade-in-gentle {
+  animation: fade-in-gentle 0.2s ease-out forwards;
 }
