@@ -7,12 +7,17 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from 'react-hot-toast'
 import ClickSoundWrapper from "./components/ClickSoundWrapper"
 
+// Google Fonts configuration for Inter font family
 const inter = Inter({ subsets: ["latin"] })
 
-
+/**
+ * Metadata configuration for the portfolio website
+ * Defines SEO settings, Open Graph data, Twitter cards, and security headers
+ */
 export const metadata: Metadata = {
   title: "Ethan Townsend | Portfolio",
   description: "Full Stack Developer Portfolio",
+  // Favicon and icon configuration for different devices and browsers
   icons: {
     icon: [
       { url: "/favicon.ico", type: "image/x-icon" },
@@ -22,6 +27,7 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
+  // Open Graph metadata for social media sharing
   openGraph: {
     title: "Ethan Townsend | Portfolio",
     description: "Explore my website! Find my portfolio, education & experience, and more.",
@@ -37,12 +43,15 @@ export const metadata: Metadata = {
     ],
     type: "website",
   },
+  // Twitter Card configuration for Twitter sharing
   twitter: {
     card: "summary_large_image",
     title: "Ethan Townsend | Portfolio",
     description: "Explore my website! Find my portfolio, education & experience, and more.",
     images: ["https://www.snxethan.dev/images/avatar/snex.png"],
-  },  other: {
+  },  
+  // Security and privacy headers
+  other: {
     'X-Frame-Options': 'SAMEORIGIN',
     'X-Content-Type-Options': 'nosniff',
     'X-Robots-Tag': 'index, follow, noimageai, noimageindex',
@@ -50,10 +59,14 @@ export const metadata: Metadata = {
     'Content-Security-Policy': "default-src 'self'",
   }
 }
+
+// Viewport configuration for mobile devices
 export const viewport: Viewport = {
   themeColor: "#1a1a1a",
 }
 
+// Structured data (JSON-LD) for search engine optimization
+// Helps search engines understand the content and context of the website
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -69,6 +82,11 @@ const jsonLd = {
   ]
 }
 
+/**
+ * Root layout component for the portfolio website
+ * Wraps all pages with common elements like fonts, analytics, and global providers
+ * Includes structured data injection for SEO purposes
+ */
 export default function RootLayout({
   children,
 }: {
@@ -77,19 +95,25 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        {/* Inject structured data */}
+        {/* Inject structured data for search engines */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body suppressHydrationWarning className={`${inter.className} bg-[#1a1a1a] text-white`}>
+        {/* Toast notifications for user feedback */}
         <Toaster position="top-center" />
+        
+        {/* External link handler wrapper for security */}
         <ExternalLinkHandler>
+          {/* Click sound wrapper is commented out but available for future use */}
           {/* <ClickSoundWrapper> */}
             {children}
           {/* </ClickSoundWrapper> */}
         </ExternalLinkHandler>
+        
+        {/* Vercel Analytics for tracking page views and performance */}
         <Analytics />
         <SpeedInsights />
       </body>

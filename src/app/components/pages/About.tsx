@@ -22,12 +22,18 @@ import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
 
+/**
+ * About component that displays personal information, skills, and certifications
+ * Features interactive skill grids with tooltips and PDF certificate viewing
+ * Includes both technical skills and miscellaneous abilities
+ */
 const About = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const { handleExternalClick } = useExternalLink()
   const [clickedCard, setClickedCard] = useState<string | null>(null)
 
+  // Initialize component and set up keyboard shortcuts for PDF modal
   useEffect(() => {
     setLoading(false)
     const handleEscape = (e: KeyboardEvent) => {
@@ -37,6 +43,7 @@ const About = () => {
     return () => document.removeEventListener("keydown", handleEscape)
   }, [])
 
+  // Technical skills configuration with highlight priority and external links
   const skills = [
     { name: "React", icon: FaReact, highlight: true, url: "https://reactjs.org/" },
     { name: "JavaScript", icon: SiJavascript, url: "https://www.javascript.com/" },
@@ -58,12 +65,14 @@ const About = () => {
     { name: "Postman", icon: SiPostman, highlight: true, url: "https://www.postman.com/" },
   ]
 
+  // Non-technical skills and abilities
   const unrelatedSkills = [
     { name: "Pediatric Care", icon: BiChild },
     { name: "Culiinary Expertise", icon: BiFork, url: "/certificates/foodhandlers_certification.pdf" },
     { name: "First Aid", icon: BiFirstAid, highlight: true, url: "/certificates/firstaid_certification.pdf" },
   ]
 
+  // Professional certifications with PDF links
   const certifications = [
     { name: "Cybersecurity Certified 2023", icon: BsPatchCheckFill, highlight: true, url: "/certificates/cybersecurity_certification.pdf" },
     { name: "Network Security Certified 2023", icon: BsPatchCheckFill, highlight: true, url: "/certificates/networksecurity_certification.pdf" },
@@ -72,7 +81,13 @@ const About = () => {
     { name: "Highschool Graduate 2023", icon: BsPatchCheckFill },
   ]
 
+  /**
+   * Renders a responsive grid of skill/certification cards
+   * Sorts items by highlight status (highlighted items appear first)
+   * Handles click interactions for external links and PDF viewing
+   */
   const renderSkillGrid = (items: any[]) => {
+    // Sort items to show highlighted skills first, then alphabetically
     const sortedItems = [...items].sort((a, b) => {
       if (a.highlight === b.highlight) {
         return a.name.localeCompare(b.name)
@@ -88,16 +103,19 @@ const About = () => {
           <div
             className={`group relative flex flex-col items-center bg-[#1e1e1e] hover:bg-[#252525] p-3 sm:p-4 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.09] active:scale-95`} 
           >
-            <div // Icon container
+            {/* Icon container with conditional highlighting */}
+            <div
               className={`inline-block p-1.5 sm:p-2 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300 ${
                 highlight ? "bg-gradient-to-br from-red-500 to-red-700" : "bg-red-600/40 group-hover:bg-red-600/50"
               }`} 
             >
               <Icon className="text-white text-lg sm:text-xl" /> 
             </div>
-            {/* Removed whitespace-nowrap to allow text to wrap */}
+            
+            {/* Skill name with text wrapping allowed */}
             <p className="text-white mt-1.5 sm:mt-2 font-semibold text-xs sm:text-sm text-center">{name}</p> 
             
+            {/* Icon indicators for PDF files and external links */}
             {(url?.endsWith(".pdf") || (url && !url.endsWith(".pdf"))) && (
               <div className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 text-gray-400 group-hover:text-red-400 transition-colors duration-300"> 
                 {url?.endsWith(".pdf") && <FaFilePdf size={14} aria-label="View Certification" />} 
@@ -107,11 +125,13 @@ const About = () => {
           </div>
         )
 
+        // Handle click animation feedback
         const handleClick = () => {
           setClickedCard(name)
           setTimeout(() => setClickedCard(null), 300) 
         }
 
+        // PDF files open in modal viewer
         if (url?.endsWith(".pdf")) {
           return (
             <TooltipWrapper key={name} label="View Certification" url={url}>
@@ -122,6 +142,7 @@ const About = () => {
           )
         }
 
+        // External URLs open in new tab with security handling
         return url ? (
           <TooltipWrapper key={name} label={url}>
             <div onClick={() => { handleExternalClick(url, true); handleClick() }} className="cursor-pointer">
@@ -129,6 +150,7 @@ const About = () => {
             </div>
           </TooltipWrapper>
         ) : (
+          // No URL - just display the card
           <div key={name} onClick={handleClick} className="cursor-pointer">
             {Card}
           </div>
@@ -138,6 +160,9 @@ const About = () => {
   )
 }
 
+  /**
+   * Renders skeleton loading animation while content is being loaded
+   */
   const renderSkeletonGrid = (count: number) => (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
       {[...Array(count)].map((_, i) => (
