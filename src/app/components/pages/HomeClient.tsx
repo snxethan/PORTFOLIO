@@ -32,12 +32,12 @@ export default function HomeClient() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[1200px]">
       {/* Main Page Content */}
       <main className="flex-grow pt-20 md:pt-0">
-        <div className="container mx-auto px-4 pt-15 lg:pt-12">
-          <div className="flex flex-col lg:flex-row gap-8">
-            <Sidebar className="md:mt-20 lg:mt-0"/>
+        <div className="container mx-auto px-4 pt-15 lg:pt-12 min-w-[1168px]">
+          <div className="flex gap-8">
+            <Sidebar className=""/>
             <section className="flex-1 flex flex-col gap-6 pb-20">
               <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg overflow-hidden">
                {!activeTab ? (
