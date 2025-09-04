@@ -95,6 +95,45 @@ const manualProjects: Project[] = [
     source: "github",
     ctaLabel: "This repository is private",
     ctaIcon: "private"
+  },
+  {
+    id: 6,
+    name: "Random Student Selector (Krebsinator 2)",
+    description: "A random student selector application for classroom use, designed to fairly pick students for participation.",
+    html_url: "https://github.com/romAcosta/RandomStudentSelector",
+    language: "JavaScript",
+    topics: ["javascript", "education", "classroom", "random-selector"],
+    created_at: "2025-01-01T00:00:00Z",
+    updated_at: "2025-01-15T00:00:00Z",
+    source: "github",
+    ctaLabel: "View Repository",
+    ctaIcon: "github"
+  },
+  {
+    id: 7,
+    name: "Blazor Final (CSC260)",
+    description: "Full-stack web application built with ASP.NET Blazor, demonstrating modern web development practices and server-side rendering.",
+    html_url: "#",
+    language: "C#",
+    topics: ["blazor", "asp.net", "c#", "web-development", "neumont"],
+    created_at: "2024-12-01T00:00:00Z",
+    updated_at: "2024-12-15T00:00:00Z",
+    source: "manual",
+    ctaLabel: "Private Repository",
+    ctaIcon: "private"
+  },
+  {
+    id: 8,
+    name: "Mobile App Dev Final (CSC171)",
+    description: "Cross-platform mobile application developed for iOS and Android, showcasing mobile development fundamentals and native features.",
+    html_url: "#",
+    language: "Dart",
+    topics: ["flutter", "dart", "mobile-development", "cross-platform", "neumont"],
+    created_at: "2024-11-01T00:00:00Z",
+    updated_at: "2024-11-30T00:00:00Z",
+    source: "manual",
+    ctaLabel: "Private Repository",
+    ctaIcon: "private"
   }
 ]
 const Portfolio: React.FC = () => {
@@ -144,6 +183,8 @@ const Portfolio: React.FC = () => {
         processProjects(data)
       } catch (error) {
         console.error("Could not fetch projects:", error)
+        // Still process manual projects even if GitHub API fails
+        processProjects([])
       } finally {
         setLoading(false)
       }
