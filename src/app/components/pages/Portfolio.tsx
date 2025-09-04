@@ -327,19 +327,21 @@ const Portfolio: React.FC = () => {
                     >
 
                     <div className="p-6 flex-grow">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-xl font-semibold text-white group-hover:text-red-500 transition-colors duration-300">
+                      <div className="mb-2">
+                        <h3 className="text-xl font-semibold text-white group-hover:text-red-500 transition-colors duration-300 mb-1">
                           {project.name}
                         </h3>
-                        {project.source === "manual" && (
-                          <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>
-                        )}
-                        {project.source === "github" && (
-                          <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">GITHUB</span>
-                        )}
-                        {project.topics.includes("neumont") && (
-                          <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">NEU</span>
-                        )}
+                        <div className="flex flex-wrap items-center gap-2">
+                          {project.source === "manual" && (
+                            <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>
+                          )}
+                          {project.source === "github" && (
+                            <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">GITHUB</span>
+                          )}
+                          {project.topics.includes("neumont") && (
+                            <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">NEU</span>
+                          )}
+                        </div>
                       </div>
                       <p className="text-gray-300 mb-2">{project.description}</p>
                       <p className="text-sm text-gray-400 mb-1">
@@ -358,9 +360,9 @@ const Portfolio: React.FC = () => {
                           day: "numeric",
                         })}
                       </p>
-                      <div className="flex flex-wrap gap-2 mt-2">
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
                         {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
-                          <span key={tag} className="bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full">
+                          <span key={tag} className="bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full whitespace-nowrap">
                             {tag.toUpperCase()}
                           </span>
                         ))}
