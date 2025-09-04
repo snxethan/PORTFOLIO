@@ -127,3 +127,82 @@ body {
 .animate-elastic-light {
   animation: elastic-light 0.3s ease-out forwards;
 }
+
+/* Portfolio Tag Animation Enhancements */
+@keyframes tag-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+  50% {
+    transform: translateY(2px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes tag-slide-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-2px) scale(0.98);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+}
+
+@keyframes chevron-rotate-down {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes chevron-rotate-up {
+  from {
+    transform: rotate(180deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-tag-slide-in {
+  animation: tag-slide-in 0.4s ease-out forwards;
+}
+
+.animate-tag-slide-out {
+  animation: tag-slide-out 0.3s ease-in forwards;
+}
+
+.animate-chevron-rotate-down {
+  animation: chevron-rotate-down 0.3s ease-out forwards;
+}
+
+.animate-chevron-rotate-up {
+  animation: chevron-rotate-up 0.3s ease-out forwards;
+}
+
+/* Tag Container Smooth Height Transition */
+.tag-container {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+/* Stagger animation delays for tags */
+.tag-stagger-1 { animation-delay: 0.05s; }
+.tag-stagger-2 { animation-delay: 0.1s; }
+.tag-stagger-3 { animation-delay: 0.15s; }
+.tag-stagger-4 { animation-delay: 0.2s; }
+.tag-stagger-5 { animation-delay: 0.25s; }
+.tag-stagger-6 { animation-delay: 0.3s; }
+.tag-stagger-7 { animation-delay: 0.35s; }
+.tag-stagger-8 { animation-delay: 0.4s; }

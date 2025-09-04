@@ -108,6 +108,26 @@ const Portfolio: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false)
   const { handleExternalClick } = useExternalLink()
   const [activeTag, setActiveTag] = useState<string | null>(null)
+  const [expandingTags, setExpandingTags] = useState(false)
+  const [collapsingTags, setCollapsingTags] = useState(false)
+
+  const handleTagToggle = () => {
+    if (showAllTags) {
+      // Collapsing
+      setCollapsingTags(true)
+      setTimeout(() => {
+        setShowAllTags(false)
+        setCollapsingTags(false)
+      }, 300) // Match animation duration
+    } else {
+      // Expanding
+      setExpandingTags(true)
+      setShowAllTags(true)
+      setTimeout(() => {
+        setExpandingTags(false)
+      }, 400) // Match animation duration
+    }
+  }
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -258,10 +278,20 @@ const Portfolio: React.FC = () => {
 
           {/* Filter Tags */}
           {!loading && (
-            <div className="flex flex-wrap gap-3 mb-8">
-              {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag) => {
+            <div className="tag-container flex flex-wrap gap-3 mb-8">
+              {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
                 const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
                 const isActive = activeTag === tag
+                const isNewlyVisible = showAllTags && index >= TAG_LIMIT
+                const isCollapsing = collapsingTags && index >= TAG_LIMIT
+                const staggerIndex = Math.min(index - TAG_LIMIT, 7) // Cap at 7 for stagger classes
+
+                let animationClasses = ""
+                if (isNewlyVisible && expandingTags) {
+                  animationClasses = `animate-tag-slide-in tag-stagger-${Math.max(0, staggerIndex)}`
+                } else if (isCollapsing) {
+                  animationClasses = "animate-tag-slide-out"
+                }
 
                 return (
                   <button
@@ -275,7 +305,7 @@ const Portfolio: React.FC = () => {
                       isSelected
                         ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
                         : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
-                    } ${isActive && !isSelected ? "animate-elastic-in" : ""}`}
+                    } ${isActive && !isSelected ? "animate-elastic-in" : ""} ${animationClasses}`}
                   >
                     {tag}
                   </button>
@@ -283,18 +313,14 @@ const Portfolio: React.FC = () => {
               })}
             {sortedTags.length > TAG_LIMIT && (
               <button
-                onClick={() => setShowAllTags((v) => !v)}
+                onClick={handleTagToggle}
                 className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
                 aria-label={showAllTags ? "Show less tags" : "Show more tags"}
               >
                 {showAllTags ? (
-                  <>
-                    <FaChevronUp className="w-4 h-4 text-red-500" />
-                  </>
+                  <FaChevronUp className={`w-4 h-4 text-red-500 transition-transform duration-300 ${expandingTags || collapsingTags ? 'animate-chevron-rotate-up' : ''}`} />
                 ) : (
-                  <>
-                    <FaChevronDown className="w-4 h-4 text-red-500" />
-                  </>
+                  <FaChevronDown className={`w-4 h-4 text-red-500 transition-transform duration-300 ${expandingTags || collapsingTags ? 'animate-chevron-rotate-down' : ''}`} />
                 )}
               </button>
             )}
