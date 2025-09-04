@@ -91,7 +91,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                       <a
                         href={url}
                         aria-label={label}
-                        className="text-gray-300 hover:text-red-600 text-2xl transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
+                        className="text-gray-300 hover:text-red-500 text-2xl transition-all duration-200 ease-out hover:scale-110 active:scale-100"
                       >
                         <Icon />
                       </a>
@@ -99,7 +99,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                       <button
                         onClick={() => handleExternalClick(url)}
                         aria-label={label}
-                        className="text-gray-300 hover:text-red-600 text-2xl transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
+                        className="text-gray-300 hover:text-red-500 text-2xl transition-all duration-200 ease-out hover:scale-110 active:scale-100"
                       >
                         <Icon />
                       </button>
@@ -120,7 +120,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                     <button
                       onClick={() => handleExternalClick(url)}
                       aria-label={label}
-                      className="text-gray-400 hover:text-red-600 text-lg transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
+                      className="text-gray-400 hover:text-red-500 text-lg transition-all duration-200 ease-out hover:scale-110 active:scale-100"
                     >
                       <Icon />
                     </button>

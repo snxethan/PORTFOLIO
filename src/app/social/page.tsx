@@ -72,7 +72,6 @@ export default function SocialPage() {
               My own website under custom domains, holding all my projects, experience, and information about myself.
             </div>
 
-            {/* Navigation buttons to sections */}
             <div className="mt-4 flex justify-center space-x-3">
               <a
                 href="https://snex.dev/?tab=about" // Assuming your main page handles /?tab=about
