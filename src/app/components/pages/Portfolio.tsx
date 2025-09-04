@@ -89,7 +89,7 @@ const manualProjects: Project[] = [
     description: "Built and designed a modular portfolio creation tool using React, TypeScript, and Tailwind CSS.",
     html_url: "https://github.com/Ghussy/Rollio",
     language: "TypeScript",
-    topics: ["react", "typescript", "tailwind", "neumont"],
+    topics: ["react", "typescript", "tailwind", "neumont", "portfolio"],
     created_at: "2024-11-13T00:00:00Z",
     updated_at: "2024-12-04T00:00:00Z",
     source: "github",
@@ -126,6 +126,8 @@ const Portfolio: React.FC = () => {
         console.warn("Cache corrupted, refetching")
         localStorage.removeItem(CACHE_KEY)
         localStorage.removeItem(EXPIRY_KEY)
+        // Fallback to manual projects while trying to fetch
+        processProjects([])
       }
     }
 
@@ -144,6 +146,8 @@ const Portfolio: React.FC = () => {
         processProjects(data)
       } catch (error) {
         console.error("Could not fetch projects:", error)
+        // Fallback to manual projects only
+        processProjects([])
       } finally {
         setLoading(false)
       }
