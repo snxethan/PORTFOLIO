@@ -144,6 +144,8 @@ const Portfolio: React.FC = () => {
         processProjects(data)
       } catch (error) {
         console.error("Could not fetch projects:", error)
+        // Fallback to manual projects when GitHub API fails
+        processProjects([])
       } finally {
         setLoading(false)
       }
@@ -368,7 +370,7 @@ const Portfolio: React.FC = () => {
                         <TooltipWrapper label={project.html_url} fullWidth>
                       <button
                       onClick={() => handleExternalClick(project.html_url, true)}
-                      className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all text-sm sm:text-base"
+                      className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm sm:text-base"
                     >
                       {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
                       <span className="flex-1 break-words text-center leading-tight">
