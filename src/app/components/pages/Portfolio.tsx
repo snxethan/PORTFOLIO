@@ -144,6 +144,8 @@ const Portfolio: React.FC = () => {
         processProjects(data)
       } catch (error) {
         console.error("Could not fetch projects:", error)
+        // If GitHub API fails, still show manual projects
+        processProjects([])
       } finally {
         setLoading(false)
       }
