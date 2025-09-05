@@ -105,7 +105,7 @@ const manualProjects: Project[] = [
     topics: ["c#", "existing-codebase", "software-design-and-architecture", "neumont", "desktop-pet"],
     created_at: "2025-09-04T00:00:00Z",
     updated_at: "2025-09-04T00:00:00Z",
-    source: "manual",
+    source: "github",
     ctaLabel: "This repository is private",
     ctaIcon: "private"
   }
