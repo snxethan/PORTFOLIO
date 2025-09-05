@@ -95,6 +95,19 @@ const manualProjects: Project[] = [
     source: "github",
     ctaLabel: "This repository is private",
     ctaIcon: "private"
+  },
+  {
+    id: 6,
+    name: "PRO250-FINAL",
+    description: "Krebsinator 2: Krebsment Day is a C#/.NET desktop pet and student selector, evolved from the original Krebsinator Student Selector, expanded by adding Desktop Pet & Settings Functionality.",
+    html_url: "https://github.com/romAcosta/RandomStudentSelector",
+    language: "C#",
+    topics: ["c#", "existing-codebase", "software-design-and-architecture", "neumont", "desktop-pet"],
+    created_at: "2025-09-04T00:00:00Z",
+    updated_at: "2025-09-04T00:00:00Z",
+    source: "manual",
+    ctaLabel: "This repository is private",
+    ctaIcon: "private"
   }
 ]
 const Portfolio: React.FC = () => {
