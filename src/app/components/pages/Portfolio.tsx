@@ -99,7 +99,7 @@ const manualProjects: Project[] = [
   {
     id: 6,
     name: "PRO250-FINAL",
-    description: "Krebsinator 2: Krebsment Day is a C#/.NET desktop pet and student selector, evolved from the original Krebsinator Student Selector, expanded by adding Desktop Pet & Settings Functionality.",
+    description: "Krebsinator 2: Krebsment Day is a C#/.NET desktop pet and student selector, evolved from the original Krebsinator Student Selector made by Neumont Professor Krebs, expanded by adding Desktop Pet & Settings Functionality.",
     html_url: "https://github.com/romAcosta/RandomStudentSelector",
     language: "C#",
     topics: ["c#", "existing-codebase", "software-design-and-architecture", "neumont", "desktop-pet"],
