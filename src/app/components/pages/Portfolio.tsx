@@ -103,7 +103,7 @@ const manualProjects: Project[] = [
     html_url: "https://github.com/romAcosta/RandomStudentSelector",
     language: "C#",
     topics: ["c#", "existing-codebase", "software-design-and-architecture", "neumont", "desktop-pet"],
-    created_at: "2025-09-04T00:00:00Z",
+    created_at: "2023-08-15T00:00:00Z",
     updated_at: "2025-09-04T00:00:00Z",
     source: "github",
     ctaLabel: "This repository is private",
