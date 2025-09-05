@@ -1,6 +1,6 @@
 # Ethan Townsend – Portfolio
 
-A modern, responsive portfolio built with **Next.js 14**, **TypeScript**, and **Tailwind CSS**. Features real-time integrations with Spotify and GitHub APIs, dynamic content loading, and smooth animations.
+A modern, responsive portfolio built with **Next.js 15**, **TypeScript**, and **Tailwind CSS**. Features real-time integrations with Spotify and GitHub APIs, dynamic content loading, and smooth animations.
 
 ## Live Domains
 - [snxethan.dev](https://www.snxethan.dev/) (Primary)
@@ -18,7 +18,7 @@ A modern, responsive portfolio built with **Next.js 14**, **TypeScript**, and **
   - Modal-based contact form
 
 - **Technical Features**
-  - SSR with Next.js 14
+  - SSR with Next.js 15
   - Type-safe development with TypeScript
   - Responsive design with Tailwind CSS
   - Custom animations and transitions
@@ -43,8 +43,8 @@ A modern, responsive portfolio built with **Next.js 14**, **TypeScript**, and **
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/snxethan/portfolio.git
-cd portfolio
+git clone https://github.com/snxethan/Portfolio.git
+cd Portfolio
 ```
 
 2. Install dependencies:
@@ -80,7 +80,6 @@ Visit [http://localhost:3000](http://localhost:3000)
 - `/api/spotify`
   - `/now-playing` - Get current Spotify track
   - `/login` - Spotify OAuth flow
-- `/api/github-projects` - Fetch GitHub repositories
 - `/api/contact` - Handle contact form submissions
 
 ## Deployment
@@ -103,4 +102,4 @@ Important deployment steps:
 
 ## Author(s)
 
-- [**Ethan Townsend (snxethan)**](www.ethantownsend.dev)
+- [**Ethan Townsend (snxethan)**](https://www.ethantownsend.dev)
