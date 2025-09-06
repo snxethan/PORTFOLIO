@@ -111,7 +111,7 @@ export default function SocialPage() {
               Portfoli-YOU
             </button>
             <div className="mt-2 text-gray-400 text-xs text-center">
-              Portfoli-you is a local-first desktop application that empowers anyone (regardless of coding experience) to design and deploy their own portfolio website. With a drag-and-drop editor, modular templates, and optional cloud sync, Portfoli-you makes it easy to showcase skills, projects, and experience in a professional online presence.
+              A local-first desktop application with drag-and-drop editor, modular templates, and optional cloud sync that empowers anyone to design and deploy their portfolio website.
             </div>
 
             {/* Tagline */}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef, useCallback } from "react"
+import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Sidebar from "./sidebar/Sidebar"
 import Navbar from "./Navbar"
@@ -9,16 +9,13 @@ import Resume from "./Resume"
 import Portfolio from "./Portfolio"
 import Footer from "./Footer"
 import { useExternalLink } from "../ExternalLinkHandler"
-import PortfoliYouPopup from "../PortfoliYouPopup"
+import TooltipWrapper from "../ToolTipWrapper"
 
 export default function HomeClient() {
   const [activeTab, setActiveTab] = useState<string | null>(null)
-  const [showPortfoliYouPopup, setShowPortfoliYouPopup] = useState(false)
   const { handleExternalClick } = useExternalLink()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const isHovering = useRef(false)
 
   useEffect(() => {
     const queryTab = searchParams.get("tab")
@@ -37,25 +34,7 @@ export default function HomeClient() {
     localStorage.setItem("activeTab", tab)
   }
 
-  const handlePortfoliYouMouseEnter = useCallback(() => {
-    isHovering.current = true
-    hoverTimeoutRef.current = setTimeout(() => {
-      if (isHovering.current) {
-        setShowPortfoliYouPopup(true)
-      }
-    }, 800) // 800ms delay for hover
-  }, [])
-
-  const handlePortfoliYouMouseLeave = useCallback(() => {
-    isHovering.current = false
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current)
-    }
-    setShowPortfoliYouPopup(false)
-  }, [])
-
   const handlePortfoliYouClick = () => {
-    setShowPortfoliYouPopup(false)
     handleExternalClick("/portfoli-you", true)
   }
 
@@ -69,11 +48,7 @@ export default function HomeClient() {
               <Sidebar className="md:mt-20 lg:mt-0"/>
               
               {/* Portfoli-You Widget */}
-              <div 
-                className="w-full lg:w-80 bg-[#222222] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg text-white text-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95"
-                onMouseEnter={handlePortfoliYouMouseEnter}
-                onMouseLeave={handlePortfoliYouMouseLeave}
-              >
+              <div className="w-full lg:w-80 bg-[#222222] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg text-white text-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                 <div className="flex flex-col items-center mb-4">
                   <h2 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-red-500 text-transparent bg-clip-text">
                     Portfoli-YOU
@@ -86,12 +61,14 @@ export default function HomeClient() {
                 </p>
 
                 <div className="flex flex-col items-center gap-3">
-                  <button
-                    onClick={handlePortfoliYouClick}
-                    className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
-                  >
-                    Coming soon...
-                  </button>
+                  <TooltipWrapper label="/portfoli-you">
+                    <button
+                      onClick={handlePortfoliYouClick}
+                      className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                    >
+                      Coming soon...
+                    </button>
+                  </TooltipWrapper>
                 </div>
               </div>
             </div>
@@ -134,12 +111,6 @@ export default function HomeClient() {
         </div>
       </main>
       <Footer />
-      
-      {/* Portfoli-You Hover Popup */}
-      <PortfoliYouPopup 
-        isOpen={showPortfoliYouPopup} 
-        onClose={() => setShowPortfoliYouPopup(false)} 
-      />
     </div>
   )
 }
