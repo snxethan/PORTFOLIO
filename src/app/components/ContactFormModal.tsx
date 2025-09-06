@@ -62,7 +62,7 @@ export default function ContactFormModal({ onClose }: Props) {
     <div
     // This is the modal overlay. It covers the entire screen and has a semi-transparent background.
       // It also has a blur effect to make the background less distracting.
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={close}
     >
       <div
