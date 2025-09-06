@@ -4,6 +4,7 @@ import Sidebar from "@/app/components/pages/sidebar/Sidebar"
 import { FaPerson, FaPalette } from "react-icons/fa6"
 import Footer from "../components/pages/Footer"
 import { useExternalLink } from "../components/ExternalLinkHandler"
+import TooltipWrapper from "../components/ToolTipWrapper"
 import { useState, useEffect } from "react"
 
 export default function SocialPage() {
@@ -62,14 +63,16 @@ export default function SocialPage() {
           <div className="mt-2 md:mt-5 w-full md:max-w-sm space-y-6">
             {/* My Portfolio Widget */}
             <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 shadow-lg p-6 flex flex-col items-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
-              <a
-                href="https://snex.dev/"
-                className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
-                style={{ fontFamily: "var(--font-sans)" }}
-              >
-                <FaPerson />
-                My Portfolio
-              </a>
+              <TooltipWrapper label="https://snex.dev/">
+                <a
+                  href="https://snex.dev/"
+                  className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                  style={{ fontFamily: "var(--font-sans)" }}
+                >
+                  <FaPerson />
+                  My Portfolio
+                </a>
+              </TooltipWrapper>
             <div className="mt-2 text-gray-400 text-xs text-center">
               My own website under custom domains, holding all my projects, experience, and information about myself.
             </div>
@@ -102,14 +105,16 @@ export default function SocialPage() {
 
           {/* Portfoli-You Widget */}
           <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 shadow-lg p-6 flex flex-col items-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
-            <button
-              onClick={() => handleExternalClick("/portfoli-you", true)}
-              className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
-              style={{ fontFamily: "var(--font-sans)" }}
-            >
-              <FaPalette />
-              Portfoli-YOU
-            </button>
+            <TooltipWrapper label="/portfoli-you">
+              <button
+                onClick={() => handleExternalClick("/portfoli-you", true)}
+                className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                <FaPalette />
+                Portfoli-YOU
+              </button>
+            </TooltipWrapper>
             <div className="mt-2 text-gray-400 text-xs text-center">
               A local-first desktop application with drag-and-drop editor, modular templates, and optional cloud sync that empowers anyone to design and deploy their portfolio website.
             </div>
