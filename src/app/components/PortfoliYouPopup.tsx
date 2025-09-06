@@ -31,14 +31,14 @@ export default function PortfoliYouPopup({ isOpen, onClose }: PortfoliYouPopupPr
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-[#222222] border border-[#333333] rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-elastic-light">
+      <div className="bg-[#222222] border border-[#333333] rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-[#333333]">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-red-600 to-red-500 rounded-lg">
               <FaPalette className="text-white text-lg" />
             </div>
-            <h2 className="text-2xl font-bold text-white">Portfoli-You</h2>
+            <h2 className="text-2xl font-bold text-white">Portfoli-YOU</h2>
           </div>
           <button
             onClick={onClose}
@@ -62,12 +62,7 @@ export default function PortfoliYouPopup({ isOpen, onClose }: PortfoliYouPopupPr
           {/* Description */}
           <div className="text-gray-400 text-sm leading-relaxed">
             <p className="mb-4">
-              Portfoli-You is a revolutionary portfolio creation platform designed to help professionals 
-              showcase their unique talents and achievements through stunning, personalized portfolios.
-            </p>
-            <p>
-              Build beautiful, responsive portfolios that truly represent your professional journey 
-              and stand out in today&apos;s competitive landscape.
+              Portfoli-YOU is a local-first desktop application that empowers anyone (regardless of coding experience) to design and deploy their own portfolio website. With a drag-and-drop editor, modular templates, and optional cloud sync, Portfoli-YOU makes it easy to showcase skills, projects, and experience in a professional online presence.
             </p>
           </div>
 
@@ -89,11 +84,11 @@ export default function PortfoliYouPopup({ isOpen, onClose }: PortfoliYouPopupPr
               </li>
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-red-500 rounded-full" />
-                Custom domain support
+                Local-first with optional cloud sync
               </li>
               <li className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-red-500 rounded-full" />
-                Analytics & performance tracking
+                Modular component system
               </li>
             </ul>
           </div>
@@ -105,7 +100,7 @@ export default function PortfoliYouPopup({ isOpen, onClose }: PortfoliYouPopupPr
               <span className="text-red-400 font-semibold">Coming Soon</span>
             </div>
             <p className="text-gray-400 text-sm">
-              Portfoli-You is currently in development. Stay tuned for the official launch!
+              Portfoli-YOU is currently in development. Stay tuned for the official launch!
             </p>
           </div>
 
@@ -121,7 +116,7 @@ export default function PortfoliYouPopup({ isOpen, onClose }: PortfoliYouPopupPr
             
             <div className="grid grid-cols-2 gap-3">
               <a
-                href="https://github.com/snxethan"
+                href="https://github.com/snxethan/Portfoli-YOU"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 px-4 py-2 bg-[#333333] hover:bg-[#404040] text-gray-200 hover:text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm"
