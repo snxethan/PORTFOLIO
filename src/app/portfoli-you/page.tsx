@@ -30,9 +30,9 @@ export default function PortfoliYouPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <div className="flex flex-col min-h-[calc(100vh-4rem)] lg:min-h-screen overflow-hidden pt-16 lg:pt-0">
       {/* Disclaimer */}
-      <div className="absolute top-4 left-4 z-10 bg-orange-600/20 border border-orange-600/50 backdrop-blur-sm rounded-lg p-3 max-w-sm">
+      <div className="absolute top-20 left-4 lg:top-4 lg:left-4 z-10 bg-orange-600/20 border border-orange-600/50 backdrop-blur-sm rounded-lg p-3 max-w-sm">
         <div className="flex items-start gap-2">
           <FaExclamationTriangle className="text-orange-500 mt-0.5 flex-shrink-0" />
           <p className="text-orange-200 text-xs leading-relaxed">
@@ -41,7 +41,7 @@ export default function PortfoliYouPage() {
         </div>
       </div>
 
-      <main className="flex-grow w-full flex items-center justify-center p-6 pt-16 bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans">
+      <main className="flex-grow w-full flex items-center justify-center p-6 bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans">
         <div className="w-full max-w-4xl mx-auto text-center h-full flex flex-col justify-center">
           {/* Coming Soon Animation with extra spacing */}
           <div className="mb-6 relative">
@@ -81,14 +81,14 @@ export default function PortfoliYouPage() {
               href="https://github.com/snxethan"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-4 lg:px-6 py-2 lg:py-3 bg-[#333333] hover:bg-[#404040] text-gray-200 hover:text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm lg:text-base"
+              className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg gap-2 transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm lg:text-base"
             >
               <FaGithub />
               Portfoli-YOU Repo
             </a>
             <button
               disabled
-              className="flex items-center justify-center gap-2 px-4 lg:px-6 py-2 lg:py-3 bg-[#333333]/50 text-gray-500 rounded-lg text-sm lg:text-base cursor-not-allowed"
+              className="inline-flex items-center justify-center px-4 py-2 bg-gray-600/50 text-gray-400 rounded-lg gap-2 text-sm lg:text-base cursor-not-allowed"
               title="Coming soon"
             >
               <FaGithub />
