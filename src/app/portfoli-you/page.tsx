@@ -49,7 +49,7 @@ export default function PortfoliYouPage() {
           </h1>
           
           <div className="mb-8 space-y-4">
-            <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-300 leading-relaxed italic">
               A Portfolio for you, by you.
             </p>
             <p className="text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">
