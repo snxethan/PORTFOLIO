@@ -1,10 +1,14 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { FaGithub, FaExclamationTriangle } from "react-icons/fa"
 import Footer from "../components/pages/Footer"
+import { useExternalLink } from "../components/ExternalLinkHandler"
+import TooltipWrapper from "../components/ToolTipWrapper"
 
 export default function PortfoliYouPage() {
   const [loading, setLoading] = useState(true)
+  const { handleExternalClick } = useExternalLink()
 
   useEffect(() => {
     setLoading(false)
@@ -29,69 +33,98 @@ export default function PortfoliYouPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-[calc(100vh-4rem)] lg:min-h-screen overflow-hidden pt-16 lg:pt-0">
+      {/* Disclaimer */}
+      <div className="absolute top-20 left-4 lg:top-4 lg:left-4 z-10 bg-orange-600/20 border border-orange-600/50 backdrop-blur-sm rounded-lg p-3 max-w-sm">
+        <div className="flex items-start gap-2">
+          <FaExclamationTriangle className="text-orange-500 mt-0.5 flex-shrink-0" />
+          <p className="text-orange-200 text-xs leading-relaxed">
+            <strong>Notice:</strong> The official Portfoli-YOU platform will be moving to <u className="underline"><strong>portfoli-you.snxethan.dev</strong></u> soon. Stay tuned for updates!
+          </p>
+        </div>
+      </div>
+
       <main className="flex-grow w-full flex items-center justify-center p-6 bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans">
-        <div className="w-full max-w-2xl mx-auto text-center">
-          {/* Coming Soon Animation */}
-          <div className="mb-8 relative">
-            <div className="w-32 h-32 mx-auto rounded-full overflow-hidden animate-pulse">
+        <div className="w-full max-w-4xl mx-auto text-center h-full flex flex-col justify-center">
+          {/* Coming Soon Animation with extra spacing */}
+          <div className="mb-6 relative">
+            <div className="w-24 h-24 lg:w-32 lg:h-32 mx-auto rounded-full overflow-hidden animate-pulse">
               <img 
                 src="https://github.com/user-attachments/assets/bc0b40b7-52c3-460c-9519-4996e7213ab7" 
-                alt="Portfoli-You Logo" 
+                alt="Portfoli-YOU Logo" 
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="absolute inset-0 w-32 h-32 mx-auto rounded-full border-4 border-red-500 opacity-50 animate-ping"></div>
+            <div className="absolute inset-0 w-24 h-24 lg:w-32 lg:h-32 mx-auto rounded-full border-4 border-red-500 opacity-50 animate-ping"></div>
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 lg:mb-6 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             Portfoli-YOU
           </h1>
           
-          <div className="mb-8 space-y-4">
-            <p className="text-xl md:text-2xl text-gray-300 leading-relaxed italic">
+          <div className="mb-6 lg:mb-8 space-y-2 lg:space-y-4">
+            <p className="text-lg md:text-xl lg:text-2xl text-gray-300 leading-relaxed italic">
               A Portfolio for you, by you.
             </p>
-            <p className="text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">
+            <p className="text-sm md:text-base lg:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
               Build stunning, personalized portfolios that showcase your unique talents and achievements. No coding experience required.
             </p>
           </div>
 
-          <div className="mb-12">
-            <div className="inline-block bg-[#222222] rounded-xl border border-red-600/50 px-8 py-4 shadow-lg">
-              <p className="text-2xl font-semibold text-red-500 mb-2">Coming Soon</p>
-              <p className="text-gray-400">I&rsquo;m working hard to bring you something amazing!</p>
+          <div className="mb-6 lg:mb-8">
+            <div className="inline-block bg-[#222222] rounded-xl border border-red-600/50 hover:border-red-600/70 px-4 lg:px-8 py-3 lg:py-4 shadow-lg transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
+              <p className="text-xl lg:text-2xl font-semibold text-red-500 mb-1 lg:mb-2">Coming Soon</p>
+              <p className="text-gray-400 text-sm lg:text-base">I&rsquo;m working hard to bring you something amazing!</p>
             </div>
           </div>
 
-          {/* Features Preview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 p-6 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
-              <div className="w-12 h-12 bg-gradient-to-r from-red-600 to-red-500 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                <span className="text-white font-bold">🎨</span>
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Customizable Designs</h3>
-              <p className="text-gray-400 text-sm">Choose and create from carefuly crafted widgets and modules</p>
-            </div>
-
-            <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 p-6 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
-              <div className="w-12 h-12 bg-gradient-to-r from-red-600 to-red-500 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                <span className="text-white font-bold">⚡</span>
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Easy to Use</h3>
-              <p className="text-gray-400 text-sm">Design and create your digital portfolio in minutes, not hours</p>
-            </div>
-
-            <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 p-6 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
-              <div className="w-12 h-12 bg-gradient-to-r from-red-600 to-red-500 rounded-lg mx-auto mb-4 flex items-center justify-center">
-                <span className="text-white font-bold">🚀</span>
-              </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Share Anywhere</h3>
-              <p className="text-gray-400 text-sm">Deploy and share your portfolio to anyone, anywhere with one click</p>
-            </div>
+          {/* GitHub Repository Buttons */}
+          <div className="mb-6 lg:mb-8 flex justify-center gap-4">
+            <TooltipWrapper label="https://github.com/snxethan/Portfoli-YOU">
+              <button
+                onClick={() => handleExternalClick("https://github.com/snxethan/Portfoli-YOU", true)}
+                className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg gap-2 transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm lg:text-base"
+              >
+                <FaGithub />
+                Portfoli-YOU Repo
+              </button>
+            </TooltipWrapper>
+            <button
+              disabled
+              className="inline-flex items-center justify-center px-4 py-2 bg-gray-600/50 text-gray-400 rounded-lg gap-2 text-sm lg:text-base cursor-not-allowed"
+              title="Coming soon"
+            >
+              <FaGithub />
+              Website Repo
+            </button>
           </div>
 
+          {/* Features Preview - Scaled down and condensed */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+            <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 p-4 lg:p-6 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-red-600 to-red-500 rounded-lg mx-auto mb-3 lg:mb-4 flex items-center justify-center">
+                <span className="text-white font-bold text-lg lg:text-xl">🎨</span>
+              </div>
+              <h3 className="text-base lg:text-lg font-semibold text-white mb-2">Customizable Designs</h3>
+              <p className="text-gray-400 text-xs lg:text-sm">Choose from carefully crafted widgets and modules</p>
+            </div>
 
+            <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 p-4 lg:p-6 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-red-600 to-red-500 rounded-lg mx-auto mb-3 lg:mb-4 flex items-center justify-center">
+                <span className="text-white font-bold text-lg lg:text-xl">⚡</span>
+              </div>
+              <h3 className="text-base lg:text-lg font-semibold text-white mb-2">Easy to Use</h3>
+              <p className="text-gray-400 text-xs lg:text-sm">Design your digital portfolio in minutes, not hours</p>
+            </div>
+
+            <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 p-4 lg:p-6 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
+              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-red-600 to-red-500 rounded-lg mx-auto mb-3 lg:mb-4 flex items-center justify-center">
+                <span className="text-white font-bold text-lg lg:text-xl">🚀</span>
+              </div>
+              <h3 className="text-base lg:text-lg font-semibold text-white mb-2">Share Anywhere</h3>
+              <p className="text-gray-400 text-xs lg:text-sm">Deploy and share your portfolio anywhere with one click</p>
+            </div>
+          </div>
         </div>
       </main>
       <Footer />
