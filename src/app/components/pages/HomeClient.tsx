@@ -72,36 +72,6 @@ export default function HomeClient() {
 
                 </div>
 
-                {/* Portfoli-You Widget */}
-                <div className="bg-[#1e1e1e] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg text-white max-w-md mx-auto text-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
-                  <div className="flex flex-col items-center mb-4">
-                    <h2 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-red-500 text-transparent bg-clip-text">
-                      Portfoli-You
-                    </h2>
-                    <div className="w-20 h-[2px] mt-2 bg-gradient-to-r from-red-600 to-red-500 rounded-full" />
-                  </div>
-
-                  <p className="text-gray-400 text-sm mb-4 italic">
-                    A portfolio for you, by you.
-                  </p>
-
-                  <p className="text-gray-400 text-xs mb-4">
-                    A revolutionary portfolio creation platform. Build stunning, personalized portfolios that showcase your unique talents and achievements.
-                  </p>
-
-                  <div className="flex flex-col items-center gap-3">
-                    <a
-                      href="/portfoli-you"
-                      className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
-                    >
-                      Learn More
-                    </a>
-                    <span className="px-3 py-1 bg-red-600/20 border border-red-600/30 text-red-400 rounded-md text-xs font-medium">
-                      Coming Soon
-                    </span>
-                  </div>
-                </div>
-
             </section>
           </div>
         </div>
