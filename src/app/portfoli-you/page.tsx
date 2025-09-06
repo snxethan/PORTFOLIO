@@ -45,22 +45,22 @@ export default function PortfoliYouPage() {
           </div>
 
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Portfoli-You
+            Portfoli-YOU
           </h1>
           
           <div className="mb-8 space-y-4">
             <p className="text-xl md:text-2xl text-gray-300 leading-relaxed">
-              A revolutionary portfolio creation platform
+              A Portfolio for you, by you.
             </p>
             <p className="text-lg text-gray-400 max-w-xl mx-auto leading-relaxed">
-              Build stunning, personalized portfolios that showcase your unique talents and achievements.
+              Build stunning, personalized portfolios that showcase your unique talents and achievements. No coding experience required.
             </p>
           </div>
 
           <div className="mb-12">
             <div className="inline-block bg-[#222222] rounded-xl border border-red-600/50 px-8 py-4 shadow-lg">
               <p className="text-2xl font-semibold text-red-500 mb-2">Coming Soon</p>
-              <p className="text-gray-400">We&rsquo;re working hard to bring you something amazing!</p>
+              <p className="text-gray-400">I&rsquo;m working hard to bring you something amazing!</p>
             </div>
           </div>
 
@@ -70,8 +70,8 @@ export default function PortfoliYouPage() {
               <div className="w-12 h-12 bg-gradient-to-r from-red-600 to-red-500 rounded-lg mx-auto mb-4 flex items-center justify-center">
                 <span className="text-white font-bold">🎨</span>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">Beautiful Designs</h3>
-              <p className="text-gray-400 text-sm">Choose from stunning, professionally crafted templates</p>
+              <h3 className="text-lg font-semibold text-white mb-2">Customizable Designs</h3>
+              <p className="text-gray-400 text-sm">Choose and create from carefuly crafted widgets and modules</p>
             </div>
 
             <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 p-6 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
@@ -79,7 +79,7 @@ export default function PortfoliYouPage() {
                 <span className="text-white font-bold">⚡</span>
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">Easy to Use</h3>
-              <p className="text-gray-400 text-sm">Create your portfolio in minutes, not hours</p>
+              <p className="text-gray-400 text-sm">Design and create your digital portfolio in minutes, not hours</p>
             </div>
 
             <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 p-6 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
@@ -87,7 +87,7 @@ export default function PortfoliYouPage() {
                 <span className="text-white font-bold">🚀</span>
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">Share Anywhere</h3>
-              <p className="text-gray-400 text-sm">Deploy and share your portfolio with one click</p>
+              <p className="text-gray-400 text-sm">Deploy and share your portfolio to anyone, anywhere with one click</p>
             </div>
           </div>
 
