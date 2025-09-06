@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 import toast from 'react-hot-toast'
 
 // This component is used to display a contact form modal. It allows users to send messages to the developer.
@@ -14,6 +15,7 @@ export default function ContactFormModal({ onClose }: Props) {
   const [name, setName] = useState("") // State to store the name input
   const [email, setEmail] = useState("") // State to store the email input
   const [message, setMessage] = useState("") // State to store the message input
+  const [mounted, setMounted] = useState(false)
 
   // This function handles the form submission. It sends the name, email, and message to the server.
   // If the submission is successful, it shows a success message and closes the modal.
@@ -48,6 +50,7 @@ export default function ContactFormModal({ onClose }: Props) {
   useEffect(() => {
     // Add a class to the body to prevent scrolling when the modal is open
     // This is done to prevent the background from scrolling when the modal is open
+    setMounted(true)
     document.body.classList.add("overflow-hidden") // Prevent scrolling
     return () => document.body.classList.remove("overflow-hidden") // Remove the class when the modal is closed
   }, [])
@@ -58,7 +61,7 @@ export default function ContactFormModal({ onClose }: Props) {
     setTimeout(onClose, 300)
   }
 
-  return (
+  const modalContent = (
     <div
     // This is the modal overlay. It covers the entire screen and has a semi-transparent background.
       // It also has a blur effect to make the background less distracting.
@@ -119,4 +122,10 @@ export default function ContactFormModal({ onClose }: Props) {
       </div>
     </div>
   )
+
+  // Only render if mounted (client-side) to avoid hydration issues
+  if (!mounted) return null
+
+  // Use portal to render the modal at the document root level
+  return createPortal(modalContent, document.body)
 }
