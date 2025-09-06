@@ -39,7 +39,7 @@ export default function PortfoliYouPage() {
         <div className="flex items-start gap-2">
           <FaExclamationTriangle className="text-orange-500 mt-0.5 flex-shrink-0" />
           <p className="text-orange-200 text-xs leading-relaxed">
-            <strong>Notice:</strong> The official Portfoli-YOU platform will be moving to <u className="underline"><strong>portfoli-you.snxethan.dev</strong></u> soon. Stay tuned for updates!
+            <strong>Notice:</strong> 'Portfoli-YOU' is currently under development; This page will soon transition to <u className="underline"><strong>portfoli-you.snxethan.dev</strong></u>. The installer will be available for download in the near future.
           </p>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function PortfoliYouPage() {
               A Portfolio for you, by you.
             </p>
             <p className="text-sm md:text-base lg:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              Build stunning, personalized portfolios that showcase your unique talents and achievements. No coding experience required.
+              Build stunning, personalized digital portfolios that showcase your unique talents and achievements. No coding experience required.
             </p>
           </div>
 
@@ -86,7 +86,7 @@ export default function PortfoliYouPage() {
                 className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg gap-2 transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm lg:text-base"
               >
                 <FaGithub />
-                Portfoli-YOU Repo
+                Portfoli-YOU Repository
               </button>
             </TooltipWrapper>
             <button
@@ -95,7 +95,7 @@ export default function PortfoliYouPage() {
               title="Coming soon"
             >
               <FaGithub />
-              Website Repo
+              Website Repository
             </button>
           </div>
 
