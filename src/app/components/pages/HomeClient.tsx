@@ -53,20 +53,13 @@ export default function HomeClient() {
                   A portfolio for you, by you.
                 </p>
 
-                <p className="text-gray-400 text-xs mb-4">
-                  A revolutionary portfolio creation platform. Build stunning, personalized portfolios that showcase your unique talents and achievements.
-                </p>
-
                 <div className="flex flex-col items-center gap-3">
                   <a
                     href="/portfoli-you"
                     className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                   >
-                    Learn More
+                    Coming Soon...
                   </a>
-                  <span className="px-3 py-1 bg-red-600/20 border border-red-600/30 text-red-400 rounded-md text-xs font-medium">
-                    Coming Soon
-                  </span>
                 </div>
               </div>
             </div>
