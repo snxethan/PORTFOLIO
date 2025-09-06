@@ -3,12 +3,12 @@
 import Sidebar from "@/app/components/pages/sidebar/Sidebar"
 import { FaPerson, FaPalette } from "react-icons/fa6"
 import Footer from "../components/pages/Footer"
-import PortfoliYouPopup from "../components/PortfoliYouPopup"
+import { useExternalLink } from "../components/ExternalLinkHandler"
 import { useState, useEffect } from "react"
 
 export default function SocialPage() {
   const [loading, setLoading] = useState(true)
-  const [isPopupOpen, setIsPopupOpen] = useState(false)
+  const { handleExternalClick } = useExternalLink()
 
     useEffect(() => {
       setLoading(false) // Set loading to false after 1 second
@@ -103,12 +103,12 @@ export default function SocialPage() {
           {/* Portfoli-You Widget */}
           <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 shadow-lg p-6 flex flex-col items-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
             <button
-              onClick={() => setIsPopupOpen(true)}
+              onClick={() => handleExternalClick("/portfoli-you", true)}
               className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
               style={{ fontFamily: "var(--font-sans)" }}
             >
               <FaPalette />
-              Portfoli-You
+              Portfoli-YOU
             </button>
             <div className="mt-2 text-gray-400 text-xs text-center">
               A revolutionary portfolio creation platform. Build stunning, personalized portfolios that showcase your unique talents and achievements.
@@ -126,7 +126,6 @@ export default function SocialPage() {
       
     </main>
     <Footer/>
-    <PortfoliYouPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
     </div>
   )
 }

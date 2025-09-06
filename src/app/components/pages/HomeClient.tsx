@@ -8,11 +8,11 @@ import About from "./About"
 import Resume from "./Resume"
 import Portfolio from "./Portfolio"
 import Footer from "./Footer"
-import PortfoliYouPopup from "../PortfoliYouPopup"
+import { useExternalLink } from "../ExternalLinkHandler"
 
 export default function HomeClient() {
   const [activeTab, setActiveTab] = useState<string | null>(null)
-  const [isPopupOpen, setIsPopupOpen] = useState(false)
+  const { handleExternalClick } = useExternalLink()
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -46,7 +46,7 @@ export default function HomeClient() {
               <div className="w-full lg:w-80 bg-[#222222] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg text-white text-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                 <div className="flex flex-col items-center mb-4">
                   <h2 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-red-500 text-transparent bg-clip-text">
-                    Portfoli-You
+                    Portfoli-YOU
                   </h2>
                   <div className="w-20 h-[2px] mt-2 bg-gradient-to-r from-red-600 to-red-500 rounded-full" />
                 </div>
@@ -57,7 +57,7 @@ export default function HomeClient() {
 
                 <div className="flex flex-col items-center gap-3">
                   <button
-                    onClick={() => setIsPopupOpen(true)}
+                    onClick={() => handleExternalClick("/portfoli-you", true)}
                     className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                   >
                     Coming soon...
@@ -104,7 +104,6 @@ export default function HomeClient() {
         </div>
       </main>
       <Footer />
-      <PortfoliYouPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
     </div>
   )
 }
