@@ -1,7 +1,7 @@
 "use client"
 
 import Sidebar from "@/app/components/pages/sidebar/Sidebar"
-import { FaPerson } from "react-icons/fa6"
+import { FaPerson, FaPalette } from "react-icons/fa6"
 import Footer from "../components/pages/Footer"
 import { useState, useEffect } from "react"
 
@@ -57,8 +57,8 @@ export default function SocialPage() {
         <div className="flex flex-col md:flex-row items-start justify-center gap-10 w-full max-w-4xl">
           <Sidebar />
 
-          <div className="mt-2 md:mt-5 w-full md:max-w-sm">
-            {/* Added hover animation classes to the card container */}
+          <div className="mt-2 md:mt-5 w-full md:max-w-sm space-y-6">
+            {/* My Portfolio Widget */}
             <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 shadow-lg p-6 flex flex-col items-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
               <a
                 href="https://snex.dev/"
@@ -95,6 +95,28 @@ export default function SocialPage() {
               >
                 Projects
               </a>
+            </div>
+          </div>
+
+          {/* Portfoli-You Widget */}
+          <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 shadow-lg p-6 flex flex-col items-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
+            <a
+              href="/portfoli-you"
+              className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+              style={{ fontFamily: "var(--font-sans)" }}
+            >
+              <FaPalette />
+              Portfoli-You
+            </a>
+            <div className="mt-2 text-gray-400 text-xs text-center">
+              A revolutionary portfolio creation platform. Build stunning, personalized portfolios that showcase your unique talents and achievements.
+            </div>
+
+            {/* Status and Call to Action */}
+            <div className="mt-4 flex justify-center">
+              <span className="px-3 py-1 bg-red-600/20 border border-red-600/30 text-red-400 rounded-md text-xs font-medium">
+                Coming Soon
+              </span>
             </div>
           </div>
         </div>

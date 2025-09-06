@@ -167,20 +167,25 @@ const Portfolio: React.FC = () => {
     }
 
     const processProjects = (data: any[]) => {
-      const githubProjects: Project[] = data.map((project: any) => ({
-        id: project.id,
-        name: project.name,
-        description: project.description,
-        html_url: project.html_url,
-        language: project.language,
-        topics: project.topics || [],
-        created_at: project.created_at,
-        updated_at: project.updated_at,
-        source: "github",
-        stargazers_count: project.stargazers_count,
-        ctaLabel: "View Repository",
-        ctaIcon: "github",
-      }))
+      const githubProjects: Project[] = data.map((project: any) => {
+        // Only redirect portfoliyou project to the portfoli-you page
+        const isPortfoliyouProject = project.name.toLowerCase().includes('portfoli-you')
+        
+        return {
+          id: project.id,
+          name: project.name,
+          description: project.description,
+          html_url: isPortfoliyouProject ? "/portfoli-you" : project.html_url,
+          language: project.language,
+          topics: project.topics || [],
+          created_at: project.created_at,
+          updated_at: project.updated_at,
+          source: "github",
+          stargazers_count: project.stargazers_count,
+          ctaLabel: isPortfoliyouProject ? "View my Capstone" : "View Repository",
+          ctaIcon: isPortfoliyouProject ? "external" : "github",
+        }
+      })
       const allProjects = [...githubProjects, ...manualProjects]
       setProjects(allProjects)
       extractTags(allProjects)
@@ -392,7 +397,7 @@ const Portfolio: React.FC = () => {
                       {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
                       <span className="flex-1 break-words text-center leading-tight">
                         {project.name.toLowerCase() === "portfolio"
-                          ? "View (This website!) Repository"
+                          ? "View Repository (This site!)"
                           : project.ctaLabel ?? "View Repository"}
                       </span>
                     </button>
