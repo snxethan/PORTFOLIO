@@ -169,7 +169,7 @@ const Portfolio: React.FC = () => {
     const processProjects = (data: any[]) => {
       const githubProjects: Project[] = data.map((project: any) => {
         // Only redirect portfoliyou project to the portfoli-you page
-        const isPortfoliyouProject = project.name.toLowerCase().includes('portfoli')
+        const isPortfoliyouProject = project.name.toLowerCase().includes('portfoli-you')
         
         return {
           id: project.id,
@@ -182,7 +182,7 @@ const Portfolio: React.FC = () => {
           updated_at: project.updated_at,
           source: "github",
           stargazers_count: project.stargazers_count,
-          ctaLabel: isPortfoliyouProject ? "View this Project" : "View Repository",
+          ctaLabel: isPortfoliyouProject ? "View my Capstone" : "View Repository",
           ctaIcon: isPortfoliyouProject ? "external" : "github",
         }
       })
@@ -397,7 +397,7 @@ const Portfolio: React.FC = () => {
                       {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
                       <span className="flex-1 break-words text-center leading-tight">
                         {project.name.toLowerCase() === "portfolio"
-                          ? "View (This website!) Repository"
+                          ? "View Repository (This site!)"
                           : project.ctaLabel ?? "View Repository"}
                       </span>
                     </button>
