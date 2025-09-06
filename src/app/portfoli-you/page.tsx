@@ -34,11 +34,11 @@ export default function PortfoliYouPage() {
         <div className="w-full max-w-2xl mx-auto text-center">
           {/* Coming Soon Animation */}
           <div className="mb-8 relative">
-            <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-red-600 to-red-500 flex items-center justify-center animate-pulse overflow-hidden">
+            <div className="w-32 h-32 mx-auto rounded-full overflow-hidden animate-pulse">
               <img 
-                src="https://github.com/user-attachments/assets/d1591154-aca7-472e-9955-83ed6e9ca2dd" 
+                src="https://github.com/user-attachments/assets/bc0b40b7-52c3-460c-9519-4996e7213ab7" 
                 alt="Portfoli-You Logo" 
-                className="w-20 h-20 object-contain"
+                className="w-full h-full object-cover"
               />
             </div>
             <div className="absolute inset-0 w-32 h-32 mx-auto rounded-full border-4 border-red-500 opacity-50 animate-ping"></div>
