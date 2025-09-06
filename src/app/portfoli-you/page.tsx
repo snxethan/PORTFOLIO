@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react"
 import { FaGithub, FaExclamationTriangle } from "react-icons/fa"
 import Footer from "../components/pages/Footer"
+import { useExternalLink } from "../components/ExternalLinkHandler"
 
 export default function PortfoliYouPage() {
   const [loading, setLoading] = useState(true)
+  const { handleExternalClick } = useExternalLink()
 
   useEffect(() => {
     setLoading(false)
@@ -36,7 +38,7 @@ export default function PortfoliYouPage() {
         <div className="flex items-start gap-2">
           <FaExclamationTriangle className="text-orange-500 mt-0.5 flex-shrink-0" />
           <p className="text-orange-200 text-xs leading-relaxed">
-            <strong>Notice:</strong> The official Portfoli-YOU platform will be moving to <strong>portfoli-you.snxethan.com</strong> soon. Stay tuned for updates!
+            <strong>Notice:</strong> The official Portfoli-YOU platform will be moving to <u className="underline"><strong>portfoli-you.snxethan.dev</strong></u> soon. Stay tuned for updates!
           </p>
         </div>
       </div>
@@ -77,15 +79,13 @@ export default function PortfoliYouPage() {
 
           {/* GitHub Repository Buttons */}
           <div className="mb-6 lg:mb-8 flex justify-center gap-4">
-            <a
-              href="https://github.com/snxethan"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => handleExternalClick("https://github.com/snxethan/Portfoli-YOU", true)}
               className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg gap-2 transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm lg:text-base"
             >
               <FaGithub />
               Portfoli-YOU Repo
-            </a>
+            </button>
             <button
               disabled
               className="inline-flex items-center justify-center px-4 py-2 bg-gray-600/50 text-gray-400 rounded-lg gap-2 text-sm lg:text-base cursor-not-allowed"
