@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { FaGithub, FaExclamationTriangle } from "react-icons/fa"
 import Footer from "../components/pages/Footer"
 import { useExternalLink } from "../components/ExternalLinkHandler"
+import TooltipWrapper from "../components/ToolTipWrapper"
 
 export default function PortfoliYouPage() {
   const [loading, setLoading] = useState(true)
@@ -79,13 +80,15 @@ export default function PortfoliYouPage() {
 
           {/* GitHub Repository Buttons */}
           <div className="mb-6 lg:mb-8 flex justify-center gap-4">
-            <button
-              onClick={() => handleExternalClick("https://github.com/snxethan/Portfoli-YOU", true)}
-              className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg gap-2 transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm lg:text-base"
-            >
-              <FaGithub />
-              Portfoli-YOU Repo
-            </button>
+            <TooltipWrapper label="https://github.com/snxethan/Portfoli-YOU">
+              <button
+                onClick={() => handleExternalClick("https://github.com/snxethan/Portfoli-YOU", true)}
+                className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg gap-2 transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm lg:text-base"
+              >
+                <FaGithub />
+                Portfoli-YOU Repo
+              </button>
+            </TooltipWrapper>
             <button
               disabled
               className="inline-flex items-center justify-center px-4 py-2 bg-gray-600/50 text-gray-400 rounded-lg gap-2 text-sm lg:text-base cursor-not-allowed"
