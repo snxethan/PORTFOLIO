@@ -35,7 +35,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
       {loading ? (
         // Loading state: Show a skeleton loader while the sidebar is loading
         // This is a placeholder for the sidebar content while it is loading.
-        <aside className={`w-full md:max-w-md lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 pt-8 self-start relative z-10 mx-auto lg:mx-0 ${className}`}>
+        <aside className={`w-full md:max-w-md lg:max-w-80 lg:min-w-64 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 pt-8 self-start relative z-10 mx-auto lg:mx-0 ${className}`}>
           <div className="w-32 h-32 mx-auto rounded-full bg-[#333333]" />
           <div className="mt-4 text-center space-y-2">
             <div className="h-6 w-40 bg-[#333333] mx-auto rounded" />
@@ -55,7 +55,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
           <div className="mt-6 h-12 bg-[#333333] rounded" />
         </aside>
       ) : (
-        <aside className={`w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 ${className}`}>
+        <aside className={`w-full lg:max-w-80 lg:min-w-64 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 ${className}`}>
           <audio ref={clickSoundRef} src="/sounds/yippe.mp3" preload="auto" />
 
           {/* Avatar */}

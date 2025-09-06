@@ -42,13 +42,13 @@ export default function HomeClient() {
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
       {/* Main Page Content */}
       <main className="flex-grow pt-20 md:pt-0">
-        <div className="container mx-auto px-4 pt-15 lg:pt-12 min-w-[360px]">
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex flex-col gap-6 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] mb-12 lg:items-center lg:mx-auto lg:w-fit">
+        <div className="container mx-auto px-4 pt-15 lg:pt-12 min-w-[360px] overflow-x-auto">
+          <div className="flex flex-col lg:flex-row gap-8 min-w-0">
+            <div className="flex flex-col gap-6 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] mb-12 lg:items-center lg:mx-auto lg:w-fit min-w-0">
               <Sidebar className="md:mt-20 lg:mt-0"/>
               
               {/* Portfoli-You Widget */}
-              <div className="w-full lg:w-80 bg-[#222222] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg text-white text-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
+              <div className="w-full lg:max-w-80 lg:min-w-64 bg-[#222222] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg text-white text-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
                 <div className="flex flex-col items-center mb-4">
                   <h2 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-red-500 text-transparent bg-clip-text">
                     Portfoli-YOU
