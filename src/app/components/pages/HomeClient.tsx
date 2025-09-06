@@ -58,7 +58,7 @@ export default function HomeClient() {
                     href="/portfoli-you"
                     className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                   >
-                    Learn More
+                    Coming soon...
                   </a>
                 </div>
               </div>
