@@ -8,9 +8,11 @@ import About from "./About"
 import Resume from "./Resume"
 import Portfolio from "./Portfolio"
 import Footer from "./Footer"
+import PortfoliYouPopup from "../PortfoliYouPopup"
 
 export default function HomeClient() {
   const [activeTab, setActiveTab] = useState<string | null>(null)
+  const [isPopupOpen, setIsPopupOpen] = useState(false)
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -54,12 +56,12 @@ export default function HomeClient() {
                 </p>
 
                 <div className="flex flex-col items-center gap-3">
-                  <a
-                    href="/portfoli-you"
+                  <button
+                    onClick={() => setIsPopupOpen(true)}
                     className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                   >
                     Coming soon...
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -102,6 +104,7 @@ export default function HomeClient() {
         </div>
       </main>
       <Footer />
+      <PortfoliYouPopup isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)} />
     </div>
   )
 }
