@@ -37,7 +37,7 @@ export default function HomeClient() {
       <main className="flex-grow pt-20 md:pt-0">
         <div className="container mx-auto px-4 pt-15 lg:pt-12 min-w-[360px]">
           <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex flex-col gap-6 lg:sticky lg:top-8 self-start mb-12">
+            <div className="flex flex-col gap-6 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] self-start mb-12">
               <Sidebar className="md:mt-20 lg:mt-0"/>
               
               {/* Portfoli-You Widget */}
@@ -58,7 +58,7 @@ export default function HomeClient() {
                     href="/portfoli-you"
                     className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                   >
-                    Coming Soon...
+                    Learn More
                   </a>
                 </div>
               </div>

@@ -112,11 +112,11 @@ export default function SocialPage() {
               A revolutionary portfolio creation platform. Build stunning, personalized portfolios that showcase your unique talents and achievements.
             </div>
 
-            {/* Status and Call to Action */}
+            {/* Tagline */}
             <div className="mt-4 flex justify-center">
-              <span className="px-3 py-1 bg-red-600/20 border border-red-600/30 text-red-400 rounded-md text-xs font-medium">
-                Coming Soon
-              </span>
+              <p className="text-gray-300 text-sm italic">
+                A portfolio for you, by you
+              </p>
             </div>
           </div>
         </div>
