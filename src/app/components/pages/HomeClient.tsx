@@ -44,7 +44,7 @@ export default function HomeClient() {
       <main className="flex-grow pt-20 xl:pt-0">
         <div className="container mx-auto px-4 pt-15 xl:pt-12 min-w-[360px]">
           <div className="flex flex-col xl:flex-row gap-8">
-            <div className="flex flex-col gap-6 xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)] mb-12 xl:items-center xl:mx-auto xl:w-fit">
+            <div className="flex flex-col gap-6 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto mb-12 xl:items-center xl:mx-auto xl:w-fit">
               <Sidebar />
               
               {/* Portfoli-You Widget */}
