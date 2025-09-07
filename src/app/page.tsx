@@ -15,10 +15,12 @@ export default function Page() {
   }, [])
 
   return (
+  
     <Suspense fallback={null}>
       <HomeClient />
       {showSecurityPolicy && (
         <SecurityPolicyModal onClose={() => setShowSecurityPolicy(false)} />
+        
       )}
     </Suspense>
   )

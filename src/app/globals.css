@@ -1,6 +1,8 @@
 @import "tailwindcss";
-@source "../node_modules/@snxethan/snex-components";
-@import "@snxethan/snex-components/styles.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 :root {
   --background: #ffffff;
@@ -28,39 +30,6 @@ body {
   overflow-x: auto;    /* Allow horizontal scroll when needed */
   min-width: 360px;    /* Prevent UI from condensing below 360px */
 }
-
-.footer-links {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  align-items: center;
-  justify-content: center;
-}
-
-@media (max-height: 124px) {
-  .footer-links {
-    flex-direction: column;
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
