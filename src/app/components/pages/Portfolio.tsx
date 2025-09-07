@@ -169,7 +169,7 @@ const Portfolio: React.FC = () => {
     const processProjects = (data: any[]) => {
       const githubProjects: Project[] = data.map((project: any) => {
         // Only redirect portfoliyou project to the portfoli-you page
-        const isPortfoliyouProject = project.name.toLowerCase().includes('portfoli-you')
+        const isPortfoliyouProject = project.name.toLowerCase().includes('portfoliyou')
         
         return {
           id: project.id,
