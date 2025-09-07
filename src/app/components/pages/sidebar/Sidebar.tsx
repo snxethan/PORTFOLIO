@@ -35,7 +35,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
       {loading ? (
         // Loading state: Show a skeleton loader while the sidebar is loading
         // This is a placeholder for the sidebar content while it is loading.
-        <aside className={`w-full md:max-w-md lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 pt-8 self-start relative z-10 mx-auto lg:mx-0 ${className}`}>
+        <aside className={`w-full md:max-w-md xl:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 pt-8 self-start relative z-10 mx-auto xl:mx-0 ${className}`}>
           <div className="w-32 h-32 mx-auto rounded-full bg-[#333333]" />
           <div className="mt-4 text-center space-y-2">
             <div className="h-6 w-40 bg-[#333333] mx-auto rounded" />

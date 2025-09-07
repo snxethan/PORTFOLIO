@@ -42,7 +42,7 @@ export default function HomeClient() {
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
       {/* Main Page Content */}
       <main className="flex-grow pt-20 md:pt-0">
-        <div className="container mx-auto px-4 pt-15 lg:pt-12 min-w-[360px]">
+        <div className="container mx-auto px-4 pt-15 xl:pt-12 min-w-[360px]">
           <div className="flex flex-col xl:flex-row gap-8">
             <div className="flex flex-col gap-6 xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)] mb-12 xl:items-center xl:mx-auto xl:w-fit">
               <Sidebar className="md:mt-20 xl:mt-0"/>

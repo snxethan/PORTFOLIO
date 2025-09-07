@@ -28,7 +28,7 @@ const handleClick = (tab: string) => {
 
 
   return (
-    <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 lg:static lg:top-auto lg:left-auto lg:z-0 animate-elastic-in">
+    <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 xl:static xl:top-auto xl:left-auto xl:z-0 animate-elastic-in">
       <div className="container mx-auto flex items-center justify-center">
         {isLoading ? (
           <ul className="flex space-x-4 animate-pulse">
