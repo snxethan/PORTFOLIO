@@ -1,9 +1,8 @@
 "use client"
 
+import { PDFModalViewer, TooltipWrapper } from "@snxethan/snex-components"
 import { useEffect, useState } from "react"
 import { FaDownload } from "react-icons/fa"
-import TooltipWrapper from "../ToolTipWrapper"
-import PDFModalViewer from "../PDFModalViewer"
 
 interface TimelineItem {
   type: "experience" | "education"

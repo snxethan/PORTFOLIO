@@ -1,7 +1,7 @@
 "use client"
 
+import { ContactFormModal } from "@snxethan/snex-components";
 import { useState } from "react"
-import ContactFormModal from "../../ContactFormModal"
 import { IoIosContact } from "react-icons/io";
 
 // This component is used to display the current status of the user. It shows the user's current status and a button to contact them.

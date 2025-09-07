@@ -1,10 +1,9 @@
 "use client"
 
+import { Footer, TooltipWrapper, useExternalLink } from "@snxethan/snex-components"
 import { useState, useEffect } from "react"
 import { FaGithub, FaExclamationTriangle } from "react-icons/fa"
-import Footer from "../components/pages/Footer"
-import { useExternalLink } from "../components/ExternalLinkHandler"
-import TooltipWrapper from "../components/ToolTipWrapper"
+
 
 export default function PortfoliYouPage() {
   const [loading, setLoading] = useState(true)

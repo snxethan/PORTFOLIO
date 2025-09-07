@@ -1,10 +1,10 @@
 "use client"
 
+import { TooltipWrapper, useExternalLink } from "@snxethan/snex-components"
 import React from "react"
 import { useState, useEffect } from "react"
 import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevronUp } from "react-icons/fa"
-import { useExternalLink } from "../ExternalLinkHandler"
-import TooltipWrapper from "../ToolTipWrapper"
+
 
 interface Project {
   id: number

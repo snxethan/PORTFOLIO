@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@source "../node_modules/@snxethan/snex-components";
+@import "@snxethan/snex-components/styles.css";
 
 :root {
   --background: #ffffff;

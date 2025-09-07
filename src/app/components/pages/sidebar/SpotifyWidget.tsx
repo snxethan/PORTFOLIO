@@ -1,9 +1,9 @@
 "use client"
 
+import { TooltipWrapper, useExternalLink } from "@snxethan/snex-components"
 import { useEffect, useState, useRef } from "react"
 import { FaSpotify } from "react-icons/fa"
-import { useExternalLink } from "../../ExternalLinkHandler"
-import TooltipWrapper from "../../ToolTipWrapper"
+
 
 // This component fetches the currently playing track from Spotify and displays it in a widget.
 // It updates every 30 seconds and shows a loading animation while fetching data.

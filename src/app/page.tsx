@@ -3,7 +3,7 @@
 import { Suspense } from "react"
 import HomeClient from "./components/pages/HomeClient"
 import { useEffect, useState } from "react"
-import SecurityPolicyModal from "./components/SecurityPolicyModal"
+import { SecurityPolicyModal } from "@snxethan/snex-components"
 
 export default function Page() {
   const [showSecurityPolicy, setShowSecurityPolicy] = useState(false)

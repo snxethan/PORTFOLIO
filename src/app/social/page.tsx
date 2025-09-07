@@ -2,10 +2,8 @@
 
 import Sidebar from "@/app/components/pages/sidebar/Sidebar"
 import { FaPerson, FaPalette } from "react-icons/fa6"
-import Footer from "../components/pages/Footer"
-import { useExternalLink } from "../components/ExternalLinkHandler"
-import TooltipWrapper from "../components/ToolTipWrapper"
 import { useState, useEffect } from "react"
+import { Footer, TooltipWrapper, useExternalLink } from "@snxethan/snex-components"
 
 export default function SocialPage() {
   const [loading, setLoading] = useState(true)

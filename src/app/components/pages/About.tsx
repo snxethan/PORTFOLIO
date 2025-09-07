@@ -1,4 +1,5 @@
 "use client"
+import { PDFModalViewer, TooltipWrapper, useExternalLink } from "@snxethan/snex-components"
 import { useEffect, useState } from "react"
 import { BiChild, BiFirstAid, BiFork } from "react-icons/bi"
 import { BsUnity, BsPatchCheckFill } from "react-icons/bs"
@@ -18,9 +19,6 @@ import {
   SiMysql,
 } from "react-icons/si"
 
-import { useExternalLink } from "../ExternalLinkHandler"
-import TooltipWrapper from "../ToolTipWrapper"
-import PDFModalViewer from "../PDFModalViewer"
 
 const About = () => {
   const [loading, setLoading] = useState(true)

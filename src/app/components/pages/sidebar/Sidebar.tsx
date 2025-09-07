@@ -4,10 +4,9 @@ import SpotifyWidget from "./SpotifyWidget"
 import { useEffect, useState, useRef } from "react"
 import * as Icons from "react-icons/fa";
 import { socialLinks } from "@/app/data/socialLinks";
-import { useExternalLink } from "../../ExternalLinkHandler"
 import Status from "./Status"
 import Avatar from "./Avatar"
-import TooltipWrapper from "../../ToolTipWrapper"
+import { TooltipWrapper, useExternalLink } from "@snxethan/snex-components";
 
 // This component is used to display the sidebar of the website. It contains the user's avatar, professional links, personal links, and a Spotify widget.
 // The sidebar is styled using Tailwind CSS classes. It is responsive and will adjust its size based on the screen size.
