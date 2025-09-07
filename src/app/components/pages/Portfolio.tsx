@@ -175,7 +175,7 @@ const Portfolio: React.FC = () => {
           id: project.id,
           name: project.name,
           description: project.description,
-          html_url: isPortfoliyouProject ? "/portfoli-you" : project.html_url,
+          html_url: isPortfoliyouProject ? "https://portfoliyou.snxethan.dev" : project.html_url,
           language: project.language,
           topics: project.topics || [],
           created_at: project.created_at,

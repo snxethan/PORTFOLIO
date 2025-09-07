@@ -59,7 +59,6 @@ export default function SocialPage() {
       <main className="flex-grow w-full flex items-center justify-center p-6 bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans">
         <div className="flex flex-col md:flex-row items-start justify-center gap-10 w-full max-w-4xl">
           <Sidebar />
-
           <div className="mt-2 md:mt-5 w-full md:max-w-sm space-y-6">
             {/* My Portfolio Widget */}
             <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 shadow-lg p-6 flex flex-col items-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
@@ -79,51 +78,88 @@ export default function SocialPage() {
 
             {/* Navigation buttons to sections */}
             <div className="mt-4 flex justify-center space-x-3">
+              <TooltipWrapper label="https://snex.dev/?tab=about" url="https://snex.dev/?tab=about">
               <a
-                href="https://snex.dev/?tab=about" // Assuming your main page handles /?tab=about
+                href="https://snex.dev/?tab=about" 
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 About
               </a>
+              </TooltipWrapper>
+              <TooltipWrapper label="https://snex.dev/?tab=resume" url="https://snex.dev/?tab=resume">
               <a
-                href="https://snex.dev/?tab=resume" // Assuming your main page handles /?tab=resume
+                href="https://snex.dev/?tab=resume" 
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 Resume
               </a>
+              </TooltipWrapper>
+              <TooltipWrapper label="https://snex.dev/?tab=portfolio" url="https://snex.dev/?tab=portfolio">
               <a
-                href="https://snex.dev/?tab=portfolio" // Assuming your main page handles /?tab=portfolio
+                href="https://snex.dev/?tab=portfolio" 
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 Projects
               </a>
+              </TooltipWrapper>
             </div>
           </div>
 
           {/* Portfoli-You Widget */}
           <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 shadow-lg p-6 flex flex-col items-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
-            <TooltipWrapper label="/portfoli-you">
-              <button
-                onClick={() => handleExternalClick("/portfoli-you", true)}
-                className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+              <TooltipWrapper label="/portfoli-you">
+                <a
+                  href="https://portfoliyou.snxethan.dev/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                  style={{ fontFamily: "var(--font-sans)" }}
+                >
+                  <FaPalette />
+                  Portfoli-YOU
+                </a>
+              </TooltipWrapper>
+            <div className="mt-2 text-gray-400 text-xs text-center">
+              My college capstone project, a portfolio builder web app for users to create and customize their own portfolios, with no coding experience required.
+              <br />
+              <br />
+                <p className="text-gray-300 text-sm italic">
+                            A portfolio for you, by you
+              </p>            
+              </div>
+
+            {/* Nav */}
+            <div className="mt-4 flex justify-center space-x-3">
+              <TooltipWrapper label="https://portfoliyou.snxethan.dev" url="https://portfoliyou.snxethan.dev">
+              <a
+                href="https://portfoliyou.snxethan.dev/"
+                className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
-                <FaPalette />
-                Portfoli-YOU
-              </button>
-            </TooltipWrapper>
-            <div className="mt-2 text-gray-400 text-xs text-center">
-              A local-first desktop application with drag-and-drop editor, modular templates, and optional cloud sync that empowers anyone to design and deploy their portfolio website.
-            </div>
-
-            {/* Tagline */}
-            <div className="mt-4 flex justify-center">
-              <p className="text-gray-300 text-sm italic">
-                A portfolio for you, by you
-              </p>
+                Home
+              </a>
+              </TooltipWrapper>
+              <TooltipWrapper label="https://portfoliyou.snxethan.dev/download" url="https://portfoliyou.snxethan.dev/download">
+              <a
+                href="https://portfoliyou.snxethan.dev/download" 
+                className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                Installer
+              </a>
+              </TooltipWrapper>
+              <TooltipWrapper label="https://portfoliyou.snxethan.dev/about" url="https://portfoliyou.snxethan.dev/about">
+              <a
+                href="https://portfoliyou.snxethan.dev/about"
+                className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                About
+              </a>
+              </TooltipWrapper>
             </div>
           </div>
         </div>

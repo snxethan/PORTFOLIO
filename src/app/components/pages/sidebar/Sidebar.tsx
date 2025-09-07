@@ -8,6 +8,7 @@ import { useExternalLink } from "../../ExternalLinkHandler"
 import Status from "./Status"
 import Avatar from "./Avatar"
 import TooltipWrapper from "../../ToolTipWrapper"
+import Portfoliyou from "./Portfoliyou"
 
 // This component is used to display the sidebar of the website. It contains the user's avatar, professional links, personal links, and a Spotify widget.
 // The sidebar is styled using Tailwind CSS classes. It is responsive and will adjust its size based on the screen size.
@@ -55,7 +56,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
           <div className="mt-6 h-12 bg-[#333333] rounded" />
         </aside>
       ) : (
-        <aside className={`w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 ${className}`}>
+  <aside className={`w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 lg:sticky lg:top-20 my-8 ${className}`}>
           <audio ref={clickSoundRef} src="/sounds/yippe.mp3" preload="auto" />
 
           {/* Avatar */}
@@ -136,6 +137,10 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
 
           <div className="mt-6">
             <Status />
+          </div>
+
+          <div className="mt-6">
+            <Portfoliyou />
           </div>
         </aside>
       )}

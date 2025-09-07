@@ -10,6 +10,7 @@ import Portfolio from "./Portfolio"
 import Footer from "./Footer"
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
+import Portfoliyou from "./sidebar/Portfoliyou"
 
 export default function HomeClient() {
   const [activeTab, setActiveTab] = useState<string | null>(null)
@@ -34,9 +35,7 @@ export default function HomeClient() {
     localStorage.setItem("activeTab", tab)
   }
 
-  const handlePortfoliYouClick = () => {
-    handleExternalClick("/portfoli-you", true)
-  }
+ 
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
@@ -44,33 +43,11 @@ export default function HomeClient() {
       <main className="flex-grow pt-20 md:pt-0">
         <div className="container mx-auto px-4 pt-15 lg:pt-12 min-w-[360px]">
           <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex flex-col gap-6 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] mb-12 lg:items-center lg:mx-auto lg:w-fit">
-              <Sidebar className="md:mt-20 lg:mt-0"/>
-              
-              {/* Portfoli-You Widget */}
-              <div className="w-full lg:w-80 bg-[#222222] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg text-white text-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
-                <div className="flex flex-col items-center mb-4">
-                  <h2 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-red-500 text-transparent bg-clip-text">
-                    Portfoli-YOU
-                  </h2>
-                  <div className="w-20 h-[2px] mt-2 bg-gradient-to-r from-red-600 to-red-500 rounded-full" />
-                </div>
-
-                <p className="text-gray-400 text-sm mb-4 italic">
-                  A portfolio for you, by you.
-                </p>
-
-                <div className="flex flex-col items-center gap-3">
-                  <TooltipWrapper label="/portfoli-you">
-                    <button
-                      onClick={handlePortfoliYouClick}
-                      className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
-                    >
-                      Coming soon...
-                    </button>
-                  </TooltipWrapper>
-                </div>
+            <div className="flex flex-col gap-6 mb-12 lg:items-center lg:mx-auto lg:w-fit">
+              <div className="lg:sticky lg:top-24">
+                <Sidebar className="md:mt-20 lg:mt-0"/>
               </div>
+            
             </div>
             <section className="flex-1 flex flex-col gap-6 pb-20">
               <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg overflow-hidden">
