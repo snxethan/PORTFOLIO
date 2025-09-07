@@ -45,7 +45,7 @@ export default function HomeClient() {
         <div className="container mx-auto px-4 pt-15 xl:pt-12 min-w-[360px]">
           <div className="flex flex-col xl:flex-row gap-8">
             <div className="flex flex-col gap-6 xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)] mb-12 xl:items-center xl:mx-auto xl:w-fit">
-              <Sidebar className="md:mt-20 xl:mt-0"/>
+              <Sidebar />
               
               {/* Portfoli-You Widget */}
               <div className="w-full xl:w-80 bg-[#222222] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg text-white text-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
