@@ -55,7 +55,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
           <div className="mt-6 h-12 bg-[#333333] rounded" />
         </aside>
       ) : (
-        <aside className={`w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 ${className}`}>
+        <aside className={`w-full xl:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 ${className}`}>
           <audio ref={clickSoundRef} src="/sounds/yippe.mp3" preload="auto" />
 
           {/* Avatar */}
