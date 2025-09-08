@@ -1,0 +1,80 @@
+# GitHub Copilot Setup Steps for Portfolio Project
+
+name: Portfolio Development Setup
+description: Setup steps for developing the Ethan Townsend portfolio application with GitHub Copilot assistance
+
+prerequisites:
+  - Node.js 18+
+  - npm or yarn
+  - Git
+  - GitHub account with Copilot access
+
+environment_variables:
+  required:
+    - SPOTIFY_CLIENT_ID: "Your Spotify app client ID"
+    - SPOTIFY_CLIENT_SECRET: "Your Spotify app client secret"
+    - SPOTIFY_REFRESH_TOKEN: "Your Spotify refresh token for API access"
+    - SPOTIFY_REDIRECT_URI: "OAuth redirect URI (http://localhost:3000/api/spotify/callback for dev)"
+    - GMAIL_USER: "Gmail account for contact form (yourgoogleuser@gmail.com)"
+    - GMAIL_PASS: "App-specific password for Gmail"
+    - RECEIVER_EMAIL: "Email address to receive contact form submissions"
+
+setup_steps:
+  1_clone_repository:
+    command: "git clone https://github.com/snxethan/Portfolio.git"
+    description: "Clone the portfolio repository"
+    
+  2_install_dependencies:
+    command: "npm install"
+    description: "Install all project dependencies including Next.js 15, TypeScript, and Tailwind CSS"
+    
+  3_environment_setup:
+    file: ".env.local"
+    description: "Create environment variables file with all required API keys and configurations"
+    template: |
+      SPOTIFY_CLIENT_ID=your_client_id
+      SPOTIFY_CLIENT_SECRET=your_client_secret
+      SPOTIFY_REFRESH_TOKEN=your_refresh_token
+      SPOTIFY_REDIRECT_URI=http://localhost:3000/api/spotify/callback
+      GMAIL_USER=yourgoogleuser@gmail.com
+      GMAIL_PASS=your_custom_token
+      RECEIVER_EMAIL=youremail@email.com
+      
+  4_development_server:
+    command: "npm run dev"
+    description: "Start the development server with Turbopack for hot reloading"
+    url: "http://localhost:3000"
+    
+  5_linting:
+    command: "npm run lint"
+    description: "Run ESLint to check code quality (note: some warnings expected)"
+    
+  6_build_test:
+    command: "npm run build"
+    description: "Test production build to ensure everything compiles correctly"
+
+key_features:
+  - next_js: "Next.js 15 with App Router and SSR"
+  - typescript: "Full TypeScript support with strict type checking"
+  - tailwind: "Tailwind CSS 4 for responsive styling"
+  - spotify_api: "Real-time Spotify integration showing currently playing track"
+  - github_api: "Dynamic project fetching from GitHub repositories"
+  - contact_form: "Secure contact form with rate limiting and email delivery"
+  - pdf_viewer: "PDF preview system with custom tooltips"
+  - vercel_deployment: "Optimized for Vercel deployment with custom domains"
+
+development_urls:
+  local: "http://localhost:3000"
+  production: "https://www.snxethan.dev"
+  social_landing: "https://www.ethantownsend.dev"
+  
+troubleshooting:
+  spotify_setup:
+    - "Create Spotify app at https://developer.spotify.com/dashboard"
+    - "Set redirect URI to http://localhost:3000/api/spotify/callback"
+    - "Generate refresh token using OAuth 2.0 flow"
+    
+  gmail_setup:
+    - "Enable 2FA on Gmail account"
+    - "Generate app-specific password for nodemailer"
+    - "Use app password, not regular account password"
