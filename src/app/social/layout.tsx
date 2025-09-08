@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Social Links | Ethan Townsend",
+  title: "Social Landing | Ethan Townsend",
   description: "Connect with Ethan Townsend on various social platforms and explore his portfolio links",
   openGraph: {
-    title: "Social Links | Ethan Townsend",
+    title: "Social Landing | Ethan Townsend",
     description: "Connect with me on various platforms and explore my portfolio",
     url: "https://www.snxethan.dev/social",
     siteName: "snex.dev",
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Social Links | Ethan Townsend",
+    title: "Social Landing | Ethan Townsend",
     description: "Connect with me on various platforms and explore my portfolio",
-    images: ["https://www.snxethan.dev/images/avatar/snex.png"],
+    images: ["https://www.snxethan.dev/images/avatar/avatar.png"],
   }
 }
 
