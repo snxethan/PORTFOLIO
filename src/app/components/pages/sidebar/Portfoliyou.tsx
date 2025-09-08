@@ -9,7 +9,7 @@ export default function Portfoliyou() {
     <div className="bg-[#1e1e1e] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg text-white max-w-md mx-auto mt-10 text-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
       <div className="flex flex-col items-center mb-4">
         <h2 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-red-600 to-red-500 text-transparent bg-clip-text">
-        Portfoli-YOU
+        My Capstone
         </h2>
         <div className="w-20 h-[2px] mt-2 bg-gradient-to-r from-red-600 to-red-500 rounded-full" />
       </div>
@@ -32,7 +32,7 @@ export default function Portfoliyou() {
       className="w-5 h-5"
       style={{ borderRadius: "4px" }}
     />          
-    View my Capstone
+    View Portfoli-YOU
         </a>
       </TooltipWrapper>
     </div>

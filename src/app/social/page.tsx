@@ -1,15 +1,12 @@
 "use client"
 
 import Sidebar from "@/app/components/pages/sidebar/Sidebar"
-import { FaPerson, FaPalette } from "react-icons/fa6"
 import Footer from "../components/pages/Footer"
-import { useExternalLink } from "../components/ExternalLinkHandler"
 import TooltipWrapper from "../components/ToolTipWrapper"
 import { useState, useEffect } from "react"
 
 export default function SocialPage() {
   const [loading, setLoading] = useState(true)
-  const { handleExternalClick } = useExternalLink()
 
     useEffect(() => {
       setLoading(false) // Set loading to false after 1 second
@@ -68,7 +65,11 @@ export default function SocialPage() {
                   className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
-                  <FaPerson />
+                  <img
+                    src="/images/avatar/snex.png"
+                    alt="Snex Logo"
+                    className="w-5 h-5 rounded-sm"
+                  />
                   My Portfolio
                 </a>
               </TooltipWrapper>
@@ -118,7 +119,12 @@ export default function SocialPage() {
                   className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
-                  <FaPalette />
+                  <img
+                    src="/images/portfoliyou/portfoliyou.png"
+                    alt="Portfoli-YOU Logo"
+                    className="w-5 h-5"
+                    style={{ borderRadius: "4px" }}
+                  />
                   Portfoli-YOU
                 </a>
               </TooltipWrapper>
