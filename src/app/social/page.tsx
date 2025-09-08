@@ -111,7 +111,7 @@ export default function SocialPage() {
 
           {/* Portfoli-You Widget */}
           <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 shadow-lg p-6 flex flex-col items-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
-              <TooltipWrapper label="/portfoli-you">
+              <TooltipWrapper label="https://portfoliyou.snxethan.dev/">
                 <a
                   href="https://portfoliyou.snxethan.dev/"
                   target="_blank"
