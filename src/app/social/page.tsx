@@ -66,10 +66,9 @@ export default function SocialPage() {
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   <img
-                    src="/snex.svg"
+                    src="/images/avatar/snex.png"
                     alt="Snex Logo"
-                    className="w-5 h-5"
-                    style={{ filter: "invert(1)" }}
+                    className="w-5 h-5 rounded-sm"
                   />
                   My Portfolio
                 </a>
