@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Social Landing | Ethan Townsend",
     description: "Connect with me on various platforms and explore my portfolio",
-    images: ["https://www.snxethan.dev/images/avatar/snex.png"],
+    images: ["https://www.snxethan.dev/images/avatar/avatar.png"],
   }
 }
 
