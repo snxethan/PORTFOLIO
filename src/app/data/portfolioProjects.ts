@@ -15,7 +15,7 @@ interface Project {
 export const manualProjects: Project[] = [
   {
     id: 1,
-    name: "CSC130-FINAL",
+    name: "CSC130-ARTICCONE",
     description: "Built and deployed a web-app based game designed around the hit game 'Gartic Phone', a one-to-one recreation.",
     html_url: "https://github.com/Neumont-VictorKeeler/Artic_Cone",
     language: "TypeScript",
@@ -28,7 +28,7 @@ export const manualProjects: Project[] = [
   },
   {
     id: 2,
-    name: "CSC130-FINAL",
+    name: "CSC130-UNO",
     description: "Built, designed, and deployed a Java game based on the classic card game 'UNO'.",
     html_url: "https://github.com/MasterDash5/UnoProject",
     language: "Java",
@@ -41,7 +41,7 @@ export const manualProjects: Project[] = [
   },
   {
     id: 3,
-    name: "CSC110-FINAL",
+    name: "CSC110-NOTEPAD",
     description: "Contributed and built a simple and inefficient notepad application using Android Studio and Java. This was my first ever project in Java.",
     html_url: "https://github.com/Tomonator1000/Notepad",
     language: "Java",
@@ -54,7 +54,7 @@ export const manualProjects: Project[] = [
   },
   {
     id: 4,
-    name: "CSC150-FINAL",
+    name: "CSC150-CASINO",
     description: "Built and designed a simple casino CLI game using Java.",
     html_url: "https://github.com/Stat3132/CasinoTeamProject",
     language: "Java",
@@ -67,7 +67,7 @@ export const manualProjects: Project[] = [
   },
   {
     id: 5,
-    name: "CSC280-FINAL",
+    name: "CSC280-ROLLIO",
     description: "Built and designed a modular portfolio creation tool using React, TypeScript, and Tailwind CSS.",
     html_url: "https://github.com/Ghussy/Rollio",
     language: "TypeScript",
@@ -80,7 +80,7 @@ export const manualProjects: Project[] = [
   },
   {
     id: 6,
-    name: "PRO250-FINAL",
+    name: "PRO250-KREBSINATOR2",
     description: "Krebsinator 2: Krebsment Day is a C#/.NET desktop pet and student selector, evolved from the original Krebsinator Student Selector made by Neumont Professor Krebs, expanded by adding Desktop Pet & Settings Functionality.",
     html_url: "https://github.com/romAcosta/RandomStudentSelector",
     language: "C#",
