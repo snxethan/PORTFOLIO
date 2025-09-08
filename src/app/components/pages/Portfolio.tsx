@@ -43,6 +43,26 @@ const Portfolio: React.FC = () => {
   const [isFocused, setIsFocused] = useState(false)
   const { handleExternalClick } = useExternalLink()
   const [activeTag, setActiveTag] = useState<string | null>(null)
+  const [isExtending, setIsExtending] = useState(false)
+  const [isHiding, setIsHiding] = useState(false)
+
+  const handleShowAllTagsToggle = () => {
+    if (showAllTags) {
+      // Hiding tags
+      setIsHiding(true)
+      setTimeout(() => {
+        setShowAllTags(false)
+        setIsHiding(false)
+      }, 200) // Match the tag-hide animation duration
+    } else {
+      // Showing tags
+      setShowAllTags(true)
+      setIsExtending(true)
+      setTimeout(() => {
+        setIsExtending(false)
+      }, 300) // Match the tag-extend animation duration
+    }
+  }
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -203,9 +223,20 @@ const Portfolio: React.FC = () => {
           {/* Filter Tags */}
           {!loading && (
             <div className="flex flex-wrap gap-3 mb-8">
-              {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag) => {
+              {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
                 const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
                 const isActive = activeTag === tag
+                const isAdditionalTag = index >= TAG_LIMIT
+                
+                // Determine animation class for additional tags
+                let animationClass = ""
+                if (isAdditionalTag) {
+                  if (isExtending) {
+                    animationClass = "animate-tag-extend"
+                  } else if (isHiding) {
+                    animationClass = "animate-tag-hide"
+                  }
+                }
 
                 return (
                   <button
@@ -219,7 +250,7 @@ const Portfolio: React.FC = () => {
                       isSelected
                         ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
                         : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
-                    } ${isActive && !isSelected ? "animate-elastic-in" : ""}`}
+                    } ${isActive && !isSelected ? "animate-elastic-in" : ""} ${animationClass}`}
                   >
                     {tag}
                   </button>
@@ -227,7 +258,7 @@ const Portfolio: React.FC = () => {
               })}
             {sortedTags.length > TAG_LIMIT && (
               <button
-                onClick={() => setShowAllTags((v) => !v)}
+                onClick={handleShowAllTagsToggle}
                 className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
                 aria-label={showAllTags ? "Show less tags" : "Show more tags"}
               >
