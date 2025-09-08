@@ -26,8 +26,13 @@ export default function Portfoliyou() {
           aria-label="Visit my Capstone"
           className="inline-flex items-center justify-center px-4 py-2 mt-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg gap-2 transition-all duration-200 ease-out hover:scale-105 active:scale-95"
         >
-          <FaGlobe className="w-5 h-5" />
-          View my Capstone
+    <img
+      src="https://portfoliyou.snxethan.dev/images/icon/portfoliyou.png"
+      alt="Portfoli-YOU Icon"
+      className="w-5 h-5"
+      style={{ borderRadius: "4px" }}
+    />          
+    View my Capstone
         </a>
       </TooltipWrapper>
     </div>

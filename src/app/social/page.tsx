@@ -123,7 +123,7 @@ export default function SocialPage() {
                 </a>
               </TooltipWrapper>
             <div className="mt-2 text-gray-400 text-xs text-center">
-              My college capstone project, a portfolio builder web app for users to create and customize their own portfolios, with no coding experience required.
+              My college capstone project, a portfolio builder web app for users to create and customize their own digital portfolios, with no coding experience required.
               <br />
               <br />
                 <p className="text-gray-300 text-sm italic">
