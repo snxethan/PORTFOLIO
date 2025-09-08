@@ -15,7 +15,7 @@ interface Project {
 export const manualProjects: Project[] = [
   {
     id: 1,
-    name: "CSC130-ARTICCONE",
+    name: "CSC130-ARTIC_CONE",
     description: "Built and deployed a web-app based game designed around the hit game 'Gartic Phone', a one-to-one recreation.",
     html_url: "https://github.com/Neumont-VictorKeeler/Artic_Cone",
     language: "TypeScript",
