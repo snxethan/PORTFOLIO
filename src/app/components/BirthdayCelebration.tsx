@@ -19,21 +19,23 @@ const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ onComplete })
     return () => clearTimeout(timer)
   }, [onComplete])
 
-  if (!isVisible) return null
+  if (!isVisible) {
+    return null
+  }
 
-  // Generate balloon elements
+  // Generate balloon elements - start after confetti (1.5 second delay + small stagger)
   const balloons = Array.from({ length: 6 }, (_, i) => ({
     id: i,
     color: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'][i],
-    delay: i * 0.3,
+    delay: 1.5 + (i * 0.2), // Start after confetti with small stagger
     left: 10 + (i * 15) + Math.random() * 10,
   }))
 
-  // Generate confetti elements
+  // Generate confetti elements - start immediately with small random delays
   const confetti = Array.from({ length: 30 }, (_, i) => ({
     id: i,
     color: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'][i % 6],
-    delay: Math.random() * 2,
+    delay: Math.random() * 0.5, // Much smaller delay range for quicker start
     left: Math.random() * 100,
     size: 4 + Math.random() * 6,
   }))
