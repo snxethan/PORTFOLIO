@@ -296,7 +296,7 @@ const Portfolio: React.FC = () => {
               : tagFilteredProjects.map((project) => (
                               <div
                       key={project.id}
-                      className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 flex flex-col active:scale-95"
+                      className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 flex flex-col"
                     >
 
                     <div className="p-6 flex-grow">
