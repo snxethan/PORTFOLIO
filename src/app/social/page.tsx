@@ -154,7 +154,7 @@ export default function SocialPage() {
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
-                Home
+                Portfoli-YOU
               </a>
               </TooltipWrapper>
               <TooltipWrapper label="https://portfoliyou.snxethan.dev/about" url="https://portfoliyou.snxethan.dev/about">
@@ -163,7 +163,7 @@ export default function SocialPage() {
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
-                About
+                FAQ
               </a>
               </TooltipWrapper>
             </div>
