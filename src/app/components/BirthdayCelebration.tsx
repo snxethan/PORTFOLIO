@@ -1,0 +1,112 @@
+"use client"
+
+import { useEffect, useState } from "react"
+
+interface BirthdayCelebrationProps {
+  onComplete?: () => void
+}
+
+const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ onComplete }) => {
+  const [isVisible, setIsVisible] = useState(true)
+
+  useEffect(() => {
+    // Auto-hide the celebration after 5 seconds
+    const timer = setTimeout(() => {
+      setIsVisible(false)
+      onComplete?.()
+    }, 5000)
+
+    return () => clearTimeout(timer)
+  }, [onComplete])
+
+  if (!isVisible) return null
+
+  // Generate balloon elements
+  const balloons = Array.from({ length: 6 }, (_, i) => ({
+    id: i,
+    color: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'][i],
+    delay: i * 0.3,
+    left: 10 + (i * 15) + Math.random() * 10,
+  }))
+
+  // Generate confetti elements
+  const confetti = Array.from({ length: 30 }, (_, i) => ({
+    id: i,
+    color: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3'][i % 6],
+    delay: Math.random() * 2,
+    left: Math.random() * 100,
+    size: 4 + Math.random() * 6,
+  }))
+
+  return (
+    <div 
+      className="fixed inset-0 pointer-events-none z-50 animate-celebration-fade-out"
+      style={{ zIndex: 9999 }}
+    >
+      {/* Balloons */}
+      {balloons.map((balloon) => (
+        <div
+          key={`balloon-${balloon.id}`}
+          className="absolute animate-balloon-float"
+          style={{
+            left: `${balloon.left}%`,
+            animationDelay: `${balloon.delay}s`,
+            bottom: '0px',
+          }}
+        >
+          <div className="relative">
+            {/* Balloon */}
+            <div
+              className="w-8 h-10 rounded-full shadow-lg"
+              style={{
+                backgroundColor: balloon.color,
+                borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+              }}
+            />
+            {/* String */}
+            <div
+              className="absolute top-full left-1/2 w-0.5 h-12 opacity-60"
+              style={{
+                backgroundColor: balloon.color,
+                transform: 'translateX(-50%)',
+              }}
+            />
+          </div>
+        </div>
+      ))}
+
+      {/* Confetti */}
+      {confetti.map((piece) => (
+        <div
+          key={`confetti-${piece.id}`}
+          className="absolute animate-confetti-fall"
+          style={{
+            left: `${piece.left}%`,
+            animationDelay: `${piece.delay}s`,
+            top: '-10vh',
+          }}
+        >
+          <div
+            className="rounded-sm"
+            style={{
+              backgroundColor: piece.color,
+              width: `${piece.size}px`,
+              height: `${piece.size}px`,
+            }}
+          />
+        </div>
+      ))}
+
+      {/* Birthday message */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="bg-black/50 backdrop-blur-sm rounded-2xl p-6 text-center animate-elastic-in">
+          <div className="text-4xl mb-2">🎉</div>
+          <h2 className="text-2xl font-bold text-white mb-2">Happy Birthday!</h2>
+          <p className="text-gray-200">Hope you have a wonderful day! 🎂</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default BirthdayCelebration

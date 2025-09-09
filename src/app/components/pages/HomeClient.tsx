@@ -11,9 +11,12 @@ import Footer from "./Footer"
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import Portfoliyou from "./sidebar/Portfoliyou"
+import BirthdayCelebration from "../BirthdayCelebration"
+import { shouldShowBirthdayCelebration } from "../../utils/birthdayUtils"
 
 export default function HomeClient() {
   const [activeTab, setActiveTab] = useState<string | null>(null)
+  const [showBirthdayCelebration, setShowBirthdayCelebration] = useState(false)
   const { handleExternalClick } = useExternalLink()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -28,6 +31,11 @@ export default function HomeClient() {
     localStorage.setItem("activeTab", resolvedTab)
 
     if (queryTab) router.replace("/", { scroll: false })
+
+    // Check if it's the user's birthday and show celebration
+    if (shouldShowBirthdayCelebration()) {
+      setShowBirthdayCelebration(true)
+    }
   }, [searchParams, router])
 
   const handleTabChange = (tab: string) => {
@@ -35,10 +43,17 @@ export default function HomeClient() {
     localStorage.setItem("activeTab", tab)
   }
 
- 
+  const handleBirthdayCelebrationComplete = () => {
+    setShowBirthdayCelebration(false)
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
+      {/* Birthday Celebration Overlay */}
+      {showBirthdayCelebration && (
+        <BirthdayCelebration onComplete={handleBirthdayCelebrationComplete} />
+      )}
+      
       {/* Main Page Content */}
       <main className="flex-grow pt-20 md:pt-0">
         <div className="container mx-auto px-4 pt-15 lg:pt-12 min-w-[360px]">

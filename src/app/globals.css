@@ -137,3 +137,58 @@ body {
 .animate-tag-hide {
   animation: tag-hide 0.2s ease-in forwards;
 }
+
+/* Birthday Celebration Animations */
+@keyframes balloon-float {
+  0% {
+    opacity: 0;
+    transform: translateY(100vh) scale(0.5) rotate(0deg);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(80vh) scale(0.7) rotate(5deg);
+  }
+  50% {
+    transform: translateY(20vh) scale(1) rotate(-5deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20vh) scale(1.2) rotate(10deg);
+  }
+}
+
+.animate-balloon-float {
+  animation: balloon-float 4s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(-10vh) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(110vh) rotate(720deg);
+  }
+}
+
+.animate-confetti-fall {
+  animation: confetti-fall 3s linear forwards;
+}
+
+@keyframes celebration-fade-out {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+.animate-celebration-fade-out {
+  animation: celebration-fade-out 5s ease-out forwards;
+}
