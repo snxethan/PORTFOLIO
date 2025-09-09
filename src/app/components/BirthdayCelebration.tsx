@@ -96,15 +96,6 @@ const BirthdayCelebration: React.FC<BirthdayCelebrationProps> = ({ onComplete })
           />
         </div>
       ))}
-
-      {/* Birthday message */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="bg-black/50 backdrop-blur-sm rounded-2xl p-6 text-center animate-elastic-in">
-          <div className="text-4xl mb-2">🎉</div>
-          <h2 className="text-2xl font-bold text-white mb-2">Happy Birthday!</h2>
-          <p className="text-gray-200">Hope you have a wonderful day! 🎂</p>
-        </div>
-      </div>
     </div>
   )
 }
