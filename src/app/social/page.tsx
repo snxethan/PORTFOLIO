@@ -133,7 +133,7 @@ export default function SocialPage() {
               <br />
               <br />
                 <p className="text-gray-300 text-sm italic">
-                            A portfolio for you, by you
+                            A Portfolio for you, by you
               </p>            
               </div>
 
