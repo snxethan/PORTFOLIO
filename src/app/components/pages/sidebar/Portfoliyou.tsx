@@ -15,7 +15,7 @@ export default function Portfoliyou() {
       </div>
 
       <p className="text-gray-400 text-sm mb-4">
-        A portfolio for you, by you.
+        A Portfolio for you, by you.
       </p>
 
       <TooltipWrapper label="https://portfoliyou.snxethan.dev" url="https://portfoliyou.snxethan.dev">
