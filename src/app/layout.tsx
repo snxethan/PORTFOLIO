@@ -5,7 +5,6 @@ import { ExternalLinkHandler } from "./components/ExternalLinkHandler"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from 'react-hot-toast'
-import ClickSoundWrapper from "./components/ClickSoundWrapper"
 
 const inter = Inter({ subsets: ["latin"] })
 

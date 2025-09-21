@@ -63,7 +63,7 @@ return (
             </div>
             <div className="text-gray-300">
               <p className="mb-4">
-                If you discover a security vulnerability or have concerns about the website's security,
+                If you discover a security vulnerability or have concerns about the website&apos;s security,
                 please get in touch immediately. All reports will be investigated promptly.
               </p>
               <div className="flex justify-center">

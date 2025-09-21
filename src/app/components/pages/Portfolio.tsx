@@ -7,6 +7,17 @@ import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import { manualProjects } from "../../data/portfolioProjects"
 
+interface GitHubRepo {
+  id: number;
+  name: string;
+  description: string;
+  html_url: string;
+  language: string;
+  topics: string[];
+  created_at: string;
+  updated_at: string;
+  stargazers_count: number;
+}
 interface Project {
   id: number
   name: string
@@ -77,7 +88,7 @@ const Portfolio: React.FC = () => {
       try {
         const data = JSON.parse(cache)
         processProjects(data)
-      } catch (err) {
+      } catch {
         console.warn("Cache corrupted, refetching")
         localStorage.removeItem(CACHE_KEY)
         localStorage.removeItem(EXPIRY_KEY)
@@ -108,8 +119,8 @@ const Portfolio: React.FC = () => {
       }
     }
 
-    const processProjects = (data: any[]) => {
-      const githubProjects: Project[] = data.map((project: any) => {
+    const processProjects = (data: GitHubRepo[]) => {
+      const githubProjects: Project[] = data.map((project: GitHubRepo) => {
         // Only redirect portfoliyou project to the portfoli-you page
         const isPortfoliyouProject = project.name.toLowerCase().includes('portfoliyou')
         

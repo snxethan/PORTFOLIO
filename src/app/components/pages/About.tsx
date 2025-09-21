@@ -7,11 +7,17 @@ import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
 import { skills, unrelatedSkills, certifications } from "../../data/aboutData"
 
+interface SkillItem {
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+  highlight?: boolean;
+  url?: string;
+}
+
 const About = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const { handleExternalClick } = useExternalLink()
-  const [clickedCard, setClickedCard] = useState<string | null>(null)
 
   useEffect(() => {
     setLoading(false)
@@ -22,7 +28,7 @@ const About = () => {
     return () => document.removeEventListener("keydown", handleEscape)
   }, [])
 
-  const renderSkillGrid = (items: any[]) => {
+  const renderSkillGrid = (items: SkillItem[]) => {
     const sortedItems = [...items].sort((a, b) => {
       if (a.highlight === b.highlight) {
         return a.name.localeCompare(b.name)
@@ -32,8 +38,7 @@ const About = () => {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
-      {sortedItems.map(({ name, icon: Icon, highlight, url }: any) => {
-        const isClicked = clickedCard === name 
+      {sortedItems.map(({ name, icon: Icon, highlight, url }: SkillItem) => {
         const Card = (
           <div
             className={`group relative flex flex-col items-center bg-[#1e1e1e] hover:bg-[#252525] p-3 sm:p-4 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.09] active:scale-95`} 
@@ -57,15 +62,10 @@ const About = () => {
           </div>
         )
 
-        const handleClick = () => {
-          setClickedCard(name)
-          setTimeout(() => setClickedCard(null), 300) 
-        }
-
         if (url?.endsWith(".pdf")) {
           return (
             <TooltipWrapper key={name} label="View Certification" url={url}>
-              <div onClick={() => { setSelectedPDF(url); handleClick() }} className="cursor-pointer">
+              <div onClick={() => setSelectedPDF(url)} className="cursor-pointer">
                 {Card}
               </div>
             </TooltipWrapper>
@@ -74,12 +74,12 @@ const About = () => {
 
         return url ? (
           <TooltipWrapper key={name} label={url}>
-            <div onClick={() => { handleExternalClick(url, true); handleClick() }} className="cursor-pointer">
+            <div onClick={() => handleExternalClick(url, true)} className="cursor-pointer">
               {Card}
             </div>
           </TooltipWrapper>
         ) : (
-          <div key={name} onClick={handleClick} className="cursor-pointer">
+          <div key={name} className="cursor-pointer">
             {Card}
           </div>
         )
@@ -109,7 +109,7 @@ const About = () => {
       <section id="about" className="py-20 bg-[#121212] text-white">
         <div className="container mx-auto px-4 grid grid-cols-1 gap-16">
           <div className="text-center space-y-4">
-            <p className="text-lg text-gray-100">I'm Ethan Townsend, a Software Engineer passionate about creating high-quality projects across both frontend and backend development.</p>
+            <p className="text-lg text-gray-100">I&apos;m Ethan Townsend, a Software Engineer passionate about creating high-quality projects across both frontend and backend development.</p>
             <p className="text-lg text-gray-400">I have experience working with a variety of technologies, including Java & C#, Node.js & React, and various cloud and databasing platforms. I am always eager to learn new things and stay up-to-date with the latest industry trends.</p>
             <p className="text-lg text-gray-400">In my free time, I enjoy contributing to open-source projects and exploring new technologies, and having fun with my friends. I believe that collaboration and sharing knowledge are key to personal and professional growth.</p>
           </div>

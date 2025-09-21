@@ -7,13 +7,10 @@ import PDFModalViewer from "../PDFModalViewer"
 import { timelineData } from "../../data/timelineData"
 
 const Resume = () => {
-  const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
 
   useEffect(() => {
-    setLoading(false)
-
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSelectedPDF(null)
     }

@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import { X, Download, Loader2, ExternalLinkIcon } from "lucide-react"
+import React, { useEffect, useState, useCallback } from "react"
+import { X, Loader2 } from "lucide-react"
 import { FaExternalLinkAlt } from "react-icons/fa";
 import ReactDOM from "react-dom"
 
@@ -26,6 +26,15 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
   const [isUnsupported, setIsUnsupported] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
+  const initiateClose = useCallback(() => {
+    setIsAnimatingOut(true)
+    setTimeout(() => {
+      setIsAnimatingOut(false)
+      setIsVisible(false)
+      onClose()
+    }, 300)
+  }, [onClose])
+
   useEffect(() => {
     if (pdfUrl) {
       setIsVisible(true)
@@ -45,16 +54,7 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
         window.removeEventListener("keydown", handleEscKey)
       }
     }
-  }, [pdfUrl])
-
-  const initiateClose = () => {
-    setIsAnimatingOut(true)
-    setTimeout(() => {
-      setIsAnimatingOut(false)
-      setIsVisible(false)
-      onClose()
-    }, 300)
-  }
+  }, [pdfUrl, initiateClose])
 
   if (!pdfUrl || !isVisible) return null
 
