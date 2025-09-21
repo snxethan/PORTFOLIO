@@ -1,11 +1,10 @@
 "use client"
 
 import React from "react"
-import { useState, useEffect } from "react"
-import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevronUp } from "react-icons/fa"
-import { useExternalLink } from "../ExternalLinkHandler"
-import TooltipWrapper from "../ToolTipWrapper"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { manualProjects } from "../../data/portfolioProjects"
+import ProjectCard from "../ui/ProjectCard"
+import TagFilter from "../ui/TagFilter"
 
 interface GitHubRepo {
   id: number;
@@ -32,17 +31,6 @@ interface Project {
   ctaIcon?: "github" | "external" | "youtube" | "private" | undefined
 }
 
-const getCTAIcon = (icon?: string) => {
-  switch (icon) {
-    case "github": return <FaGithub className="w-5 h-5" />
-    case "external": return <FaExternalLinkAlt className="w-5 h-5" />
-    case "youtube": return <FaYoutube className="w-5 h-5" />
-    case "private": return <FaLock className="w-5 h-5" />
-    default: return <FaGithub className="w-5 h-5" />
-  }
-}
-
-
 const Portfolio: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([])
   const [search, setSearch] = useState("")
@@ -52,12 +40,11 @@ const Portfolio: React.FC = () => {
   const [tags, setTags] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const [isFocused, setIsFocused] = useState(false)
-  const { handleExternalClick } = useExternalLink()
   const [activeTag, setActiveTag] = useState<string | null>(null)
   const [isExtending, setIsExtending] = useState(false)
   const [isHiding, setIsHiding] = useState(false)
 
-  const handleShowAllTagsToggle = () => {
+  const handleShowAllTagsToggle = useCallback(() => {
     if (showAllTags) {
       // Hiding tags
       setIsHiding(true)
@@ -73,7 +60,7 @@ const Portfolio: React.FC = () => {
         setIsExtending(false)
       }, 300) // Match the tag-extend animation duration
     }
-  }
+  }, [showAllTags])
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -158,42 +145,44 @@ const Portfolio: React.FC = () => {
     fetchProjects()
   }, [])
 
-  const filteredProjects = projects.filter((project) => {
-    const nameMatch = project.name.toLowerCase().includes(search.toLowerCase())
-    const descMatch = project.description?.toLowerCase().includes(search.toLowerCase()) ?? false
-    const tagMatch = project.topics?.some((tag) => tag.toLowerCase().includes(search.toLowerCase())) ?? false
-    return nameMatch || descMatch || tagMatch
-  })
+  const filteredProjects = useMemo(() => {
+    return projects.filter((project) => {
+      const nameMatch = project.name.toLowerCase().includes(search.toLowerCase())
+      const descMatch = project.description?.toLowerCase().includes(search.toLowerCase()) ?? false
+      const tagMatch = project.topics?.some((tag) => tag.toLowerCase().includes(search.toLowerCase())) ?? false
+      return nameMatch || descMatch || tagMatch
+    })
+  }, [projects, search])
 
-  const sortedProjects = [...filteredProjects].sort((a, b) => {
-    const aDate = new Date(a.created_at).getTime()
-    const bDate = new Date(b.created_at).getTime()
-    switch (sortBy) {
-      case "name-asc": return a.name.localeCompare(b.name)
-      case "name-desc": return b.name.localeCompare(a.name)
-      case "oldest": return aDate - bDate
-      case "newest": return bDate - aDate
-      default: return 0
-    }
-  })
+  const sortedProjects = useMemo(() => {
+    return [...filteredProjects].sort((a, b) => {
+      const aDate = new Date(a.created_at).getTime()
+      const bDate = new Date(b.created_at).getTime()
+      switch (sortBy) {
+        case "name-asc": return a.name.localeCompare(b.name)
+        case "name-desc": return b.name.localeCompare(a.name)
+        case "oldest": return aDate - bDate
+        case "newest": return bDate - aDate
+        default: return 0
+      }
+    })
+  }, [filteredProjects, sortBy])
 
-  const sortedTags = React.useMemo(() => {
-    if (!tags.length) return [];
-    const [first, ...rest] = tags;
-    const sortedRest = rest.slice().sort((a, b) => a.localeCompare(b));
-    return first === "ALL" ? [first, ...sortedRest] : tags.slice().sort((a, b) => a.localeCompare(b));
-  }, [tags]);
+  const handleTagSelect = useCallback((tag: string) => {
+    setSelectedTag(tag === "ALL" ? null : tag)
+    setActiveTag(tag)
+    setTimeout(() => setActiveTag(null), 500)
+  }, [])
 
-  const TAG_LIMIT = 8;
-
-  const tagFilteredProjects =
-    selectedTag === null || selectedTag === "ALL"
+  const tagFilteredProjects = useMemo(() => {
+    return selectedTag === null || selectedTag === "ALL"
       ? sortedProjects
       : sortedProjects.filter(
           (project) =>
             project.topics.includes(selectedTag) ||
             project.language?.toLowerCase() === selectedTag
         )
+  }, [selectedTag, sortedProjects])
 
   return (
     <div>
@@ -233,58 +222,16 @@ const Portfolio: React.FC = () => {
 
           {/* Filter Tags */}
           {!loading && (
-            <div className="flex flex-wrap gap-3 mb-8">
-              {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
-                const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
-                const isActive = activeTag === tag
-                const isAdditionalTag = index >= TAG_LIMIT
-                
-                // Determine animation class for additional tags
-                let animationClass = ""
-                if (isAdditionalTag) {
-                  if (isExtending) {
-                    animationClass = "animate-tag-extend"
-                  } else if (isHiding) {
-                    animationClass = "animate-tag-hide"
-                  }
-                }
-
-                return (
-                  <button
-                    key={tag}
-                    onClick={() => {
-                      setSelectedTag(tag === "ALL" ? null : tag)
-                      setActiveTag(tag)
-                      setTimeout(() => setActiveTag(null), 500)
-                    }}
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
-                      isSelected
-                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
-                        : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
-                    } ${isActive && !isSelected ? "animate-elastic-in" : ""} ${animationClass}`}
-                  >
-                    {tag}
-                  </button>
-                )
-              })}
-            {sortedTags.length > TAG_LIMIT && (
-              <button
-                onClick={handleShowAllTagsToggle}
-                className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
-                aria-label={showAllTags ? "Show less tags" : "Show more tags"}
-              >
-                {showAllTags ? (
-                  <>
-                    <FaChevronUp className="w-4 h-4 text-red-500" />
-                  </>
-                ) : (
-                  <>
-                    <FaChevronDown className="w-4 h-4 text-red-500" />
-                  </>
-                )}
-              </button>
-            )}
-            </div>
+            <TagFilter
+              tags={tags}
+              selectedTag={selectedTag}
+              activeTag={activeTag}
+              showAllTags={showAllTags}
+              isExtending={isExtending}
+              isHiding={isHiding}
+              onTagSelect={handleTagSelect}
+              onToggleShowAll={handleShowAllTagsToggle}
+            />
           )}
           
 
@@ -305,69 +252,7 @@ const Portfolio: React.FC = () => {
                 ))
 
               : tagFilteredProjects.map((project) => (
-                              <div
-                      key={project.id}
-                      className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 flex flex-col"
-                    >
-
-                    <div className="p-6 flex-grow">
-                      <div className="mb-2">
-                        <h3 className="text-xl font-semibold text-white group-hover:text-red-500 transition-colors duration-300 mb-1">
-                          {project.name}
-                        </h3>
-                        <div className="flex flex-wrap items-center gap-2">
-                          {project.source === "manual" && (
-                            <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>
-                          )}
-                          {project.source === "github" && (
-                            <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">GITHUB</span>
-                          )}
-                          {project.topics.includes("neumont") && (
-                            <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">NEU</span>
-                          )}
-                        </div>
-                      </div>
-                      <p className="text-gray-300 mb-2">{project.description}</p>
-                      <p className="text-sm text-gray-400 mb-1">
-                        Created On:{" "}
-                        {new Date(project.created_at).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
-                      <p className="text-sm text-gray-400 mb-2">
-                        Last Updated:{" "}
-                        {new Date(project.updated_at).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
-                        {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
-                          <span key={tag} className="bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                            {tag.toUpperCase()}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                      <div className="px-6 py-4 border-t border-[#333333] bg-[#1a1a1a]">
-                        <TooltipWrapper label={project.html_url} fullWidth>
-                      <button
-                      onClick={() => handleExternalClick(project.html_url, true)}
-                      className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm sm:text-base"
-                    >
-                      {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
-                      <span className="flex-1 break-words text-center leading-tight">
-                        {project.name.toLowerCase() === "portfolio"
-                          ? "View Repository (This site!)"
-                          : project.ctaLabel ?? "View Repository"}
-                      </span>
-                    </button>
-                        </TooltipWrapper>
-                      </div>
-                  </div>
+                  <ProjectCard key={project.id} project={project} />
                 ))}
           </div>
         </div>  

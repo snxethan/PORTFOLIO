@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { FaFilePdf, FaExternalLinkAlt } from "react-icons/fa"
 
 import { useExternalLink } from "../ExternalLinkHandler"
@@ -28,13 +28,34 @@ const About = () => {
     return () => document.removeEventListener("keydown", handleEscape)
   }, [])
 
-  const renderSkillGrid = (items: SkillItem[]) => {
-    const sortedItems = [...items].sort((a, b) => {
+  const sortedSkills = useMemo(() => 
+    [...skills].sort((a, b) => {
       if (a.highlight === b.highlight) {
         return a.name.localeCompare(b.name)
       }
       return a.highlight ? -1 : 1
-    })
+    }), []
+  )
+
+  const sortedCertifications = useMemo(() => 
+    [...certifications].sort((a, b) => {
+      if (a.highlight === b.highlight) {
+        return a.name.localeCompare(b.name)
+      }
+      return a.highlight ? -1 : 1
+    }), []
+  )
+
+  const sortedUnrelatedSkills = useMemo(() => 
+    [...unrelatedSkills].sort((a, b) => {
+      if (a.highlight === b.highlight) {
+        return a.name.localeCompare(b.name)
+      }
+      return a.highlight ? -1 : 1
+    }), []
+  )
+
+  const renderSkillGrid = (sortedItems: SkillItem[]) => {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -65,7 +86,19 @@ const About = () => {
         if (url?.endsWith(".pdf")) {
           return (
             <TooltipWrapper key={name} label="View Certification" url={url}>
-              <div onClick={() => setSelectedPDF(url)} className="cursor-pointer">
+              <div 
+                onClick={() => setSelectedPDF(url)} 
+                className="cursor-pointer"
+                role="button"
+                tabIndex={0}
+                aria-label={`View ${name} certification`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedPDF(url);
+                  }
+                }}
+              >
                 {Card}
               </div>
             </TooltipWrapper>
@@ -74,12 +107,24 @@ const About = () => {
 
         return url ? (
           <TooltipWrapper key={name} label={url}>
-            <div onClick={() => handleExternalClick(url, true)} className="cursor-pointer">
+            <div 
+              onClick={() => handleExternalClick(url, true)} 
+              className="cursor-pointer"
+              role="button"
+              tabIndex={0}
+              aria-label={`Open ${name} external link`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleExternalClick(url, true);
+                }
+              }}
+            >
               {Card}
             </div>
           </TooltipWrapper>
         ) : (
-          <div key={name} className="cursor-pointer">
+          <div key={name} className="cursor-pointer" role="button" tabIndex={0} aria-label={name}>
             {Card}
           </div>
         )
@@ -119,7 +164,7 @@ const About = () => {
               <h2 className="text-3xl font-bold text-white">Certifications</h2>
               <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
             </div>
-            {loading ? renderSkeletonGrid(6) : renderSkillGrid(certifications)}
+            {loading ? renderSkeletonGrid(6) : renderSkillGrid(sortedCertifications)}
           </div>
 
           <div>
@@ -127,7 +172,7 @@ const About = () => {
               <h2 className="text-3xl font-bold text-white">Skills</h2>
               <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
             </div>
-            {loading ? renderSkeletonGrid(9) : renderSkillGrid(skills)}
+            {loading ? renderSkeletonGrid(9) : renderSkillGrid(sortedSkills)}
           </div>
 
           <div>
@@ -135,7 +180,7 @@ const About = () => {
               <h2 className="text-3xl font-bold text-white">Misc. Skills</h2>
               <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
             </div>
-            {loading ? renderSkeletonGrid(3) : renderSkillGrid(unrelatedSkills)}
+            {loading ? renderSkeletonGrid(3) : renderSkillGrid(sortedUnrelatedSkills)}
           </div>
         </div>
       </section>
