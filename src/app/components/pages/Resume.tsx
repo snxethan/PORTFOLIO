@@ -1,18 +1,26 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { FaDownload } from "react-icons/fa"
+import { FaDownload, FaToggleOn, FaToggleOff } from "react-icons/fa"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
 import { timelineData } from "../../data/timelineData"
 
 const Resume = () => {
-  const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
+  const [showAllContent, setShowAllContent] = useState(false)
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
 
   useEffect(() => {
-    setLoading(false)
+    // Load toggle preference from cookie
+    const savedPreference = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('resumeShowAllContent='))
+      ?.split('=')[1]
+    
+    if (savedPreference) {
+      setShowAllContent(savedPreference === 'true')
+    }
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSelectedPDF(null)
@@ -22,25 +30,56 @@ const Resume = () => {
     return () => document.removeEventListener("keydown", handleEscape)
   }, [])
 
+  const handleToggleChange = (newValue: boolean) => {
+    setShowAllContent(newValue)
+    // Save preference to cookie (expires in 1 year)
+    const expires = new Date()
+    expires.setFullYear(expires.getFullYear() + 1)
+    document.cookie = `resumeShowAllContent=${newValue}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`
+  }
+
   const sortedTimeline = [...timelineData].sort((a, b) =>
     new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
   )
 
-  const renderTimeline = (type: "experience" | "education") => (
-    <div className="relative mb-24 w-full max-w-4xl mx-auto px-4">
-      <div className="flex flex-col items-center relative mb-8 text-center">
-        <h2 className="text-3xl font-bold text-white z-10">
-          {type === "experience" ? "Experience" : "Education"}
-        </h2>
-        <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
-      </div>
+  const renderTimeline = (type: "experience" | "education") => {
+    const filteredItems = sortedTimeline.filter((item) => {
+      if (item.type !== type) return false
+      return showAllContent || item.isCSRelated
+    })
 
-      <div className="absolute left-1/2 -ml-[2px] w-[2px] bg-gray-700 h-full hidden md:block"></div>
+    if (filteredItems.length === 0) {
+      return (
+        <div className="relative mb-24 w-full max-w-4xl mx-auto px-4">
+          <div className="flex flex-col items-center relative mb-8 text-center">
+            <h2 className="text-3xl font-bold text-white z-10">
+              {type === "experience" ? "Experience" : "Education"}
+            </h2>
+            <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
+          </div>
+          <div className="text-center text-gray-400 py-8">
+            <p>No {showAllContent ? '' : 'CS-related '}items to display.</p>
+            {!showAllContent && (
+              <p className="text-sm mt-2">Toggle &quot;Show All Content&quot; to see additional items.</p>
+            )}
+          </div>
+        </div>
+      )
+    }
 
-      <div className="flex flex-col gap-12">
-        {sortedTimeline
-          .filter((item) => item.type === type)
-          .map((item, idx) => (
+    return (
+      <div className="relative mb-24 w-full max-w-4xl mx-auto px-4">
+        <div className="flex flex-col items-center relative mb-8 text-center">
+          <h2 className="text-3xl font-bold text-white z-10">
+            {type === "experience" ? "Experience" : "Education"}
+          </h2>
+          <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
+        </div>
+
+        <div className="absolute left-1/2 -ml-[2px] w-[2px] bg-gray-700 h-full hidden md:block"></div>
+
+        <div className="flex flex-col gap-12">
+          {filteredItems.map((item, idx) => (
             <div key={idx} className="flex flex-col md:flex-row md:items-center relative">
               <div className="md:w-1/2 text-center md:text-center md:pr-8">
                 <h3 className="text-xl font-semibold text-white">
@@ -68,9 +107,10 @@ const Resume = () => {
               </div>
             </div>
           ))}
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   return (
     <div>
@@ -88,7 +128,7 @@ const Resume = () => {
             <p className="text-gray-400">snxethan@gmail.com</p>
           </header>
 
-          <div className="flex justify-center gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
             <TooltipWrapper label="View Resume" url={resumePDF}>
               <button
                 onClick={() => setSelectedPDF(resumePDF)}
@@ -97,6 +137,21 @@ const Resume = () => {
                 <FaDownload /> View Resume
               </button>
             </TooltipWrapper>
+            
+            <div className="flex items-center gap-3 bg-[#1e1e1e] px-4 py-2 rounded-lg border border-[#333333] hover:border-red-600/50 transition-colors">
+              <span className="text-gray-300 text-sm font-medium">
+                {showAllContent ? "All Content" : "CS Content"}
+              </span>
+              <TooltipWrapper label={showAllContent ? "Show ONLY CS content" : "Show ALL content"}>
+                <button
+                  onClick={() => handleToggleChange(!showAllContent)}
+                  className="text-red-500 hover:text-red-400 transition-colors text-xl"
+                  aria-label={showAllContent ? "Hide non-CS content" : "Show all content"}
+                >
+                  {showAllContent ? <FaToggleOn /> : <FaToggleOff />}
+                </button>
+              </TooltipWrapper>
+            </div>
           </div>
 
           {renderTimeline("experience")}

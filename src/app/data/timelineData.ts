@@ -6,6 +6,7 @@ interface TimelineItem {
   endDate: string | "Present"
   highlights: string[]
   summary: string
+  isCSRelated: boolean
 }
 
 export const timelineData: TimelineItem[] = [
@@ -22,7 +23,8 @@ export const timelineData: TimelineItem[] = [
       "Peer Tutor – Guided freshmen with academics and transition support."
     ],
     summary:
-      "Held 4 concurrent student leadership and academic support roles to increase involvement, mentorship, and academic performance at NCCS."
+      "Held 4 concurrent student leadership and academic support roles to increase involvement, mentorship, and academic performance at NCCS.",
+    isCSRelated: true
   },
   {
     type: "experience",
@@ -35,7 +37,8 @@ export const timelineData: TimelineItem[] = [
       "Dishwasher – Developed efficiency and teamwork under pressure."
     ],
     summary:
-      "Gained high-intensity culinary experience and built strong work ethic while assisting the head chef during peak hours."
+      "Gained high-intensity culinary experience and built strong work ethic while assisting the head chef during peak hours.",
+    isCSRelated: false
   },
   {
     type: "experience",
@@ -48,7 +51,8 @@ export const timelineData: TimelineItem[] = [
       "Recreational Staff – Applied pediatric and safety skills with children."
     ],
     summary:
-      "Provided supervision and leadership to groups of children in a summer program, utilizing first aid and recreation management."
+      "Provided supervision and leadership to groups of children in a summer program, utilizing first aid and recreation management.",
+    isCSRelated: false
   },
   {
     type: "experience",
@@ -61,7 +65,8 @@ export const timelineData: TimelineItem[] = [
       "Cashier – Handled customer service, transactions, and teamwork under pressure."
     ],
     summary:
-      "First job experience that sparked interest in culinary work and customer satisfaction."
+      "First job experience that sparked interest in culinary work and customer satisfaction.",
+    isCSRelated: false
   },
   {
     type: "education",
@@ -75,7 +80,8 @@ export const timelineData: TimelineItem[] = [
       "USG Vice President & Senator – Student government leadership"
     ],
     summary:
-      "Actively engaged in student government, projects, and mentoring while maintaining a perfect GPA in a rigorous computer science program."
+      "Actively engaged in student government, projects, and mentoring while maintaining a perfect GPA in a rigorous computer science program.",
+    isCSRelated: true
   },
   {
     type: "education",
@@ -85,7 +91,8 @@ export const timelineData: TimelineItem[] = [
     endDate: "2023-05",
     highlights: ["High School Diploma"],
     summary:
-      "Graduated with academic distinction while participating in dual enrollment and career elective programs."
+      "Graduated with academic distinction while participating in dual enrollment and career elective programs.",
+    isCSRelated: false
   },
   {
     type: "education",
@@ -95,7 +102,8 @@ export const timelineData: TimelineItem[] = [
     endDate: "2022-11",
     highlights: ["Dual Enrollment Credits"],
     summary:
-      "Earned college credits while in high school through dual enrollment, accelerating progress in computer science education."
+      "Earned college credits while in high school through dual enrollment, accelerating progress in computer science education.",
+    isCSRelated: true
   },
   {
     type: "education",
@@ -105,6 +113,7 @@ export const timelineData: TimelineItem[] = [
     endDate: "2021-05",
     highlights: ["Culinary Elective Program"],
     summary:
-      "Developed culinary skills through hands-on training in a vocational setting, combining creativity and technical food preparation techniques."
+      "Developed culinary skills through hands-on training in a vocational setting, combining creativity and technical food preparation techniques.",
+    isCSRelated: false
   }
 ]
