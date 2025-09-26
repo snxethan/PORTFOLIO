@@ -151,9 +151,6 @@ const Resume = () => {
                   {showAllContent ? <FaToggleOn /> : <FaToggleOff />}
                 </button>
               </TooltipWrapper>
-              <span className="text-gray-300 text-sm font-medium">
-                Show All Content
-              </span>
             </div>
           </div>
 
