@@ -146,7 +146,8 @@ const Resume = () => {
                 <button
                   onClick={() => handleToggleChange(!showAllContent)}
                   className="text-red-500 hover:text-red-400 transition-colors text-xl"
-                  
+                  aria-label={showAllContent ? "Hide non-CS content" : "Show all content"}
+                >
                   {showAllContent ? <FaToggleOn /> : <FaToggleOff />}
                 </button>
               </TooltipWrapper>
