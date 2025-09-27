@@ -21,6 +21,17 @@ interface Project {
   ctaIcon?: "github" | "external" | "youtube" | "private" | undefined
 }
 
+interface GitHubApiProject {
+  id: number
+  name: string
+  description: string
+  html_url: string
+  language: string
+  topics: string[]
+  created_at: string
+  updated_at: string
+}
+
 const getCTAIcon = (icon?: string) => {
   switch (icon) {
     case "github": return <FaGithub className="w-5 h-5" />
@@ -77,7 +88,7 @@ const Portfolio: React.FC = () => {
       try {
         const data = JSON.parse(cache)
         processProjects(data)
-      } catch (err) {
+      } catch {
         console.warn("Cache corrupted, refetching")
         localStorage.removeItem(CACHE_KEY)
         localStorage.removeItem(EXPIRY_KEY)
@@ -108,8 +119,8 @@ const Portfolio: React.FC = () => {
       }
     }
 
-    const processProjects = (data: any[]) => {
-      const githubProjects: Project[] = data.map((project: any) => {
+    const processProjects = (data: GitHubApiProject[]) => {
+      const githubProjects: Project[] = data.map((project: GitHubApiProject) => {
         // Only redirect portfoliyou project to the portfoli-you page
         const isPortfoliyouProject = project.name.toLowerCase().includes('portfoliyou')
         

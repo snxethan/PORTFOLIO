@@ -20,7 +20,7 @@ const getSeasonalAvatar = (): string => {
   return "/images/avatar/avatar.png"
 }
 
-const Avatar = ({ isAnimated = false }: { isAnimated?: boolean }) => {
+const Avatar = () => {
   const [avatarSrc, setAvatarSrc] = useState<string | null>(null) // Initialize avatarSrc to null
 
   useEffect(() => { 

@@ -8,13 +8,9 @@ import About from "./About"
 import Resume from "./Resume"
 import Portfolio from "./Portfolio"
 import Footer from "./Footer"
-import { useExternalLink } from "../ExternalLinkHandler"
-import TooltipWrapper from "../ToolTipWrapper"
-import Portfoliyou from "./sidebar/Portfoliyou"
 
 export default function HomeClient() {
   const [activeTab, setActiveTab] = useState<string | null>(null)
-  const { handleExternalClick } = useExternalLink()
   const searchParams = useSearchParams()
   const router = useRouter()
 

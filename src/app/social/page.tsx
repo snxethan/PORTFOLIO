@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Sidebar from "@/app/components/pages/sidebar/Sidebar"
 import Footer from "../components/pages/Footer"
 import TooltipWrapper from "../components/ToolTipWrapper"
@@ -65,9 +66,11 @@ export default function SocialPage() {
                   className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
-                  <img
+                  <Image
                     src="/images/avatar/snex.png"
                     alt="Snex Logo"
+                    width={20}
+                    height={20}
                     className="w-5 h-5 rounded-sm"
                   />
                   My Portfolio
@@ -119,9 +122,11 @@ export default function SocialPage() {
                   className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
-                  <img
+                  <Image
                     src="/images/portfoliyou/portfoliyou.png"
                     alt="Portfoli-YOU Logo"
+                    width={20}
+                    height={20}
                     className="w-5 h-5"
                     style={{ borderRadius: "4px" }}
                   />

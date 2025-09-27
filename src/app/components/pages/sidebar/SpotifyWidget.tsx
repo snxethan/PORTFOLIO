@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
+import Image from "next/image"
 import { FaSpotify } from "react-icons/fa"
 import { useExternalLink } from "../../ExternalLinkHandler"
 import TooltipWrapper from "../../ToolTipWrapper"
@@ -90,7 +91,7 @@ export default function SpotifyWidget() {
         setIsVisible(false) // Hide the widget
       }, 300) // Set a timeout to hide the widget after the animation
     }
-  }, [loading, track]) 
+  }, [loading, track, isVisible]) 
 
   if (!isVisible && !isAnimatingOut) return null // If the widget is not visible and not animating out, return null
 
@@ -141,9 +142,11 @@ export default function SpotifyWidget() {
               onClick={() => handleExternalClick(track!.songUrl)}
               className="relative flex items-center justify-center gap-4 p-2 rounded-lg transition group w-full"
             >
-              <img
+              <Image
                 src={track!.albumImageUrl}
                 alt="Album Art"
+                width={48}
+                height={48}
                 className="w-12 h-12 rounded object-cover border border-[#333333]"
               />
               <div className="text-left">

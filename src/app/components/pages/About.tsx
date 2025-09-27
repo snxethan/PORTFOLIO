@@ -11,7 +11,6 @@ const About = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const { handleExternalClick } = useExternalLink()
-  const [clickedCard, setClickedCard] = useState<string | null>(null)
 
   useEffect(() => {
     setLoading(false)
@@ -108,7 +107,7 @@ const About = () => {
       <section id="about" className="py-20 bg-[#121212] text-white">
         <div className="container mx-auto px-4 grid grid-cols-1 gap-16">
           <div className="text-center space-y-4">
-            <p className="text-lg text-gray-100">I'm a Software Engineer focused on backend or full-stack development.</p>
+            <p className="text-lg text-gray-100">I&apos;m a Software Engineer focused on backend or full-stack development.</p>
             <p className="text-lg text-gray-400">Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.</p>
           </div>
 
