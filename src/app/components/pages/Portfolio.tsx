@@ -30,6 +30,7 @@ interface GitHubApiProject {
   topics: string[]
   created_at: string
   updated_at: string
+  stargazers_count?: number
 }
 
 const getCTAIcon = (icon?: string) => {

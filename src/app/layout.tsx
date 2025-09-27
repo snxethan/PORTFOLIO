@@ -1,12 +1,9 @@
 import type { Metadata, Viewport } from "next"
-import { Inter } from "next/font/google"
 import "./globals.css"
 import { ExternalLinkHandler } from "./components/ExternalLinkHandler"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from 'react-hot-toast'
-
-const inter = Inter({ subsets: ["latin"] })
 
 
 export const metadata: Metadata = {
@@ -82,7 +79,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body suppressHydrationWarning className={`${inter.className} bg-[#1a1a1a] text-white`}>
+      <body suppressHydrationWarning className="bg-[#1a1a1a] text-white font-sans">
         <Toaster position="top-center" />
         <ExternalLinkHandler>
           {/* <ClickSoundWrapper> */}

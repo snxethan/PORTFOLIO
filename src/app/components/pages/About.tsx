@@ -55,15 +55,10 @@ const About = () => {
           </div>
         )
 
-        const handleClick = () => {
-          setClickedCard(name)
-          setTimeout(() => setClickedCard(null), 300) 
-        }
-
         if (url?.endsWith(".pdf")) {
           return (
             <TooltipWrapper key={name} label="View Certification" url={url}>
-              <div onClick={() => { setSelectedPDF(url); handleClick() }} className="cursor-pointer">
+              <div onClick={() => setSelectedPDF(url)} className="cursor-pointer">
                 {Card}
               </div>
             </TooltipWrapper>
@@ -72,12 +67,12 @@ const About = () => {
 
         return url ? (
           <TooltipWrapper key={name} label={url}>
-            <div onClick={() => { handleExternalClick(url, true); handleClick() }} className="cursor-pointer">
+            <div onClick={() => handleExternalClick(url, true)} className="cursor-pointer">
               {Card}
             </div>
           </TooltipWrapper>
         ) : (
-          <div key={name} onClick={handleClick} className="cursor-pointer">
+          <div key={name} className="cursor-pointer">
             {Card}
           </div>
         )

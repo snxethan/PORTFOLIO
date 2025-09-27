@@ -19,7 +19,6 @@ import ContactFormModal from "../../ContactFormModal"
 const Sidebar = ({ className = "" }: { className?: string }) => {
   const clickSoundRef = useRef<HTMLAudioElement | null>(null) // Reference to the audio element for the click sound
   const { handleExternalClick } = useExternalLink() // Function to handle external link clicks
-  const [isHovered, setIsHovered] = useState(false) // State to control the hover effect on the avatar
   const [showContact, setShowContact] = useState(false) // State to control the visibility of the contact form modal
 
   const handleAvatarClick = () => { // Function to handle the avatar click event
@@ -64,12 +63,10 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
           {/* Avatar */}
             <div
             className="relative w-32 h-32 mx-auto rounded-full overflow-hidden group cursor-pointer transition-transform duration-300 ease-out hover:scale-105 active:scale-100"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
             onClick={handleAvatarClick}
           >
             <div className="absolute -inset-0.5 rounded-full opacity-0 blur-sm transition duration-300 group-hover:opacity-5 group-hover:bg-gradient-to-r group-hover:from-red-700 group-hover:to-red-500"></div>
-            <Avatar isAnimated={isHovered} />
+            <Avatar />
           </div>
 
 
