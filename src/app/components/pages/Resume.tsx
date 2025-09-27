@@ -138,20 +138,28 @@ const Resume = () => {
               </button>
             </TooltipWrapper>
             
-            <div className="flex items-center gap-3 bg-[#1e1e1e] px-4 py-2 rounded-lg border border-[#333333] hover:border-red-600/50 transition-colors">
-              <span className="text-gray-300 text-sm font-medium">
-                {showAllContent ? "All Content" : "CS Content"}
-              </span>
-              <TooltipWrapper label={showAllContent ? "Show ONLY CS content" : "Show ALL content"}>
-                <button
-                  onClick={() => handleToggleChange(!showAllContent)}
-                  className="text-red-500 hover:text-red-400 transition-colors text-xl"
-                  aria-label={showAllContent ? "Hide non-CS content" : "Show all content"}
-                >
+            <TooltipWrapper label={showAllContent ? "Show ONLY CS content" : "Show ALL content"}>
+              <div 
+                className="flex items-center gap-3 bg-[#1e1e1e] px-4 py-2 rounded-lg border border-[#333333] hover:border-red-600/50 transition-colors cursor-pointer"
+                onClick={() => handleToggleChange(!showAllContent)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handleToggleChange(!showAllContent)
+                  }
+                }}
+                aria-label={showAllContent ? "Hide non-CS content" : "Show all content"}
+              >
+                <span className="text-gray-300 text-sm font-medium">
+                  {showAllContent ? "All Content" : "CS Content"}
+                </span>
+                <span className="text-red-500 hover:text-red-400 transition-colors text-xl">
                   {showAllContent ? <FaToggleOn /> : <FaToggleOff />}
-                </button>
-              </TooltipWrapper>
-            </div>
+                </span>
+              </div>
+            </TooltipWrapper>
           </div>
 
           {renderTimeline("experience")}
