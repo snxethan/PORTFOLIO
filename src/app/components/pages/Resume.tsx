@@ -11,6 +11,7 @@ const Resume = () => {
   const [showAllContent, setShowAllContent] = useState(false)
   const [isToggleAnimating, setIsToggleAnimating] = useState(false)
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
+  const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
 
   useEffect(() => {
@@ -35,18 +36,34 @@ const Resume = () => {
   const handleToggleChange = (newValue: boolean) => {
     setIsToggleAnimating(true)
     
-    // If switching to show more content, mark new items for animation
-    if (newValue && !showAllContent) {
-      const newItems = sortedTimeline
+    // If switching to show less content (All -> CS), mark items for disappearing animation
+    if (!newValue && showAllContent) {
+      const itemsToHide = sortedTimeline
         .filter(item => !item.isCSRelated)
         .map(item => `${item.institution}-${item.startDate}`)
-      setAnimatingItems(new Set(newItems))
+      setDisappearingItems(new Set(itemsToHide))
       
-      // Clear animation markers after animation completes
-      setTimeout(() => setAnimatingItems(new Set()), 500)
+      // Wait for disappearing animation to complete before hiding items
+      setTimeout(() => {
+        setShowAllContent(newValue)
+        setDisappearingItems(new Set())
+      }, 300) // Match animation duration
+      
+    } else {
+      // If switching to show more content, mark new items for animation
+      if (newValue && !showAllContent) {
+        const newItems = sortedTimeline
+          .filter(item => !item.isCSRelated)
+          .map(item => `${item.institution}-${item.startDate}`)
+        setAnimatingItems(new Set(newItems))
+        
+        // Clear animation markers after animation completes
+        setTimeout(() => setAnimatingItems(new Set()), 500)
+      }
+      
+      setShowAllContent(newValue)
     }
     
-    setShowAllContent(newValue)
     // Save preference to cookie (expires in 1 year)
     const expires = new Date()
     expires.setFullYear(expires.getFullYear() + 1)
@@ -65,8 +82,17 @@ const Resume = () => {
       if (item.type !== type) return false
       return showAllContent || item.isCSRelated
     })
+    
+    // Also include items that are disappearing for animation
+    const itemsToRender = showAllContent ? 
+      filteredItems : 
+      sortedTimeline.filter(item => {
+        if (item.type !== type) return false
+        const itemKey = `${item.institution}-${item.startDate}`
+        return item.isCSRelated || disappearingItems.has(itemKey)
+      })
 
-    if (filteredItems.length === 0) {
+    if (itemsToRender.length === 0) {
       return (
         <div className="relative mb-24 w-full max-w-4xl mx-auto px-4">
           <div className="flex flex-col items-center relative mb-8 text-center">
@@ -97,15 +123,18 @@ const Resume = () => {
         <div className="absolute left-1/2 -ml-[2px] w-[2px] bg-gray-700 h-full hidden md:block"></div>
 
         <div className="flex flex-col gap-12">
-          {filteredItems.map((item) => {
+          {itemsToRender.map((item) => {
             const itemKey = `${item.institution}-${item.startDate}`
             const isNewItem = animatingItems.has(itemKey)
+            const isDisappearing = disappearingItems.has(itemKey)
             
             return (
               <div 
                 key={itemKey} 
                 className={`flex flex-col md:flex-row md:items-center relative ${
                   isNewItem ? 'animate-fade-in-up' : ''
+                } ${
+                  isDisappearing ? 'animate-fade-out-down' : ''
                 }`}
               >
                 <div className="md:w-1/2 text-center md:text-center md:pr-8">
@@ -127,11 +156,15 @@ const Resume = () => {
                 <div className="hidden md:block absolute left-1/2 -translate-x-1/2">
                   <div className={`absolute -left-[25px] w-4 h-4 rounded-full bg-red-600 ${
                     isNewItem ? 'animate-pulse' : ''
+                  } ${
+                    isDisappearing ? 'animate-fade-out-down' : ''
                   }`}></div>
                 </div>
                 <div className="md:w-1/2 md:pl-4 mt-4 md:mt-0">
                   <div className={`bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.03] active:scale-95 ${
                     isNewItem ? 'border-red-600/30' : ''
+                  } ${
+                    isDisappearing ? 'animate-fade-out-down' : ''
                   }`}>
                     <p>{item.summary}</p>
                   </div>
