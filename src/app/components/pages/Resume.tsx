@@ -9,6 +9,8 @@ import { timelineData } from "../../data/timelineData"
 const Resume = () => {
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const [showAllContent, setShowAllContent] = useState(false)
+  const [isToggleAnimating, setIsToggleAnimating] = useState(false)
+  const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
 
   useEffect(() => {
@@ -31,11 +33,27 @@ const Resume = () => {
   }, [])
 
   const handleToggleChange = (newValue: boolean) => {
+    setIsToggleAnimating(true)
+    
+    // If switching to show more content, mark new items for animation
+    if (newValue && !showAllContent) {
+      const newItems = sortedTimeline
+        .filter(item => !item.isCSRelated)
+        .map(item => `${item.institution}-${item.startDate}`)
+      setAnimatingItems(new Set(newItems))
+      
+      // Clear animation markers after animation completes
+      setTimeout(() => setAnimatingItems(new Set()), 500)
+    }
+    
     setShowAllContent(newValue)
     // Save preference to cookie (expires in 1 year)
     const expires = new Date()
     expires.setFullYear(expires.getFullYear() + 1)
     document.cookie = `resumeShowAllContent=${newValue}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`
+    
+    // Reset animation state after animation completes
+    setTimeout(() => setIsToggleAnimating(false), 300)
   }
 
   const sortedTimeline = [...timelineData].sort((a, b) =>
@@ -79,34 +97,48 @@ const Resume = () => {
         <div className="absolute left-1/2 -ml-[2px] w-[2px] bg-gray-700 h-full hidden md:block"></div>
 
         <div className="flex flex-col gap-12">
-          {filteredItems.map((item, idx) => (
-            <div key={idx} className="flex flex-col md:flex-row md:items-center relative">
-              <div className="md:w-1/2 text-center md:text-center md:pr-8">
-                <h3 className="text-xl font-semibold text-white">
-                  {item.institution}
-                </h3>
-                <p className="text-gray-400">
-                  {item.startDate} to {item.endDate}
-                </p>
-                <p className="text-gray-500 text-sm italic">
-                  {item.location}
-                </p>
-                <ul className="list-disc list-inside mt-2 text-sm text-gray-300 text-left md:text-center mx-auto md:mx-auto max-w-xs">
-                  {item.highlights.map((hl, i) => (
-                    <li key={i}>{hl}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="hidden md:block absolute left-1/2 -translate-x-1/2">
-                <div className="absolute -left-[25px] w-4 h-4 rounded-full bg-red-600"></div>
-              </div>
-              <div className="md:w-1/2 md:pl-4 mt-4 md:mt-0">
-                <div className="bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
-                  <p>{item.summary}</p>
+          {filteredItems.map((item) => {
+            const itemKey = `${item.institution}-${item.startDate}`
+            const isNewItem = animatingItems.has(itemKey)
+            
+            return (
+              <div 
+                key={itemKey} 
+                className={`flex flex-col md:flex-row md:items-center relative ${
+                  isNewItem ? 'animate-fade-in-up' : ''
+                }`}
+              >
+                <div className="md:w-1/2 text-center md:text-center md:pr-8">
+                  <h3 className="text-xl font-semibold text-white">
+                    {item.institution}
+                  </h3>
+                  <p className="text-gray-400">
+                    {item.startDate} to {item.endDate}
+                  </p>
+                  <p className="text-gray-500 text-sm italic">
+                    {item.location}
+                  </p>
+                  <ul className="list-disc list-inside mt-2 text-sm text-gray-300 text-left md:text-center mx-auto md:mx-auto max-w-xs">
+                    {item.highlights.map((hl, i) => (
+                      <li key={i}>{hl}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="hidden md:block absolute left-1/2 -translate-x-1/2">
+                  <div className={`absolute -left-[25px] w-4 h-4 rounded-full bg-red-600 ${
+                    isNewItem ? 'animate-pulse' : ''
+                  }`}></div>
+                </div>
+                <div className="md:w-1/2 md:pl-4 mt-4 md:mt-0">
+                  <div className={`bg-[#1e1e1e] p-5 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.03] active:scale-95 ${
+                    isNewItem ? 'border-red-600/30' : ''
+                  }`}>
+                    <p>{item.summary}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     )
@@ -140,7 +172,9 @@ const Resume = () => {
             
             <TooltipWrapper label={showAllContent ? "Show ONLY CS content" : "Show ALL content"}>
               <div 
-                className="flex items-center gap-3 bg-[#1e1e1e] px-4 py-2 rounded-lg border border-[#333333] hover:border-red-600/50 transition-colors cursor-pointer"
+                className={`flex items-center gap-3 bg-[#1e1e1e] px-4 py-2 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out cursor-pointer ${
+                  isToggleAnimating ? 'animate-pulse scale-95' : 'hover:scale-105'
+                } active:scale-95`}
                 onClick={() => handleToggleChange(!showAllContent)}
                 role="button"
                 tabIndex={0}
@@ -152,10 +186,12 @@ const Resume = () => {
                 }}
                 aria-label={showAllContent ? "Hide non-CS content" : "Show all content"}
               >
-                <span className="text-gray-300 text-sm font-medium">
+                <span className="text-gray-300 text-sm font-medium transition-all duration-300 ease-out">
                   {showAllContent ? "All Content" : "CS Content"}
                 </span>
-                <span className="text-red-500 hover:text-red-400 transition-colors text-xl">
+                <span className={`text-red-500 hover:text-red-400 transition-all duration-300 ease-out text-xl ${
+                  isToggleAnimating ? 'animate-spin' : ''
+                }`}>
                   {showAllContent ? <FaToggleOn /> : <FaToggleOff />}
                 </span>
               </div>
