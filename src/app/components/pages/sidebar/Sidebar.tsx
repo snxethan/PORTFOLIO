@@ -94,7 +94,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                       <button
                         onClick={() => setShowContact(true)}
                         aria-label={label}
-                        className="text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 active:scale-100 border border-gray-600 hover:border-red-600 rounded-lg p-2"
+                        className="text-gray-300 hover:text-red-600 text-2xl transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
                       >
                         <Icon />
                       </button>
