@@ -5,10 +5,11 @@ import { useEffect, useState, useRef } from "react"
 import * as Icons from "react-icons/fa";
 import { socialLinks } from "@/app/data/socialLinks";
 import { useExternalLink } from "../../ExternalLinkHandler"
-import Status from "./Status"
+
 import Avatar from "./Avatar"
 import TooltipWrapper from "../../ToolTipWrapper"
 import Portfoliyou from "./Portfoliyou"
+import ContactFormModal from "../../ContactFormModal"
 
 // This component is used to display the sidebar of the website. It contains the user's avatar, professional links, personal links, and a Spotify widget.
 // The sidebar is styled using Tailwind CSS classes. It is responsive and will adjust its size based on the screen size.
@@ -19,6 +20,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
   const clickSoundRef = useRef<HTMLAudioElement | null>(null) // Reference to the audio element for the click sound
   const { handleExternalClick } = useExternalLink() // Function to handle external link clicks
   const [isHovered, setIsHovered] = useState(false) // State to control the hover effect on the avatar
+  const [showContact, setShowContact] = useState(false) // State to control the visibility of the contact form modal
 
   const handleAvatarClick = () => { // Function to handle the avatar click event
     clickSoundRef.current?.play()
@@ -88,14 +90,14 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                 const Icon = Icons[icon as keyof typeof Icons]
                 return (
                   <TooltipWrapper key={label} label={tooltip}>
-                    {url.startsWith("mailto:") ? (
-                      <a
-                        href={url}
+                    {label === "Email" ? (
+                      <button
+                        onClick={() => setShowContact(true)}
                         aria-label={label}
                         className="text-gray-300 hover:text-red-600 text-2xl transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
                       >
                         <Icon />
-                      </a>
+                      </button>
                     ) : (
                       <button
                         onClick={() => handleExternalClick(url)}
@@ -135,15 +137,15 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
             <SpotifyWidget />
           </div>
 
-          <div className="mt-6">
-            <Status />
-          </div>
+
 
           <div className="mt-6">
             <Portfoliyou />
           </div>
         </aside>
       )}
+      {/* Contact form modal */}
+      {showContact && <ContactFormModal onClose={() => setShowContact(false)} />}
     </>
   )
 
