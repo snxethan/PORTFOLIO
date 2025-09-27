@@ -90,10 +90,9 @@ const Portfolio: React.FC = () => {
         const data = JSON.parse(cache)
         processProjects(data)
       } catch {
-        console.warn("Cache corrupted, refetching")
+        // Cache corrupted, clear it and fallback to manual projects
         localStorage.removeItem(CACHE_KEY)
         localStorage.removeItem(EXPIRY_KEY)
-        // Fallback to manual projects while trying to fetch
         processProjects([])
       }
     }
@@ -111,9 +110,8 @@ const Portfolio: React.FC = () => {
         localStorage.setItem(CACHE_KEY, JSON.stringify(data))
         localStorage.setItem(EXPIRY_KEY, (now + 1000 * 60 * 5).toString()) // 5 minutes
         processProjects(data)
-      } catch (error) {
-        console.error("Could not fetch projects:", error)
-        
+      } catch {
+        // Could not fetch projects, use manual projects only
         processProjects([])
       } finally {
         setLoading(false)

@@ -44,16 +44,14 @@ export default function SpotifyWidget() {
       const contentType = res.headers.get("content-type") // Get the content type of the response
 
       if (!res.ok || !contentType?.includes("application/json")) { // Check if the response is not OK or not JSON
-        const text = await res.text() // Get the response text
-        console.warn("Non-JSON response from /api/spotify/now-playing:", text.slice(0, 200)) // Log the response text
         setTrack(null) // Set the track to null if the response is not OK
         return
       }
 
       const data = await res.json() // Parse the response JSON
       setTrack(data) // Update the track state with the fetched data
-    } catch (err) { 
-      console.error("Error fetching Spotify data", err) // Log any errors that occur during the fetch
+    } catch {
+      // Handle errors silently - set track to null
     } finally {
       setLoading(false)
     }

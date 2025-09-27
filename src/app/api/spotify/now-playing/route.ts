@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server"
+import { API_URLS } from "../../../config/urls"
 
 export async function GET() {
   const refresh_token = process.env.SPOTIFY_REFRESH_TOKEN!
 
-  const tokenResponse = await fetch("https://accounts.spotify.com/api/token", {
+  const tokenResponse = await fetch(API_URLS.SPOTIFY.TOKEN, {
     method: "POST",
     headers: {
       Authorization:
@@ -23,7 +24,7 @@ export async function GET() {
   const access_token = tokenData.access_token
 
   const nowPlayingRes = await fetch(
-    "https://api.spotify.com/v1/me/player/currently-playing",
+    API_URLS.SPOTIFY.NOW_PLAYING,
     {
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -38,8 +39,11 @@ export async function GET() {
   // ✅ Prevent crash if response is HTML or invalid JSON
   const contentType = nowPlayingRes.headers.get("content-type")
   if (!contentType?.includes("application/json")) {
-    const text = await nowPlayingRes.text()
-    console.warn("Spotify returned non-JSON:", text.slice(0, 100))
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      const text = await nowPlayingRes.text()
+      console.warn("Spotify returned non-JSON:", text.slice(0, 100))
+    }
     return NextResponse.json({ isPlaying: false })
   }
 
