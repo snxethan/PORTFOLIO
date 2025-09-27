@@ -190,7 +190,7 @@ const Resume = () => {
                   {showAllContent ? "All Content" : "CS Content"}
                 </span>
                 <span className={`text-red-500 hover:text-red-400 transition-all duration-300 ease-out text-xl ${
-                  isToggleAnimating ? 'animate-spin' : ''
+                  isToggleAnimating ? 'scale-110' : ''
                 }`}>
                   {showAllContent ? <FaToggleOn /> : <FaToggleOff />}
                 </span>
