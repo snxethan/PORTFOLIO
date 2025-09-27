@@ -10,15 +10,29 @@ interface TimelineItem {
 }
 
 export const timelineData: TimelineItem[] = [
+    {
+    type: "experience",
+    institution: "Chili's Grill & Bar",
+    location: "Salt Lake City, UT",
+    startDate: "2025-09",
+    endDate: "Present",
+    highlights: [
+      "Line Fryer Cook – Worked as a fryer cook in a fast-paced kitchen.",
+      "Dishwasher – Developed efficiency and teamwork under pressure."
+    ],
+    summary:
+      "Gained high-intensity culinary experience and built a strong work ethic while assisting the kitchen during peak hours.",
+    isCSRelated: false
+  },
   {
     type: "experience",
     institution: "Neumont College of Computer Science",
     location: "Salt Lake City, UT",
     startDate: "2024-04",
-    endDate: "Present",
+    endDate: "2025-08",
     highlights: [
       "USG Vice-President – Helped lead student council & affairs.",
-      "Student Ambassador – Supported admissions tours and events.",
+      "Ambassador – Supported admissions tours and events.",
       "Student Coach – Tutored and helped streamline student success.",
       "Peer Tutor – Guided freshmen with academics and transition support."
     ],
@@ -33,11 +47,11 @@ export const timelineData: TimelineItem[] = [
     startDate: "2021-09",
     endDate: "2023-09",
     highlights: [
-      "Pizza Cook – Promoted from dishwasher to cook in fast-paced kitchen.",
+      "Line Pizza Cook – Promoted from dishwasher to pizza cook in fast-paced kitchen.",
       "Dishwasher – Developed efficiency and teamwork under pressure."
     ],
     summary:
-      "Gained high-intensity culinary experience and built strong work ethic while assisting the head chef during peak hours.",
+      "Gained high-intensity culinary experience and built a strong work ethic while assisting the head chef during peak hours.",
     isCSRelated: false
   },
   {
@@ -61,7 +75,7 @@ export const timelineData: TimelineItem[] = [
     startDate: "2020-06",
     endDate: "2021-06",
     highlights: [
-      "Fry-Cook – Prepared high-volume food orders maintaining health standards.",
+      "Fry-Cook – Prepared high-volume food orders, maintaining health standards.",
       "Cashier – Handled customer service, transactions, and teamwork under pressure."
     ],
     summary:
@@ -75,7 +89,7 @@ export const timelineData: TimelineItem[] = [
     startDate: "2023-09",
     endDate: "Present",
     highlights: [
-      "Bachelor of Computer Science – 3.9 GPA",
+      "Bachelor of Computer Science – 4.0 GPA",
       "Capstone & Enterprise Projects – Hands-on software engineering",
       "USG Vice President & Senator – Student government leadership"
     ],
