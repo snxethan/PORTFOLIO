@@ -1,11 +1,12 @@
 // src/app/api/spotify/callback/route.ts
 import { NextRequest } from "next/server"
+import { API_URLS } from "../../../config/urls"
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const code = searchParams.get("code")
 
-  const response = await fetch("https://accounts.spotify.com/api/token", {
+  const response = await fetch(API_URLS.SPOTIFY.TOKEN, {
     method: "POST",
     headers: {
       Authorization:
@@ -23,8 +24,12 @@ export async function GET(req: NextRequest) {
   })
 
   const data = await response.json()
-  console.log("✅ Access Token:", data.access_token)
-  console.log("✅ Refresh Token:", data.refresh_token)
+  
+  // Only log tokens in development
+  if (process.env.NODE_ENV === 'development') {
+    console.log("✅ Access Token:", data.access_token)
+    console.log("✅ Refresh Token:", data.refresh_token)
+  }
 
   return new Response("✅ Check your terminal. Copy the refresh token and paste it into .env.local")
 }

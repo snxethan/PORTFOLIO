@@ -41,8 +41,7 @@ export default function ContactFormModal({ onClose }: Props) {
       } else {
         toast.error(data.message || "Something went wrong.")
       }
-    } catch (err) {
-      console.error(err)
+    } catch {
       toast.error("Network error. Please try again later.")
     }
   }

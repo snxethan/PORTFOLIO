@@ -21,6 +21,18 @@ interface Project {
   ctaIcon?: "github" | "external" | "youtube" | "private" | undefined
 }
 
+interface GitHubApiProject {
+  id: number
+  name: string
+  description: string
+  html_url: string
+  language: string
+  topics: string[]
+  created_at: string
+  updated_at: string
+  stargazers_count?: number
+}
+
 const getCTAIcon = (icon?: string) => {
   switch (icon) {
     case "github": return <FaGithub className="w-5 h-5" />
@@ -77,11 +89,10 @@ const Portfolio: React.FC = () => {
       try {
         const data = JSON.parse(cache)
         processProjects(data)
-      } catch (err) {
-        console.warn("Cache corrupted, refetching")
+      } catch {
+        // Cache corrupted, clear it and fallback to manual projects
         localStorage.removeItem(CACHE_KEY)
         localStorage.removeItem(EXPIRY_KEY)
-        // Fallback to manual projects while trying to fetch
         processProjects([])
       }
     }
@@ -99,17 +110,16 @@ const Portfolio: React.FC = () => {
         localStorage.setItem(CACHE_KEY, JSON.stringify(data))
         localStorage.setItem(EXPIRY_KEY, (now + 1000 * 60 * 5).toString()) // 5 minutes
         processProjects(data)
-      } catch (error) {
-        console.error("Could not fetch projects:", error)
-        
+      } catch {
+        // Could not fetch projects, use manual projects only
         processProjects([])
       } finally {
         setLoading(false)
       }
     }
 
-    const processProjects = (data: any[]) => {
-      const githubProjects: Project[] = data.map((project: any) => {
+    const processProjects = (data: GitHubApiProject[]) => {
+      const githubProjects: Project[] = data.map((project: GitHubApiProject) => {
         // Only redirect portfoliyou project to the portfoli-you page
         const isPortfoliyouProject = project.name.toLowerCase().includes('portfoliyou')
         

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
+import Image from "next/image"
 import { FaSpotify } from "react-icons/fa"
 import { useExternalLink } from "../../ExternalLinkHandler"
 import TooltipWrapper from "../../ToolTipWrapper"
@@ -43,16 +44,14 @@ export default function SpotifyWidget() {
       const contentType = res.headers.get("content-type") // Get the content type of the response
 
       if (!res.ok || !contentType?.includes("application/json")) { // Check if the response is not OK or not JSON
-        const text = await res.text() // Get the response text
-        console.warn("Non-JSON response from /api/spotify/now-playing:", text.slice(0, 200)) // Log the response text
         setTrack(null) // Set the track to null if the response is not OK
         return
       }
 
       const data = await res.json() // Parse the response JSON
       setTrack(data) // Update the track state with the fetched data
-    } catch (err) { 
-      console.error("Error fetching Spotify data", err) // Log any errors that occur during the fetch
+    } catch {
+      // Handle errors silently - set track to null
     } finally {
       setLoading(false)
     }
@@ -90,7 +89,7 @@ export default function SpotifyWidget() {
         setIsVisible(false) // Hide the widget
       }, 300) // Set a timeout to hide the widget after the animation
     }
-  }, [loading, track]) 
+  }, [loading, track, isVisible]) 
 
   if (!isVisible && !isAnimatingOut) return null // If the widget is not visible and not animating out, return null
 
@@ -141,9 +140,11 @@ export default function SpotifyWidget() {
               onClick={() => handleExternalClick(track!.songUrl)}
               className="relative flex items-center justify-center gap-4 p-2 rounded-lg transition group w-full"
             >
-              <img
+              <Image
                 src={track!.albumImageUrl}
                 alt="Album Art"
+                width={48}
+                height={48}
                 className="w-12 h-12 rounded object-cover border border-[#333333]"
               />
               <div className="text-left">

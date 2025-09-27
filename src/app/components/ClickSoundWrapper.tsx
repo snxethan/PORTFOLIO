@@ -11,9 +11,8 @@ const ClickSoundWrapper = ({ children }: ClickSoundWrapperProps) => {
     // Play the click sound
     const clickSound = new Audio("/sounds/click.mp3")
     clickSound.volume = 0.5 // You can adjust volume as needed
-    clickSound.play().catch((err) => {
-      // Handle any errors with audio playback silently
-      console.log("Audio playback error:", err)
+    clickSound.play().catch(() => {
+      // Handle any errors with audio playback silently - no logging needed
     })
   }, [])
 

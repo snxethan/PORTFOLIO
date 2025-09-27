@@ -1,6 +1,6 @@
-import { NextRequest } from "next/server"
+import { API_URLS } from "../../../config/urls"
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const scope = "user-read-currently-playing user-read-recently-played"
   const client_id = process.env.SPOTIFY_CLIENT_ID!
   const redirect_uri = process.env.SPOTIFY_REDIRECT_URI! // must match Spotify dashboard exactly
@@ -12,9 +12,7 @@ export async function GET(req: NextRequest) {
     redirect_uri, // don't encode — URLSearchParams does it
   })
 
-  const url = `https://accounts.spotify.com/authorize?${params.toString()}`
-
-  console.log("REDIRECT TO:", url)
+  const url = `${API_URLS.SPOTIFY.AUTHORIZE}?${params.toString()}`
 
   return Response.redirect(url, 302)
 }
