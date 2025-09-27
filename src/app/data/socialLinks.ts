@@ -4,7 +4,7 @@ export const socialLinks = {
       label: "Email",
       icon: "FaEnvelope",
       url: "mailto:snxethan@gmail.com",
-      tooltip: "snxethan@gmail.com",
+      tooltip: "Contact Me",
     },
     {
       label: "GitHub",
