@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast'
 
 
 export const metadata: Metadata = {
-  title: "Ethan Townsend | Portfolio",
+  title: "Portfolio | Ethan Townsend",
   description: "Full Stack Developer Portfolio",
   icons: {
     icon: [
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "Ethan Townsend | Portfolio",
+    title: "Portfolio | Ethan Townsend",
     description: "Explore Ethan Townsend's project portfolio, resume, and more.",
     url: "https://www.snxethan.dev",
     siteName: "snex.dev",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ethan Townsend | Portfolio",
+    title: "Portfolio | Ethan Townsend",
     description: "Explore Ethan Townsend's project portfolio, resume, and more.",
     images: ["https://www.snxethan.dev/images/avatar/snex.png"],
   },  other: {
