@@ -64,6 +64,6 @@ export const certifications: Certification[] = [
   { name: "Network Security Certified 2023", icon: BsPatchCheckFill, highlight: true, url: "/certificates/networksecurity_certification.pdf" },
   { name: "Computational Thinking Certified 2022", icon: BsPatchCheckFill, highlight: true, url: "/certificates/computationalthinking_certification.pdf" },
   { name: "Arizona Technical Skills Standard Certified 2021", icon: BsPatchCheckFill, highlight: true },
-  { name: "Food Handlers Permit 2025", icon: BiFork, highlight: true, url: "/certificates/foodhandlers_certification.pdf" },
+  { name: "Food Handlers Certified 2025", icon: BiFork, highlight: true, url: "/certificates/foodhandlers_certification.pdf" },
   { name: "Highschool Graduate 2023", icon: BsPatchCheckFill },
 ]
