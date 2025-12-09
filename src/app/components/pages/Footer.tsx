@@ -36,8 +36,6 @@ const Footer = () => {
                   <div className="h-5 w-16 bg-[#333333] rounded animate-pulse" />
                   <div className="h-5 w-24 bg-[#333333] rounded animate-pulse" />
                 </div>
-                <span className="hidden sm:block text-gray-600">|</span>
-                <div className="h-5 w-32 bg-[#333333] rounded animate-pulse" />
               </div>
             </div>
           </div>
@@ -54,7 +52,7 @@ const Footer = () => {
             <TooltipWrapper label="View Security Policy">
               <button 
                 onClick={() => setShowSecurityPolicy(true)}
-                className="text-sm text-gray-400 hover:text-red-600 transition-colors duration-200"
+                className="text-sm text-gray-400 hover:text-red-600 hover:scale-105 transition-all duration-200"
               >
                 Security Policy
               </button>
@@ -68,9 +66,9 @@ const Footer = () => {
               alt="Ethan Townsend"
               width={32}
               height={32}
-              className="rounded-full"
+              className="rounded-full transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:scale-105"
             />
-            <TooltipWrapper label="Social Page">
+            <TooltipWrapper label="Social Landing">
               <a href="https://ethantownsend.dev" className="text-sm text-gray-400 hover:text-red-600 transition-colors duration-200">
                 Ethan Townsend &copy; {new Date().getFullYear()}
               </a>
@@ -82,19 +80,13 @@ const Footer = () => {
             <div className="footer-links flex flex-col sm:flex-row items-center gap-2">
               <TooltipWrapper label="Portfolio">
                 <div className="flex gap-4">
-                  <Link href="https://snex.dev" className="hover:text-red-600 transition-colors duration-200">
+                  <Link href="https://snex.dev" className="hover:text-red-600 hover:scale-105 transition-all duration-200">
                     snex.dev    
                   </Link>
-                  <Link href="https://snxethan.dev" className="hover:text-red-600 transition-colors duration-200">
+                  <Link href="https://snxethan.dev" className="hover:text-red-600 hover:scale-105 transition-all duration-200">
                     snxethan.dev
                   </Link>
                 </div>
-              </TooltipWrapper>
-              <span className="hidden sm:block text-gray-600">|</span>
-              <TooltipWrapper label="Social Page">
-                <Link href="https://ethantownsend.dev" className="hover:text-red-600 transition-colors duration-200">
-                  ethantownsend.dev
-                </Link>
               </TooltipWrapper>
             </div>
           </div>
