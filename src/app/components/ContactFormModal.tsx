@@ -63,17 +63,21 @@ export default function ContactFormModal({ onClose }: Props) {
   const modalContent = (
     <div
     // This is the modal overlay. It covers the entire screen and has a semi-transparent background.
-      // It also has a blur effect to make the background less distracting.
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60"
       onClick={close}
     >
       <div
       // This is the modal content. It contains the form and the close button.
         // It has a dark background and a border to make it stand out.
         className={`bg-[#1e1e1e] text-white border border-[#333] rounded-xl p-6 max-w-md w-full relative ${
-          isAnimatingOut ? "animate-elastic-out" : "animate-elastic-in"
+          isAnimatingOut ? "animate-fade-out-down" : "animate-fade-in-up"
         }`} // This is the modal content. It contains the form and the close button.
         // The className is used to apply the animation and styles to the modal.
+        style={{
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden' as const,
+          WebkitOverflowScrolling: 'touch' as const
+        }}
         onClick={(e) => e.stopPropagation()} // Prevent the click event from bubbling up to the overlay
         // This is done to prevent the modal from closing when the user clicks inside it.
       >

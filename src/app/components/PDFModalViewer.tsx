@@ -60,15 +60,20 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
 
   return ReactDOM.createPortal(
  <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-16"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-16"
       onClick={(e) => {
         if (e.target === e.currentTarget) initiateClose()
       }}
     >
       <div
         className={`relative bg-[#1a1a1a] border border-[#333] rounded-xl w-full max-w-4xl max-h-[90vh] shadow-xl overflow-hidden flex flex-col ${
-          isAnimatingOut ? "animate-elastic-out" : "animate-elastic-in"
+          isAnimatingOut ? "animate-fade-out-down" : "animate-fade-in-up"
         }`}
+        style={{
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden' as const,
+          WebkitOverflowScrolling: 'touch' as const
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
