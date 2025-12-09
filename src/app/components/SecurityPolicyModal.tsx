@@ -37,13 +37,12 @@ export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProp
       }}
     >
       <div 
-        className={`bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-8 relative max-w-4xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin ${
+        className={`bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-8 relative max-w-4xl w-full max-h-[90vh] overflow-y-auto ${
           isAnimatingOut ? "animate-fade-out-down" : "animate-fade-in-up"
         }`}
         style={{ 
           transform: 'translateZ(0)',
           backfaceVisibility: 'hidden' as const,
-          perspective: 1000,
           WebkitOverflowScrolling: 'touch' as const
         }}
         onClick={(e) => e.stopPropagation()}
