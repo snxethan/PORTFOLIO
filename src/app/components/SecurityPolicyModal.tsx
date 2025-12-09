@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 import ContactFormModal from "./ContactFormModal"
 import { FaShieldAlt, FaUserShield, FaLink, FaCookie } from "react-icons/fa"
 
@@ -11,11 +12,13 @@ interface SecurityPolicyModalProps {
 export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProps) {
   const [showContact, setShowContact] = useState(false)
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
+    setMounted(true)
+    document.body.classList.add('overflow-hidden')
     return () => {
-      document.body.style.overflow = 'unset'
+      document.body.classList.remove('overflow-hidden')
     }
   }, [])
 
@@ -26,9 +29,9 @@ export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProp
     }, 300) // match animation duration
   }
 
-return (
+  const modalContent = (
     <div 
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) handleClose()
       }}
@@ -37,6 +40,10 @@ return (
         className={`bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-8 relative max-w-4xl w-full max-h-[90vh] overflow-y-auto ${
           isAnimatingOut ? "animate-elastic-out" : "animate-elastic-in"
         }`}
+        style={{ 
+          willChange: isAnimatingOut ? 'transform, opacity' : 'auto',
+          contain: 'layout style paint'
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -54,7 +61,7 @@ return (
         </h1>
 
         <div className="space-y-8">
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03]">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] transition-colors duration-200 hover:border-red-600/50">
             <div className="flex items-center gap-3 mb-4">
               <FaShieldAlt className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
@@ -77,7 +84,7 @@ return (
             </div>
           </section>
 
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03]">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] transition-colors duration-200 hover:border-red-600/50">
             <div className="flex items-center gap-3 mb-4">
               <FaUserShield className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
@@ -97,7 +104,7 @@ return (
             </div>
           </section>
 
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03]">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] transition-colors duration-200 hover:border-red-600/50">
             <div className="flex items-center gap-3 mb-4">
               <FaLink className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
@@ -117,7 +124,7 @@ return (
             </div>
           </section>
 
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03]">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] transition-colors duration-200 hover:border-red-600/50">
             <div className="flex items-center gap-3 mb-4">
               <FaCookie className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
@@ -141,4 +148,10 @@ return (
       {showContact && <ContactFormModal onClose={() => setShowContact(false)} />}
     </div>
   )
+
+  // Only render if mounted (client-side) to avoid hydration issues
+  if (!mounted) return null
+
+  // Use portal to render the modal at the document root level
+  return createPortal(modalContent, document.body)
 }
