@@ -33,8 +33,7 @@ export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProp
 
 const modalContent = (
     <div 
-      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
-      style={{ backdropFilter: 'blur(4px)' }}
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) handleClose()
       }}
@@ -44,7 +43,6 @@ const modalContent = (
           isAnimatingOut ? "animate-fade-out-down" : "animate-fade-in-up"
         }`}
         style={{ 
-          willChange: isAnimatingOut ? 'opacity, transform' : 'auto',
           contain: 'layout style paint'
         }}
         onClick={(e) => e.stopPropagation()}
@@ -66,8 +64,7 @@ const modalContent = (
         </div>
 
         <div className="px-8 pb-8 overflow-y-auto flex-1" style={{ 
-          overscrollBehavior: 'contain',
-          WebkitOverflowScrolling: 'touch'
+          overscrollBehavior: 'contain'
         }}>
         <div className="space-y-8">
           <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] transition-colors duration-200 hover:border-red-600/50">
