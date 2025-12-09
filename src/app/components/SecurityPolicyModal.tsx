@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 import ContactFormModal from "./ContactFormModal"
 import { FaShieldAlt, FaUserShield, FaLink, FaCookie } from "react-icons/fa"
 
@@ -11,8 +12,10 @@ interface SecurityPolicyModalProps {
 export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProps) {
   const [showContact, setShowContact] = useState(false)
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     document.body.style.overflow = 'hidden'
     return () => {
       document.body.style.overflow = 'unset'
@@ -25,23 +28,31 @@ export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProp
       onClose()
     }, 300) // match animation duration
   }
+  
+  if (!mounted) return null
 
-return (
+const modalContent = (
     <div 
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      style={{ backdropFilter: 'blur(4px)' }}
       onClick={(e) => {
         if (e.target === e.currentTarget) handleClose()
       }}
     >
       <div 
-        className={`bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-8 relative max-w-4xl w-full max-h-[90vh] overflow-y-auto ${
-          isAnimatingOut ? "animate-elastic-out" : "animate-elastic-in"
+        className={`bg-[#222222] rounded-xl border border-[#333333] shadow-lg relative max-w-4xl w-full max-h-[90vh] flex flex-col ${
+          isAnimatingOut ? "animate-fade-out-down" : "animate-fade-in-up"
         }`}
+        style={{ 
+          willChange: isAnimatingOut ? 'opacity, transform' : 'auto',
+          contain: 'layout style paint'
+        }}
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="p-8 pb-4 flex-shrink-0">
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl transition-colors"
+          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl transition-colors z-10"
           aria-label="Close"
         >
           &times;
@@ -52,9 +63,14 @@ return (
           Security Policy
           <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
         </h1>
+        </div>
 
+        <div className="px-8 pb-8 overflow-y-auto flex-1" style={{ 
+          overscrollBehavior: 'contain',
+          WebkitOverflowScrolling: 'touch'
+        }}>
         <div className="space-y-8">
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03]">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] transition-colors duration-200 hover:border-red-600/50">
             <div className="flex items-center gap-3 mb-4">
               <FaShieldAlt className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
@@ -77,7 +93,7 @@ return (
             </div>
           </section>
 
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03]">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] transition-colors duration-200 hover:border-red-600/50">
             <div className="flex items-center gap-3 mb-4">
               <FaUserShield className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
@@ -97,7 +113,7 @@ return (
             </div>
           </section>
 
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03]">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] transition-colors duration-200 hover:border-red-600/50">
             <div className="flex items-center gap-3 mb-4">
               <FaLink className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
@@ -117,7 +133,7 @@ return (
             </div>
           </section>
 
-          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.03]">
+          <section className="bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] transition-colors duration-200 hover:border-red-600/50">
             <div className="flex items-center gap-3 mb-4">
               <FaCookie className="text-red-500 text-xl" />
               <h2 className="text-xl font-semibold text-white">
@@ -137,8 +153,11 @@ return (
             </div>
           </section>
         </div>
+        </div>
       </div>
       {showContact && <ContactFormModal onClose={() => setShowContact(false)} />}
     </div>
   )
+
+  return createPortal(modalContent, document.body)
 }
