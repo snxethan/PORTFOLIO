@@ -200,7 +200,7 @@ export default function SocialPage() {
               <br />
               <br />
                 <p className="text-gray-300 text-sm italic">
-                  Revamping the scheduling experience
+                  Schedule it your way!
               </p>            
               </div>
 
