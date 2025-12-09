@@ -31,18 +31,20 @@ export default function SecurityPolicyModal({ onClose }: SecurityPolicyModalProp
 
   const modalContent = (
     <div 
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) handleClose()
       }}
     >
       <div 
-        className={`bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-8 relative max-w-4xl w-full max-h-[90vh] overflow-y-auto ${
-          isAnimatingOut ? "animate-elastic-out" : "animate-elastic-in"
+        className={`bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-8 relative max-w-4xl w-full max-h-[90vh] overflow-y-auto scrollbar-thin ${
+          isAnimatingOut ? "animate-fade-out-down" : "animate-fade-in-up"
         }`}
         style={{ 
-          willChange: isAnimatingOut ? 'transform, opacity' : 'auto',
-          contain: 'layout style paint'
+          transform: 'translateZ(0)',
+          backfaceVisibility: 'hidden' as const,
+          perspective: 1000,
+          WebkitOverflowScrolling: 'touch' as const
         }}
         onClick={(e) => e.stopPropagation()}
       >
