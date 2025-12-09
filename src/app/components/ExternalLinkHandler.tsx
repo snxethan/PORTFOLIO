@@ -45,7 +45,7 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
       setIsVisible(false)
       setTargetUrl("")
       setIsProfessional(false)
-    }, 300) // match fade-out-down duration
+    }, 300) // match animation duration
   }
 
   useEffect(() => {
