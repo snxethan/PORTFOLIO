@@ -7,6 +7,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react"
+import { createPortal } from "react-dom"
 
 interface ExternalLinkContextType {
   showWarning: boolean
@@ -25,6 +26,11 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
   const [targetUrl, setTargetUrl] = useState("")
   const [isProfessional, setIsProfessional] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleExternalClick = (url: string, isProfessional: boolean = false) => {
     setTargetUrl(url)
@@ -39,7 +45,7 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
       setIsVisible(false)
       setTargetUrl("")
       setIsProfessional(false)
-    }, 300) // match elastic-out duration
+    }, 300) // match fade-out-down duration
   }
 
   useEffect(() => {
@@ -65,17 +71,22 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
-        {isVisible && (
+      {mounted && isVisible && createPortal(
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          onClick={closeWarning}
+        >
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40 animate-fade-in p-4"
-            onClick={closeWarning}
+            className={`bg-[#1a1a1a] border border-[#333] rounded-xl p-6 max-w-md w-full text-center relative ${
+              isAnimatingOut ? "animate-fade-out-down" : "animate-fade-in-up"
+            }`}
+            style={{
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden' as const,
+              WebkitOverflowScrolling: 'touch' as const
+            }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className={`bg-[#1a1a1a] border border-[#333] rounded-xl p-6 max-w-md w-full text-center relative ${
-                isAnimatingOut ? "animate-elastic-out" : "animate-elastic-in"
-              }`}
-              onClick={(e) => e.stopPropagation()}
-            >
 
             <button
               onClick={closeWarning}
@@ -130,7 +141,8 @@ export const ExternalLinkHandler = ({ children }: { children: ReactNode }) => {
               </a>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </ExternalLinkContext.Provider>
   )
