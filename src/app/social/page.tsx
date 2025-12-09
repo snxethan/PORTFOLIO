@@ -123,7 +123,7 @@ export default function SocialPage() {
                   style={{ fontFamily: "var(--font-sans)" }}
                 >
                   <Image
-                    src="/images/portfoliyou/portfoliyou.png"
+                    src="https://portfoliyou.snxethan.dev/images/icon/portfoliyou.png"
                     alt="Portfoli-YOU Logo"
                     width={20}
                     height={20}
@@ -134,7 +134,7 @@ export default function SocialPage() {
                 </a>
               </TooltipWrapper>
             <div className="mt-2 text-gray-400 text-xs text-center">
-              My college capstone project, a portfolio builder web app for users to create and customize their own digital portfolios, with no coding experience required.
+              My college capstone project, a personal website builder for users to create and customize their own digital portfolios, with no coding experience required.
               <br />
               <br />
                 <p className="text-gray-300 text-sm italic">
@@ -144,13 +144,13 @@ export default function SocialPage() {
 
             {/* Nav */}
             <div className="mt-4 flex justify-center space-x-3">
-              <TooltipWrapper label="https://portfoliyou.snxethan.dev/download" url="https://portfoliyou.snxethan.dev/download">
+              <TooltipWrapper label="https://portfoliyou.snxethan.dev/use" url="https://portfoliyou.snxethan.dev/use">
               <a
-                href="https://portfoliyou.snxethan.dev/download" 
+                href="https://portfoliyou.snxethan.dev/use" 
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
-                Install
+                Use
               </a>
               </TooltipWrapper>
                   <TooltipWrapper label="https://portfoliyou.snxethan.dev" url="https://portfoliyou.snxethan.dev">
@@ -162,9 +162,9 @@ export default function SocialPage() {
                 Portfoli-YOU
               </a>
               </TooltipWrapper>
-              <TooltipWrapper label="https://portfoliyou.snxethan.dev/about" url="https://portfoliyou.snxethan.dev/about">
+              <TooltipWrapper label="https://portfoliyou.snxethan.dev/faqs" url="https://portfoliyou.snxethan.dev/faqs">
               <a
-                href="https://portfoliyou.snxethan.dev/about"
+                href="https://portfoliyou.snxethan.dev/faqs"
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
