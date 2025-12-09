@@ -144,9 +144,9 @@ export default function SocialPage() {
 
             {/* Nav */}
             <div className="mt-4 flex justify-center space-x-3">
-              <TooltipWrapper label="https://portfoliyou.snxethan.dev/download" url="https://portfoliyou.snxethan.dev/download">
+              <TooltipWrapper label="https://portfoliyou.snxethan.dev/use" url="https://portfoliyou.snxethan.dev/use">
               <a
-                href="https://portfoliyou.snxethan.dev/download" 
+                href="https://portfoliyou.snxethan.dev/use" 
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
@@ -162,9 +162,9 @@ export default function SocialPage() {
                 Portfoli-YOU
               </a>
               </TooltipWrapper>
-              <TooltipWrapper label="https://portfoliyou.snxethan.dev/about" url="https://portfoliyou.snxethan.dev/about">
+              <TooltipWrapper label="https://portfoliyou.snxethan.dev/faqs" url="https://portfoliyou.snxethan.dev/faqs">
               <a
-                href="https://portfoliyou.snxethan.dev/about"
+                href="https://portfoliyou.snxethan.dev/faqs"
                 className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
                 style={{ fontFamily: "var(--font-sans)" }}
               >
