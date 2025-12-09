@@ -23,6 +23,12 @@ const nextConfig = {
         port: '',
         pathname: '/images/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'scheduleit.snxethan.dev',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   async rewrites() {

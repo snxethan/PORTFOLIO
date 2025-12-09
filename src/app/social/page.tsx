@@ -31,7 +31,7 @@ export default function SocialPage() {
             {/* Main Content Skeleton */}
             <div className="mt-2 md:mt-5 w-full md:max-w-sm space-y-6">
               {/* Project Card Skeletons */}
-              {[...Array(3)].map((_, i) => (
+              {[...Array(4)].map((_, i) => (
                 <div key={i} className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 animate-pulse">
                   {/* Project Title Button Skeleton */}
                   <div className="h-8 w-32 bg-[#333333] rounded-lg mx-auto" />
@@ -169,6 +169,61 @@ export default function SocialPage() {
                 style={{ fontFamily: "var(--font-sans)" }}
               >
                 FAQs
+              </a>
+              </TooltipWrapper>
+            </div>
+          </div>
+
+          {/* ScheduleIt Widget */}
+          <div className="bg-[#222222] rounded-xl border border-[#333333] hover:border-red-600/50 shadow-lg p-6 flex flex-col items-center transition-transform duration-300 ease-out hover:scale-[1.03] active:scale-95">
+              <TooltipWrapper label="https://scheduleit.snxethan.dev/">
+                <a
+                  href="https://scheduleit.snxethan.dev/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 px-4 py-1 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg shadow text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                  style={{ fontFamily: "var(--font-sans)" }}
+                >
+                  <Image
+                    src="https://scheduleit.snxethan.dev/scheduleitlogo.png"
+                    alt="ScheduleIt Logo"
+                    width={20}
+                    height={20}
+                    className="w-5 h-5"
+                    style={{ borderRadius: "4px" }}
+                  />
+                  ScheduleIt
+                </a>
+              </TooltipWrapper>
+            <div className="mt-2 text-gray-400 text-xs text-center">
+              A modern scheduling application tailored for employees and employers, built by Diego Perez Benitez. Features comprehensive business management, shift scheduling, time-off requests, and real-time communication.
+              <br />
+              <br />
+                <p className="text-gray-300 text-sm italic">
+                  Schedule it your way!
+              </p>            
+              </div>
+
+            {/* Nav */}
+            <div className="mt-4 flex justify-center space-x-3">
+              <TooltipWrapper label="https://scheduleit.snxethan.dev" url="https://scheduleit.snxethan.dev">
+              <a
+                href="https://scheduleit.snxethan.dev" 
+                className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                Website
+              </a>
+              </TooltipWrapper>
+              <TooltipWrapper label="https://scheduleit.snxethan.dev/about" url="https://scheduleit.snxethan.dev/about">
+              <a
+                href="https://scheduleit.snxethan.dev/about"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1 bg-[#333333] hover:bg-red-600 text-gray-200 hover:text-white rounded-md text-xs transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                style={{ fontFamily: "var(--font-sans)" }}
+              >
+                About
               </a>
               </TooltipWrapper>
             </div>
