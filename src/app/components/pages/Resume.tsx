@@ -14,7 +14,7 @@ const Resume = () => {
   const [isToggleAnimating, setIsToggleAnimating] = useState(false)
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
   const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
-  const [activeSubsection, setActiveSubsection] = useState("education")
+  const [activeSubsection, setActiveSubsection] = useState("experience")
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
 
   useEffect(() => {
@@ -118,8 +118,8 @@ const Resume = () => {
   }
 
   const tabs = [
-    { id: "education", label: "Education" },
     { id: "experience", label: "Experience" },
+    { id: "education", label: "Education" },
   ]
 
   return (
