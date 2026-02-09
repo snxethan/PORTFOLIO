@@ -6,6 +6,10 @@ import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevro
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import { manualProjects } from "../../data/portfolioProjects"
+import CollapsibleSection from "../CollapsibleSection"
+import Timeline from "../Timeline"
+import SideNavigation from "../SideNavigation"
+import { projectsTimelineData } from "../../data/projectsTimelineData"
 
 interface Project {
   id: number
@@ -194,182 +198,193 @@ const Portfolio: React.FC = () => {
             project.language?.toLowerCase() === selectedTag
         )
 
+  const sections = [
+    { id: "projects-section", label: "Projects" },
+    { id: "repository-section", label: "Repository" },
+  ]
+
   return (
-    <div>
+    <div className="relative">
+      <SideNavigation sections={sections} />
+      
       <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
         Projects & Contributions
         <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
       </h2>
       <section id="portfolio" className="py-20 bg-[#121212]">
         <div className="container mx-auto px-4">
-          {/* Search & Sort */}
-              <div className="mb-4 text-center text-gray-400 text-sm">
-            Showing {tagFilteredProjects.length} project{tagFilteredProjects.length !== 1 && "s"}
-          </div>
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <input
-          type="text"
-          placeholder={isFocused ? "(Name, Description or Tags)" : "Search projects..."}
-          className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-105"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-/>
-        <select
-            className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white appearance-none transition-transform duration-200 ease-out hover:scale-105"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="" disabled hidden>Filter...</option>
-            <option value="name-asc">Project Name (A–Z)</option>
-            <option value="name-desc">Project Name (Z–A)</option>
-            <option value="oldest">Created (Oldest)</option>
-            <option value="newest">Created (Newest)</option>
-          </select>
+          {/* Projects Timeline Section */}
+          <CollapsibleSection id="projects-section" title="Projects" className="mb-16">
+            <Timeline items={projectsTimelineData} type="project" />
+          </CollapsibleSection>
 
-          </div>
-
-          {/* Filter Tags */}
-          {!loading && (
-            <div className="flex flex-wrap gap-3 mb-8">
-              {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
-                const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
-                const isActive = activeTag === tag
-                const isAdditionalTag = index >= TAG_LIMIT
-                
-                // Determine animation class for additional tags
-                let animationClass = ""
-                if (isAdditionalTag) {
-                  if (isExtending) {
-                    animationClass = "animate-tag-extend"
-                  } else if (isHiding) {
-                    animationClass = "animate-tag-hide"
-                  }
-                }
-
-                return (
-                  <button
-                    key={tag}
-                    onClick={() => {
-                      setSelectedTag(tag === "ALL" ? null : tag)
-                      setActiveTag(tag)
-                      setTimeout(() => setActiveTag(null), 500)
-                    }}
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
-                      isSelected
-                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
-                        : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
-                    } ${isActive && !isSelected ? "animate-elastic-in" : ""} ${animationClass}`}
-                  >
-                    {tag}
-                  </button>
-                )
-              })}
-            {sortedTags.length > TAG_LIMIT && (
-              <button
-                onClick={handleShowAllTagsToggle}
-                className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
-                aria-label={showAllTags ? "Show less tags" : "Show more tags"}
-              >
-                {showAllTags ? (
-                  <>
-                    <FaChevronUp className="w-4 h-4 text-red-500" />
-                  </>
-                ) : (
-                  <>
-                    <FaChevronDown className="w-4 h-4 text-red-500" />
-                  </>
-                )}
-              </button>
-            )}
+          {/* Repository Section */}
+          <CollapsibleSection id="repository-section" title="Repository">
+            <div className="mb-4 text-center text-gray-400 text-sm">
+              Showing {tagFilteredProjects.length} project{tagFilteredProjects.length !== 1 && "s"}
             </div>
-          )}
-          
+            <div className="flex flex-col md:flex-row gap-4 mb-8">
+              <input
+                type="text"
+                placeholder={isFocused ? "(Name, Description or Tags)" : "Search projects..."}
+                className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-105"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+              />
+              <select
+                className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white appearance-none transition-transform duration-200 ease-out hover:scale-105"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="" disabled hidden>Filter...</option>
+                <option value="name-asc">Project Name (A–Z)</option>
+                <option value="name-desc">Project Name (Z–A)</option>
+                <option value="oldest">Created (Oldest)</option>
+                <option value="newest">Created (Newest)</option>
+              </select>
+            </div>
 
-          {/* Project Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
-            {loading
-              ? [...Array(6)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4 "
+            {/* Filter Tags */}
+            {!loading && (
+              <div className="flex flex-wrap gap-3 mb-8">
+                {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
+                  const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
+                  const isActive = activeTag === tag
+                  const isAdditionalTag = index >= TAG_LIMIT
+                  
+                  // Determine animation class for additional tags
+                  let animationClass = ""
+                  if (isAdditionalTag) {
+                    if (isExtending) {
+                      animationClass = "animate-tag-extend"
+                    } else if (isHiding) {
+                      animationClass = "animate-tag-hide"
+                    }
+                  }
+
+                  return (
+                    <button
+                      key={tag}
+                      onClick={() => {
+                        setSelectedTag(tag === "ALL" ? null : tag)
+                        setActiveTag(tag)
+                        setTimeout(() => setActiveTag(null), 500)
+                      }}
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
+                        isSelected
+                          ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
+                          : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
+                      } ${isActive && !isSelected ? "animate-elastic-in" : ""} ${animationClass}`}
+                    >
+                      {tag}
+                    </button>
+                  )
+                })}
+                {sortedTags.length > TAG_LIMIT && (
+                  <button
+                    onClick={handleShowAllTagsToggle}
+                    className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
+                    aria-label={showAllTags ? "Show less tags" : "Show more tags"}
                   >
-                    <div className="h-6 bg-[#333333] rounded w-3/4" />
-                    <div className="h-4 bg-[#333333] rounded w-2/3" />
-                    <div className="h-4 bg-[#333333] rounded w-5/6" />
-                    <div className="flex-1" />
-                    <div className="h-10 bg-[#292929] rounded w-full" />
-                  </div>
-                ))
+                    {showAllTags ? (
+                      <>
+                        <FaChevronUp className="w-4 h-4 text-red-500" />
+                      </>
+                    ) : (
+                      <>
+                        <FaChevronDown className="w-4 h-4 text-red-500" />
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            )}
 
-              : tagFilteredProjects.map((project) => (
-                              <div
+            {/* Project Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {loading
+                ? [...Array(6)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4"
+                    >
+                      <div className="h-6 bg-[#333333] rounded w-3/4" />
+                      <div className="h-4 bg-[#333333] rounded w-2/3" />
+                      <div className="h-4 bg-[#333333] rounded w-5/6" />
+                      <div className="flex-1" />
+                      <div className="h-10 bg-[#292929] rounded w-full" />
+                    </div>
+                  ))
+
+                : tagFilteredProjects.map((project) => (
+                    <div
                       key={project.id}
                       className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 flex flex-col"
                     >
-
-                    <div className="p-6 flex-grow">
-                      <div className="mb-2">
-                        <h3 className="text-xl font-semibold text-white group-hover:text-red-500 transition-colors duration-300 mb-1">
-                          {project.name}
-                        </h3>
-                        <div className="flex flex-wrap items-center gap-2">
-                          {project.source === "manual" && (
-                            <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>
-                          )}
-                          {project.source === "github" && (
-                            <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">GITHUB</span>
-                          )}
-                          {project.topics.includes("neumont") && (
-                            <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">NEU</span>
-                          )}
+                      <div className="p-6 flex-grow">
+                        <div className="mb-2">
+                          <h3 className="text-xl font-semibold text-white group-hover:text-red-500 transition-colors duration-300 mb-1">
+                            {project.name}
+                          </h3>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {project.source === "manual" && (
+                              <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>
+                            )}
+                            {project.source === "github" && (
+                              <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">GITHUB</span>
+                            )}
+                            {project.topics.includes("neumont") && (
+                              <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">NEU</span>
+                            )}
+                          </div>
+                        </div>
+                        <p className="text-gray-300 mb-2">{project.description}</p>
+                        <p className="text-sm text-gray-400 mb-1">
+                          Created On:{" "}
+                          {new Date(project.created_at).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </p>
+                        <p className="text-sm text-gray-400 mb-2">
+                          Last Updated:{" "}
+                          {new Date(project.updated_at).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
+                          {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
+                            <span key={tag} className="bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                              {tag.toUpperCase()}
+                            </span>
+                          ))}
                         </div>
                       </div>
-                      <p className="text-gray-300 mb-2">{project.description}</p>
-                      <p className="text-sm text-gray-400 mb-1">
-                        Created On:{" "}
-                        {new Date(project.created_at).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
-                      <p className="text-sm text-gray-400 mb-2">
-                        Last Updated:{" "}
-                        {new Date(project.updated_at).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
-                        {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
-                          <span key={tag} className="bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                            {tag.toUpperCase()}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
                       <div className="px-6 py-4 border-t border-[#333333] bg-[#1a1a1a]">
                         <TooltipWrapper label={project.html_url} fullWidth>
-                      <button
-                      onClick={() => handleExternalClick(project.html_url, true)}
-                      className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm sm:text-base"
-                    >
-                      {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
-                      <span className="flex-1 break-words text-center leading-tight">
-                        {project.name.toLowerCase() === "portfolio"
-                          ? "View Repository (This site!)"
-                          : project.ctaLabel ?? "View Repository"}
-                      </span>
-                    </button>
+                          <button
+                            onClick={() => handleExternalClick(project.html_url, true)}
+                            className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm sm:text-base"
+                          >
+                            {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
+                            <span className="flex-1 break-words text-center leading-tight">
+                              {project.name.toLowerCase() === "portfolio"
+                                ? "View Repository (This site!)"
+                                : project.ctaLabel ?? "View Repository"}
+                            </span>
+                          </button>
                         </TooltipWrapper>
                       </div>
-                  </div>
-                ))}
-          </div>
-        </div>  
+                    </div>
+                  ))}
+            </div>
+          </CollapsibleSection>
+        </div>
       </section>
     </div>
   )

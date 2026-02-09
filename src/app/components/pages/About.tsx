@@ -6,6 +6,8 @@ import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
 import { skills, unrelatedSkills, certifications, Skill, Certification } from "../../data/aboutData"
+import CollapsibleSection from "../CollapsibleSection"
+import SideNavigation from "../SideNavigation"
 
 const About = () => {
   const [loading, setLoading] = useState(true)
@@ -93,8 +95,19 @@ const About = () => {
   )
 
 
+  const sections = [
+    { id: "certifications-section", label: "Certifications" },
+    { id: "skills-section", label: "Skills" },
+  ]
+
+  if (unrelatedSkills.length > 0) {
+    sections.push({ id: "misc-skills-section", label: "Misc. Skills" })
+  }
+
   return (
-    <div>
+    <div className="relative">
+      <SideNavigation sections={sections} />
+      
       <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
         Information, Certifications, and Skills.
         <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
@@ -106,30 +119,18 @@ const About = () => {
             <p className="text-lg text-gray-400">Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.</p>
           </div>
 
-          <div>
-            <div className="flex flex-col items-center mb-6">
-              <h2 className="text-3xl font-bold text-white">Certifications</h2>
-              <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
-            </div>
+          <CollapsibleSection id="certifications-section" title="Certifications">
             {loading ? renderSkeletonGrid(6) : renderSkillGrid(certifications)}
-          </div>
+          </CollapsibleSection>
 
-          <div>
-            <div className="flex flex-col items-center mb-6">
-              <h2 className="text-3xl font-bold text-white">Skills</h2>
-              <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
-            </div>
+          <CollapsibleSection id="skills-section" title="Skills">
             {loading ? renderSkeletonGrid(9) : renderSkillGrid(skills)}
-          </div>
+          </CollapsibleSection>
 
           {unrelatedSkills.length > 0 && (
-            <div>
-              <div className="flex flex-col items-center mb-6">
-                <h2 className="text-3xl font-bold text-white">Misc. Skills</h2>
-                <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
-              </div>
+            <CollapsibleSection id="misc-skills-section" title="Misc. Skills">
               {loading ? renderSkeletonGrid(3) : renderSkillGrid(unrelatedSkills)}
-            </div>
+            </CollapsibleSection>
           )}
         </div>
       </section>
