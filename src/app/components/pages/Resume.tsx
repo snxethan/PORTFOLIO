@@ -16,6 +16,8 @@ const Resume = () => {
   const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
   const [activeSubsection, setActiveSubsection] = useState("experience")
   const [isAnimating, setIsAnimating] = useState(false)
+  const [search, setSearch] = useState("")
+  const [isFocused, setIsFocused] = useState(false)
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
 
   useEffect(() => {
@@ -131,60 +133,69 @@ const Resume = () => {
     { id: "education", label: "Education" },
   ]
 
+  // Filter timeline items based on search
+  const filterTimelineBySearch = (items: typeof timelineData) => {
+    if (!search) return items
+    return items.filter((item) => {
+      const nameMatch = item.institution?.toLowerCase().includes(search.toLowerCase())
+      const locationMatch = item.location?.toLowerCase().includes(search.toLowerCase())
+      const highlightMatch = item.highlights?.some((h) => h.toLowerCase().includes(search.toLowerCase()))
+      const summaryMatch = item.summary?.toLowerCase().includes(search.toLowerCase())
+      return nameMatch || locationMatch || highlightMatch || summaryMatch
+    })
+  }
+
   return (
     <div>
       <div className="bg-[#121212] text-white py-20">
         <div className="container mx-auto px-4">
-          <header className="text-center mb-16">
+          <header className="text-center mb-12">
             <h1 className="text-4xl mb-2">Ethan Townsend</h1>
             <p className="text-gray-300">Software Engineer</p>
             <p className="text-gray-400">Salt Lake City, UT</p>
             <p className="text-gray-400">snxethan@gmail.com</p>
           </header>
 
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12">
-            <TooltipWrapper label="View Resume" url={resumePDF}>
-              <button
-                onClick={() => setSelectedPDF(resumePDF)}
-                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95"
-              >
-                <FaDownload /> View Resume
-              </button>
-            </TooltipWrapper>
-            
-            <TooltipWrapper label={showAllContent ? "Show ONLY CS content" : "Show ALL content"}>
-              <div 
-                className={`flex items-center gap-3 bg-[#1e1e1e] px-4 py-2 rounded-lg border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out cursor-pointer ${
-                  isToggleAnimating ? 'animate-pulse scale-95' : 'hover:scale-105'
-                } active:scale-95`}
-                onClick={() => handleToggleChange(!showAllContent)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    handleToggleChange(!showAllContent)
-                  }
-                }}
-                aria-label={showAllContent ? "Hide non-CS content" : "Show all content"}
-              >
-                <span className="text-gray-300 text-sm font-medium transition-all duration-300 ease-out">
-                  {showAllContent ? "All Content" : "CS Content"}
-                </span>
-                <span className={`text-red-500 hover:text-red-400 transition-all duration-300 ease-out text-xl ${
-                  isToggleAnimating ? 'scale-110' : ''
-                }`}>
-                  {showAllContent ? <FaToggleOn /> : <FaToggleOff />}
-                </span>
-              </div>
-            </TooltipWrapper>
-          </div>
-
+          {/* Tabs at the top */}
           <SubsectionTabs 
             tabs={tabs}
             activeTab={activeSubsection}
             onTabChange={handleTabChange}
           />
+
+          {/* Search bar and filters under tabs */}
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8 max-w-4xl mx-auto">
+            <input
+              type="text"
+              placeholder={isFocused ? "(Institution, title, or keyword)" : "Search..."}
+              className="w-full px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-[1.02]"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+            <TooltipWrapper label="View Resume" url={resumePDF}>
+              <button
+                onClick={() => setSelectedPDF(resumePDF)}
+                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95 whitespace-nowrap"
+              >
+                <FaDownload /> Resume
+              </button>
+            </TooltipWrapper>
+            
+            <TooltipWrapper label={showAllContent ? "Show ONLY CS content" : "Show ALL content"}>
+              <button
+                className={`px-6 py-2 rounded-lg font-semibold text-sm transition-all duration-300 whitespace-nowrap ${
+                  showAllContent
+                    ? "bg-gradient-to-r from-red-600 to-red-500 text-white"
+                    : "bg-[#1e1e1e] text-gray-300 border border-[#333333] hover:border-red-600/50"
+                }`}
+                onClick={() => handleToggleChange(!showAllContent)}
+              >
+                {showAllContent ? "All Content" : "CS Only"}
+              </button>
+            </TooltipWrapper>
+          </div>
 
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {activeSubsection === "experience" && renderTimeline("experience")}

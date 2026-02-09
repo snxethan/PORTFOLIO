@@ -13,6 +13,9 @@ const About = () => {
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const [activeSubsection, setActiveSubsection] = useState("information")
   const [isAnimating, setIsAnimating] = useState(false)
+  const [search, setSearch] = useState("")
+  const [showCSOnly, setShowCSOnly] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
   const { handleExternalClick } = useExternalLink()
 
   useEffect(() => {
@@ -110,15 +113,52 @@ const About = () => {
     { id: "skills", label: "Skills" },
   ]
 
+  // Filter certifications based on search and CS toggle
+  const filteredCertifications = certifications.filter((cert) => {
+    const matchesSearch = cert.name.toLowerCase().includes(search.toLowerCase())
+    return matchesSearch
+  })
+
+  // Filter skills based on search
+  const filteredSkills = skills.filter((skill) => {
+    return skill.name.toLowerCase().includes(search.toLowerCase())
+  })
+
   return (
     <div>
       <section id="about" className="py-20 bg-[#121212] text-white">
         <div className="container mx-auto px-4">
+          {/* Tabs at the very top */}
           <SubsectionTabs 
             tabs={tabs}
             activeTab={activeSubsection}
             onTabChange={handleTabChange}
           />
+
+          {/* Search bar under tabs */}
+          <div className="flex flex-col md:flex-row gap-4 mb-8 max-w-4xl mx-auto">
+            <input
+              type="text"
+              placeholder={isFocused ? "(Name or keyword)" : "Search..."}
+              className="w-full px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-[1.02]"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+            {activeSubsection === "certifications" && (
+              <button
+                onClick={() => setShowCSOnly(!showCSOnly)}
+                className={`px-6 py-2 rounded-lg font-semibold text-sm transition-all duration-300 whitespace-nowrap ${
+                  showCSOnly
+                    ? "bg-gradient-to-r from-red-600 to-red-500 text-white"
+                    : "bg-[#1e1e1e] text-gray-300 border border-[#333333] hover:border-red-600/50"
+                }`}
+              >
+                CS Only
+              </button>
+            )}
+          </div>
 
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {activeSubsection === "information" && (
@@ -130,13 +170,13 @@ const About = () => {
 
             {activeSubsection === "certifications" && (
               <div>
-                {loading ? renderSkeletonGrid(6) : renderSkillGrid(certifications)}
+                {loading ? renderSkeletonGrid(6) : renderSkillGrid(filteredCertifications)}
               </div>
             )}
 
             {activeSubsection === "skills" && (
               <div>
-                {loading ? renderSkeletonGrid(9) : renderSkillGrid(skills)}
+                {loading ? renderSkeletonGrid(9) : renderSkillGrid(filteredSkills)}
               </div>
             )}
           </div>

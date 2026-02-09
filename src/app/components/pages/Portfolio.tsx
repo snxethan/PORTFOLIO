@@ -224,41 +224,92 @@ const Portfolio: React.FC = () => {
     <div>
       <section id="portfolio" className="py-20 bg-[#121212]">
         <div className="container mx-auto px-4">
-          {/* Description and Search Area */}
-          <div className="text-center space-y-6 mb-12 max-w-4xl mx-auto">
-            <p className="text-2xl text-gray-100 font-semibold">Showcasing my projects and contributions to the software development community.</p>
-            <p className="text-lg text-gray-400">Explore my work, from personal projects to collaborative repositories.</p>
-            
-            <div className="flex flex-col md:flex-row gap-4 mt-8">
-              <input
-                type="text"
-                placeholder={isFocused ? "(Name, Description or Tags)" : "Search projects..."}
-                className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-105"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-              />
-              <select
-                className="w-full pl-10 pr-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white appearance-none transition-transform duration-200 ease-out hover:scale-105"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-              >
-                <option value="" disabled hidden>Filter...</option>
-                <option value="name-asc">Project Name (A–Z)</option>
-                <option value="name-desc">Project Name (Z–A)</option>
-                <option value="oldest">Created (Oldest)</option>
-                <option value="newest">Created (Newest)</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Subsection Tabs */}
+          {/* Tabs at the very top */}
           <SubsectionTabs 
             tabs={tabs}
             activeTab={activeSubsection}
             onTabChange={handleTabChange}
           />
+
+          {/* Search and filter bars under tabs */}
+          <div className="flex flex-col md:flex-row gap-4 mb-6 max-w-4xl mx-auto">
+            <input
+              type="text"
+              placeholder={isFocused ? "(Name, Description or Tags)" : "Search projects..."}
+              className="w-full px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-[1.02]"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+            <select
+              className="w-full md:w-auto px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white appearance-none transition-transform duration-200 ease-out hover:scale-[1.02]"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="" disabled hidden>Sort...</option>
+              <option value="name-asc">Name (A–Z)</option>
+              <option value="name-desc">Name (Z–A)</option>
+              <option value="oldest">Oldest</option>
+              <option value="newest">Newest</option>
+            </select>
+          </div>
+
+          {/* Filter Tags under search bar - only show for repositories */}
+          {activeSubsection === "repositories" && !loading && (
+            <div className="flex flex-wrap justify-center gap-3 mb-8 max-w-4xl mx-auto">
+              {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
+                const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
+                const isActive = activeTag === tag
+                const isAdditionalTag = index >= TAG_LIMIT
+                
+                // Determine animation class for additional tags
+                let animationClass = ""
+                if (isAdditionalTag) {
+                  if (isExtending) {
+                    animationClass = "animate-tag-extend"
+                  } else if (isHiding) {
+                    animationClass = "animate-tag-hide"
+                  }
+                }
+
+                return (
+                  <button
+                    key={tag}
+                    onClick={() => {
+                      setSelectedTag(tag === "ALL" ? null : tag)
+                      setActiveTag(tag)
+                      setTimeout(() => setActiveTag(null), 500)
+                    }}
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
+                      isSelected
+                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
+                        : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
+                    } ${isActive && !isSelected ? "animate-elastic-in" : ""} ${animationClass}`}
+                  >
+                    {tag}
+                  </button>
+                )
+              })}
+              {sortedTags.length > TAG_LIMIT && (
+                <button
+                  onClick={handleShowAllTagsToggle}
+                  className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
+                  aria-label={showAllTags ? "Show less tags" : "Show more tags"}
+                >
+                  {showAllTags ? (
+                    <>
+                      <FaChevronUp className="w-4 h-4 text-red-500" />
+                    </>
+                  ) : (
+                    <>
+                      <FaChevronDown className="w-4 h-4 text-red-500" />
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          )}
 
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {/* Projects Section */}
@@ -276,62 +327,6 @@ const Portfolio: React.FC = () => {
                   Showing {tagFilteredProjects.length} Project Repositor{tagFilteredProjects.length !== 1 ? "ies" : "y"}
                 </p>
               </div>
-
-              {/* Filter Tags */}
-              {!loading && (
-                <div className="flex flex-wrap gap-3 mb-8">
-                  {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
-                    const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
-                    const isActive = activeTag === tag
-                    const isAdditionalTag = index >= TAG_LIMIT
-                    
-                    // Determine animation class for additional tags
-                    let animationClass = ""
-                    if (isAdditionalTag) {
-                      if (isExtending) {
-                        animationClass = "animate-tag-extend"
-                      } else if (isHiding) {
-                        animationClass = "animate-tag-hide"
-                      }
-                    }
-
-                    return (
-                      <button
-                        key={tag}
-                        onClick={() => {
-                          setSelectedTag(tag === "ALL" ? null : tag)
-                          setActiveTag(tag)
-                          setTimeout(() => setActiveTag(null), 500)
-                        }}
-                        className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
-                          isSelected
-                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
-                            : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
-                        } ${isActive && !isSelected ? "animate-elastic-in" : ""} ${animationClass}`}
-                      >
-                        {tag}
-                      </button>
-                    )
-                  })}
-                  {sortedTags.length > TAG_LIMIT && (
-                    <button
-                      onClick={handleShowAllTagsToggle}
-                      className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
-                      aria-label={showAllTags ? "Show less tags" : "Show more tags"}
-                    >
-                      {showAllTags ? (
-                        <>
-                          <FaChevronUp className="w-4 h-4 text-red-500" />
-                        </>
-                      ) : (
-                        <>
-                          <FaChevronDown className="w-4 h-4 text-red-500" />
-                        </>
-                      )}
-                    </button>
-                  )}
-                </div>
-              )}
 
               {/* Project Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
