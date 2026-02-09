@@ -15,20 +15,29 @@ export default function HomeClient() {
   const router = useRouter()
 
   useEffect(() => {
-    const queryTab = searchParams.get("tab")
+    const pageParam = searchParams.get("page")
+    const tabParam = searchParams.get("tab")
     const storedTab = localStorage.getItem("activeTab")
     const fallbackTab = "about"
 
-    const resolvedTab = queryTab || storedTab || fallbackTab
+    // Priority: page param > tab param > stored tab > fallback
+    const resolvedTab = pageParam || tabParam || storedTab || fallbackTab
     setActiveTab(resolvedTab)
     localStorage.setItem("activeTab", resolvedTab)
 
-    if (queryTab) router.replace("/", { scroll: false })
-  }, [searchParams, router])
+    // Don't clear URL params anymore - let child components manage their own tab params
+  }, [searchParams])
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab)
     localStorage.setItem("activeTab", tab)
+    
+    // Update URL with page parameter
+    const currentParams = new URLSearchParams(window.location.search)
+    currentParams.set("page", tab)
+    // Remove tab parameter if it exists (child components will add their own)
+    currentParams.delete("tab")
+    router.push(`?${currentParams.toString()}`, { scroll: false })
   }
 
  
