@@ -11,10 +11,10 @@ import SubsectionTabs from "../SubsectionTabs"
 const About = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
-  const [activeSubsection, setActiveSubsection] = useState("information")
+  const [activeSubsection, setActiveSubsection] = useState("certifications")
   const [isAnimating, setIsAnimating] = useState(false)
   const [search, setSearch] = useState("")
-  const [showCSOnly, setShowCSOnly] = useState(false)
+  const [sortBy, setSortBy] = useState("")
   const [isFocused, setIsFocused] = useState(false)
   const { handleExternalClick } = useExternalLink()
 
@@ -108,34 +108,64 @@ const About = () => {
 
 
   const tabs = [
-    { id: "information", label: "Information" },
     { id: "certifications", label: "Certifications" },
     { id: "skills", label: "Skills" },
   ]
 
-  // Filter certifications based on search and CS toggle
+  // Filter certifications based on search and sort
   const filteredCertifications = certifications.filter((cert) => {
     const matchesSearch = cert.name.toLowerCase().includes(search.toLowerCase())
-    return matchesSearch
+    const matchesFilter = sortBy !== "cs-only" || cert.tags?.includes("Computer Science")
+    return matchesSearch && matchesFilter
+  })
+
+  // Apply sorting to certifications
+  const sortedCertifications = [...filteredCertifications].sort((a, b) => {
+    if (sortBy === "name-asc") return a.name.localeCompare(b.name)
+    if (sortBy === "name-desc") return b.name.localeCompare(a.name)
+    // Default sort (highlight first, then alphabetical)
+    if (a.highlight === b.highlight) {
+      return a.name.localeCompare(b.name)
+    }
+    return a.highlight ? -1 : 1
   })
 
   // Filter skills based on search
   const filteredSkills = skills.filter((skill) => {
-    return skill.name.toLowerCase().includes(search.toLowerCase())
+    const matchesSearch = skill.name.toLowerCase().includes(search.toLowerCase())
+    const matchesFilter = sortBy !== "cs-only" || skill.tags?.includes("Computer Science")
+    return matchesSearch && matchesFilter
+  })
+
+  // Apply sorting to skills
+  const sortedSkills = [...filteredSkills].sort((a, b) => {
+    if (sortBy === "name-asc") return a.name.localeCompare(b.name)
+    if (sortBy === "name-desc") return b.name.localeCompare(a.name)
+    // Default sort (highlight first, then alphabetical)
+    if (a.highlight === b.highlight) {
+      return a.name.localeCompare(b.name)
+    }
+    return a.highlight ? -1 : 1
   })
 
   return (
     <div>
       <section id="about" className="py-20 bg-[#121212] text-white">
         <div className="container mx-auto px-4">
-          {/* Tabs at the very top */}
+          {/* About description at the top */}
+          <div className="text-center space-y-4 mb-12 max-w-4xl mx-auto">
+            <p className="text-2xl text-gray-100 font-semibold">I&apos;m a Software Engineer focused on backend or full-stack development.</p>
+            <p className="text-lg text-gray-400">Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.</p>
+          </div>
+
+          {/* Tabs */}
           <SubsectionTabs 
             tabs={tabs}
             activeTab={activeSubsection}
             onTabChange={handleTabChange}
           />
 
-          {/* Search bar under tabs */}
+          {/* Search bar and dropdown filter under tabs */}
           <div className="flex flex-col md:flex-row gap-4 mb-8 max-w-4xl mx-auto">
             <input
               type="text"
@@ -146,37 +176,29 @@ const About = () => {
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
             />
-            {activeSubsection === "certifications" && (
-              <button
-                onClick={() => setShowCSOnly(!showCSOnly)}
-                className={`px-6 py-2 rounded-lg font-semibold text-sm transition-all duration-300 whitespace-nowrap ${
-                  showCSOnly
-                    ? "bg-gradient-to-r from-red-600 to-red-500 text-white"
-                    : "bg-[#1e1e1e] text-gray-300 border border-[#333333] hover:border-red-600/50"
-                }`}
-              >
-                CS Only
-              </button>
-            )}
+            <select
+              className="w-full md:w-auto px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white appearance-none transition-transform duration-200 ease-out hover:scale-[1.02]"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="" disabled hidden>Filter...</option>
+              <option value="">Default</option>
+              <option value="name-asc">Name (A–Z)</option>
+              <option value="name-desc">Name (Z–A)</option>
+              {activeSubsection === "certifications" && <option value="cs-only">Computer Science Only</option>}
+            </select>
           </div>
 
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
-            {activeSubsection === "information" && (
-              <div className="text-center space-y-6 max-w-4xl mx-auto">
-                <p className="text-2xl text-gray-100 font-semibold">I&apos;m a Software Engineer focused on backend or full-stack development.</p>
-                <p className="text-lg text-gray-400">Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.</p>
-              </div>
-            )}
-
             {activeSubsection === "certifications" && (
               <div>
-                {loading ? renderSkeletonGrid(6) : renderSkillGrid(filteredCertifications)}
+                {loading ? renderSkeletonGrid(6) : renderSkillGrid(sortedCertifications)}
               </div>
             )}
 
             {activeSubsection === "skills" && (
               <div>
-                {loading ? renderSkeletonGrid(9) : renderSkillGrid(filteredSkills)}
+                {loading ? renderSkeletonGrid(9) : renderSkillGrid(sortedSkills)}
               </div>
             )}
           </div>

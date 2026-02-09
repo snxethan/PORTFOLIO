@@ -224,7 +224,13 @@ const Portfolio: React.FC = () => {
     <div>
       <section id="portfolio" className="py-20 bg-[#121212]">
         <div className="container mx-auto px-4">
-          {/* Tabs at the very top */}
+          {/* Portfolio description at the top */}
+          <div className="text-center space-y-4 mb-12 max-w-4xl mx-auto">
+            <p className="text-2xl text-gray-100 font-semibold">Projects & Contributions</p>
+            <p className="text-lg text-gray-400">Showcasing my projects and contributions to the software development community.</p>
+          </div>
+
+          {/* Tabs */}
           <SubsectionTabs 
             tabs={tabs}
             activeTab={activeSubsection}

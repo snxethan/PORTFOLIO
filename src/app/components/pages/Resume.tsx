@@ -17,6 +17,7 @@ const Resume = () => {
   const [activeSubsection, setActiveSubsection] = useState("experience")
   const [isAnimating, setIsAnimating] = useState(false)
   const [search, setSearch] = useState("")
+  const [sortBy, setSortBy] = useState("")
   const [isFocused, setIsFocused] = useState(false)
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
 
@@ -77,6 +78,15 @@ const Resume = () => {
     
     // Reset animation state after animation completes
     setTimeout(() => setIsToggleAnimating(false), 300)
+  }
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value)
+    if (value === "cs-only") {
+      handleToggleChange(false)
+    } else if (value === "" && !showAllContent) {
+      handleToggleChange(true)
+    }
   }
 
   const sortedTimeline = [...timelineData].sort((a, b) =>
@@ -149,22 +159,34 @@ const Resume = () => {
     <div>
       <div className="bg-[#121212] text-white py-20">
         <div className="container mx-auto px-4">
-          <header className="text-center mb-12">
+          <header className="text-center mb-8">
             <h1 className="text-4xl mb-2">Ethan Townsend</h1>
             <p className="text-gray-300">Software Engineer</p>
             <p className="text-gray-400">Salt Lake City, UT</p>
             <p className="text-gray-400">snxethan@gmail.com</p>
+            
+            {/* Download Resume button under title */}
+            <div className="mt-6 flex justify-center">
+              <TooltipWrapper label="View Resume" url={resumePDF}>
+                <button
+                  onClick={() => setSelectedPDF(resumePDF)}
+                  className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95"
+                >
+                  <FaDownload /> View Resume
+                </button>
+              </TooltipWrapper>
+            </div>
           </header>
 
-          {/* Tabs at the top */}
+          {/* Tabs */}
           <SubsectionTabs 
             tabs={tabs}
             activeTab={activeSubsection}
             onTabChange={handleTabChange}
           />
 
-          {/* Search bar and filters under tabs */}
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8 max-w-4xl mx-auto">
+          {/* Search bar and dropdown filter under tabs */}
+          <div className="flex flex-col md:flex-row gap-4 mb-8 max-w-4xl mx-auto">
             <input
               type="text"
               placeholder={isFocused ? "(Institution, title, or keyword)" : "Search..."}
@@ -174,27 +196,19 @@ const Resume = () => {
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
             />
-            <TooltipWrapper label="View Resume" url={resumePDF}>
-              <button
-                onClick={() => setSelectedPDF(resumePDF)}
-                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95 whitespace-nowrap"
-              >
-                <FaDownload /> Resume
-              </button>
-            </TooltipWrapper>
-            
-            <TooltipWrapper label={showAllContent ? "Show ONLY CS content" : "Show ALL content"}>
-              <button
-                className={`px-6 py-2 rounded-lg font-semibold text-sm transition-all duration-300 whitespace-nowrap ${
-                  showAllContent
-                    ? "bg-gradient-to-r from-red-600 to-red-500 text-white"
-                    : "bg-[#1e1e1e] text-gray-300 border border-[#333333] hover:border-red-600/50"
-                }`}
-                onClick={() => handleToggleChange(!showAllContent)}
-              >
-                {showAllContent ? "All Content" : "CS Only"}
-              </button>
-            </TooltipWrapper>
+            <select
+              className="w-full md:w-auto px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white appearance-none transition-transform duration-200 ease-out hover:scale-[1.02]"
+              value={sortBy}
+              onChange={(e) => handleSortChange(e.target.value)}
+            >
+              <option value="" disabled hidden>Filter...</option>
+              <option value="">Default</option>
+              <option value="name-asc">Name (A–Z)</option>
+              <option value="name-desc">Name (Z–A)</option>
+              <option value="oldest">Oldest</option>
+              <option value="newest">Newest</option>
+              <option value="cs-only">Computer Science Only</option>
+            </select>
           </div>
 
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
