@@ -2,7 +2,8 @@
 
 import React from "react"
 import { useState, useEffect } from "react"
-import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevronUp } from "react-icons/fa"
+import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevronUp, FaCog } from "react-icons/fa"
+import { useSearchParams, useRouter } from "next/navigation"
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import { manualProjects } from "../../data/portfolioProjects"
@@ -62,6 +63,9 @@ const Portfolio: React.FC = () => {
   const [isHiding, setIsHiding] = useState(false)
   const [activeSubsection, setActiveSubsection] = useState("projects")
   const [isAnimating, setIsAnimating] = useState(false)
+  const [showFilterMenu, setShowFilterMenu] = useState(false)
+  const searchParams = useSearchParams()
+  const router = useRouter()
 
   const handleShowAllTagsToggle = () => {
     if (showAllTags) {
@@ -161,6 +165,51 @@ const Portfolio: React.FC = () => {
 
     fetchProjects()
   }, [])
+  
+  useEffect(() => {
+    // Handle escape key
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setShowFilterMenu(false)
+      }
+    }
+    document.addEventListener("keydown", handleEscape)
+    
+    // Handle URL parameters for tab
+    const tabParam = searchParams.get("tab")
+    if (tabParam && (tabParam === "projects" || tabParam === "repositories")) {
+      setActiveSubsection(tabParam)
+    }
+    
+    // Load filter from localStorage
+    const savedFilter = localStorage.getItem("globalFilter")
+    if (savedFilter) {
+      setSortBy(savedFilter)
+    }
+    
+    return () => document.removeEventListener("keydown", handleEscape)
+  }, [searchParams])
+  
+  const handleTabChange = (tabId: string) => {
+    setIsAnimating(true)
+    
+    // Update URL with tab parameter
+    const currentParams = new URLSearchParams(window.location.search)
+    currentParams.set("page", "portfolio")
+    currentParams.set("tab", tabId)
+    router.push(`?${currentParams.toString()}`, { scroll: false })
+    
+    setTimeout(() => {
+      setActiveSubsection(tabId)
+      setIsAnimating(false)
+    }, 150)
+  }
+  
+  const handleFilterChange = (value: string) => {
+    setSortBy(value)
+    localStorage.setItem("globalFilter", value)
+    setShowFilterMenu(false)
+  }
 
   // Filter both timeline projects and repository projects
   const filteredTimelineProjects = projectsTimelineData.filter((project) => {
@@ -207,14 +256,6 @@ const Portfolio: React.FC = () => {
             project.language?.toLowerCase() === selectedTag
         )
 
-  const handleTabChange = (tabId: string) => {
-    setIsAnimating(true)
-    setTimeout(() => {
-      setActiveSubsection(tabId)
-      setIsAnimating(false)
-    }, 150)
-  }
-
   const tabs = [
     { id: "projects", label: "Projects" },
     { id: "repositories", label: "Repositories" },
@@ -237,33 +278,76 @@ const Portfolio: React.FC = () => {
             onTabChange={handleTabChange}
           />
 
-          {/* Search and filter bars under tabs */}
-          <div className="flex flex-col md:flex-row gap-4 mb-6 max-w-4xl mx-auto">
-            <input
-              type="text"
-              placeholder={isFocused ? "(Name, Description or Tags)" : "Search projects..."}
-              className="w-full px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-[1.02]"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-            />
-            <select
-              className="w-full md:w-auto px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white appearance-none transition-transform duration-200 ease-out hover:scale-[1.02]"
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="" disabled hidden>Sort...</option>
-              <option value="name-asc">Name (A–Z)</option>
-              <option value="name-desc">Name (Z–A)</option>
-              <option value="oldest">Oldest</option>
-              <option value="newest">Newest</option>
-            </select>
+          {/* Search bar with gear icon filter */}
+          <div className="mb-6 max-w-4xl mx-auto">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder={isFocused ? "(Name, Description or Tags)" : "Search projects..."}
+                className="w-full px-4 py-2 pr-12 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-[1.02]"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+              />
+              <button
+                onClick={() => setShowFilterMenu(!showFilterMenu)}
+                className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all duration-200 ${
+                  sortBy && sortBy !== "newest" ? "text-red-500" : "text-gray-400"
+                } hover:text-red-400 hover:bg-[#2a2a2a]`}
+                title="Sort options"
+              >
+                <FaCog className="w-5 h-5" />
+                {sortBy && sortBy !== "newest" && (
+                  <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                )}
+              </button>
+              
+              {/* Filter dropdown menu */}
+              {showFilterMenu && (
+                <div className="absolute right-0 mt-2 w-56 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg z-10">
+                  <div className="py-1">
+                    <button
+                      onClick={() => handleFilterChange("newest")}
+                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
+                        sortBy === "newest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                      }`}
+                    >
+                      Newest
+                    </button>
+                    <button
+                      onClick={() => handleFilterChange("oldest")}
+                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
+                        sortBy === "oldest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                      }`}
+                    >
+                      Oldest
+                    </button>
+                    <button
+                      onClick={() => handleFilterChange("name-asc")}
+                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
+                        sortBy === "name-asc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                      }`}
+                    >
+                      Name (A–Z)
+                    </button>
+                    <button
+                      onClick={() => handleFilterChange("name-desc")}
+                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
+                        sortBy === "name-desc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                      }`}
+                    >
+                      Name (Z–A)
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Filter Tags under search bar - only show for repositories */}
           {activeSubsection === "repositories" && !loading && (
-            <div className="flex flex-wrap justify-center gap-3 mb-8 max-w-4xl mx-auto">
+            <div className="flex flex-wrap justify-center gap-3 mb-6 max-w-4xl mx-auto">
               {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
                 const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
                 const isActive = activeTag === tag
@@ -321,13 +405,18 @@ const Portfolio: React.FC = () => {
             {/* Projects Section */}
             {activeSubsection === "projects" && (
               <div>
-              <Timeline items={filteredTimelineProjects} type="project" />
-            </div>
-          )}
+                <div className="mb-6 text-center">
+                  <p className="text-gray-400 text-sm">
+                    Showing {filteredTimelineProjects.length} Project{filteredTimelineProjects.length !== 1 ? 's' : ''}
+                  </p>
+                </div>
+                <Timeline items={filteredTimelineProjects} type="project" />
+              </div>
+            )}
 
-          {/* Repositories Section */}
-          {activeSubsection === "repositories" && (
-            <div>
+            {/* Repositories Section */}
+            {activeSubsection === "repositories" && (
+              <div>
               <div className="mb-6 text-center">
                 <p className="text-gray-400 text-sm">
                   Showing {tagFilteredProjects.length} Project Repositor{tagFilteredProjects.length !== 1 ? "ies" : "y"}
