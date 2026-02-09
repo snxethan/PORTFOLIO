@@ -15,6 +15,7 @@ export const projectsTimelineData: TimelineItem[] = [
       "This is a placeholder for a future project. More details coming soon.",
     language: "TBD",
     topics: ["placeholder"],
+    tags: ["Computer Science", "Web Development"],
     url: "#",
   },
   {
@@ -31,6 +32,7 @@ export const projectsTimelineData: TimelineItem[] = [
       "This is a placeholder for a future project. More details coming soon.",
     language: "TBD",
     topics: ["placeholder"],
+    tags: ["Computer Science", "Mobile Development"],
     url: "#",
   },
 ]

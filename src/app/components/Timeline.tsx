@@ -15,6 +15,7 @@ export interface TimelineItem {
   language?: string // For projects
   topics?: string[] // For projects
   url?: string // For projects
+  tags?: string[] // Tags for filtering
 }
 
 interface TimelineProps {

@@ -7,6 +7,7 @@ interface TimelineItem {
   highlights: string[]
   summary: string
   isCSRelated: boolean
+  tags?: string[]
 }
 
 export const timelineData: TimelineItem[] = [
@@ -22,7 +23,8 @@ export const timelineData: TimelineItem[] = [
     ],
     summary:
       "Gained high-intensity culinary experience and built a strong work ethic while assisting the kitchen during peak hours.",
-    isCSRelated: false
+    isCSRelated: false,
+    tags: ["Food Service", "Culinary"]
   },
   {
     type: "experience",
@@ -38,7 +40,8 @@ export const timelineData: TimelineItem[] = [
     ],
     summary:
       "Held 4 concurrent student leadership and academic support roles to increase involvement, mentorship, and academic performance at NCCS.",
-    isCSRelated: true
+    isCSRelated: true,
+    tags: ["Computer Science", "College", "Leadership"]
   },
   {
     type: "experience",
@@ -52,7 +55,8 @@ export const timelineData: TimelineItem[] = [
     ],
     summary:
       "Gained high-intensity culinary experience and built a strong work ethic while assisting the head chef during peak hours.",
-    isCSRelated: false
+    isCSRelated: false,
+    tags: ["Food Service", "Culinary"]
   },
   {
     type: "experience",
@@ -66,7 +70,8 @@ export const timelineData: TimelineItem[] = [
     ],
     summary:
       "Provided supervision and leadership to groups of children in a summer program, utilizing first aid and recreation management.",
-    isCSRelated: false
+    isCSRelated: false,
+    tags: ["Recreation", "Leadership"]
   },
   {
     type: "experience",
@@ -80,7 +85,8 @@ export const timelineData: TimelineItem[] = [
     ],
     summary:
       "First job experience that sparked interest in culinary work and customer satisfaction.",
-    isCSRelated: false
+    isCSRelated: false,
+    tags: ["Food Service", "Customer Service"]
   },
   {
     type: "education",
@@ -95,7 +101,8 @@ export const timelineData: TimelineItem[] = [
     ],
     summary:
       "Actively engaged in student government, projects, and mentoring while maintaining a perfect GPA in a rigorous computer science program.",
-    isCSRelated: true
+    isCSRelated: true,
+    tags: ["Computer Science", "College", "Bachelor's Degree"]
   },
   {
     type: "education",
@@ -106,7 +113,8 @@ export const timelineData: TimelineItem[] = [
     highlights: ["High School Diploma"],
     summary:
       "Graduated with academic distinction while participating in dual enrollment and career elective programs.",
-    isCSRelated: false
+    isCSRelated: false,
+    tags: ["Highschool", "Education"]
   },
   {
     type: "education",
@@ -117,7 +125,8 @@ export const timelineData: TimelineItem[] = [
     highlights: ["Dual Enrollment Credits"],
     summary:
       "Earned college credits while in high school through dual enrollment, accelerating progress in computer science education.",
-    isCSRelated: true
+    isCSRelated: true,
+    tags: ["Computer Science", "College", "Dual Enrollment"]
   },
   {
     type: "education",
@@ -128,6 +137,7 @@ export const timelineData: TimelineItem[] = [
     highlights: ["Culinary Elective Program"],
     summary:
       "Developed culinary skills through hands-on training in a vocational setting, combining creativity and technical food preparation techniques.",
-    isCSRelated: false
+    isCSRelated: false,
+    tags: ["Culinary", "Vocational", "Highschool"]
   }
 ]
