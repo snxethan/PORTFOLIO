@@ -6,12 +6,12 @@ import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
 import { skills, unrelatedSkills, certifications, Skill, Certification } from "../../data/aboutData"
-import CollapsibleSection from "../CollapsibleSection"
-import SideNavigation from "../SideNavigation"
+import SubsectionTabs from "../SubsectionTabs"
 
 const About = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
+  const [activeSubsection, setActiveSubsection] = useState("certifications")
   const { handleExternalClick } = useExternalLink()
 
   useEffect(() => {
@@ -95,42 +95,40 @@ const About = () => {
   )
 
 
-  const sections = [
-    { id: "certifications-section", label: "Certifications" },
-    { id: "skills-section", label: "Skills" },
+  const tabs = [
+    { id: "certifications", label: "Certifications" },
+    { id: "skills", label: "Skills" },
   ]
 
-  if (unrelatedSkills.length > 0) {
-    sections.push({ id: "misc-skills-section", label: "Misc. Skills" })
-  }
-
   return (
-    <div className="relative">
-      <SideNavigation sections={sections} />
-      
+    <div>
       <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
         Information, Certifications, and Skills.
         <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
       </h2>
       <section id="about" className="py-20 bg-[#121212] text-white">
-        <div className="container mx-auto px-4 grid grid-cols-1 gap-16">
-          <div className="text-center space-y-4">
+        <div className="container mx-auto px-4">
+          <div className="text-center space-y-4 mb-12">
             <p className="text-lg text-gray-100">I&apos;m a Software Engineer focused on backend or full-stack development.</p>
             <p className="text-lg text-gray-400">Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.</p>
           </div>
 
-          <CollapsibleSection id="certifications-section" title="Certifications">
-            {loading ? renderSkeletonGrid(6) : renderSkillGrid(certifications)}
-          </CollapsibleSection>
+          <SubsectionTabs 
+            tabs={tabs}
+            activeTab={activeSubsection}
+            onTabChange={setActiveSubsection}
+          />
 
-          <CollapsibleSection id="skills-section" title="Skills">
-            {loading ? renderSkeletonGrid(9) : renderSkillGrid(skills)}
-          </CollapsibleSection>
+          {activeSubsection === "certifications" && (
+            <div>
+              {loading ? renderSkeletonGrid(6) : renderSkillGrid(certifications)}
+            </div>
+          )}
 
-          {unrelatedSkills.length > 0 && (
-            <CollapsibleSection id="misc-skills-section" title="Misc. Skills">
-              {loading ? renderSkeletonGrid(3) : renderSkillGrid(unrelatedSkills)}
-            </CollapsibleSection>
+          {activeSubsection === "skills" && (
+            <div>
+              {loading ? renderSkeletonGrid(9) : renderSkillGrid(skills)}
+            </div>
           )}
         </div>
       </section>

@@ -5,9 +5,8 @@ import { FaDownload, FaToggleOn, FaToggleOff } from "react-icons/fa"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
 import { timelineData } from "../../data/timelineData"
-import CollapsibleSection from "../CollapsibleSection"
 import Timeline from "../Timeline"
-import SideNavigation from "../SideNavigation"
+import SubsectionTabs from "../SubsectionTabs"
 
 const Resume = () => {
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
@@ -15,6 +14,7 @@ const Resume = () => {
   const [isToggleAnimating, setIsToggleAnimating] = useState(false)
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
   const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
+  const [activeSubsection, setActiveSubsection] = useState("education")
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
 
   useEffect(() => {
@@ -117,15 +117,13 @@ const Resume = () => {
     )
   }
 
-  const sections = [
-    { id: "experience-section", label: "Experience" },
-    { id: "education-section", label: "Education" },
+  const tabs = [
+    { id: "education", label: "Education" },
+    { id: "experience", label: "Experience" },
   ]
 
   return (
-    <div className="relative">
-      <SideNavigation sections={sections} />
-      
+    <div>
       <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
         Experience & Education Timeline
         <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
@@ -140,7 +138,7 @@ const Resume = () => {
             <p className="text-gray-400">snxethan@gmail.com</p>
           </header>
 
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12">
             <TooltipWrapper label="View Resume" url={resumePDF}>
               <button
                 onClick={() => setSelectedPDF(resumePDF)}
@@ -178,13 +176,14 @@ const Resume = () => {
             </TooltipWrapper>
           </div>
 
-          <CollapsibleSection id="experience-section" title="Experience" className="mb-24">
-            {renderTimeline("experience")}
-          </CollapsibleSection>
+          <SubsectionTabs 
+            tabs={tabs}
+            activeTab={activeSubsection}
+            onTabChange={setActiveSubsection}
+          />
 
-          <CollapsibleSection id="education-section" title="Education" className="mb-24">
-            {renderTimeline("education")}
-          </CollapsibleSection>
+          {activeSubsection === "experience" && renderTimeline("experience")}
+          {activeSubsection === "education" && renderTimeline("education")}
         </div>
       </div>
 
