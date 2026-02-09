@@ -18,7 +18,7 @@ const Resume = () => {
   const [activeSubsection, setActiveSubsection] = useState("experience")
   const [isAnimating, setIsAnimating] = useState(false)
   const [search, setSearch] = useState("")
-  const [sortBy, setSortBy] = useState("")
+  const [sortBy, setSortBy] = useState("newest")
   const [isFocused, setIsFocused] = useState(false)
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
@@ -57,7 +57,7 @@ const Resume = () => {
     
     // Load filter from localStorage
     const savedFilter = localStorage.getItem("globalFilter")
-    if (savedFilter && savedFilter !== "cs-only") {
+    if (savedFilter) {
       setSortBy(savedFilter)
     }
     
@@ -272,14 +272,11 @@ const Resume = () => {
               <button
                 onClick={() => setShowFilterMenu(!showFilterMenu)}
                 className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all duration-200 ${
-                  sortBy && sortBy !== "" ? "text-red-500" : "text-gray-400"
+                  sortBy && sortBy !== "newest" ? "text-red-500" : "text-gray-400"
                 } hover:text-red-400 hover:bg-[#2a2a2a]`}
                 title="Filter options"
               >
                 <FaCog className="w-5 h-5" />
-                {sortBy && sortBy !== "" && (
-                  <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-                )}
               </button>
               
               {/* Filter dropdown menu */}
@@ -287,12 +284,12 @@ const Resume = () => {
                 <div className="absolute right-0 mt-2 w-56 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg z-10">
                   <div className="py-1">
                     <button
-                      onClick={() => handleSortChange("")}
+                      onClick={() => handleSortChange("newest")}
                       className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                        sortBy === "" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                        sortBy === "newest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
                       }`}
                     >
-                      Default
+                      Newest
                     </button>
                     <button
                       onClick={() => handleSortChange("name-asc")}
@@ -317,14 +314,6 @@ const Resume = () => {
                       }`}
                     >
                       Oldest
-                    </button>
-                    <button
-                      onClick={() => handleSortChange("newest")}
-                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                        sortBy === "newest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                      }`}
-                    >
-                      Newest
                     </button>
                     <button
                       onClick={() => handleSortChange("cs-only")}
@@ -361,8 +350,8 @@ const Resume = () => {
                   onClick={() => setSelectedTag(tag === "ALL" ? null : tag)}
                   className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
                     isSelected
-                      ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg"
-                      : "bg-[#1e1e1e] text-gray-300 border border-[#333333] hover:border-red-600/50 hover:scale-105"
+                      ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
+                      : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
                   } ${animationClass}`}
                 >
                   {tag}
@@ -372,15 +361,16 @@ const Resume = () => {
             {sortedTags.length > TAG_LIMIT && (
               <button
                 onClick={handleShowAllTagsToggle}
-                className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#1e1e1e] text-gray-300 border border-[#333333] hover:border-red-600/50 hover:scale-105 transition-all duration-300 flex items-center gap-1"
+                className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
+                aria-label={showAllTags ? "Show less tags" : "Show more tags"}
               >
                 {showAllTags ? (
                   <>
-                    Show Less <FaChevronUp className="w-3 h-3" />
+                    <FaChevronUp className="w-4 h-4 text-red-500" />
                   </>
                 ) : (
                   <>
-                    +{sortedTags.length - TAG_LIMIT} More <FaChevronDown className="w-3 h-3" />
+                    <FaChevronDown className="w-4 h-4 text-red-500" />
                   </>
                 )}
               </button>
