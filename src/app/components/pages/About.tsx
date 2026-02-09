@@ -11,7 +11,8 @@ import SubsectionTabs from "../SubsectionTabs"
 const About = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
-  const [activeSubsection, setActiveSubsection] = useState("certifications")
+  const [activeSubsection, setActiveSubsection] = useState("information")
+  const [isAnimating, setIsAnimating] = useState(false)
   const { handleExternalClick } = useExternalLink()
 
   useEffect(() => {
@@ -22,6 +23,14 @@ const About = () => {
     document.addEventListener("keydown", handleEscape)
     return () => document.removeEventListener("keydown", handleEscape)
   }, [])
+
+  const handleTabChange = (tabId: string) => {
+    setIsAnimating(true)
+    setTimeout(() => {
+      setActiveSubsection(tabId)
+      setIsAnimating(false)
+    }, 150)
+  }
 
   const renderSkillGrid = (items: Skill[] | Certification[]) => {
     const sortedItems = [...items].sort((a, b) => {
@@ -96,40 +105,41 @@ const About = () => {
 
 
   const tabs = [
+    { id: "information", label: "Information" },
     { id: "certifications", label: "Certifications" },
     { id: "skills", label: "Skills" },
   ]
 
   return (
     <div>
-      <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
-        Information, Certifications, and Skills.
-        <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
-      </h2>
       <section id="about" className="py-20 bg-[#121212] text-white">
         <div className="container mx-auto px-4">
-          <div className="text-center space-y-4 mb-12">
-            <p className="text-lg text-gray-100">I&apos;m a Software Engineer focused on backend or full-stack development.</p>
-            <p className="text-lg text-gray-400">Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.</p>
-          </div>
-
           <SubsectionTabs 
             tabs={tabs}
             activeTab={activeSubsection}
-            onTabChange={setActiveSubsection}
+            onTabChange={handleTabChange}
           />
 
-          {activeSubsection === "certifications" && (
-            <div>
-              {loading ? renderSkeletonGrid(6) : renderSkillGrid(certifications)}
-            </div>
-          )}
+          <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
+            {activeSubsection === "information" && (
+              <div className="text-center space-y-6 max-w-4xl mx-auto">
+                <p className="text-2xl text-gray-100 font-semibold">I&apos;m a Software Engineer focused on backend or full-stack development.</p>
+                <p className="text-lg text-gray-400">Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.</p>
+              </div>
+            )}
 
-          {activeSubsection === "skills" && (
-            <div>
-              {loading ? renderSkeletonGrid(9) : renderSkillGrid(skills)}
-            </div>
-          )}
+            {activeSubsection === "certifications" && (
+              <div>
+                {loading ? renderSkeletonGrid(6) : renderSkillGrid(certifications)}
+              </div>
+            )}
+
+            {activeSubsection === "skills" && (
+              <div>
+                {loading ? renderSkeletonGrid(9) : renderSkillGrid(skills)}
+              </div>
+            )}
+          </div>
         </div>
       </section>
 

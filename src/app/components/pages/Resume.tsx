@@ -15,6 +15,7 @@ const Resume = () => {
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
   const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
   const [activeSubsection, setActiveSubsection] = useState("experience")
+  const [isAnimating, setIsAnimating] = useState(false)
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
 
   useEffect(() => {
@@ -117,6 +118,14 @@ const Resume = () => {
     )
   }
 
+  const handleTabChange = (tabId: string) => {
+    setIsAnimating(true)
+    setTimeout(() => {
+      setActiveSubsection(tabId)
+      setIsAnimating(false)
+    }, 150)
+  }
+
   const tabs = [
     { id: "experience", label: "Experience" },
     { id: "education", label: "Education" },
@@ -124,11 +133,6 @@ const Resume = () => {
 
   return (
     <div>
-      <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
-        Experience & Education Timeline
-        <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
-      </h2>
-
       <div className="bg-[#121212] text-white py-20">
         <div className="container mx-auto px-4">
           <header className="text-center mb-16">
@@ -179,11 +183,13 @@ const Resume = () => {
           <SubsectionTabs 
             tabs={tabs}
             activeTab={activeSubsection}
-            onTabChange={setActiveSubsection}
+            onTabChange={handleTabChange}
           />
 
-          {activeSubsection === "experience" && renderTimeline("experience")}
-          {activeSubsection === "education" && renderTimeline("education")}
+          <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
+            {activeSubsection === "experience" && renderTimeline("experience")}
+            {activeSubsection === "education" && renderTimeline("education")}
+          </div>
         </div>
       </div>
 

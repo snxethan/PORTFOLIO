@@ -61,6 +61,7 @@ const Portfolio: React.FC = () => {
   const [isExtending, setIsExtending] = useState(false)
   const [isHiding, setIsHiding] = useState(false)
   const [activeSubsection, setActiveSubsection] = useState("projects")
+  const [isAnimating, setIsAnimating] = useState(false)
 
   const handleShowAllTagsToggle = () => {
     if (showAllTags) {
@@ -206,6 +207,14 @@ const Portfolio: React.FC = () => {
             project.language?.toLowerCase() === selectedTag
         )
 
+  const handleTabChange = (tabId: string) => {
+    setIsAnimating(true)
+    setTimeout(() => {
+      setActiveSubsection(tabId)
+      setIsAnimating(false)
+    }, 150)
+  }
+
   const tabs = [
     { id: "projects", label: "Projects" },
     { id: "repositories", label: "Repositories" },
@@ -213,15 +222,14 @@ const Portfolio: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
-        Projects & Contributions
-        <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
-      </h2>
       <section id="portfolio" className="py-20 bg-[#121212]">
         <div className="container mx-auto px-4">
           {/* Description and Search Area */}
-          <div className="mb-8">
-            <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="text-center space-y-6 mb-12 max-w-4xl mx-auto">
+            <p className="text-2xl text-gray-100 font-semibold">Showcasing my projects and contributions to the software development community.</p>
+            <p className="text-lg text-gray-400">Explore my work, from personal projects to collaborative repositories.</p>
+            
+            <div className="flex flex-col md:flex-row gap-4 mt-8">
               <input
                 type="text"
                 placeholder={isFocused ? "(Name, Description or Tags)" : "Search projects..."}
@@ -249,12 +257,13 @@ const Portfolio: React.FC = () => {
           <SubsectionTabs 
             tabs={tabs}
             activeTab={activeSubsection}
-            onTabChange={setActiveSubsection}
+            onTabChange={handleTabChange}
           />
 
-          {/* Projects Section */}
-          {activeSubsection === "projects" && (
-            <div>
+          <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
+            {/* Projects Section */}
+            {activeSubsection === "projects" && (
+              <div>
               <Timeline items={filteredTimelineProjects} type="project" />
             </div>
           )}
@@ -407,6 +416,7 @@ const Portfolio: React.FC = () => {
               </div>
             </div>
           )}
+          </div>
         </div>
       </section>
     </div>
