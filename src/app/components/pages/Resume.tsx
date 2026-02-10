@@ -241,9 +241,9 @@ const Resume = () => {
 
   const filterOptions = [
     { value: "newest", label: "Newest" },
+    { value: "oldest", label: "Oldest" },
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
-    { value: "oldest", label: "Oldest" },
     { value: "cs-only", label: "Computer Science Only" },
   ]
 
@@ -267,13 +267,18 @@ const Resume = () => {
     <div>
       <StaticTabNav
         headerContent={
-          <div className="text-center">
-            <h2 className="text-4xl font-bold mb-2">Ethan Townsend</h2>
-            <p className="text-xl text-gray-400 mb-1">Software Engineer</p>
-            <p className="text-sm text-gray-500 mb-1">Salt Lake City, UT</p>
-            <p className="text-sm text-red-500 mb-4">snxethan@gmail.com</p>
+          <>
+            <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+              Experience & Education Timeline
+            </h2>
+            <div className="text-center mb-4">
+              <h3 className="text-2xl font-bold text-white">Ethan Townsend</h3>
+              <p className="text-lg text-gray-400">Software Engineer</p>
+              <p className="text-sm text-gray-500">Salt Lake City, UT</p>
+              <p className="text-sm text-red-500">snxethan@gmail.com</p>
+            </div>
             
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center">
               <TooltipWrapper label="View Resume" url={resumePDF}>
                 <button
                   onClick={() => setSelectedPDF(resumePDF)}
@@ -283,7 +288,7 @@ const Resume = () => {
                 </button>
               </TooltipWrapper>
             </div>
-          </div>
+          </>
         }
         tabs={tabs}
         activeTab={activeSubsection}

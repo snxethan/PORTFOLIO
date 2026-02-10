@@ -97,16 +97,13 @@ const About = () => {
   }
 
   const renderSkillGrid = (items: Skill[] | Certification[]) => {
-    const sortedItems = [...items].sort((a, b) => {
-      if (a.highlight === b.highlight) {
-        return a.name.localeCompare(b.name)
-      }
-      return a.highlight ? -1 : 1
-    })
-
+    // Don't re-sort here - use the already sorted items
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
-      {sortedItems.map(({ name, icon: Icon, highlight, url }) => { 
+      {items.map((item) => { 
+        const { name, icon: Icon, highlight, url } = item
+        const cert = item as Certification
+        const year = cert.year 
         const Card = (
           <div
             className={`group relative flex flex-col items-center bg-[#1e1e1e] hover:bg-[#252525] p-3 sm:p-4 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.09] active:scale-95`} 
@@ -119,7 +116,12 @@ const About = () => {
               <Icon className="text-white text-lg sm:text-xl" /> 
             </div>
             {/* Removed whitespace-nowrap to allow text to wrap */}
-            <p className="text-white mt-1.5 sm:mt-2 font-semibold text-xs sm:text-sm text-center">{name}</p> 
+            <p className="text-white mt-1.5 sm:mt-2 font-semibold text-xs sm:text-sm text-center">{name}</p>
+            
+            {/* Date tag for certifications */}
+            {year && (
+              <span className="text-gray-400 text-xs mt-1">{year}</span>
+            )} 
             
             {(url?.endsWith(".pdf") || (url && !url.endsWith(".pdf"))) && (
               <div className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 text-gray-400 group-hover:text-red-400 transition-colors duration-300"> 
@@ -242,9 +244,9 @@ const About = () => {
     { value: "name-desc", label: "Name (Z–A)" },
     { value: "cs-only", label: "Computer Science Only" },
   ] : [
-    { value: "newest", label: "Newest" },
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
+    { value: "cs-only", label: "Computer Science Only" },
   ]
 
   const resultsCount = activeSubsection === "certifications" 
