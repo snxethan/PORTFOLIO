@@ -68,10 +68,10 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
   const isFilterActive = currentFilter && currentFilter !== "newest"
 
   return (
-    <div className="bg-[#1e1e1e] border-b border-[#333333] shadow-lg transition-all duration-300 mb-6">
+    <div className="bg-[#1e1e1e] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg transition-all duration-300 ease-out hover:scale-[1.03] mb-6 overflow-visible">
       {/* Main tab row */}
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-center gap-4 relative">
+      <div className="container mx-auto">
+        <div className="flex items-center justify-center gap-4 relative overflow-visible">
           {/* Tab buttons - centered */}
           <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center">
             {tabs.map((tab) => (
@@ -106,13 +106,13 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
 
       {/* Expandable search section */}
       <div
-        className={`overflow-hidden transition-all duration-300 ${
+        className={`overflow-visible transition-all duration-300 ${
           isSearchExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="container mx-auto px-4 py-4 border-t border-[#333333]">
+        <div className="container mx-auto py-4 border-t border-[#333333]">
           {/* Search bar with filter */}
-          <div className="flex gap-3 mb-4">
+          <div className="flex gap-3 mb-4 overflow-visible">
             <div className="flex-1 relative">
               <input
                 type="text"
@@ -141,7 +141,7 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
                         className="fixed inset-0 z-40"
                         onClick={() => setShowFilterMenu(false)}
                       />
-                      <div className="absolute right-0 bottom-full mb-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[100]">
+                      <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[999]">
                         {filterOptions.map((option) => (
                           <button
                             key={option.value}
