@@ -7,7 +7,7 @@ import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
 import { timelineData } from "../../data/timelineData"
 import Timeline from "../Timeline"
-import SubsectionTabs from "../SubsectionTabs"
+import StaticTabNav from "../StaticTabNav"
 
 const Resume = () => {
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
@@ -235,8 +235,50 @@ const Resume = () => {
     { id: "education", label: "Education" },
   ]
 
+  const filterOptions = [
+    { value: "newest", label: "Newest" },
+    { value: "name-asc", label: "Name (A–Z)" },
+    { value: "name-desc", label: "Name (Z–A)" },
+    { value: "oldest", label: "Oldest" },
+    { value: "cs-only", label: "Computer Science Only" },
+  ]
+
+  const filteredCount = activeSubsection === "experience" 
+    ? sortedTimeline.filter(i => i.type === "experience" && (showAllContent || i.isCSRelated) && (!search || 
+        i.institution?.toLowerCase().includes(search.toLowerCase()) ||
+        i.location?.toLowerCase().includes(search.toLowerCase()) ||
+        i.summary?.toLowerCase().includes(search.toLowerCase()) ||
+        i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || selectedTag === "ALL" || i.tags?.includes(selectedTag))).length
+    : sortedTimeline.filter(i => i.type === "education" && (showAllContent || i.isCSRelated) && (!search || 
+        i.institution?.toLowerCase().includes(search.toLowerCase()) ||
+        i.location?.toLowerCase().includes(search.toLowerCase()) ||
+        i.summary?.toLowerCase().includes(search.toLowerCase()) ||
+        i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || selectedTag === "ALL" || i.tags?.includes(selectedTag))).length
+
+  const resultsCount = activeSubsection === "experience"
+    ? `Showing ${filteredCount} Experience${filteredCount !== 1 ? 's' : ''}`
+    : `Showing ${filteredCount} Education Item${filteredCount !== 1 ? 's' : ''}`
+
   return (
     <div>
+      <StaticTabNav
+        tabs={tabs}
+        activeTab={activeSubsection}
+        onTabChange={handleTabChange}
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search by institution, title, or keyword..."
+        tags={sortedTags}
+        selectedTag={selectedTag}
+        onTagClick={(tag) => setSelectedTag(tag === "ALL" ? null : tag)}
+        showAllTags={showAllTags}
+        onToggleTags={handleShowAllTagsToggle}
+        filterOptions={filterOptions}
+        currentFilter={sortBy}
+        onFilterChange={handleSortChange}
+        resultsCount={resultsCount}
+      />
+      
       <div className="bg-[#121212] text-white py-20">
         <div className="container mx-auto px-4">
           <header className="text-center mb-8">
@@ -257,150 +299,6 @@ const Resume = () => {
               </TooltipWrapper>
             </div>
           </header>
-
-          {/* Box wrapper for tabs and search/filter section */}
-          <div className="bg-[#1e1e1e] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg mb-6 transition-all duration-300 max-w-4xl mx-auto">
-            {/* Tabs */}
-            <SubsectionTabs 
-              tabs={tabs}
-              activeTab={activeSubsection}
-              onTabChange={handleTabChange}
-            />
-
-            {/* Search bar with gear icon filter */}
-            <div className="mb-6">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder={isFocused ? "(Institution, title, or keyword)" : "Search..."}
-                  className="w-full px-4 py-2 pr-12 bg-[#121212] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-[1.02]"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                />
-                <button
-                  onClick={() => setShowFilterMenu(!showFilterMenu)}
-                  className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all duration-200 ${
-                    sortBy && sortBy !== "newest" ? "text-red-500" : "text-gray-400"
-                  } hover:text-red-400 hover:bg-[#2a2a2a]`}
-                  title="Filter options"
-                >
-                  <FaCog className="w-5 h-5" />
-                </button>
-                
-                {/* Filter dropdown menu */}
-                {showFilterMenu && (
-                  <div className="absolute right-0 mt-2 w-56 bg-[#121212] border border-[#333333] rounded-lg shadow-lg z-10">
-                    <div className="py-1">
-                      <button
-                        onClick={() => handleSortChange("newest")}
-                        className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                          sortBy === "newest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                        }`}
-                      >
-                        Newest
-                      </button>
-                      <button
-                        onClick={() => handleSortChange("name-asc")}
-                        className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                          sortBy === "name-asc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                        }`}
-                      >
-                        Name (A–Z)
-                      </button>
-                      <button
-                        onClick={() => handleSortChange("name-desc")}
-                        className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                          sortBy === "name-desc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                        }`}
-                      >
-                        Name (Z–A)
-                      </button>
-                      <button
-                        onClick={() => handleSortChange("oldest")}
-                        className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                          sortBy === "oldest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                        }`}
-                      >
-                        Oldest
-                      </button>
-                      <button
-                        onClick={() => handleSortChange("cs-only")}
-                        className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                          sortBy === "cs-only" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                        }`}
-                      >
-                        Computer Science Only
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Tags display */}
-            <div className="flex flex-wrap justify-center gap-3">
-              {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
-                const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
-                const isAdditionalTag = index >= TAG_LIMIT
-                
-                let animationClass = ""
-                if (isAdditionalTag) {
-                  if (isExtending) {
-                    animationClass = "animate-tag-extend"
-                  } else if (isHiding) {
-                    animationClass = "animate-tag-hide"
-                  }
-                }
-
-                return (
-                  <button
-                    key={tag}
-                    onClick={() => setSelectedTag(tag === "ALL" ? null : tag)}
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
-                      isSelected
-                        ? "bg-gradient-to-r from-red-600/70 to-red-500/70 text-white scale-105 shadow-lg shadow-red-500/30"
-                        : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
-                    } ${animationClass}`}
-                  >
-                    {tag}
-                  </button>
-                )
-              })}
-              {sortedTags.length > TAG_LIMIT && (
-                <button
-                  onClick={handleShowAllTagsToggle}
-                  className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
-                  aria-label={showAllTags ? "Show less tags" : "Show more tags"}
-                >
-                  {showAllTags ? (
-                    <>
-                      <FaChevronUp className="w-4 h-4 text-red-500" />
-                    </>
-                  ) : (
-                    <>
-                      <FaChevronDown className="w-4 h-4 text-red-500" />
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Result count */}
-          <div className="text-center mb-6 text-gray-400 text-sm">
-            {activeSubsection === "experience" && `Showing ${sortedTimeline.filter(i => i.type === "experience" && (showAllContent || i.isCSRelated) && (!search || 
-              i.institution?.toLowerCase().includes(search.toLowerCase()) ||
-              i.location?.toLowerCase().includes(search.toLowerCase()) ||
-              i.summary?.toLowerCase().includes(search.toLowerCase()) ||
-              i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || selectedTag === "ALL" || i.tags?.includes(selectedTag))).length} Experience${sortedTimeline.filter(i => i.type === "experience" && (showAllContent || i.isCSRelated)).length !== 1 ? 's' : ''}`}
-            {activeSubsection === "education" && `Showing ${sortedTimeline.filter(i => i.type === "education" && (showAllContent || i.isCSRelated) && (!search || 
-              i.institution?.toLowerCase().includes(search.toLowerCase()) ||
-              i.location?.toLowerCase().includes(search.toLowerCase()) ||
-              i.summary?.toLowerCase().includes(search.toLowerCase()) ||
-              i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || selectedTag === "ALL" || i.tags?.includes(selectedTag))).length} Education Item${sortedTimeline.filter(i => i.type === "education" && (showAllContent || i.isCSRelated)).length !== 1 ? 's' : ''}`}
-          </div>
 
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {activeSubsection === "experience" && renderTimeline("experience")}
