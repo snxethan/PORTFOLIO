@@ -26,7 +26,7 @@ const SubsectionTabs: React.FC<SubsectionTabsProps> = ({
           onClick={() => onTabChange(tab.id)}
           className={`px-8 py-4 rounded-xl font-bold text-base transition-all duration-300 transform ${
             activeTab === tab.id
-              ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
+              ? "bg-gradient-to-r from-red-600/70 to-red-500/70 text-white scale-105 shadow-lg shadow-red-500/30"
               : "bg-[#1e1e1e] text-gray-300 border-2 border-[#333333] hover:border-red-600/50 hover:text-white hover:scale-105"
           }`}
         >

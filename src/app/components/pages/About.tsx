@@ -36,8 +36,16 @@ const About = () => {
     }
     document.addEventListener("keydown", handleEscape)
     
-    // Handle URL parameters for tab
-    const tabParam = searchParams.get("tab")
+    // Load active tab from localStorage first
+    const savedTab = localStorage.getItem("aboutActiveTab")
+    if (savedTab && (savedTab === "certifications" || savedTab === "skills")) {
+      setActiveSubsection(savedTab)
+    }
+    
+    // Handle URL parameters for tab (takes precedence over localStorage)
+    const pageParam = searchParams.get("page")
+    const parts = pageParam?.split("/")
+    const tabParam = parts?.[1]
     if (tabParam && (tabParam === "certifications" || tabParam === "skills")) {
       setActiveSubsection(tabParam)
     }
@@ -54,11 +62,11 @@ const About = () => {
   const handleTabChange = (tabId: string) => {
     setIsAnimating(true)
     
-    // Update URL with tab parameter
-    const currentParams = new URLSearchParams(window.location.search)
-    currentParams.set("page", "about")
-    currentParams.set("tab", tabId)
-    router.push(`?${currentParams.toString()}`, { scroll: false })
+    // Save to localStorage
+    localStorage.setItem("aboutActiveTab", tabId)
+    
+    // Update URL with new format
+    router.push(`?page=about/${tabId}`, { scroll: false })
     
     setTimeout(() => {
       setActiveSubsection(tabId)
@@ -105,7 +113,7 @@ const About = () => {
           >
             <div // Icon container
               className={`inline-block p-1.5 sm:p-2 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300 ${
-                highlight ? "bg-gradient-to-br from-red-500 to-red-700" : "bg-red-600/40 group-hover:bg-red-600/50"
+                highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
               }`} 
             >
               <Icon className="text-white text-lg sm:text-xl" /> 
@@ -234,127 +242,129 @@ const About = () => {
           </div>
 
           {/* Tabs */}
-          <SubsectionTabs 
-            tabs={tabs}
-            activeTab={activeSubsection}
-            onTabChange={handleTabChange}
-          />
+          <div className="bg-[#1e1e1e] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg mb-6 transition-all duration-300 max-w-4xl mx-auto">
+            <SubsectionTabs 
+              tabs={tabs}
+              activeTab={activeSubsection}
+              onTabChange={handleTabChange}
+            />
 
-          {/* Search bar with gear icon filter */}
-          <div className="mb-6 max-w-4xl mx-auto">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder={isFocused ? "(Name or keyword)" : "Search..."}
-                className="w-full px-4 py-2 pr-12 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-[1.02]"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-              />
-              <button
-                onClick={() => setShowFilterMenu(!showFilterMenu)}
-                className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all duration-200 ${
-                  sortBy && sortBy !== "newest" ? "text-red-500" : "text-gray-400"
-                } hover:text-red-400 hover:bg-[#2a2a2a]`}
-                title="Filter options"
-              >
-                <FaCog className="w-5 h-5" />
-              </button>
-              
-              {/* Filter dropdown menu */}
-              {showFilterMenu && (
-                <div className="absolute right-0 mt-2 w-56 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg z-10">
-                  <div className="py-1">
-                    <button
-                      onClick={() => handleFilterChange("newest")}
-                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                        sortBy === "newest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                      }`}
-                    >
-                      Newest
-                    </button>
-                    <button
-                      onClick={() => handleFilterChange("name-asc")}
-                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                        sortBy === "name-asc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                      }`}
-                    >
-                      Name (A–Z)
-                    </button>
-                    <button
-                      onClick={() => handleFilterChange("name-desc")}
-                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                        sortBy === "name-desc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                      }`}
-                    >
-                      Name (Z–A)
-                    </button>
-                    {activeSubsection === "certifications" && (
+            {/* Search bar with gear icon filter */}
+            <div className="mt-6">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder={isFocused ? "(Name or keyword)" : "Search..."}
+                  className="w-full px-4 py-2 pr-12 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-[1.02]"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                />
+                <button
+                  onClick={() => setShowFilterMenu(!showFilterMenu)}
+                  className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all duration-200 ${
+                    sortBy && sortBy !== "newest" ? "text-red-500" : "text-gray-400"
+                  } hover:text-red-400 hover:bg-[#2a2a2a]`}
+                  title="Filter options"
+                >
+                  <FaCog className="w-5 h-5" />
+                </button>
+                
+                {/* Filter dropdown menu */}
+                {showFilterMenu && (
+                  <div className="absolute right-0 mt-2 w-56 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg z-10">
+                    <div className="py-1">
                       <button
-                        onClick={() => handleFilterChange("cs-only")}
+                        onClick={() => handleFilterChange("newest")}
                         className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                          sortBy === "cs-only" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                          sortBy === "newest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
                         }`}
                       >
-                        Computer Science Only
+                        Newest
                       </button>
-                    )}
+                      <button
+                        onClick={() => handleFilterChange("name-asc")}
+                        className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
+                          sortBy === "name-asc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                        }`}
+                      >
+                        Name (A–Z)
+                      </button>
+                      <button
+                        onClick={() => handleFilterChange("name-desc")}
+                        className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
+                          sortBy === "name-desc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                        }`}
+                      >
+                        Name (Z–A)
+                      </button>
+                      {activeSubsection === "certifications" && (
+                        <button
+                          onClick={() => handleFilterChange("cs-only")}
+                          className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
+                            sortBy === "cs-only" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                          }`}
+                        >
+                          Computer Science Only
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* Tags display */}
-          {!loading && (
-            <div className="flex flex-wrap justify-center gap-3 mb-6 max-w-4xl mx-auto">
-              {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
-                const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
-                const isAdditionalTag = index >= TAG_LIMIT
-                
-                let animationClass = ""
-                if (isAdditionalTag) {
-                  if (isExtending) {
-                    animationClass = "animate-tag-extend"
-                  } else if (isHiding) {
-                    animationClass = "animate-tag-hide"
+            {/* Tags display */}
+            {!loading && (
+              <div className="flex flex-wrap justify-center gap-3 mt-6">
+                {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
+                  const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
+                  const isAdditionalTag = index >= TAG_LIMIT
+                  
+                  let animationClass = ""
+                  if (isAdditionalTag) {
+                    if (isExtending) {
+                      animationClass = "animate-tag-extend"
+                    } else if (isHiding) {
+                      animationClass = "animate-tag-hide"
+                    }
                   }
-                }
 
-                return (
+                  return (
+                    <button
+                      key={tag}
+                      onClick={() => setSelectedTag(tag === "ALL" ? null : tag)}
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
+                        isSelected
+                          ? "bg-gradient-to-r from-red-600/70 to-red-500/70 text-white scale-105 shadow-lg shadow-red-500/30"
+                          : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
+                      } ${animationClass}`}
+                    >
+                      {tag}
+                    </button>
+                  )
+                })}
+                {sortedTags.length > TAG_LIMIT && (
                   <button
-                    key={tag}
-                    onClick={() => setSelectedTag(tag === "ALL" ? null : tag)}
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
-                      isSelected
-                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
-                        : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
-                    } ${animationClass}`}
+                    onClick={handleShowAllTagsToggle}
+                    className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
+                    aria-label={showAllTags ? "Show less tags" : "Show more tags"}
                   >
-                    {tag}
+                    {showAllTags ? (
+                      <>
+                        <FaChevronUp className="w-4 h-4 text-red-500" />
+                      </>
+                    ) : (
+                      <>
+                        <FaChevronDown className="w-4 h-4 text-red-500" />
+                      </>
+                    )}
                   </button>
-                )
-              })}
-              {sortedTags.length > TAG_LIMIT && (
-                <button
-                  onClick={handleShowAllTagsToggle}
-                  className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
-                  aria-label={showAllTags ? "Show less tags" : "Show more tags"}
-                >
-                  {showAllTags ? (
-                    <>
-                      <FaChevronUp className="w-4 h-4 text-red-500" />
-                    </>
-                  ) : (
-                    <>
-                      <FaChevronDown className="w-4 h-4 text-red-500" />
-                    </>
-                  )}
-                </button>
-              )}
-            </div>
-          )}
+                )}
+              </div>
+            )}
+          </div>
 
           {/* Result count */}
           <div className="text-center mb-6 text-gray-400 text-sm">
