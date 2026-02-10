@@ -6,9 +6,11 @@ import { FaSearch, FaTimes, FaCog, FaChevronDown, FaChevronUp } from "react-icon
 interface Tab {
   id: string
   label: string
+  description?: string
 }
 
 interface StaticTabNavProps {
+  headerContent?: React.ReactNode
   tabs: Tab[]
   activeTab: string
   onTabChange: (tabId: string) => void
@@ -31,6 +33,7 @@ interface StaticTabNavProps {
 }
 
 const StaticTabNav: React.FC<StaticTabNavProps> = ({
+  headerContent,
   tabs,
   activeTab,
   onTabChange,
@@ -49,6 +52,7 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
 }) => {
   const [isSearchExpanded, setIsSearchExpanded] = useState(false)
   const [showFilterMenu, setShowFilterMenu] = useState(false)
+  const [clickedTab, setClickedTab] = useState<string | null>(null)
 
   const toggleSearch = () => {
     setIsSearchExpanded(!isSearchExpanded)
@@ -56,6 +60,12 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
       // Clear search when collapsing
       onSearchChange("")
     }
+  }
+
+  const handleTabClick = (tabId: string) => {
+    setClickedTab(tabId)
+    setTimeout(() => setClickedTab(null), 300)
+    onTabChange(tabId)
   }
 
   const handleFilterChange = (value: string) => {
@@ -68,20 +78,29 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
   const isFilterActive = currentFilter && currentFilter !== "newest"
 
   return (
-    <div className="bg-[#1e1e1e] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg transition-all duration-300 ease-out hover:scale-[1.03] mb-6 overflow-visible">
+    <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-6 shadow-lg mb-6 overflow-visible">
+      {/* Header content (if provided) */}
+      {headerContent && (
+        <div className="mb-6">
+          {headerContent}
+        </div>
+      )}
+      
       {/* Main tab row */}
       <div className="container mx-auto">
-        <div className="flex items-center justify-center gap-4 relative overflow-visible">
+        <div className="relative flex items-center justify-center overflow-visible">
           {/* Tab buttons - centered */}
           <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                className={`px-6 py-2 rounded-lg font-semibold text-sm whitespace-nowrap transition-all duration-200 ${
+                onClick={() => handleTabClick(tab.id)}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 ${
+                  clickedTab === tab.id ? "animate-elastic-in" : ""
+                } ${
                   activeTab === tab.id
                     ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-md shadow-red-500/10"
-                    : "bg-[#2a2a2a] text-gray-300 border border-[#444444] hover:border-red-600/50 hover:text-white"
+                    : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333]"
                 }`}
               >
                 {tab.label}
@@ -89,10 +108,10 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
             ))}
           </div>
 
-          {/* Search toggle button - absolute positioned on right */}
+          {/* Search toggle button - hidden on small screens */}
           <button
             onClick={toggleSearch}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-lg transition-all duration-200 ${
+            className={`hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-lg transition-all duration-200 ${
               isSearchExpanded
                 ? "bg-red-600 text-white"
                 : "bg-[#2a2a2a] text-gray-300 hover:text-white hover:bg-[#333333]"
@@ -106,13 +125,13 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
 
       {/* Expandable search section */}
       <div
-        className={`overflow-visible transition-all duration-300 ${
+        className={`overflow-visible transition-all duration-300 ease-in-out ${
           isSearchExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="container mx-auto py-4 border-t border-[#333333]">
+        <div className="container mx-auto pt-4 border-t border-[#333333] mt-4">
           {/* Search bar with filter */}
-          <div className="flex gap-3 mb-4 overflow-visible">
+          <div className="flex gap-3 mb-4 overflow-visible relative">
             <div className="flex-1 relative">
               <input
                 type="text"
@@ -170,8 +189,22 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
 
           {/* Tags section */}
           {tags.length > 0 && onTagClick && (
-            <div className="space-y-2">
-              <div className="flex flex-wrap gap-2">
+            <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
+              showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
+            }`}>
+              <div className="flex flex-wrap gap-2 transition-all duration-300">
+                {/* Clear button */}
+                <button
+                  onClick={() => onTagClick("")}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
+                    !selectedTag
+                      ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30"
+                      : "bg-[#333333] text-gray-300 hover:bg-[#444444]"
+                  }`}
+                >
+                  ×
+                </button>
+                
                 {(showAllTags ? tags : tags.slice(0, 8)).map((tag) => (
                   <button
                     key={tag}
@@ -196,12 +229,10 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
                   {showAllTags ? (
                     <>
                       <FaChevronUp className="w-3 h-3" />
-                      Show Less
                     </>
                   ) : (
                     <>
                       <FaChevronDown className="w-3 h-3" />
-                      Show More ({tags.length - 8} more)
                     </>
                   )}
                 </button>

@@ -249,6 +249,19 @@ const About = () => {
   return (
     <div>
       <StaticTabNav
+        headerContent={
+          <>
+            <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+              Information, Certifications, and Skills.
+            </h2>
+            <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
+              I&apos;m a Software Engineer focused on backend or full-stack development.
+            </p>
+            <p className="text-center text-gray-400 max-w-3xl mx-auto">
+              Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.
+            </p>
+          </>
+        }
         tabs={tabs}
         activeTab={activeSubsection}
         onTabChange={handleTabChange}
@@ -257,7 +270,7 @@ const About = () => {
         searchPlaceholder="Search by name or keyword..."
         tags={sortedTags}
         selectedTag={selectedTag}
-        onTagClick={(tag) => setSelectedTag(tag === "ALL" ? null : tag)}
+        onTagClick={(tag) => setSelectedTag(tag === "" ? null : tag)}
         showAllTags={showAllTags}
         onToggleTags={handleShowAllTagsToggle}
         filterOptions={filterOptions}
@@ -268,12 +281,6 @@ const About = () => {
       
       <section id="about" className="py-20 bg-[#121212] text-white">
         <div className="container mx-auto px-4">
-          {/* About description at the top */}
-          <div className="text-center space-y-4 mb-12 max-w-4xl mx-auto">
-            <p className="text-2xl text-gray-100 font-semibold">I&apos;m a Software Engineer focused on backend or full-stack development.</p>
-            <p className="text-lg text-gray-400">Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.</p>
-          </div>
-
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {activeSubsection === "certifications" && (
               <div>

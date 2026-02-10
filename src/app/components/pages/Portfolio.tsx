@@ -283,6 +283,16 @@ const Portfolio: React.FC = () => {
   return (
     <div>
       <StaticTabNav
+        headerContent={
+          <>
+            <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+              Projects & Contributions
+            </h2>
+            <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
+              Showcasing my projects and contributions to the software development community.
+            </p>
+          </>
+        }
         tabs={tabs}
         activeTab={activeSubsection}
         onTabChange={handleTabChange}
@@ -292,7 +302,7 @@ const Portfolio: React.FC = () => {
         tags={activeSubsection === "repositories" ? sortedTags : []}
         selectedTag={selectedTag}
         onTagClick={(tag) => {
-          setSelectedTag(tag === "ALL" ? null : tag)
+          setSelectedTag(tag === "" ? null : tag)
           setActiveTag(tag)
           setTimeout(() => setActiveTag(null), 500)
         }}
@@ -306,12 +316,6 @@ const Portfolio: React.FC = () => {
       
       <section id="portfolio" className="py-20 bg-[#121212]">
         <div className="container mx-auto px-4">
-          {/* Portfolio description at the top */}
-          <div className="text-center space-y-4 mb-12 max-w-4xl mx-auto">
-            <p className="text-2xl text-gray-100 font-semibold">Projects & Contributions</p>
-            <p className="text-lg text-gray-400">Showcasing my projects and contributions to the software development community.</p>
-          </div>
-
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {/* Projects Section */}
             {activeSubsection === "projects" && (

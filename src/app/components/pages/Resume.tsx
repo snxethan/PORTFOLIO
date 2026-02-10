@@ -262,6 +262,39 @@ const Resume = () => {
   return (
     <div>
       <StaticTabNav
+        headerContent={
+          <div className="text-center">
+            <h2 className="text-4xl font-bold mb-2">Ethan Townsend</h2>
+            <p className="text-xl text-gray-400 mb-1">Software Engineer</p>
+            <p className="text-sm text-gray-500 mb-1">Salt Lake City, UT</p>
+            <p className="text-sm text-red-500 mb-4">snxethan@gmail.com</p>
+            
+            <div className="flex justify-center gap-4 mb-4">
+              <TooltipWrapper label="View Resume" url={resumePDF}>
+                <button
+                  onClick={() => setSelectedPDF(resumePDF)}
+                  className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95"
+                >
+                  <FaDownload /> View Resume
+                </button>
+              </TooltipWrapper>
+              
+              <button
+                onClick={() => handleToggleChange(!showAllContent)}
+                className={`px-6 py-3 rounded-lg flex items-center gap-2 font-medium transition-all duration-200 ${
+                  isToggleAnimating ? 'animate-elastic-in' : ''
+                } ${
+                  showAllContent
+                    ? "bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white shadow-lg shadow-red-500/30"
+                    : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333]"
+                }`}
+              >
+                {showAllContent ? <FaToggleOn className="w-6 h-6" /> : <FaToggleOff className="w-6 h-6" />}
+                CS Content
+              </button>
+            </div>
+          </div>
+        }
         tabs={tabs}
         activeTab={activeSubsection}
         onTabChange={handleTabChange}
@@ -270,7 +303,7 @@ const Resume = () => {
         searchPlaceholder="Search by institution, title, or keyword..."
         tags={sortedTags}
         selectedTag={selectedTag}
-        onTagClick={(tag) => setSelectedTag(tag === "ALL" ? null : tag)}
+        onTagClick={(tag) => setSelectedTag(tag === "" ? null : tag)}
         showAllTags={showAllTags}
         onToggleTags={handleShowAllTagsToggle}
         filterOptions={filterOptions}
@@ -281,25 +314,6 @@ const Resume = () => {
       
       <div className="bg-[#121212] text-white py-20">
         <div className="container mx-auto px-4">
-          <header className="text-center mb-8">
-            <h1 className="text-4xl mb-2">Ethan Townsend</h1>
-            <p className="text-gray-300">Software Engineer</p>
-            <p className="text-gray-400">Salt Lake City, UT</p>
-            <p className="text-gray-400">snxethan@gmail.com</p>
-            
-            {/* Download Resume button under title */}
-            <div className="mt-6 flex justify-center">
-              <TooltipWrapper label="View Resume" url={resumePDF}>
-                <button
-                  onClick={() => setSelectedPDF(resumePDF)}
-                  className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95"
-                >
-                  <FaDownload /> View Resume
-                </button>
-              </TooltipWrapper>
-            </div>
-          </header>
-
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {activeSubsection === "experience" && renderTimeline("experience")}
             {activeSubsection === "education" && renderTimeline("education")}
