@@ -18,7 +18,7 @@ const Resume = () => {
   const [activeSubsection, setActiveSubsection] = useState("experience")
   const [isAnimating, setIsAnimating] = useState(false)
   const [search, setSearch] = useState("")
-  const [sortBy, setSortBy] = useState("newest")
+  const [sortBy, setSortBy] = useState("cs-only")
   const [isFocused, setIsFocused] = useState(false)
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
@@ -154,9 +154,25 @@ const Resume = () => {
     }
   }
 
-  const sortedTimeline = [...timelineData].sort((a, b) =>
-    new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-  )
+  const sortedTimeline = [...timelineData].sort((a, b) => {
+    if (sortBy === "cs-only") {
+      // CS items sorted by date (newest first)
+      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    }
+    if (sortBy === "name-asc") {
+      return (a.institution || "").localeCompare(b.institution || "")
+    }
+    if (sortBy === "name-desc") {
+      return (b.institution || "").localeCompare(a.institution || "")
+    }
+    if (sortBy === "oldest") {
+      return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+    }
+    if (sortBy === "newest") {
+      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    }
+    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+  })
   
   // Extract tags from timeline items
   const allTags = React.useMemo(() => {

@@ -15,7 +15,7 @@ const About = () => {
   const [activeSubsection, setActiveSubsection] = useState("certifications")
   const [isAnimating, setIsAnimating] = useState(false)
   const [search, setSearch] = useState("")
-  const [sortBy, setSortBy] = useState("newest")
+  const [sortBy, setSortBy] = useState("cs-only")
   const [isFocused, setIsFocused] = useState(false)
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
@@ -203,6 +203,7 @@ const About = () => {
 
   // Apply sorting to certifications
   const sortedCertifications = [...filteredCertifications].sort((a, b) => {
+    if (sortBy === "cs-only") return b.year - a.year  // CS items sorted newest first
     if (sortBy === "name-asc") return a.name.localeCompare(b.name)
     if (sortBy === "name-desc") return b.name.localeCompare(a.name)
     if (sortBy === "oldest") return a.year - b.year
@@ -224,6 +225,7 @@ const About = () => {
 
   // Apply sorting to skills
   const sortedSkills = [...filteredSkills].sort((a, b) => {
+    if (sortBy === "cs-only") return 0  // CS only, no date sort for skills
     if (sortBy === "name-asc") return a.name.localeCompare(b.name)
     if (sortBy === "name-desc") return b.name.localeCompare(a.name)
     // Default sort (highlight first, then alphabetical)

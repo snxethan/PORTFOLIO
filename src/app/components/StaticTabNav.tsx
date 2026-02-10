@@ -160,7 +160,7 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
                         className="fixed inset-0 z-40"
                         onClick={() => setShowFilterMenu(false)}
                       />
-                      <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[999]">
+                      <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[9999]">
                         {filterOptions.map((option) => (
                           <button
                             key={option.value}
