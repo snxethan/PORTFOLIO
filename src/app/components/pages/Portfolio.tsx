@@ -278,7 +278,7 @@ const Portfolio: React.FC = () => {
 
   const resultsCount = activeSubsection === "projects"
     ? `Showing ${filteredTimelineProjects.length} Project${filteredTimelineProjects.length !== 1 ? 's' : ''}`
-    : `Showing ${tagFilteredProjects.length} Project Repositor${tagFilteredProjects.length !== 1 ? "ies" : "y"}`
+    : `Showing ${tagFilteredProjects.length} Repositor${tagFilteredProjects.length !== 1 ? "ies" : "y"}`
 
   return (
     <div>
