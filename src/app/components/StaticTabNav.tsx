@@ -90,7 +90,7 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
       <div className="container mx-auto">
         <div className="relative flex items-center justify-center overflow-visible">
           {/* Tab buttons - centered */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center">
+          <div className="flex gap-2 justify-center flex-wrap">
             {tabs.map((tab) => (
               <button
                 key={tab.id}

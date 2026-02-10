@@ -33,6 +33,7 @@ export interface Certification {
   highlight?: boolean
   url?: string
   tags?: string[]
+  year: number
 }
 
 export const skills: Skill[] = [
@@ -62,10 +63,10 @@ export const unrelatedSkills: Skill[] = [
 ]
 
 export const certifications: Certification[] = [
-  { name: "Cybersecurity Certified 2023", icon: BsPatchCheckFill, highlight: true, url: "/certificates/cybersecurity_certification.pdf", tags: ["Computer Science", "Security"] },
-  { name: "Network Security Certified 2023", icon: BsPatchCheckFill, highlight: true, url: "/certificates/networksecurity_certification.pdf", tags: ["Computer Science", "Security"] },
-  { name: "Computational Thinking Certified 2022", icon: BsPatchCheckFill, highlight: true, url: "/certificates/computationalthinking_certification.pdf", tags: ["Computer Science"] },
-  { name: "Arizona Technical Skills Standard Certified 2021", icon: BsPatchCheckFill, highlight: true, tags: ["Computer Science"] },
-  { name: "Food Handlers Certified 2025", icon: BiFork, highlight: true, url: "/certificates/foodhandlers_certification.pdf", tags: ["Food Service"] },
-  { name: "Highschool Graduate 2023", icon: BsPatchCheckFill, tags: ["Education", "Highschool"] },
+  { name: "Cybersecurity Certified 2023", icon: BsPatchCheckFill, highlight: true, url: "/certificates/cybersecurity_certification.pdf", tags: ["Computer Science", "Security"], year: 2023 },
+  { name: "Network Security Certified 2023", icon: BsPatchCheckFill, highlight: true, url: "/certificates/networksecurity_certification.pdf", tags: ["Computer Science", "Security"], year: 2023 },
+  { name: "Computational Thinking Certified 2022", icon: BsPatchCheckFill, highlight: true, url: "/certificates/computationalthinking_certification.pdf", tags: ["Computer Science"], year: 2022 },
+  { name: "Arizona Technical Skills Standard Certified 2021", icon: BsPatchCheckFill, highlight: true, tags: ["Computer Science"], year: 2021 },
+  { name: "Food Handlers Certified 2025", icon: BiFork, highlight: true, url: "/certificates/foodhandlers_certification.pdf", tags: ["Food Service"], year: 2025 },
+  { name: "Highschool Graduate 2023", icon: BsPatchCheckFill, tags: ["Education", "Highschool"], year: 2023 },
 ]

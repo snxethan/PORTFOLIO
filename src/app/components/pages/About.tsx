@@ -205,6 +205,8 @@ const About = () => {
   const sortedCertifications = [...filteredCertifications].sort((a, b) => {
     if (sortBy === "name-asc") return a.name.localeCompare(b.name)
     if (sortBy === "name-desc") return b.name.localeCompare(a.name)
+    if (sortBy === "oldest") return a.year - b.year
+    if (sortBy === "newest") return b.year - a.year
     // Default sort (highlight first, then alphabetical)
     if (a.highlight === b.highlight) {
       return a.name.localeCompare(b.name)
