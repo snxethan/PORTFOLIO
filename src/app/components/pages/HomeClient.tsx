@@ -64,7 +64,7 @@ export default function HomeClient() {
             
             </div>
             <section className="flex-1 flex flex-col gap-6 pb-20">
-              <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg overflow-hidden">
+              <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] shadow-lg overflow-hidden">
                {!activeTab ? (
                 // Skeleton navbar
                 <div className="w-full flex justify-center py-4 animate-pulse space-x-4">
