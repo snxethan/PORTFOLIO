@@ -24,13 +24,22 @@ export default function HomeClient() {
     const parts = pageParam?.split("/")
     const mainPage = parts?.[0] || pageParam
     
+    // Valid pages list
+    const VALID_PAGES = ['about', 'resume', 'portfolio']
+    
+    // If mainPage is provided but not valid, redirect to 404
+    if (mainPage && !VALID_PAGES.includes(mainPage)) {
+      router.push('/not-found')
+      return
+    }
+    
     // Priority: main page from URL > tab param > stored tab > fallback
     const resolvedTab = mainPage || tabParam || storedTab || fallbackTab
     setActiveTab(resolvedTab)
     localStorage.setItem("activeTab", resolvedTab)
 
     // Don't clear URL params anymore - let child components manage their own tab params
-  }, [searchParams])
+  }, [searchParams, router])
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab)
