@@ -235,6 +235,7 @@ const About = () => {
 
   const filterOptions = activeSubsection === "certifications" ? [
     { value: "newest", label: "Newest" },
+    { value: "oldest", label: "Oldest" },
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
     { value: "cs-only", label: "Computer Science Only" },

@@ -183,8 +183,8 @@ const Resume = () => {
     const filteredItems = sortedTimeline.filter((item) => {
       if (item.type !== type) return false
       
-      // CS filter
-      const matchesCSFilter = showAllContent || item.isCSRelated
+      // CS filter - use sortBy instead of showAllContent
+      const matchesCSFilter = sortBy !== "cs-only" || item.isCSRelated
       
       // Search filter
       const matchesSearch = !search || 
@@ -198,32 +198,20 @@ const Resume = () => {
       
       return matchesCSFilter && matchesSearch && matchesTag
     })
-    
-    // Also include items that are disappearing for animation
-    const itemsToRender = showAllContent ? 
-      filteredItems : 
-      sortedTimeline.filter(item => {
-        if (item.type !== type) return false
-        const itemKey = `${item.institution}-${item.startDate}`
-        return item.isCSRelated || disappearingItems.has(itemKey)
-      })
 
-    if (itemsToRender.length === 0) {
+    if (filteredItems.length === 0) {
       return (
         <div className="text-center text-gray-400 py-8">
-          <p>No {showAllContent ? '' : 'CS-related '}items to display.</p>
-          {!showAllContent && (
-            <p className="text-sm mt-2">Toggle &quot;Show All Content&quot; to see additional items.</p>
-          )}
+          <p>No items match your current filters.</p>
         </div>
       )
     }
 
     return (
       <Timeline
-        items={itemsToRender}
+        items={filteredItems}
         type={type}
-        showAllContent={showAllContent}
+        showAllContent={sortBy !== "cs-only"}
         animatingItems={animatingItems}
         disappearingItems={disappearingItems}
       />
@@ -244,12 +232,12 @@ const Resume = () => {
   ]
 
   const filteredCount = activeSubsection === "experience" 
-    ? sortedTimeline.filter(i => i.type === "experience" && (showAllContent || i.isCSRelated) && (!search || 
+    ? sortedTimeline.filter(i => i.type === "experience" && (sortBy !== "cs-only" || i.isCSRelated) && (!search || 
         i.institution?.toLowerCase().includes(search.toLowerCase()) ||
         i.location?.toLowerCase().includes(search.toLowerCase()) ||
         i.summary?.toLowerCase().includes(search.toLowerCase()) ||
         i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || selectedTag === "ALL" || i.tags?.includes(selectedTag))).length
-    : sortedTimeline.filter(i => i.type === "education" && (showAllContent || i.isCSRelated) && (!search || 
+    : sortedTimeline.filter(i => i.type === "education" && (sortBy !== "cs-only" || i.isCSRelated) && (!search || 
         i.institution?.toLowerCase().includes(search.toLowerCase()) ||
         i.location?.toLowerCase().includes(search.toLowerCase()) ||
         i.summary?.toLowerCase().includes(search.toLowerCase()) ||
@@ -269,7 +257,7 @@ const Resume = () => {
             <p className="text-sm text-gray-500 mb-1">Salt Lake City, UT</p>
             <p className="text-sm text-red-500 mb-4">snxethan@gmail.com</p>
             
-            <div className="flex justify-center gap-4 mb-4">
+            <div className="flex justify-center mb-4">
               <TooltipWrapper label="View Resume" url={resumePDF}>
                 <button
                   onClick={() => setSelectedPDF(resumePDF)}
@@ -278,20 +266,6 @@ const Resume = () => {
                   <FaDownload /> View Resume
                 </button>
               </TooltipWrapper>
-              
-              <button
-                onClick={() => handleToggleChange(!showAllContent)}
-                className={`px-6 py-3 rounded-lg flex items-center gap-2 font-medium transition-all duration-200 ${
-                  isToggleAnimating ? 'animate-elastic-in' : ''
-                } ${
-                  showAllContent
-                    ? "bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white shadow-lg shadow-red-500/30"
-                    : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333]"
-                }`}
-              >
-                {showAllContent ? <FaToggleOn className="w-6 h-6" /> : <FaToggleOff className="w-6 h-6" />}
-                CS Content
-              </button>
             </div>
           </div>
         }
