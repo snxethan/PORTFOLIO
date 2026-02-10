@@ -314,7 +314,7 @@ const Portfolio: React.FC = () => {
         resultsCount={resultsCount}
       />
       
-      <section id="portfolio" className="py-20 bg-[#121212]">
+      <section id="portfolio" className="py-20 bg-[#0a0a0a] rounded-xl">
         <div className="container mx-auto px-4">
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {/* Projects Section */}

@@ -307,7 +307,7 @@ const Resume = () => {
         resultsCount={resultsCount}
       />
       
-      <div className="bg-[#121212] text-white py-20">
+      <div className="bg-[#0a0a0a] rounded-xl text-white py-20">
         <div className="container mx-auto px-4">
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {activeSubsection === "experience" && renderTimeline("experience")}

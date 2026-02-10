@@ -81,9 +81,13 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
     <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-6 shadow-lg mb-6 overflow-visible">
       {/* Header content (if provided) */}
       {headerContent && (
-        <div className="mb-6">
-          {headerContent}
-        </div>
+        <>
+          <div className="mb-6">
+            {headerContent}
+          </div>
+          {/* Dividing line */}
+          <div className="w-full h-[1px] bg-white/10 mb-6" />
+        </>
       )}
       
       {/* Main tab row */}
