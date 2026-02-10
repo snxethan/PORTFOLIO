@@ -68,12 +68,12 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
   const isFilterActive = currentFilter && currentFilter !== "newest"
 
   return (
-    <div className="sticky top-0 lg:top-[56px] z-40 bg-[#1e1e1e] border-b border-[#333333] shadow-lg transition-all duration-300">
+    <div className="bg-[#1e1e1e] border-b border-[#333333] shadow-lg transition-all duration-300 mb-6">
       {/* Main tab row */}
       <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between gap-4">
-          {/* Tab buttons */}
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide flex-1">
+        <div className="flex items-center justify-center gap-4 relative">
+          {/* Tab buttons - centered */}
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
@@ -89,10 +89,10 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
             ))}
           </div>
 
-          {/* Search toggle button */}
+          {/* Search toggle button - absolute positioned on right */}
           <button
             onClick={toggleSearch}
-            className={`p-3 rounded-lg transition-all duration-200 ${
+            className={`absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-lg transition-all duration-200 ${
               isSearchExpanded
                 ? "bg-red-600 text-white"
                 : "bg-[#2a2a2a] text-gray-300 hover:text-white hover:bg-[#333333]"
@@ -141,7 +141,7 @@ const StaticTabNav: React.FC<StaticTabNavProps> = ({
                         className="fixed inset-0 z-40"
                         onClick={() => setShowFilterMenu(false)}
                       />
-                      <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-50">
+                      <div className="absolute right-0 bottom-full mb-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[100]">
                         {filterOptions.map((option) => (
                           <button
                             key={option.value}
