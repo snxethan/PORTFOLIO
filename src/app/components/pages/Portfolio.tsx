@@ -428,15 +428,7 @@ const Portfolio: React.FC = () => {
                   onClick={handleShowAllTagsToggle}
                   className="text-red-500 hover:text-red-400 text-sm font-medium flex items-center gap-1"
                 >
-                  {showAllTags ? (
-                    <>
-                      <FaChevronUp className="w-3 h-3" />
-                    </>
-                  ) : (
-                    <>
-                      <FaChevronDown className="w-3 h-3" />
-                    </>
-                  )}
+                  {showAllTags ? <FaChevronUp className="w-3 h-3" /> : <FaChevronDown className="w-3 h-3" />}
                 </button>
               )}
             </div>
