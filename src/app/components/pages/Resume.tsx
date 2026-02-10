@@ -11,7 +11,7 @@ import SubsectionTabs from "../SubsectionTabs"
 
 const Resume = () => {
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
-  const [showAllContent, setShowAllContent] = useState(false)
+  const [showAllContent, setShowAllContent] = useState(true)
   const [isToggleAnimating, setIsToggleAnimating] = useState(false)
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
   const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
