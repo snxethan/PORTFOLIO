@@ -175,8 +175,16 @@ const Portfolio: React.FC = () => {
     }
     document.addEventListener("keydown", handleEscape)
     
-    // Handle URL parameters for tab
-    const tabParam = searchParams.get("tab")
+    // Load tab from localStorage first
+    const savedTab = localStorage.getItem("portfolioActiveTab")
+    if (savedTab && (savedTab === "projects" || savedTab === "repositories")) {
+      setActiveSubsection(savedTab)
+    }
+    
+    // Handle URL parameters for tab (overrides localStorage)
+    const pageParam = searchParams.get("page")
+    const parts = pageParam?.split("/")
+    const tabParam = parts?.[1]
     if (tabParam && (tabParam === "projects" || tabParam === "repositories")) {
       setActiveSubsection(tabParam)
     }
@@ -193,11 +201,11 @@ const Portfolio: React.FC = () => {
   const handleTabChange = (tabId: string) => {
     setIsAnimating(true)
     
-    // Update URL with tab parameter
-    const currentParams = new URLSearchParams(window.location.search)
-    currentParams.set("page", "portfolio")
-    currentParams.set("tab", tabId)
-    router.push(`?${currentParams.toString()}`, { scroll: false })
+    // Save to localStorage
+    localStorage.setItem("portfolioActiveTab", tabId)
+    
+    // Update URL with new format
+    router.push(`?page=portfolio/${tabId}`, { scroll: false })
     
     setTimeout(() => {
       setActiveSubsection(tabId)
@@ -271,132 +279,135 @@ const Portfolio: React.FC = () => {
             <p className="text-lg text-gray-400">Showcasing my projects and contributions to the software development community.</p>
           </div>
 
-          {/* Tabs */}
-          <SubsectionTabs 
-            tabs={tabs}
-            activeTab={activeSubsection}
-            onTabChange={handleTabChange}
-          />
+          {/* Tabs and Search Section in Styled Box */}
+          <div className="bg-[#1e1e1e] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 shadow-lg mb-6 transition-all duration-300 max-w-4xl mx-auto">
+            {/* Tabs */}
+            <SubsectionTabs 
+              tabs={tabs}
+              activeTab={activeSubsection}
+              onTabChange={handleTabChange}
+            />
 
-          {/* Search bar with gear icon filter */}
-          <div className="mb-6 max-w-4xl mx-auto">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder={isFocused ? "(Name, Description or Tags)" : "Search projects..."}
-                className="w-full px-4 py-2 pr-12 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-[1.02]"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-              />
-              <button
-                onClick={() => setShowFilterMenu(!showFilterMenu)}
-                className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all duration-200 ${
-                  sortBy && sortBy !== "newest" ? "text-red-500" : "text-gray-400"
-                } hover:text-red-400 hover:bg-[#2a2a2a]`}
-                title="Sort options"
-              >
-                <FaCog className="w-5 h-5" />
-              </button>
-              
-              {/* Filter dropdown menu */}
-              {showFilterMenu && (
-                <div className="absolute right-0 mt-2 w-56 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg z-10">
-                  <div className="py-1">
-                    <button
-                      onClick={() => handleFilterChange("newest")}
-                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                        sortBy === "newest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                      }`}
-                    >
-                      Newest
-                    </button>
-                    <button
-                      onClick={() => handleFilterChange("oldest")}
-                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                        sortBy === "oldest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                      }`}
-                    >
-                      Oldest
-                    </button>
-                    <button
-                      onClick={() => handleFilterChange("name-asc")}
-                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                        sortBy === "name-asc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                      }`}
-                    >
-                      Name (A–Z)
-                    </button>
-                    <button
-                      onClick={() => handleFilterChange("name-desc")}
-                      className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
-                        sortBy === "name-desc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
-                      }`}
-                    >
-                      Name (Z–A)
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Filter Tags under search bar - only show for repositories */}
-          {activeSubsection === "repositories" && !loading && (
-            <div className="flex flex-wrap justify-center gap-3 mb-6 max-w-4xl mx-auto">
-              {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
-                const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
-                const isActive = activeTag === tag
-                const isAdditionalTag = index >= TAG_LIMIT
-                
-                // Determine animation class for additional tags
-                let animationClass = ""
-                if (isAdditionalTag) {
-                  if (isExtending) {
-                    animationClass = "animate-tag-extend"
-                  } else if (isHiding) {
-                    animationClass = "animate-tag-hide"
-                  }
-                }
-
-                return (
-                  <button
-                    key={tag}
-                    onClick={() => {
-                      setSelectedTag(tag === "ALL" ? null : tag)
-                      setActiveTag(tag)
-                      setTimeout(() => setActiveTag(null), 500)
-                    }}
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
-                      isSelected
-                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
-                        : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
-                    } ${isActive && !isSelected ? "animate-elastic-in" : ""} ${animationClass}`}
-                  >
-                    {tag}
-                  </button>
-                )
-              })}
-              {sortedTags.length > TAG_LIMIT && (
+            {/* Search bar with gear icon filter */}
+            <div className="mb-6">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder={isFocused ? "(Name, Description or Tags)" : "Search projects..."}
+                  className="w-full px-4 py-2 pr-12 bg-[#1e1e1e] border border-[#333333] rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent text-white transition-transform duration-200 ease-out hover:scale-[1.02]"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                />
                 <button
-                  onClick={handleShowAllTagsToggle}
-                  className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
-                  aria-label={showAllTags ? "Show less tags" : "Show more tags"}
+                  onClick={() => setShowFilterMenu(!showFilterMenu)}
+                  className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all duration-200 ${
+                    sortBy && sortBy !== "newest" ? "text-red-500" : "text-gray-400"
+                  } hover:text-red-400 hover:bg-[#2a2a2a]`}
+                  title="Sort options"
                 >
-                  {showAllTags ? (
-                    <>
-                      <FaChevronUp className="w-4 h-4 text-red-500" />
-                    </>
-                  ) : (
-                    <>
-                      <FaChevronDown className="w-4 h-4 text-red-500" />
-                    </>
-                  )}
+                  <FaCog className="w-5 h-5" />
                 </button>
-              )}
+                
+                {/* Filter dropdown menu */}
+                {showFilterMenu && (
+                  <div className="absolute right-0 mt-2 w-56 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg z-10">
+                    <div className="py-1">
+                      <button
+                        onClick={() => handleFilterChange("newest")}
+                        className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
+                          sortBy === "newest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                        }`}
+                      >
+                        Newest
+                      </button>
+                      <button
+                        onClick={() => handleFilterChange("oldest")}
+                        className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
+                          sortBy === "oldest" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                        }`}
+                      >
+                        Oldest
+                      </button>
+                      <button
+                        onClick={() => handleFilterChange("name-asc")}
+                        className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
+                          sortBy === "name-asc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                        }`}
+                      >
+                        Name (A–Z)
+                      </button>
+                      <button
+                        onClick={() => handleFilterChange("name-desc")}
+                        className={`w-full text-left px-4 py-2 hover:bg-[#2a2a2a] transition-colors ${
+                          sortBy === "name-desc" ? "text-red-500 bg-[#2a2a2a]" : "text-gray-300"
+                        }`}
+                      >
+                        Name (Z–A)
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
+
+            {/* Filter Tags under search bar - only show for repositories */}
+            {activeSubsection === "repositories" && !loading && (
+              <div className="flex flex-wrap justify-center gap-3">
+                {(showAllTags ? sortedTags : sortedTags.slice(0, TAG_LIMIT)).map((tag, index) => {
+                  const isSelected = selectedTag === tag || (tag === "ALL" && selectedTag === null)
+                  const isActive = activeTag === tag
+                  const isAdditionalTag = index >= TAG_LIMIT
+                  
+                  // Determine animation class for additional tags
+                  let animationClass = ""
+                  if (isAdditionalTag) {
+                    if (isExtending) {
+                      animationClass = "animate-tag-extend"
+                    } else if (isHiding) {
+                      animationClass = "animate-tag-hide"
+                    }
+                  }
+
+                  return (
+                    <button
+                      key={tag}
+                      onClick={() => {
+                        setSelectedTag(tag === "ALL" ? null : tag)
+                        setActiveTag(tag)
+                        setTimeout(() => setActiveTag(null), 500)
+                      }}
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 transform ${
+                        isSelected
+                          ? "bg-gradient-to-r from-red-600/70 to-red-500/70 text-white scale-105 shadow-lg shadow-red-500/30"
+                          : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105"
+                      } ${isActive && !isSelected ? "animate-elastic-in" : ""} ${animationClass}`}
+                    >
+                      {tag}
+                    </button>
+                  )
+                })}
+                {sortedTags.length > TAG_LIMIT && (
+                  <button
+                    onClick={handleShowAllTagsToggle}
+                    className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#333333] text-gray-300 hover:bg-[#444444] hover:scale-105 transition-all duration-300 flex items-center gap-1"
+                    aria-label={showAllTags ? "Show less tags" : "Show more tags"}
+                  >
+                    {showAllTags ? (
+                      <>
+                        <FaChevronUp className="w-4 h-4 text-red-500" />
+                      </>
+                    ) : (
+                      <>
+                        <FaChevronDown className="w-4 h-4 text-red-500" />
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
 
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {/* Projects Section */}

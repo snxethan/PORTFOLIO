@@ -46,7 +46,7 @@ const handleClick = (tab: string) => {
                   onClick={() => handleClick(tab)}
                   className={`capitalize px-4 py-2 rounded-lg text-sm font-medium transition-transform duration-200 ease-out ${
                     activeTab === tab
-                      ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-500/30"
+                      ? "bg-gradient-to-r from-red-600/70 to-red-500/70 text-white scale-105 shadow-lg shadow-red-500/20"
                       : "text-gray-300 hover:bg-[#333333] hover:text-red-600 hover:scale-105"
                   } ${clickedTab === tab ? "animate-elastic-in" : ""}`}
                 >

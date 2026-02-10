@@ -20,8 +20,12 @@ export default function HomeClient() {
     const storedTab = localStorage.getItem("activeTab")
     const fallbackTab = "about"
 
-    // Priority: page param > tab param > stored tab > fallback
-    const resolvedTab = pageParam || tabParam || storedTab || fallbackTab
+    // Parse new URL format: ?page=about/certifications
+    const parts = pageParam?.split("/")
+    const mainPage = parts?.[0] || pageParam
+    
+    // Priority: main page from URL > tab param > stored tab > fallback
+    const resolvedTab = mainPage || tabParam || storedTab || fallbackTab
     setActiveTab(resolvedTab)
     localStorage.setItem("activeTab", resolvedTab)
 
@@ -32,12 +36,8 @@ export default function HomeClient() {
     setActiveTab(tab)
     localStorage.setItem("activeTab", tab)
     
-    // Update URL with page parameter
-    const currentParams = new URLSearchParams(window.location.search)
-    currentParams.set("page", tab)
-    // Remove tab parameter if it exists (child components will add their own)
-    currentParams.delete("tab")
-    router.push(`?${currentParams.toString()}`, { scroll: false })
+    // Update URL with new format: ?page=about (child components will add /subtab if needed)
+    router.push(`?page=${tab}`, { scroll: false })
   }
 
  
