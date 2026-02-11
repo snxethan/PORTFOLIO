@@ -353,7 +353,7 @@ const Portfolio: React.FC = () => {
                         className="fixed inset-0 z-40"
                         onClick={() => setShowFilterMenu(false)}
                       />
-                      <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[100]">
+                      <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[200]">
                         {filterOptions.map((option) => (
                           <button
                             key={option.value}
@@ -382,10 +382,10 @@ const Portfolio: React.FC = () => {
 
           {/* Tags section */}
           {activeSubsection === "repositories" && sortedTags.length > 0 && (
-            <div className={`space-y-2 transition-all duration-300 ease-in-out ${
+            <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
               showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
-            }`} style={{ overflow: 'visible' }}>
-              <div className="flex flex-wrap gap-2 transition-all duration-300" style={{ overflow: 'visible' }}>
+            }`}>
+              <div className="flex flex-wrap gap-2 transition-all duration-300 overflow-hidden">
                 {/* Clear button */}
                 <button
                   onClick={() => setSelectedTag(null)}
