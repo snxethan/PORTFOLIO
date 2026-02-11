@@ -52,7 +52,7 @@ const Portfolio: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([])
   const [search, setSearch] = useState("")
   const [sortBy, setSortBy] = useState("newest")
-  const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [selectedTag, setSelectedTag] = useState<string | null>("Computer Science")
   const [showAllTags, setShowAllTags] = useState(false);
   const [tags, setTags] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
@@ -284,20 +284,18 @@ const Portfolio: React.FC = () => {
 
   return (
     <>
-      {/* Header section - wrapped in styled container */}
-      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6">
-        {/* Header content */}
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Projects & Contributions
-          </h2>
-          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-            Showcasing my projects and contributions to the software development community.
-          </p>
-        </div>
+      {/* Header section - title only */}
+      <div className="animate-fadeInScale mb-6">
+        <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+          Projects & Contributions
+        </h2>
+        <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
+          Showcasing my projects and contributions to the software development community.
+        </p>
+      </div>
 
-        {/* Dividing line */}
-        <div className="w-full h-[1px] bg-white/10 mb-6" />
+      {/* Tabs and search subsection */}
+      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] shadow-lg p-6 mb-6 relative z-50">
       
       {/* Main tab row */}
       <div className="container mx-auto">
