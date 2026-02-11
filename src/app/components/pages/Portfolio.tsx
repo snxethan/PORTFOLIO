@@ -540,7 +540,7 @@ const Portfolio: React.FC = () => {
           </div>
         </div>
       </section>
-    </div>
+    </>
   )
 }
 
