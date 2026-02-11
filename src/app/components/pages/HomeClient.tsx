@@ -67,13 +67,13 @@ export default function HomeClient() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
-      {/* Main Page Content */}
-      <main className="flex-grow pt-20 md:pt-0">
-        <div className="container mx-auto px-4 pt-15 lg:pt-12 min-w-[360px]">
+      {/* Main Page Content - Add top padding to accommodate fixed navbar when pinned */}
+      <main className="flex-grow pt-32">
+        <div className="container mx-auto px-4 pt-4 min-w-[360px]">
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex flex-col gap-6 mb-12 lg:items-center lg:mx-auto lg:w-fit">
-              <div className="lg:sticky lg:top-24">
-                <Sidebar className="md:mt-20 lg:mt-0"/>
+              <div className="lg:sticky lg:top-36">
+                <Sidebar className=""/>
               </div>
             
             </div>
