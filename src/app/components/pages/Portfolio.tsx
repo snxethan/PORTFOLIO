@@ -429,7 +429,26 @@ const Portfolio: React.FC = () => {
             {/* Projects Section */}
             {activeSubsection === "projects" && (
               <div>
-                <Timeline items={filteredTimelineProjects} type="project" />
+                {loading ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse"
+                      >
+                        <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
+                        <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
+                        <div className="space-y-2">
+                          <div className="h-3 bg-[#333333] rounded w-full" />
+                          <div className="h-3 bg-[#333333] rounded w-5/6" />
+                          <div className="h-3 bg-[#333333] rounded w-4/6" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <Timeline items={filteredTimelineProjects} type="project" />
+                )}
               </div>
             )}
 
