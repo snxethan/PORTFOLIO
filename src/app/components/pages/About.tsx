@@ -431,20 +431,18 @@ const About = () => {
       
       {/* Content section - outside header wrapper */}
       <section id="about" className="text-white">
-        <div className="container mx-auto px-4">
-          <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
-            {activeSubsection === "certifications" && (
-              <div>
-                {loading ? renderSkeletonGrid(6) : renderSkillGrid(sortedCertifications)}
-              </div>
-            )}
+        <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
+          {activeSubsection === "certifications" && (
+            <div>
+              {loading ? renderSkeletonGrid(6) : renderSkillGrid(sortedCertifications)}
+            </div>
+          )}
 
-            {activeSubsection === "skills" && (
-              <div>
-                {loading ? renderSkeletonGrid(9) : renderSkillGrid(sortedSkills)}
-              </div>
-            )}
-          </div>
+          {activeSubsection === "skills" && (
+            <div>
+              {loading ? renderSkeletonGrid(9) : renderSkillGrid(sortedSkills)}
+            </div>
+          )}
         </div>
       </section>
 
