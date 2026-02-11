@@ -102,27 +102,27 @@ const About = () => {
         const year = cert.year 
         const Card = (
           <div
-            className={`group relative flex flex-col items-center bg-[#1e1e1e] hover:bg-[#252525] p-3 sm:p-4 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.09] active:scale-95`} 
+            className={`group relative flex flex-col items-center bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 flex-grow`} 
           >
             <div // Icon container
-              className={`inline-block p-1.5 sm:p-2 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300 ${
+              className={`inline-block p-3 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300 ${
                 highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
               }`} 
             >
-              <Icon className="text-white text-lg sm:text-xl" /> 
+              <Icon className="text-white text-2xl" /> 
             </div>
             {/* Removed whitespace-nowrap to allow text to wrap */}
-            <p className="text-white mt-1.5 sm:mt-2 font-semibold text-xs sm:text-sm text-center">{name}</p>
+            <p className="text-white mt-3 font-semibold text-base text-center">{name}</p>
             
             {/* Date tag for certifications */}
             {year && (
-              <span className="text-gray-400 text-xs mt-1">{year}</span>
+              <span className="text-gray-400 text-sm mt-2">{year}</span>
             )} 
             
             {(url?.endsWith(".pdf") || (url && !url.endsWith(".pdf"))) && (
-              <div className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 text-gray-400 group-hover:text-red-400 transition-colors duration-300"> 
-                {url?.endsWith(".pdf") && <FaFilePdf size={14} aria-label="View Certification" />} 
-                {url && !url.endsWith(".pdf") && <FaExternalLinkAlt size={14} aria-label="Open external link" />} 
+              <div className="absolute bottom-3 right-3 text-gray-400 group-hover:text-red-400 transition-colors duration-300"> 
+                {url?.endsWith(".pdf") && <FaFilePdf size={16} aria-label="View Certification" />} 
+                {url && !url.endsWith(".pdf") && <FaExternalLinkAlt size={16} aria-label="Open external link" />} 
               </div>
             )}
           </div>
@@ -157,9 +157,10 @@ const About = () => {
   const renderSkeletonGrid = (count: number) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {[...Array(count)].map((_, i) => (
-        <div key={i} className="bg-[#1e1e1e] border border-[#333333] p-3 sm:p-4 rounded-xl animate-pulse flex flex-col items-center mx-auto">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#333333] rounded mb-1.5 sm:mb-2" /> 
-          <div className="h-2.5 sm:h-3 bg-[#333333] rounded w-16 sm:w-20" />
+        <div key={i} className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col items-center gap-4">
+          <div className="h-12 w-12 bg-[#333333] rounded-lg" />
+          <div className="h-5 bg-[#333333] rounded w-3/4" />
+          <div className="h-4 bg-[#333333] rounded w-1/2" />
         </div>
       ))}
     </div>
@@ -179,21 +180,18 @@ const About = () => {
       item.tags?.forEach(tag => tagSet.add(tag))
     })
     const tags = Array.from(tagSet).sort()
-    return ["ALL", ...tags]
+    return tags
   }, [activeSubsection])
   
   const sortedTags = React.useMemo(() => {
-    if (!allTags.length) return []
-    const [first, ...rest] = allTags
-    const sortedRest = rest.slice().sort((a, b) => a.localeCompare(b))
-    return first === "ALL" ? [first, ...sortedRest] : allTags.slice().sort((a, b) => a.localeCompare(b))
+    return allTags.slice().sort((a, b) => a.localeCompare(b))
   }, [allTags])
 
   // Filter certifications based on search, sort, and tag
   const filteredCertifications = certifications.filter((cert) => {
     const matchesSearch = cert.name.toLowerCase().includes(search.toLowerCase())
     const matchesFilter = sortBy !== "cs-only" || cert.tags?.includes("Computer Science")
-    const matchesTag = !selectedTag || selectedTag === "ALL" || cert.tags?.includes(selectedTag)
+    const matchesTag = !selectedTag || cert.tags?.includes(selectedTag)
     return matchesSearch && matchesFilter && matchesTag
   })
 
@@ -215,7 +213,7 @@ const About = () => {
   const filteredSkills = skills.filter((skill) => {
     const matchesSearch = skill.name.toLowerCase().includes(search.toLowerCase())
     const matchesFilter = sortBy !== "cs-only" || skill.tags?.includes("Computer Science")
-    const matchesTag = !selectedTag || selectedTag === "ALL" || skill.tags?.includes(selectedTag)
+    const matchesTag = !selectedTag || skill.tags?.includes(selectedTag)
     return matchesSearch && matchesFilter && matchesTag
   })
 
@@ -251,23 +249,21 @@ const About = () => {
 
   return (
     <>
-      {/* Header section - wrapped in styled container */}
-      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6">
-        {/* Header content */}
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Information, Certifications, and Skills.
-          </h2>
-          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-            I&apos;m a Software Engineer focused on backend or full-stack development.
-          </p>
-          <p className="text-center text-gray-400 max-w-3xl mx-auto">
-            Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.
-          </p>
-        </div>
+      {/* Title and description - standalone */}
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+          Information, Certifications, and Skills.
+        </h2>
+        <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
+          I&apos;m a Software Engineer focused on backend or full-stack development.
+        </p>
+        <p className="text-center text-gray-400 max-w-3xl mx-auto">
+          Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.
+        </p>
+      </div>
 
-        {/* Dividing line */}
-        <div className="w-full h-[1px] bg-white/10 mb-6" />
+      {/* Tab nav and search section - wrapped in My Capstone styling */}
+      <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-6 shadow-lg mb-6">
       
       {/* Main tab row */}
       <div className="container mx-auto">

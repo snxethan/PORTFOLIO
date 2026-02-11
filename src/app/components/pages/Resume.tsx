@@ -175,10 +175,7 @@ const Resume = () => {
   }, [activeSubsection])
   
   const sortedTags = React.useMemo(() => {
-    if (!allTags.length) return []
-    const [first, ...rest] = allTags
-    const sortedRest = rest.slice().sort((a, b) => a.localeCompare(b))
-    return first === "ALL" ? [first, ...sortedRest] : allTags.slice().sort((a, b) => a.localeCompare(b))
+    return allTags.slice().sort((a, b) => a.localeCompare(b))
   }, [allTags])
 
   const renderTimeline = (type: "experience" | "education") => {
@@ -196,7 +193,7 @@ const Resume = () => {
         item.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))
       
       // Tag filter
-      const matchesTag = !selectedTag || selectedTag === "ALL" || item.tags?.includes(selectedTag)
+      const matchesTag = !selectedTag || item.tags?.includes(selectedTag)
       
       return matchesCSFilter && matchesSearch && matchesTag
     })
@@ -233,17 +230,17 @@ const Resume = () => {
     { value: "cs-only", label: "Computer Science Only" },
   ]
 
-  const filteredCount = activeSubsection === "experience" 
+  const filteredCount = activeSubsection === "experience"
     ? sortedTimeline.filter(i => i.type === "experience" && (sortBy !== "cs-only" || i.isCSRelated) && (!search || 
         i.institution?.toLowerCase().includes(search.toLowerCase()) ||
         i.location?.toLowerCase().includes(search.toLowerCase()) ||
         i.summary?.toLowerCase().includes(search.toLowerCase()) ||
-        i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || selectedTag === "ALL" || i.tags?.includes(selectedTag))).length
+        i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || i.tags?.includes(selectedTag))).length
     : sortedTimeline.filter(i => i.type === "education" && (sortBy !== "cs-only" || i.isCSRelated) && (!search || 
         i.institution?.toLowerCase().includes(search.toLowerCase()) ||
         i.location?.toLowerCase().includes(search.toLowerCase()) ||
         i.summary?.toLowerCase().includes(search.toLowerCase()) ||
-        i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || selectedTag === "ALL" || i.tags?.includes(selectedTag))).length
+        i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || i.tags?.includes(selectedTag))).length
 
   const resultsCount = activeSubsection === "experience"
     ? `Showing ${filteredCount} Experience${filteredCount !== 1 ? 's' : ''}`
@@ -253,34 +250,32 @@ const Resume = () => {
 
   return (
     <>
-      {/* Header section - wrapped in styled container */}
-      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6">
-        {/* Header content */}
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Experience & Education Timeline
-          </h2>
-          <div className="text-center mb-4">
-            <h3 className="text-2xl font-bold text-white">Ethan Townsend</h3>
-            <p className="text-lg text-gray-400">Software Engineer</p>
-            <p className="text-sm text-gray-500">Salt Lake City, UT</p>
-            <p className="text-sm text-red-500">snxethan@gmail.com</p>
-          </div>
-          
-          <div className="flex justify-center">
-            <TooltipWrapper label="View Resume" url={resumePDF}>
-              <button
-                onClick={() => setSelectedPDF(resumePDF)}
-                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95"
-              >
-                <FaDownload /> View Resume
-              </button>
-            </TooltipWrapper>
-          </div>
+      {/* Title and contact info - standalone */}
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+          Experience & Education Timeline
+        </h2>
+        <div className="text-center mb-4">
+          <h3 className="text-2xl font-bold text-white">Ethan Townsend</h3>
+          <p className="text-lg text-gray-400">Software Engineer</p>
+          <p className="text-sm text-gray-500">Salt Lake City, UT</p>
+          <p className="text-sm text-red-500">snxethan@gmail.com</p>
         </div>
+        
+        <div className="flex justify-center">
+          <TooltipWrapper label="View Resume" url={resumePDF}>
+            <button
+              onClick={() => setSelectedPDF(resumePDF)}
+              className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95"
+            >
+              <FaDownload /> View Resume
+            </button>
+          </TooltipWrapper>
+        </div>
+      </div>
 
-        {/* Dividing line */}
-        <div className="w-full h-[1px] bg-white/10 mb-6" />
+      {/* Tab nav and search section - wrapped in My Capstone styling */}
+      <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-6 shadow-lg mb-6">
       
       {/* Main tab row */}
       <div className="container mx-auto">
