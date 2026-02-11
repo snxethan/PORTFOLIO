@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"
 import { FaExternalLinkAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa"
+import TooltipWrapper from "./ToolTipWrapper"
 
 export interface TimelineItem {
   type?: "experience" | "education" | "project"
@@ -155,7 +156,7 @@ const Timeline: React.FC<TimelineProps> = ({
           return (
             <div
               key={itemKey}
-              className={`bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-105 ${
+              className={`bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] ${
                 isNewItem ? "animate-fade-in-up border-red-600/30" : ""
               } ${isDisappearing ? "animate-fade-out-down" : ""}`}
             >
@@ -215,16 +216,17 @@ const Timeline: React.FC<TimelineProps> = ({
               {allLinks.length > 0 && (
                 <div className="flex flex-wrap gap-3 mb-4">
                   {allLinks.map((link, i) => (
-                    <a
-                      key={i}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105 active:scale-95"
-                    >
-                      {link.label}
-                      <FaExternalLinkAlt className="text-sm" />
-                    </a>
+                    <TooltipWrapper key={i} label={link.url}>
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 border border-transparent hover:border-red-600 text-white px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105 active:scale-95"
+                      >
+                        {link.label}
+                        <FaExternalLinkAlt className="text-sm" />
+                      </a>
+                    </TooltipWrapper>
                   ))}
                 </div>
               )}

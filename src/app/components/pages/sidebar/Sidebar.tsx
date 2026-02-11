@@ -3,6 +3,7 @@
 import SpotifyWidget from "./SpotifyWidget"
 import { useEffect, useState, useRef } from "react"
 import * as Icons from "react-icons/fa";
+import { FaFilePdf } from "react-icons/fa";
 import { socialLinks } from "@/app/data/socialLinks";
 import { useExternalLink } from "../../ExternalLinkHandler"
 
@@ -109,6 +110,21 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
               })}
             </div>
           </div>
+
+          {/* View Resume Button */}
+          <div className="mt-6 flex justify-center">
+            <TooltipWrapper label="Download Resume">
+              <button
+                onClick={() => window.open('/resume.pdf', '_blank')}
+                aria-label="View Resume"
+                className="flex items-center gap-2 px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg text-gray-300 hover:text-red-600 hover:border-red-600 text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-100"
+              >
+                <FaFilePdf />
+                <span className="text-sm font-medium">View Resume</span>
+              </button>
+            </TooltipWrapper>
+          </div>
+
           {/* Personal Links */}
           <div className="mt-6">
             <div className="w-full h-px bg-gradient-to-r from-transparent via-[#333333] to-transparent"></div>

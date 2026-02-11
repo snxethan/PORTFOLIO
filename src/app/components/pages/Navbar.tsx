@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { FaChevronDown, FaChevronUp } from "react-icons/fa"
 
 interface NavbarProps {
   onTabChange: (page: string, tab: string) => void
@@ -11,13 +12,13 @@ interface NavbarProps {
 const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
   const isLoading = !activePage || !activeTab
   const [clickedTab, setClickedTab] = useState<string | null>(null)
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const [isMobileSticky, setIsMobileSticky] = useState(false)
+  const [isNavCollapsed, setIsNavCollapsed] = useState(false)
+  const [isMobileView, setIsMobileView] = useState(false)
 
-  // Detect if we're on mobile (navbar is sticky)
+  // Detect if we're on mobile viewport
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobileSticky(window.innerWidth < 768)
+      setIsMobileView(window.innerWidth < 768)
     }
     
     checkMobile()
@@ -73,8 +74,11 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
           </h1>
         </div>
         
-        {/* Navigation subsections - horizontal scroll on mobile sticky */}
-        <div className="flex flex-row gap-3 max-w-5xl mx-auto md:flex-wrap md:justify-center overflow-x-auto md:overflow-x-visible pb-2 navbar-scroll"
+        {/* Navigation subsections - horizontal scroll on mobile sticky, collapsible */}
+        <div 
+          className={`flex flex-row gap-3 max-w-5xl mx-auto md:flex-wrap md:justify-center overflow-x-auto md:overflow-x-visible pb-2 navbar-scroll transition-all duration-300 ease-in-out ${
+            isNavCollapsed && isMobileView ? "max-h-0 overflow-hidden opacity-0" : "max-h-[500px] opacity-100"
+          }`}
           style={{
             scrollbarWidth: 'thin',
             scrollbarColor: '#dc2626 transparent',
@@ -171,6 +175,19 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
             </>
           )}
         </div>
+
+        {/* Collapse toggle button - only visible on mobile */}
+        {isMobileView && (
+          <div className="flex justify-center mt-2">
+            <button
+              onClick={() => setIsNavCollapsed(!isNavCollapsed)}
+              className="p-2 rounded-lg bg-[#1e1e1e] border border-[#333333] text-gray-400 hover:text-red-600 hover:border-red-600 transition-all duration-200"
+              aria-label={isNavCollapsed ? "Expand navigation" : "Collapse navigation"}
+            >
+              {isNavCollapsed ? <FaChevronDown size={16} /> : <FaChevronUp size={16} />}
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   )
