@@ -57,12 +57,14 @@ const Portfolio: React.FC = () => {
   const [tags, setTags] = useState<string[]>(["Computer Science"])
   const [loading, setLoading] = useState(true)
   const { handleExternalClick } = useExternalLink()
-  const [activeSubsection, setActiveSubsection] = useState("projects")
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  // Get activeSubsection from URL immediately to avoid flash
+  const pageParam = searchParams?.get("page") || "portfolio/projects"
+  const [activeSubsection, setActiveSubsection] = useState(pageParam.split("/")[1] || "projects")
   const [isAnimating, setIsAnimating] = useState(false)
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const [clickedTab, setClickedTab] = useState<string | null>(null)
-  const searchParams = useSearchParams()
-  const router = useRouter()
 
   const handleShowAllTagsToggle = () => {
     setShowAllTags(!showAllTags)

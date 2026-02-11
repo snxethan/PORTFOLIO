@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { FaInfoCircle, FaChevronDown, FaChevronUp } from "react-icons/fa"
+import { FaChevronDown, FaChevronUp } from "react-icons/fa"
 
 interface NavbarProps {
   onTabChange: (page: string, tab: string) => void
@@ -64,10 +64,6 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
     setTimeout(() => setClickedTab(null), 300)
   }
 
-  const handleInfoClick = () => {
-    onTabChange("portfolio", "")
-  }
-
   return (
     <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 md:static animate-elastic-in border-b border-[#333333] md:border-0">
       <div className="container mx-auto">
@@ -101,24 +97,6 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
             </div>
           ) : (
             <>
-              {/* Information Button - Separate */}
-              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
-                <div className="flex items-center justify-center">
-                  <button
-                    onClick={handleInfoClick}
-                    className={`px-5 py-3 rounded-lg text-sm font-medium transition-transform duration-200 ease-out hover:scale-105 ${
-                      activePage === "portfolio" && !activeTab
-                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default"
-                        : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-400 cursor-pointer"
-                    }`}
-                    title="Portfolio Information"
-                  >
-                    <FaInfoCircle className="inline mr-2" />
-                    Information
-                  </button>
-                </div>
-              </div>
-
               {/* Subsection 1: Certifications & Skills */}
               <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
                 <div className="flex items-center justify-center gap-2 flex-wrap">
