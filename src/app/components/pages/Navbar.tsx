@@ -28,7 +28,7 @@ const handleClick = (tab: string) => {
 
 
   return (
-    <nav className="w-full bg-[#222222] py-4 sticky top-0 left-0 z-50 md:relative md:top-auto md:left-auto animate-elastic-in border-b border-[#333333] md:border-0">
+    <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 md:static animate-elastic-in border-b border-[#333333] md:border-0">
       <div className="container mx-auto">
         {/* Title - shown on mobile and desktop */}
         <h1 className="text-2xl font-bold text-center mb-3 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
