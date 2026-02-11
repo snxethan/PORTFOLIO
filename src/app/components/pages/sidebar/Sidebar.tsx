@@ -151,12 +151,6 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
           <div className="mt-6">
             <SpotifyWidget />
           </div>
-
-
-
-          <div className="mt-6">
-            <Portfoliyou />
-          </div>
         </aside>
       )}
       {/* Contact form modal */}

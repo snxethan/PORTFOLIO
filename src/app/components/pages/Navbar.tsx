@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { FaChevronDown, FaChevronUp } from "react-icons/fa"
+import { FaThumbtack } from "react-icons/fa"
 
 interface NavbarProps {
   onTabChange: (page: string, tab: string) => void
@@ -12,7 +12,7 @@ interface NavbarProps {
 const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
   const isLoading = !activePage || !activeTab
   const [clickedTab, setClickedTab] = useState<string | null>(null)
-  const [isNavCollapsed, setIsNavCollapsed] = useState(false)
+  const [isNavPinned, setIsNavPinned] = useState(true)
   const [isMobileView, setIsMobileView] = useState(false)
 
   // Detect if we're on mobile viewport
@@ -65,7 +65,7 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
   }
 
   return (
-    <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 md:static animate-elastic-in border-b border-[#333333] md:border-0">
+    <nav className={`w-full bg-[#222222] py-4 ${isMobileView && isNavPinned ? 'fixed' : 'static'} top-0 left-0 z-50 md:static animate-elastic-in border-b border-[#333333] md:border-0`}>
       <div className="container mx-auto">
         {/* Title */}
         <div className="flex items-center justify-center mb-3">
@@ -74,11 +74,9 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
           </h1>
         </div>
         
-        {/* Navigation subsections - horizontal scroll on mobile sticky, collapsible */}
+        {/* Navigation subsections - horizontal scroll on mobile */}
         <div 
-          className={`flex flex-row gap-3 max-w-5xl mx-auto md:flex-wrap md:justify-center overflow-x-auto md:overflow-x-visible pb-2 navbar-scroll transition-all duration-300 ease-in-out ${
-            isNavCollapsed && isMobileView ? "max-h-0 overflow-hidden opacity-0" : "max-h-[500px] opacity-100"
-          }`}
+          className="flex flex-row gap-3 max-w-5xl mx-auto md:flex-wrap md:justify-center overflow-x-auto md:overflow-x-visible pb-2 navbar-scroll"
           style={{
             scrollbarWidth: 'thin',
             scrollbarColor: '#dc2626 transparent',
@@ -176,15 +174,19 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
           )}
         </div>
 
-        {/* Collapse toggle button - only visible on mobile */}
+        {/* Pin/Unpin toggle button - only visible on mobile */}
         {isMobileView && (
           <div className="flex justify-center mt-2">
             <button
-              onClick={() => setIsNavCollapsed(!isNavCollapsed)}
-              className="p-2 rounded-lg bg-[#1e1e1e] border border-[#333333] text-gray-400 hover:text-red-600 hover:border-red-600 transition-all duration-200"
-              aria-label={isNavCollapsed ? "Expand navigation" : "Collapse navigation"}
+              onClick={() => setIsNavPinned(!isNavPinned)}
+              className={`p-2 rounded-lg bg-[#1e1e1e] border border-[#333333] transition-all duration-200 ${
+                isNavPinned 
+                  ? "text-red-600 border-red-600" 
+                  : "text-gray-400 hover:text-red-600 hover:border-red-600"
+              }`}
+              aria-label={isNavPinned ? "Unpin navigation" : "Pin navigation"}
             >
-              {isNavCollapsed ? <FaChevronDown size={16} /> : <FaChevronUp size={16} />}
+              <FaThumbtack size={16} className={`transition-transform duration-200 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
             </button>
           </div>
         )}
