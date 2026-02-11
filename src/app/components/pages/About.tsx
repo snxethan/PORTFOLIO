@@ -14,9 +14,9 @@ const About = () => {
   const [activeSubsection, setActiveSubsection] = useState("certifications")
   const [isAnimating, setIsAnimating] = useState(false)
   const [search, setSearch] = useState("")
-  const [sortBy, setSortBy] = useState("newest")
+  const [sortBy, setSortBy] = useState("cs-only")
   const [showFilterMenu, setShowFilterMenu] = useState(false)
-  const [selectedTag, setSelectedTag] = useState<string | null>("Computer Science")
+  const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [showAllTags, setShowAllTags] = useState(false)
   const [isSearchExpanded, setIsSearchExpanded] = useState(false)
   const [clickedTab, setClickedTab] = useState<string | null>(null)
@@ -240,11 +240,13 @@ const About = () => {
     { value: "oldest", label: "Oldest" },
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
+    { value: "cs-only", label: "Computer Science Only" },
   ] : [
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
     { value: "hard-skills", label: "Hard Skills" },
     { value: "soft-skills", label: "Soft Skills" },
+    { value: "cs-only", label: "Computer Science Only" },
   ]
 
   const resultsCount = activeSubsection === "certifications" 
@@ -255,21 +257,23 @@ const About = () => {
 
   return (
     <>
-      {/* Header section - title only */}
-      <div className="animate-fadeInScale mb-6">
-        <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-          Information, Certifications, and Skills.
-        </h2>
-        <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-          I&apos;m a Full Stack Software Developer focused on backend or full-stack development.
-        </p>
-        <p className="text-center text-gray-400 max-w-3xl mx-auto">
-          Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.
-        </p>
-      </div>
+      {/* Header section - wrapped in styled container */}
+      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6">
+        {/* Header content */}
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+            Information, Certifications, and Skills.
+          </h2>
+          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
+            I&apos;m a Full Stack Software Developer focused on backend or full-stack development.
+          </p>
+          <p className="text-center text-gray-400 max-w-3xl mx-auto">
+            Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.
+          </p>
+        </div>
 
-      {/* Tabs and search subsection */}
-      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] shadow-lg p-6 mb-6 relative z-50">
+        {/* Dividing line */}
+        <div className="w-full h-[1px] bg-white/10 mb-6" />
       
       {/* Main tab row */}
       <div className="container mx-auto">

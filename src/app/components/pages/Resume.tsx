@@ -16,9 +16,9 @@ const Resume = () => {
   const [activeSubsection, setActiveSubsection] = useState("experience")
   const [isAnimating, setIsAnimating] = useState(false)
   const [search, setSearch] = useState("")
-  const [sortBy, setSortBy] = useState("newest")
+  const [sortBy, setSortBy] = useState("cs-only")
   const [showFilterMenu, setShowFilterMenu] = useState(false)
-  const [selectedTag, setSelectedTag] = useState<string | null>("Computer Science")
+  const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [showAllTags, setShowAllTags] = useState(false)
   const [isSearchExpanded, setIsSearchExpanded] = useState(false)
   const [clickedTab, setClickedTab] = useState<string | null>(null)
@@ -228,6 +228,7 @@ const Resume = () => {
     { value: "oldest", label: "Oldest" },
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
+    { value: "cs-only", label: "Computer Science Only" },
   ]
 
   const filteredCount = activeSubsection === "experience" 
@@ -250,42 +251,44 @@ const Resume = () => {
 
   return (
     <>
-      {/* Header section - title only */}
-      <div className="animate-fadeInScale mb-6">
-        <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-          Experience & Education Timeline
-        </h2>
-        <div className="text-center mb-4">
-          <h3 className="text-2xl font-bold text-white">Ethan Townsend</h3>
-          <p className="text-lg text-gray-400">Full Stack Software Developer</p>
-          <p className="text-sm text-gray-500">Salt Lake City, UT</p>
-          <div className="flex items-center justify-center gap-4 mt-2">
-            <a href="mailto:snxethan@gmail.com" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="Email">
-              <FaEnvelope className="text-xl" />
-            </a>
-            <a href="https://github.com/snxethan" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="GitHub">
-              <FaGithub className="text-xl" />
-            </a>
-            <a href="https://linkedin.com/in/snxethan" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="LinkedIn">
-              <FaLinkedin className="text-xl" />
-            </a>
+      {/* Header section - wrapped in styled container */}
+      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6">
+        {/* Header content */}
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+            Experience & Education Timeline
+          </h2>
+          <div className="text-center mb-4">
+            <h3 className="text-2xl font-bold text-white">Ethan Townsend</h3>
+            <p className="text-lg text-gray-400">Full Stack Software Developer</p>
+            <p className="text-sm text-gray-500">Salt Lake City, UT</p>
+            <div className="flex items-center justify-center gap-4 mt-2">
+              <a href="mailto:snxethan@gmail.com" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="Email">
+                <FaEnvelope className="text-xl" />
+              </a>
+              <a href="https://github.com/snxethan" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="GitHub">
+                <FaGithub className="text-xl" />
+              </a>
+              <a href="https://linkedin.com/in/snxethan" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="LinkedIn">
+                <FaLinkedin className="text-xl" />
+              </a>
+            </div>
+          </div>
+          
+          <div className="flex justify-center">
+            <TooltipWrapper label="View Resume" url={resumePDF}>
+              <button
+                onClick={() => setSelectedPDF(resumePDF)}
+                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95"
+              >
+                <FaDownload /> View Resume
+              </button>
+            </TooltipWrapper>
           </div>
         </div>
-        
-        <div className="flex justify-center">
-          <TooltipWrapper label="View Resume" url={resumePDF}>
-            <button
-              onClick={() => setSelectedPDF(resumePDF)}
-              className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95"
-            >
-              <FaDownload /> View Resume
-            </button>
-          </TooltipWrapper>
-        </div>
-      </div>
 
-      {/* Tabs and search subsection */}
-      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] shadow-lg p-6 mb-6 relative z-50">
+        {/* Dividing line */}
+        <div className="w-full h-[1px] bg-white/10 mb-6" />
       
       {/* Main tab row */}
       <div className="container mx-auto">
