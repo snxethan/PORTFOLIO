@@ -316,7 +316,7 @@ const Portfolio: React.FC = () => {
                     } ${
                       activeSubsection === tab.id
                         ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-md shadow-red-500/10 cursor-default"
-                        : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] cursor-pointer"
+                        : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-400 cursor-pointer"
                     }`}
                   >
                     {tab.label}
@@ -327,10 +327,10 @@ const Portfolio: React.FC = () => {
               {/* Search toggle button - responsive positioning */}
               <button
                 onClick={toggleSearch}
-                className={`sm:absolute sm:right-0 h-[42px] px-3 rounded-lg transition-all duration-200 ${
+                className={`sm:absolute sm:right-0 h-[42px] px-3 rounded-lg border transition-all duration-200 hover:scale-105 ${
                   isSearchExpanded
-                    ? "bg-red-600 text-white"
-                    : "bg-[#2a2a2a] text-gray-300 hover:text-white hover:bg-[#333333]"
+                    ? "bg-red-600 text-white border-red-600"
+                    : "bg-[#2a2a2a] text-gray-300 border-[#333333] hover:border-red-600/50 hover:bg-[#333333]"
                 }`}
                 title={isSearchExpanded ? "Close search" : "Open search"}
               >
