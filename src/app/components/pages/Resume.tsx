@@ -290,7 +290,7 @@ const Resume = () => {
         <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
           {/* Main tab row */}
           <div className="container mx-auto">
-            <div className="relative z-50 flex items-center justify-center overflow-visible">
+            <div className="relative z-50 flex flex-col sm:flex-row items-center justify-center gap-3 overflow-visible">
               {/* Tab buttons - centered */}
               <div className="flex gap-2 justify-center flex-wrap">
                 {tabs.map((tab) => (
@@ -310,10 +310,10 @@ const Resume = () => {
                 ))}
               </div>
 
-              {/* Search toggle button - hidden on small screens */}
+              {/* Search toggle button - responsive positioning */}
               <button
                 onClick={toggleSearch}
-                className={`absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-lg transition-all duration-200 ${
+                className={`sm:absolute sm:right-0 p-3 rounded-lg transition-all duration-200 ${
                   isSearchExpanded
                     ? "bg-red-600 text-white"
                     : "bg-[#2a2a2a] text-gray-300 hover:text-white hover:bg-[#333333]"
