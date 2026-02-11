@@ -213,14 +213,19 @@ const About = () => {
   // Filter skills based on search and tag
   const filteredSkills = skills.filter((skill) => {
     const matchesSearch = skill.name.toLowerCase().includes(search.toLowerCase())
-    const matchesFilter = sortBy !== "cs-only" || skill.tags?.includes("Computer Science")
+    const matchesFilter = 
+      sortBy !== "cs-only" ? true : skill.tags?.includes("Computer Science")
+    const matchesHardSkills = sortBy !== "hard-skills" ? true : skill.highlight === true
+    const matchesSoftSkills = sortBy !== "soft-skills" ? true : skill.highlight !== true
     const matchesTag = !selectedTag || skill.tags?.includes(selectedTag)
-    return matchesSearch && matchesFilter && matchesTag
+    return matchesSearch && matchesFilter && matchesHardSkills && matchesSoftSkills && matchesTag
   })
 
   // Apply sorting to skills
   const sortedSkills = [...filteredSkills].sort((a, b) => {
     if (sortBy === "cs-only") return 0  // CS only, no date sort for skills
+    if (sortBy === "hard-skills") return 0  // Hard skills, no additional sort
+    if (sortBy === "soft-skills") return 0  // Soft skills, no additional sort
     if (sortBy === "name-asc") return a.name.localeCompare(b.name)
     if (sortBy === "name-desc") return b.name.localeCompare(a.name)
     // Default sort (highlight first, then alphabetical)
@@ -239,6 +244,8 @@ const About = () => {
   ] : [
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
+    { value: "hard-skills", label: "Hard Skills" },
+    { value: "soft-skills", label: "Soft Skills" },
     { value: "cs-only", label: "Computer Science Only" },
   ]
 
@@ -258,7 +265,7 @@ const About = () => {
             Information, Certifications, and Skills.
           </h2>
           <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-            I&apos;m a Software Engineer focused on backend or full-stack development.
+            I&apos;m a Full Stack Software Developer focused on backend or full-stack development.
           </p>
           <p className="text-center text-gray-400 max-w-3xl mx-auto">
             Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.

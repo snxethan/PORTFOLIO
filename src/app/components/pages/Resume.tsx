@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { FaDownload, FaCog, FaChevronDown, FaChevronUp, FaSearch, FaTimes } from "react-icons/fa"
+import { FaDownload, FaCog, FaChevronDown, FaChevronUp, FaSearch, FaTimes, FaEnvelope, FaGithub, FaLinkedin } from "react-icons/fa"
 import { useSearchParams, useRouter } from "next/navigation"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
@@ -260,9 +260,19 @@ const Resume = () => {
           </h2>
           <div className="text-center mb-4">
             <h3 className="text-2xl font-bold text-white">Ethan Townsend</h3>
-            <p className="text-lg text-gray-400">Software Engineer</p>
+            <p className="text-lg text-gray-400">Full Stack Software Developer</p>
             <p className="text-sm text-gray-500">Salt Lake City, UT</p>
-            <p className="text-sm text-red-500">snxethan@gmail.com</p>
+            <div className="flex items-center justify-center gap-4 mt-2">
+              <a href="mailto:snxethan@gmail.com" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="Email">
+                <FaEnvelope className="text-xl" />
+              </a>
+              <a href="https://github.com/snxethan" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="GitHub">
+                <FaGithub className="text-xl" />
+              </a>
+              <a href="https://linkedin.com/in/snxethan" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="LinkedIn">
+                <FaLinkedin className="text-xl" />
+              </a>
+            </div>
           </div>
           
           <div className="flex justify-center">
