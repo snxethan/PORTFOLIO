@@ -144,7 +144,7 @@ const Portfolio: React.FC = () => {
         project.topics?.forEach((tag) => projectTags.add(tag.toLowerCase()))
         projectTags.forEach((tag) => uniqueTags.add(tag))
       })
-      setTags(["ALL", ...Array.from(uniqueTags)])
+      setTags(Array.from(uniqueTags))
     }
 
     fetchProjects()
@@ -252,13 +252,11 @@ const Portfolio: React.FC = () => {
 
   const sortedTags = React.useMemo(() => {
     if (!tags.length) return [];
-    const [first, ...rest] = tags;
-    const sortedRest = rest.slice().sort((a, b) => a.localeCompare(b));
-    return first === "ALL" ? [first, ...sortedRest] : tags.slice().sort((a, b) => a.localeCompare(b));
+    return tags.slice().sort((a, b) => a.localeCompare(b));
   }, [tags]);
 
   const tagFilteredProjects =
-    selectedTag === null || selectedTag === "ALL"
+    selectedTag === null
       ? sortedProjects
       : sortedProjects.filter(
           (project) =>

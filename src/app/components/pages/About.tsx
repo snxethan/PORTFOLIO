@@ -102,27 +102,28 @@ const About = () => {
         const year = cert.year 
         const Card = (
           <div
-            className={`group relative flex flex-col items-center bg-[#1e1e1e] hover:bg-[#252525] p-3 sm:p-4 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.09] active:scale-95`} 
+            className={`group relative flex flex-col bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105`} 
           >
-            <div // Icon container
-              className={`inline-block p-1.5 sm:p-2 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300 ${
-                highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
-              }`} 
-            >
-              <Icon className="text-white text-lg sm:text-xl" /> 
+            <div className="flex items-start gap-4 mb-3">
+              <div // Icon container
+                className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
+                  highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
+                }`} 
+              >
+                <Icon className="text-white text-2xl" /> 
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-white font-semibold text-base mb-1">{name}</h3>
+                {year && (
+                  <span className="text-gray-400 text-sm">{year}</span>
+                )} 
+              </div>
             </div>
-            {/* Removed whitespace-nowrap to allow text to wrap */}
-            <p className="text-white mt-1.5 sm:mt-2 font-semibold text-xs sm:text-sm text-center">{name}</p>
-            
-            {/* Date tag for certifications */}
-            {year && (
-              <span className="text-gray-400 text-xs mt-1">{year}</span>
-            )} 
             
             {(url?.endsWith(".pdf") || (url && !url.endsWith(".pdf"))) && (
-              <div className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 text-gray-400 group-hover:text-red-400 transition-colors duration-300"> 
-                {url?.endsWith(".pdf") && <FaFilePdf size={14} aria-label="View Certification" />} 
-                {url && !url.endsWith(".pdf") && <FaExternalLinkAlt size={14} aria-label="Open external link" />} 
+              <div className="absolute bottom-4 right-4 text-gray-400 group-hover:text-red-400 transition-colors duration-300"> 
+                {url?.endsWith(".pdf") && <FaFilePdf size={16} aria-label="View Certification" />} 
+                {url && !url.endsWith(".pdf") && <FaExternalLinkAlt size={16} aria-label="Open external link" />} 
               </div>
             )}
           </div>
@@ -157,7 +158,7 @@ const About = () => {
   const renderSkeletonGrid = (count: number) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {[...Array(count)].map((_, i) => (
-        <div key={i} className="bg-[#1e1e1e] border border-[#333333] p-3 sm:p-4 rounded-xl animate-pulse flex flex-col items-center mx-auto">
+        <div key={i} className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4">
           <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#333333] rounded mb-1.5 sm:mb-2" /> 
           <div className="h-2.5 sm:h-3 bg-[#333333] rounded w-16 sm:w-20" />
         </div>
@@ -179,21 +180,19 @@ const About = () => {
       item.tags?.forEach(tag => tagSet.add(tag))
     })
     const tags = Array.from(tagSet).sort()
-    return ["ALL", ...tags]
+    return tags
   }, [activeSubsection])
   
   const sortedTags = React.useMemo(() => {
     if (!allTags.length) return []
-    const [first, ...rest] = allTags
-    const sortedRest = rest.slice().sort((a, b) => a.localeCompare(b))
-    return first === "ALL" ? [first, ...sortedRest] : allTags.slice().sort((a, b) => a.localeCompare(b))
+    return allTags.slice().sort((a, b) => a.localeCompare(b))
   }, [allTags])
 
   // Filter certifications based on search, sort, and tag
   const filteredCertifications = certifications.filter((cert) => {
     const matchesSearch = cert.name.toLowerCase().includes(search.toLowerCase())
     const matchesFilter = sortBy !== "cs-only" || cert.tags?.includes("Computer Science")
-    const matchesTag = !selectedTag || selectedTag === "ALL" || cert.tags?.includes(selectedTag)
+    const matchesTag = !selectedTag || cert.tags?.includes(selectedTag)
     return matchesSearch && matchesFilter && matchesTag
   })
 
@@ -215,7 +214,7 @@ const About = () => {
   const filteredSkills = skills.filter((skill) => {
     const matchesSearch = skill.name.toLowerCase().includes(search.toLowerCase())
     const matchesFilter = sortBy !== "cs-only" || skill.tags?.includes("Computer Science")
-    const matchesTag = !selectedTag || selectedTag === "ALL" || skill.tags?.includes(selectedTag)
+    const matchesTag = !selectedTag || skill.tags?.includes(selectedTag)
     return matchesSearch && matchesFilter && matchesTag
   })
 

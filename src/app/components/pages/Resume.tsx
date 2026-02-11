@@ -171,14 +171,12 @@ const Resume = () => {
         item.tags?.forEach(tag => tagSet.add(tag))
       })
     const tags = Array.from(tagSet).sort()
-    return ["ALL", ...tags]
+    return tags
   }, [activeSubsection])
   
   const sortedTags = React.useMemo(() => {
     if (!allTags.length) return []
-    const [first, ...rest] = allTags
-    const sortedRest = rest.slice().sort((a, b) => a.localeCompare(b))
-    return first === "ALL" ? [first, ...sortedRest] : allTags.slice().sort((a, b) => a.localeCompare(b))
+    return allTags.slice().sort((a, b) => a.localeCompare(b))
   }, [allTags])
 
   const renderTimeline = (type: "experience" | "education") => {
@@ -196,7 +194,7 @@ const Resume = () => {
         item.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))
       
       // Tag filter
-      const matchesTag = !selectedTag || selectedTag === "ALL" || item.tags?.includes(selectedTag)
+      const matchesTag = !selectedTag || item.tags?.includes(selectedTag)
       
       return matchesCSFilter && matchesSearch && matchesTag
     })
@@ -238,12 +236,12 @@ const Resume = () => {
         i.institution?.toLowerCase().includes(search.toLowerCase()) ||
         i.location?.toLowerCase().includes(search.toLowerCase()) ||
         i.summary?.toLowerCase().includes(search.toLowerCase()) ||
-        i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || selectedTag === "ALL" || i.tags?.includes(selectedTag))).length
+        i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || i.tags?.includes(selectedTag))).length
     : sortedTimeline.filter(i => i.type === "education" && (sortBy !== "cs-only" || i.isCSRelated) && (!search || 
         i.institution?.toLowerCase().includes(search.toLowerCase()) ||
         i.location?.toLowerCase().includes(search.toLowerCase()) ||
         i.summary?.toLowerCase().includes(search.toLowerCase()) ||
-        i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || selectedTag === "ALL" || i.tags?.includes(selectedTag))).length
+        i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || i.tags?.includes(selectedTag))).length
 
   const resultsCount = activeSubsection === "experience"
     ? `Showing ${filteredCount} Experience${filteredCount !== 1 ? 's' : ''}`
