@@ -74,20 +74,18 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
           </h1>
           
           {/* Pin/Unpin toggle button - only visible on mobile, positioned to the right of title */}
-          {isMobileView && (
-            <button
-              onClick={() => setIsNavPinned(!isNavPinned)}
-              className={`absolute right-4 p-2 rounded-lg bg-[#1e1e1e] border transition-all duration-200 hover:scale-110 ${
-                isNavPinned 
-                  ? "border-red-600 text-red-600 shadow-md shadow-red-500/20" 
-                  : "border-[#333333] text-gray-400 hover:text-red-600 hover:border-red-600"
-              }`}
-              aria-label={isNavPinned ? "Unpin navigation (navbar will not follow scroll)" : "Pin navigation (navbar will follow scroll)"}
-              title={isNavPinned ? "Click to unpin" : "Click to pin"}
-            >
-              <FaThumbtack size={18} className={`transition-transform duration-200 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
-            </button>
-          )}
+          <button
+            onClick={() => setIsNavPinned(!isNavPinned)}
+            className={`absolute right-4 p-2 rounded-lg bg-[#1e1e1e] border transition-all duration-200 hover:scale-110 ${
+              isNavPinned 
+                ? "border-red-600 text-red-600 shadow-md shadow-red-500/20" 
+                : "border-[#333333] text-gray-400 hover:text-red-600 hover:border-red-600"
+            }`}
+            aria-label={isNavPinned ? "Unpin navigation (navbar will not follow scroll)" : "Pin navigation (navbar will follow scroll)"}
+            title={isNavPinned ? "Click to unpin" : "Click to pin"}
+          >
+            <FaThumbtack size={18} className={`transition-transform duration-200 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
+          </button>
         </div>
         
         {/* Navigation subsections - horizontal scroll on mobile */}
