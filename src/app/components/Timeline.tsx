@@ -136,7 +136,7 @@ const Timeline: React.FC<TimelineProps> = ({
 
   // Full timeline mode - Full width card layout
   return (
-    <div className="w-full mx-auto px-4">
+    <div className="w-full mx-auto">
       <div className="flex flex-col gap-6">
         {items.map((item) => {
           const itemKey = `${item.institution || item.name}-${item.startDate}`
@@ -155,7 +155,7 @@ const Timeline: React.FC<TimelineProps> = ({
           return (
             <div
               key={itemKey}
-              className={`bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.01] ${
+              className={`bg-[#1e1e1e] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-105 ${
                 isNewItem ? "animate-fade-in-up border-red-600/30" : ""
               } ${isDisappearing ? "animate-fade-out-down" : ""}`}
             >

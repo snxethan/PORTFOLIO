@@ -380,7 +380,7 @@ const Resume = () => {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
                       !selectedTag
                         ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30"
-                        : "bg-[#333333] text-gray-300 hover:bg-[#444444]"
+                        : "bg-[#4a4a4a] text-gray-300 hover:bg-[#555555]"
                     }`}
                   >
                     ×
@@ -393,7 +393,7 @@ const Resume = () => {
                       className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 border ${
                         selectedTag === tag
                           ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30 border-transparent"
-                          : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:text-[#dc2626] hover:border-red-600 border-transparent"
+                          : "bg-[#4a4a4a] text-gray-300 hover:bg-[#555555] hover:text-[#dc2626] hover:border-red-600 border-transparent"
                       }`}
                     >
                       {tag}
