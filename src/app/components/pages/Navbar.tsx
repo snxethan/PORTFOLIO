@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { FaChevronDown, FaChevronUp } from "react-icons/fa"
 
 interface NavbarProps {
   onTabChange: (page: string, tab: string) => void
@@ -67,28 +66,17 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
   return (
     <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 md:static animate-elastic-in border-b border-[#333333] md:border-0">
       <div className="container mx-auto">
-        {/* Title with collapse button on mobile */}
-        <div className="flex items-center justify-center mb-3 relative">
+        {/* Title */}
+        <div className="flex items-center justify-center mb-3">
           <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             My Portfolio
           </h1>
-          
-          {/* Collapse button - only on mobile when sticky */}
-          {isMobileSticky && (
-            <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="absolute right-4 text-gray-400 hover:text-red-500 transition-colors p-2"
-              aria-label={isCollapsed ? "Expand navigation" : "Collapse navigation"}
-            >
-              {isCollapsed ? <FaChevronDown size={20} /> : <FaChevronUp size={20} />}
-            </button>
-          )}
         </div>
         
-        {/* Navigation subsections - collapsible on mobile */}
-        <div className={`flex flex-row flex-wrap justify-center gap-3 max-w-5xl mx-auto transition-all duration-300 overflow-hidden ${
-          isMobileSticky && isCollapsed ? "max-h-0 opacity-0" : "max-h-[1000px] opacity-100"
-        }`}>
+        {/* Navigation subsections - horizontal scroll on mobile sticky */}
+        <div className="flex flex-row gap-3 max-w-5xl mx-auto md:flex-wrap md:justify-center overflow-x-auto md:overflow-x-visible scrollbar-hide pb-2"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
           {isLoading ? (
             <div className="flex space-x-4 animate-pulse justify-center">
               {[...Array(7)].map((_, i) => (
@@ -98,7 +86,7 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
           ) : (
             <>
               {/* Subsection 1: Certifications & Skills */}
-              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
+              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6 flex-shrink-0">
                 <div className="flex items-center justify-center gap-2 flex-wrap">
                   {tabGroups[0].tabs.map((tab) => {
                     const tabKey = `${tab.page}/${tab.id}`
@@ -109,12 +97,12 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
                         key={tabKey}
                         onClick={() => handleClick(tab.page, tab.id)}
                         disabled={isActive}
-                        className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
+                        className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 border ${
                           clickedTab === tabKey ? "animate-elastic-in" : ""
                         } ${
                           isActive
-                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-400 cursor-pointer"
+                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}
@@ -125,7 +113,7 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
               </div>
 
               {/* Subsection 2: Experience & Education */}
-              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
+              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6 flex-shrink-0">
                 <div className="flex items-center justify-center gap-2 flex-wrap">
                   {tabGroups[1].tabs.map((tab) => {
                     const tabKey = `${tab.page}/${tab.id}`
@@ -136,12 +124,12 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
                         key={tabKey}
                         onClick={() => handleClick(tab.page, tab.id)}
                         disabled={isActive}
-                        className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
+                        className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 border ${
                           clickedTab === tabKey ? "animate-elastic-in" : ""
                         } ${
                           isActive
-                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-400 cursor-pointer"
+                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}
@@ -152,7 +140,7 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
               </div>
 
               {/* Subsection 3: Projects & Repositories */}
-              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
+              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6 flex-shrink-0">
                 <div className="flex items-center justify-center gap-2 flex-wrap">
                   {tabGroups[2].tabs.map((tab) => {
                     const tabKey = `${tab.page}/${tab.id}`
@@ -163,12 +151,12 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
                         key={tabKey}
                         onClick={() => handleClick(tab.page, tab.id)}
                         disabled={isActive}
-                        className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
+                        className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 border ${
                           clickedTab === tabKey ? "animate-elastic-in" : ""
                         } ${
                           isActive
-                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-400 cursor-pointer"
+                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}

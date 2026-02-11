@@ -373,10 +373,10 @@ const About = () => {
                     <button
                       key={tag}
                       onClick={() => setSelectedTag(tag === "" ? null : tag)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 border ${
                         selectedTag === tag
-                          ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30"
-                          : "bg-[#333333] text-gray-300 hover:bg-[#444444]"
+                          ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30 border-transparent"
+                          : "bg-[#333333] text-gray-300 hover:bg-[#444444] hover:text-[#dc2626] hover:border-red-600 border-transparent"
                       }`}
                     >
                       {tag}
