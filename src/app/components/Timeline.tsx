@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import React from "react"
 
 export interface TimelineItem {
   type?: "experience" | "education" | "project"
@@ -29,9 +29,9 @@ interface TimelineProps {
 
 const Timeline: React.FC<TimelineProps> = ({
   items,
-  type,
+  type: _type,
   compact = false,
-  showAllContent = true,
+  showAllContent: _showAllContent = true,
   animatingItems = new Set(),
   disappearingItems = new Set(),
 }) => {
@@ -43,7 +43,7 @@ const Timeline: React.FC<TimelineProps> = ({
   if (compact) {
     return (
       <div className="space-y-2">
-        {items.map((item, index) => {
+        {items.map((item) => {
           const itemKey = `${item.institution || item.name}-${item.startDate}`
           return (
             <div

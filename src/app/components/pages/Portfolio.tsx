@@ -22,6 +22,7 @@ interface Project {
   source: "github" | "manual"
   ctaLabel?: string
   ctaIcon?: "github" | "external" | "youtube" | "private" | undefined
+  stargazers_count?: number
 }
 
 interface GitHubApiProject {
@@ -172,10 +173,20 @@ const Portfolio: React.FC = () => {
       setActiveSubsection(tabParam)
     }
     
-    // Load filter from localStorage
+    // Load filter from localStorage with validation
     const savedFilter = localStorage.getItem("globalFilter")
     if (savedFilter) {
-      setSortBy(savedFilter)
+      // Validate that the saved filter is supported on this page
+      const filterOptions = [
+        { value: "newest", label: "Newest" },
+        { value: "oldest", label: "Oldest" },
+        { value: "name-asc", label: "Name (A–Z)" },
+        { value: "name-desc", label: "Name (Z–A)" },
+      ]
+      const isValidFilter = filterOptions.some(option => option.value === savedFilter)
+      if (isValidFilter) {
+        setSortBy(savedFilter)
+      }
     }
     
     return () => document.removeEventListener("keydown", handleEscape)
@@ -275,18 +286,20 @@ const Portfolio: React.FC = () => {
 
   return (
     <>
-      {/* Header content */}
-      <div className="mb-6">
-        <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-          Projects & Contributions
-        </h2>
-        <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-          Showcasing my projects and contributions to the software development community.
-        </p>
-      </div>
+      {/* Header section - wrapped in styled container */}
+      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6">
+        {/* Header content */}
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+            Projects & Contributions
+          </h2>
+          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
+            Showcasing my projects and contributions to the software development community.
+          </p>
+        </div>
 
-      {/* Dividing line */}
-      <div className="w-full h-[1px] bg-white/10 mb-6" />
+        {/* Dividing line */}
+        <div className="w-full h-[1px] bg-white/10 mb-6" />
       
       {/* Main tab row */}
       <div className="container mx-auto">
@@ -440,8 +453,9 @@ const Portfolio: React.FC = () => {
       {isSearchExpanded && (
         <div className="w-full h-[1px] bg-white/10 my-6" />
       )}
+    </div>
       
-      {/* Content */}
+      {/* Content section - outside header wrapper */}
       <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {/* Projects Section */}
             {activeSubsection === "projects" && (

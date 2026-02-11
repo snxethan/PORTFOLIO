@@ -27,9 +27,9 @@ export default function HomeClient() {
     // Valid pages list
     const VALID_PAGES = ['about', 'resume', 'portfolio']
     
-    // If mainPage is provided but not valid, redirect to 404
+    // If mainPage is provided but not valid, normalize to fallback page
     if (mainPage && !VALID_PAGES.includes(mainPage)) {
-      router.push('/not-found')
+      router.push(`?page=${fallbackTab}`, { scroll: false })
       return
     }
     

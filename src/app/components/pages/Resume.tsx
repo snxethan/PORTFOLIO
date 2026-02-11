@@ -110,8 +110,6 @@ const Resume = () => {
     setShowFilterMenu(false)
     if (value === "cs-only") {
       handleToggleChange(false)
-    } else if (value === "" && !showAllContent) {
-      handleToggleChange(true)
     }
   }
   
@@ -255,32 +253,34 @@ const Resume = () => {
 
   return (
     <>
-      {/* Header content */}
-      <div className="mb-6">
-        <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-          Experience & Education Timeline
-        </h2>
-        <div className="text-center mb-4">
-          <h3 className="text-2xl font-bold text-white">Ethan Townsend</h3>
-          <p className="text-lg text-gray-400">Software Engineer</p>
-          <p className="text-sm text-gray-500">Salt Lake City, UT</p>
-          <p className="text-sm text-red-500">snxethan@gmail.com</p>
+      {/* Header section - wrapped in styled container */}
+      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6">
+        {/* Header content */}
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+            Experience & Education Timeline
+          </h2>
+          <div className="text-center mb-4">
+            <h3 className="text-2xl font-bold text-white">Ethan Townsend</h3>
+            <p className="text-lg text-gray-400">Software Engineer</p>
+            <p className="text-sm text-gray-500">Salt Lake City, UT</p>
+            <p className="text-sm text-red-500">snxethan@gmail.com</p>
+          </div>
+          
+          <div className="flex justify-center">
+            <TooltipWrapper label="View Resume" url={resumePDF}>
+              <button
+                onClick={() => setSelectedPDF(resumePDF)}
+                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95"
+              >
+                <FaDownload /> View Resume
+              </button>
+            </TooltipWrapper>
+          </div>
         </div>
-        
-        <div className="flex justify-center">
-          <TooltipWrapper label="View Resume" url={resumePDF}>
-            <button
-              onClick={() => setSelectedPDF(resumePDF)}
-              className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95"
-            >
-              <FaDownload /> View Resume
-            </button>
-          </TooltipWrapper>
-        </div>
-      </div>
 
-      {/* Dividing line */}
-      <div className="w-full h-[1px] bg-white/10 mb-6" />
+        {/* Dividing line */}
+        <div className="w-full h-[1px] bg-white/10 mb-6" />
       
       {/* Main tab row */}
       <div className="container mx-auto">
@@ -434,7 +434,9 @@ const Resume = () => {
       {isSearchExpanded && (
         <div className="w-full h-[1px] bg-white/10 my-6" />
       )}
+    </div>
       
+      {/* Content section - outside header wrapper */}
       <div className="text-white py-20">
         <div className="container mx-auto px-4">
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
