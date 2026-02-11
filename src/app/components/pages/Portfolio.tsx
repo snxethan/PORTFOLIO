@@ -52,9 +52,9 @@ const Portfolio: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([])
   const [search, setSearch] = useState("")
   const [sortBy, setSortBy] = useState("newest")
-  const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [selectedTag, setSelectedTag] = useState<string | null>("Computer Science")
   const [showAllTags, setShowAllTags] = useState(false);
-  const [tags, setTags] = useState<string[]>([])
+  const [tags, setTags] = useState<string[]>(["Computer Science"])
   const [loading, setLoading] = useState(true)
   const { handleExternalClick } = useExternalLink()
   const [activeSubsection, setActiveSubsection] = useState("projects")
@@ -137,7 +137,7 @@ const Portfolio: React.FC = () => {
     }
 
     const extractTags = (allProjects: Project[]) => {
-      const uniqueTags = new Set<string>()
+      const uniqueTags = new Set<string>(["Computer Science"])
       allProjects.forEach((project) => {
         const projectTags = new Set<string>()
         if (project.language) projectTags.add(project.language.toLowerCase())
@@ -285,7 +285,7 @@ const Portfolio: React.FC = () => {
   return (
     <>
       {/* Header section - wrapped in styled container */}
-      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6">
+      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         {/* Header content */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
@@ -301,7 +301,7 @@ const Portfolio: React.FC = () => {
       
       {/* Main tab row */}
       <div className="container mx-auto">
-        <div className="relative flex items-center justify-center overflow-visible">
+        <div className="relative z-50 flex items-center justify-center overflow-visible">
           {/* Tab buttons - centered */}
           <div className="flex gap-2 justify-center flex-wrap">
             {tabs.map((tab) => (

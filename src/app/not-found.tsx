@@ -17,7 +17,7 @@ export default function NotFound() {
           </div>
 
           <p className="text-gray-400 text-lg mb-8">
-            The content you're looking for is not available.
+            The content you&apos;re looking for is not available.
           </p>
 
           <a

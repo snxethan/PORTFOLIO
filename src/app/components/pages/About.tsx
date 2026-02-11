@@ -14,9 +14,9 @@ const About = () => {
   const [activeSubsection, setActiveSubsection] = useState("certifications")
   const [isAnimating, setIsAnimating] = useState(false)
   const [search, setSearch] = useState("")
-  const [sortBy, setSortBy] = useState("cs-only")
+  const [sortBy, setSortBy] = useState("newest")
   const [showFilterMenu, setShowFilterMenu] = useState(false)
-  const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [selectedTag, setSelectedTag] = useState<string | null>("Computer Science")
   const [showAllTags, setShowAllTags] = useState(false)
   const [isSearchExpanded, setIsSearchExpanded] = useState(false)
   const [clickedTab, setClickedTab] = useState<string | null>(null)
@@ -240,13 +240,11 @@ const About = () => {
     { value: "oldest", label: "Oldest" },
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
-    { value: "cs-only", label: "Computer Science Only" },
   ] : [
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
     { value: "hard-skills", label: "Hard Skills" },
     { value: "soft-skills", label: "Soft Skills" },
-    { value: "cs-only", label: "Computer Science Only" },
   ]
 
   const resultsCount = activeSubsection === "certifications" 
@@ -258,7 +256,7 @@ const About = () => {
   return (
     <>
       {/* Header section - wrapped in styled container */}
-      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6">
+      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         {/* Header content */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
@@ -277,7 +275,7 @@ const About = () => {
       
       {/* Main tab row */}
       <div className="container mx-auto">
-        <div className="relative flex items-center justify-center overflow-visible">
+        <div className="relative z-50 flex items-center justify-center overflow-visible">
           {/* Tab buttons - centered */}
           <div className="flex gap-2 justify-center flex-wrap">
             {tabs.map((tab) => (
