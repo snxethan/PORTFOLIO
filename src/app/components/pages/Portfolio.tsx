@@ -285,7 +285,7 @@ const Portfolio: React.FC = () => {
           title: "Project Timeline",
           subtitle: "Key projects and contributions throughout my career"
         }
-      case "repository":
+      case "repositories":
         return {
           title: "Open Source Repositories",
           subtitle: "Public repositories and contributions on GitHub"
@@ -375,7 +375,7 @@ const Portfolio: React.FC = () => {
           )}
 
           {/* Tags section */}
-          {activeSubsection === "repository" && sortedTags.length > 0 && (
+          {activeSubsection === "repositories" && sortedTags.length > 0 && (
             <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
               showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
             }`}>
