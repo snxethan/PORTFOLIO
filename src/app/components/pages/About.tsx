@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import { FaFilePdf, FaExternalLinkAlt, FaCog, FaChevronDown, FaChevronUp } from "react-icons/fa"
+import { FaFilePdf, FaExternalLinkAlt, FaSort, FaChevronDown, FaChevronUp } from "react-icons/fa"
 import { useSearchParams, useRouter } from "next/navigation"
 
 import { useExternalLink } from "../ExternalLinkHandler"
@@ -48,8 +48,8 @@ const About = () => {
       setActiveSubsection(tabParam)
     }
     
-    // Load filter from localStorage
-    const savedFilter = localStorage.getItem("globalFilter")
+    // Load filter from localStorage (per-tab persistence)
+    const savedFilter = localStorage.getItem(`${activeSubsection}-filter`)
     if (savedFilter) {
       setSortBy(savedFilter)
     }
@@ -82,7 +82,7 @@ const About = () => {
   
   const handleFilterChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem("globalFilter", value)
+    localStorage.setItem(`${activeSubsection}-filter`, value)
     setShowFilterMenu(false)
   }
   
@@ -318,7 +318,7 @@ const About = () => {
                       }`}
                       title="Filter options"
                     >
-                      <FaCog className="w-5 h-5" />
+                      <FaSort className="w-5 h-5" />
                     </button>
                     
                     {/* Filter dropdown menu */}
@@ -328,7 +328,7 @@ const About = () => {
                           className="fixed inset-0 z-40"
                           onClick={() => setShowFilterMenu(false)}
                         />
-                        <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[9999]">
+                        <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[100]">
                           {filterOptions.map((option) => (
                             <button
                               key={option.value}

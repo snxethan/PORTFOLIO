@@ -74,8 +74,11 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
         </div>
         
         {/* Navigation subsections - horizontal scroll on mobile sticky */}
-        <div className="flex flex-row gap-3 max-w-5xl mx-auto md:flex-wrap md:justify-center overflow-x-auto md:overflow-x-visible scrollbar-hide pb-2"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        <div className="flex flex-row gap-3 max-w-5xl mx-auto md:flex-wrap md:justify-center overflow-x-auto md:overflow-x-visible pb-2 navbar-scroll"
+          style={{
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#dc2626 transparent',
+          }}
         >
           {isLoading ? (
             <div className="flex space-x-4 animate-pulse justify-center">

@@ -2,7 +2,7 @@
 
 import React from "react"
 import { useState, useEffect } from "react"
-import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevronUp, FaCog, FaSearch, FaTimes } from "react-icons/fa"
+import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevronUp, FaSort, FaSearch, FaTimes } from "react-icons/fa"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
@@ -178,8 +178,8 @@ const Portfolio: React.FC = () => {
       setActiveSubsection(tabParam)
     }
     
-    // Load filter from localStorage with validation
-    const savedFilter = localStorage.getItem("globalFilter")
+    // Load filter from localStorage with validation (per-tab persistence)
+    const savedFilter = localStorage.getItem(`${activeSubsection}-filter`)
     if (savedFilter) {
       // Validate that the saved filter is supported on this page
       const filterOptions = [
@@ -219,7 +219,7 @@ const Portfolio: React.FC = () => {
   
   const handleFilterChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem("globalFilter", value)
+    localStorage.setItem(`${activeSubsection}-filter`, value)
     setShowFilterMenu(false)
   }
 
@@ -343,7 +343,7 @@ const Portfolio: React.FC = () => {
                     }`}
                     title="Filter options"
                   >
-                    <FaCog className="w-5 h-5" />
+                    <FaSort className="w-5 h-5" />
                   </button>
                   
                   {/* Filter dropdown menu */}
@@ -353,7 +353,7 @@ const Portfolio: React.FC = () => {
                         className="fixed inset-0 z-40"
                         onClick={() => setShowFilterMenu(false)}
                       />
-                      <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[9999]">
+                      <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[100]">
                         {filterOptions.map((option) => (
                           <button
                             key={option.value}
