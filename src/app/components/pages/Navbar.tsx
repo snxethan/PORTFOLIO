@@ -65,13 +65,29 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
   }
 
   return (
-    <nav className={`w-full bg-[#222222] py-4 ${isMobileView && isNavPinned ? 'fixed' : 'static'} top-0 left-0 z-50 md:static animate-elastic-in border-b border-[#333333] md:border-0`}>
+    <nav className={`w-full bg-[#222222] py-4 ${isMobileView && isNavPinned ? 'fixed' : 'relative'} top-0 left-0 z-50 md:relative animate-elastic-in border-b border-[#333333] md:border-0`}>
       <div className="container mx-auto">
-        {/* Title */}
-        <div className="flex items-center justify-center mb-3">
+        {/* Title and Pin button container */}
+        <div className="flex items-center justify-center mb-3 relative">
           <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             My Portfolio
           </h1>
+          
+          {/* Pin/Unpin toggle button - only visible on mobile, positioned to the right of title */}
+          {isMobileView && (
+            <button
+              onClick={() => setIsNavPinned(!isNavPinned)}
+              className={`absolute right-4 p-2 rounded-lg bg-[#1e1e1e] border transition-all duration-200 hover:scale-110 ${
+                isNavPinned 
+                  ? "border-red-600 text-red-600 shadow-md shadow-red-500/20" 
+                  : "border-[#333333] text-gray-400 hover:text-red-600 hover:border-red-600"
+              }`}
+              aria-label={isNavPinned ? "Unpin navigation (navbar will not follow scroll)" : "Pin navigation (navbar will follow scroll)"}
+              title={isNavPinned ? "Click to unpin" : "Click to pin"}
+            >
+              <FaThumbtack size={18} className={`transition-transform duration-200 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
+            </button>
+          )}
         </div>
         
         {/* Navigation subsections - horizontal scroll on mobile */}
@@ -173,23 +189,6 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
             </>
           )}
         </div>
-
-        {/* Pin/Unpin toggle button - only visible on mobile */}
-        {isMobileView && (
-          <div className="flex justify-center mt-2">
-            <button
-              onClick={() => setIsNavPinned(!isNavPinned)}
-              className={`p-2 rounded-lg bg-[#1e1e1e] border border-[#333333] transition-all duration-200 ${
-                isNavPinned 
-                  ? "text-red-600 border-red-600" 
-                  : "text-gray-400 hover:text-red-600 hover:border-red-600"
-              }`}
-              aria-label={isNavPinned ? "Unpin navigation" : "Pin navigation"}
-            >
-              <FaThumbtack size={16} className={`transition-transform duration-200 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
-            </button>
-          </div>
-        )}
       </div>
     </nav>
   )
