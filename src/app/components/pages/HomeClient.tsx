@@ -64,7 +64,15 @@ export default function HomeClient() {
             
             </div>
             <section className="flex-1 flex flex-col gap-6 pb-20">
-              <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] shadow-lg overflow-hidden">
+              {/* Title section - scrolls away on mobile, rejoins at top */}
+              <div className="bg-[#1e1e1e] rounded-t-xl border border-[#333333] shadow-lg px-6 py-4 md:rounded-xl">
+                <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+                  My Portfolio
+                </h1>
+              </div>
+              
+              {/* Navbar - fixed on mobile, static on desktop */}
+              <div className="md:bg-[#1e1e1e] md:rounded-b-xl md:border md:border-[#333333] md:border-t-0 md:shadow-lg md:overflow-hidden md:-mt-6">
                {!activeTab ? (
                 // Skeleton navbar
                 <div className="w-full flex justify-center py-4 animate-pulse space-x-4">
