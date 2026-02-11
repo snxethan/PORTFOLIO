@@ -11,6 +11,7 @@ import Avatar from "./Avatar"
 import TooltipWrapper from "../../ToolTipWrapper"
 import Portfoliyou from "./Portfoliyou"
 import ContactFormModal from "../../ContactFormModal"
+import PDFModalViewer from "../../PDFModalViewer"
 
 // This component is used to display the sidebar of the website. It contains the user's avatar, professional links, personal links, and a Spotify widget.
 // The sidebar is styled using Tailwind CSS classes. It is responsive and will adjust its size based on the screen size.
@@ -21,6 +22,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
   const clickSoundRef = useRef<HTMLAudioElement | null>(null) // Reference to the audio element for the click sound
   const { handleExternalClick } = useExternalLink() // Function to handle external link clicks
   const [showContact, setShowContact] = useState(false) // State to control the visibility of the contact form modal
+  const [selectedPDF, setSelectedPDF] = useState<string | null>(null) // State to control PDF modal visibility
 
   const handleAvatarClick = () => { // Function to handle the avatar click event
     clickSoundRef.current?.play()
@@ -82,9 +84,9 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
 
           {/* View Resume Button */}
           <div className="mt-6 flex justify-center">
-            <TooltipWrapper label="Download Resume">
+            <TooltipWrapper label="View Resume" url="/resume.pdf">
               <button
-                onClick={() => window.open('/resume.pdf', '_blank')}
+                onClick={() => setSelectedPDF('/resume.pdf')}
                 aria-label="View Resume"
                 className="flex items-center gap-2 px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg text-gray-300 hover:text-red-600 hover:border-red-600 text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-100"
               >
@@ -159,6 +161,8 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
       )}
       {/* Contact form modal */}
       {showContact && <ContactFormModal onClose={() => setShowContact(false)} />}
+      {/* PDF modal viewer */}
+      {selectedPDF && <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />}
     </>
   )
 

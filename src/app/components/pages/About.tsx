@@ -100,7 +100,7 @@ const About = () => {
         const year = cert.year 
         const Card = (
           <div
-            className={`group relative flex flex-col bg-[#1e1e1e] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 min-h-[140px]`} 
+            className={`group relative flex flex-col bg-[#1a1a1a] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 min-h-[140px]`} 
           >
             <div className="flex items-start gap-4 mb-3">
               <div // Icon container
@@ -156,7 +156,7 @@ const About = () => {
   const renderSkeletonGrid = (count: number) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {[...Array(count)].map((_, i) => (
-        <div key={i} className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4 min-h-[140px]">
+        <div key={i} className="bg-[#1a1a1a] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4 min-h-[140px]">
           <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#333333] rounded mb-1.5 sm:mb-2" /> 
           <div className="h-2.5 sm:h-3 bg-[#333333] rounded w-16 sm:w-20" />
         </div>
