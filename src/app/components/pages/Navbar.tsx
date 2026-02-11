@@ -8,9 +8,10 @@ interface NavbarProps {
   onTabChange: (page: string, tab: string) => void
   activePage: string | null
   activeTab: string | null
+  onPinChange?: (isPinned: boolean) => void
 }
 
-const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
+const Navbar = ({ onTabChange, activePage, activeTab, onPinChange }: NavbarProps) => {
   const isLoading = !activePage || !activeTab
   const [clickedTab, setClickedTab] = useState<string | null>(null)
   const [isNavPinned, setIsNavPinned] = useState(true)
@@ -18,14 +19,20 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
   const [needsToggle, setNeedsToggle] = useState(false) // true if content overflows and needs scroll
   const navContentRef = useRef<HTMLDivElement>(null)
 
+  // Notify parent component when pin state changes
+  useEffect(() => {
+    onPinChange?.(isNavPinned)
+  }, [isNavPinned, onPinChange])
+
   // Check if the nav content overflows and needs scrolling
   useEffect(() => {
     const checkOverflow = () => {
-      if (navContentRef.current && isHorizontalScroll) {
+      if (navContentRef.current) {
         const hasOverflow = navContentRef.current.scrollWidth > navContentRef.current.clientWidth
-        setNeedsToggle(hasOverflow)
-      } else {
-        setNeedsToggle(false) // In wrap mode, no toggle needed
+        // Show toggle if: 
+        // 1. In horizontal mode AND has overflow (needs scroll)
+        // 2. In wrap mode (always show to allow going back to horizontal)
+        setNeedsToggle(isHorizontalScroll ? hasOverflow : true)
       }
     }
 

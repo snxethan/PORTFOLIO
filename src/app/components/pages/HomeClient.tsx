@@ -12,6 +12,7 @@ import Footer from "./Footer"
 export default function HomeClient() {
   const [activePage, setActivePage] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<string | null>(null)
+  const [isNavPinned, setIsNavPinned] = useState(true)
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -67,12 +68,12 @@ export default function HomeClient() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
-      {/* Main Page Content - Add top padding to accommodate fixed navbar when pinned */}
-      <main className="flex-grow pt-32">
+      {/* Main Page Content - Add top padding to accommodate fixed navbar ONLY when pinned */}
+      <main className={`flex-grow ${isNavPinned ? 'pt-32' : 'pt-4'}`}>
         <div className="container mx-auto px-4 pt-4 min-w-[360px]">
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex flex-col gap-6 mb-12 lg:items-center lg:mx-auto lg:w-fit">
-              <div className="lg:sticky lg:top-36">
+              <div className={`lg:sticky ${isNavPinned ? 'lg:top-36' : 'lg:top-4'}`}>
                 <Sidebar className=""/>
               </div>
             
@@ -87,7 +88,12 @@ export default function HomeClient() {
                   ))}
                 </div>
               ) : (
-                <Navbar onTabChange={handleTabChange} activePage={activePage} activeTab={activeTab} />
+                <Navbar 
+                  onTabChange={handleTabChange} 
+                  activePage={activePage} 
+                  activeTab={activeTab}
+                  onPinChange={setIsNavPinned}
+                />
               )}
               </div>
                 <div
