@@ -65,7 +65,7 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
   }
 
   return (
-    <nav className={`w-full bg-[#222222] py-4 ${isMobileView && isNavPinned ? 'fixed' : 'relative'} top-0 left-0 z-50 md:relative animate-elastic-in border-b border-[#333333] md:border-0`}>
+    <nav className={`w-full bg-[#222222] py-4 ${isNavPinned ? 'fixed' : 'relative'} top-0 left-0 z-50 animate-elastic-in border-b border-[#333333] md:border-0`}>
       <div className="container mx-auto">
         {/* Title and Pin button container */}
         <div className="flex items-center justify-center mb-3 relative">

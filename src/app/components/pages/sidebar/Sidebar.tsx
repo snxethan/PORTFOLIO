@@ -86,7 +86,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
           <div className="mt-6 flex justify-center">
             <TooltipWrapper label="View Resume" url="/resume.pdf">
               <button
-                onClick={() => setSelectedPDF('/resume.pdf')}
+                onClick={() => setSelectedPDF('/resume/EthanTownsend_Resume_v2.1.pdf')}
                 aria-label="View Resume"
                 className="flex items-center gap-2 px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg text-gray-300 hover:text-red-600 hover:border-red-600 text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-100"
               >
