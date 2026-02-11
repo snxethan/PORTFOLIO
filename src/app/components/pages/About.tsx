@@ -95,7 +95,7 @@ const About = () => {
   const renderSkillGrid = (items: Skill[] | Certification[]) => {
     // Don't re-sort here - use the already sorted items
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {items.map((item) => { 
         const { name, icon: Icon, highlight, url } = item
         const cert = item as Certification
@@ -155,7 +155,7 @@ const About = () => {
 }
 
   const renderSkeletonGrid = (count: number) => (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {[...Array(count)].map((_, i) => (
         <div key={i} className="bg-[#1e1e1e] border border-[#333333] p-3 sm:p-4 rounded-xl animate-pulse flex flex-col items-center mx-auto">
           <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#333333] rounded mb-1.5 sm:mb-2" /> 
