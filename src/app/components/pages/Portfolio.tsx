@@ -297,7 +297,7 @@ const Portfolio: React.FC = () => {
         </div>
       
         {/* Navigation subsection */}
-        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-4">
+        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-5 px-4">
           {/* Main tab row */}
           <div className="container mx-auto">
             <div className="relative z-50 flex items-center justify-center overflow-visible">
@@ -323,7 +323,7 @@ const Portfolio: React.FC = () => {
               {/* Search toggle button - hidden on small screens */}
               <button
                 onClick={toggleSearch}
-                className={`hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-lg transition-all duration-200 ${
+                className={`absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-lg transition-all duration-200 ${
                   isSearchExpanded
                     ? "bg-red-600 text-white"
                     : "bg-[#2a2a2a] text-gray-300 hover:text-white hover:bg-[#333333]"
