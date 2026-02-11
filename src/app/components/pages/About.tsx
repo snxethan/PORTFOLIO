@@ -256,6 +256,32 @@ const About = () => {
 
   const isFilterActive = sortBy && sortBy !== "newest"
 
+  // Tab-specific descriptions
+  const getPageDescription = () => {
+    switch (activeSubsection) {
+      case "certifications":
+        return {
+          title: "Professional Certifications",
+          subtitle: "Industry-recognized credentials and technical certifications",
+          description: "Validated expertise across cloud platforms, cybersecurity, and computer science fundamentals."
+        }
+      case "skills":
+        return {
+          title: "Technical Skills & Expertise",
+          subtitle: "Technologies, frameworks, and tools I work with",
+          description: "Proficient in full-stack development, cloud architecture, and modern software engineering practices."
+        }
+      default:
+        return {
+          title: "Professional Certifications",
+          subtitle: "Industry-recognized credentials and technical certifications",
+          description: "Validated expertise across cloud platforms, cybersecurity, and computer science fundamentals."
+        }
+    }
+  }
+
+  const pageDescription = getPageDescription()
+
   return (
     <>
       {/* Header section - wrapped in styled container */}
@@ -263,13 +289,13 @@ const About = () => {
         {/* Header content */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Information, Certifications, and Skills.
+            {pageDescription.title}
           </h2>
           <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-            I&apos;m a Full Stack Software Developer focused on backend or full-stack development.
+            {pageDescription.subtitle}
           </p>
           <p className="text-center text-gray-400 max-w-3xl mx-auto">
-            Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.
+            {pageDescription.description}
           </p>
         </div>
       

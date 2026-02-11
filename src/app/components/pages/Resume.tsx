@@ -251,6 +251,29 @@ const Resume = () => {
 
   const isFilterActive = sortBy && sortBy !== "newest"
 
+  // Tab-specific descriptions
+  const getPageDescription = () => {
+    switch (activeSubsection) {
+      case "experience":
+        return {
+          title: "Professional Experience Timeline",
+          showContact: true
+        }
+      case "education":
+        return {
+          title: "Educational Background",
+          showContact: true
+        }
+      default:
+        return {
+          title: "Professional Experience Timeline",
+          showContact: true
+        }
+    }
+  }
+
+  const pageDescription = getPageDescription()
+
   return (
     <>
       {/* Header section - wrapped in styled container */}
@@ -258,7 +281,7 @@ const Resume = () => {
         {/* Header content */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Experience & Education Timeline
+            {pageDescription.title}
           </h2>
           <div className="text-center mb-4">
             <h3 className="text-2xl font-bold text-white">Ethan Townsend</h3>

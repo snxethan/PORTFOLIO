@@ -285,6 +285,29 @@ const Portfolio: React.FC = () => {
 
   const isFilterActive = sortBy && sortBy !== "newest"
 
+  // Tab-specific descriptions
+  const getPageDescription = () => {
+    switch (activeSubsection) {
+      case "projects":
+        return {
+          title: "Project Timeline",
+          subtitle: "Key projects and contributions throughout my career"
+        }
+      case "repository":
+        return {
+          title: "Open Source Repositories",
+          subtitle: "Public repositories and contributions on GitHub"
+        }
+      default:
+        return {
+          title: "Project Timeline",
+          subtitle: "Key projects and contributions throughout my career"
+        }
+    }
+  }
+
+  const pageDescription = getPageDescription()
+
   return (
     <>
       {/* Header section - wrapped in styled container */}
@@ -292,10 +315,10 @@ const Portfolio: React.FC = () => {
         {/* Header content */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Projects & Contributions
+            {pageDescription.title}
           </h2>
           <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-            Showcasing my projects and contributions to the software development community.
+            {pageDescription.subtitle}
           </p>
         </div>
       
