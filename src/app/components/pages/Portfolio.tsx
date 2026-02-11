@@ -144,7 +144,7 @@ const Portfolio: React.FC = () => {
         project.topics?.forEach((tag) => projectTags.add(tag.toLowerCase()))
         projectTags.forEach((tag) => uniqueTags.add(tag))
       })
-      setTags([...Array.from(uniqueTags)])
+      setTags(["ALL", ...Array.from(uniqueTags)])
     }
 
     fetchProjects()
@@ -251,11 +251,14 @@ const Portfolio: React.FC = () => {
   })
 
   const sortedTags = React.useMemo(() => {
-    return tags.slice().sort((a, b) => a.localeCompare(b));
+    if (!tags.length) return [];
+    const [first, ...rest] = tags;
+    const sortedRest = rest.slice().sort((a, b) => a.localeCompare(b));
+    return first === "ALL" ? [first, ...sortedRest] : tags.slice().sort((a, b) => a.localeCompare(b));
   }, [tags]);
 
   const tagFilteredProjects =
-    selectedTag === null
+    selectedTag === null || selectedTag === "ALL"
       ? sortedProjects
       : sortedProjects.filter(
           (project) =>
@@ -283,18 +286,20 @@ const Portfolio: React.FC = () => {
 
   return (
     <>
-      {/* Title and description - standalone */}
-      <div className="mb-6">
-        <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-          Projects & Contributions
-        </h2>
-        <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-          Showcasing my projects and contributions to the software development community.
-        </p>
-      </div>
+      {/* Header section - wrapped in styled container */}
+      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6">
+        {/* Header content */}
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+            Projects & Contributions
+          </h2>
+          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
+            Showcasing my projects and contributions to the software development community.
+          </p>
+        </div>
 
-      {/* Tab nav and search section - wrapped in My Capstone styling */}
-      <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-6 shadow-lg mb-6">
+        {/* Dividing line */}
+        <div className="w-full h-[1px] bg-white/10 mb-6" />
       
       {/* Main tab row */}
       <div className="container mx-auto">
