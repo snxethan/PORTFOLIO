@@ -13,6 +13,7 @@ export default function HomeClient() {
   const [activePage, setActivePage] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<string | null>(null)
   const [isNavPinned, setIsNavPinned] = useState(true)
+  const [isNavExpanded, setIsNavExpanded] = useState(false) // true when navbar is in wrap/expanded mode
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -68,12 +69,20 @@ export default function HomeClient() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
-      {/* Main Page Content - Add top padding to accommodate fixed navbar ONLY when pinned */}
-      <main className={`flex-grow ${isNavPinned ? 'pt-32' : 'pt-4'}`}>
+      {/* Main Page Content - Dynamic padding based on pin state AND layout state */}
+      <main className={`flex-grow ${
+        isNavPinned 
+          ? (isNavExpanded ? 'pt-48' : 'pt-32')  // Pinned: 192px if expanded, 128px if horizontal
+          : 'pt-4'  // Unpinned: minimal padding
+      }`}>
         <div className="container mx-auto px-4 pt-4 min-w-[360px]">
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex flex-col gap-6 mb-12 lg:items-center lg:mx-auto lg:w-fit">
-              <div className={`lg:sticky ${isNavPinned ? 'lg:top-36' : 'lg:top-4'}`}>
+              <div className={`lg:sticky ${
+                isNavPinned 
+                  ? (isNavExpanded ? 'lg:top-52' : 'lg:top-36')  // Pinned: 208px if expanded, 144px if horizontal
+                  : 'lg:top-4'  // Unpinned: minimal top position
+              }`}>
                 <Sidebar className=""/>
               </div>
             
@@ -93,6 +102,7 @@ export default function HomeClient() {
                   activePage={activePage} 
                   activeTab={activeTab}
                   onPinChange={setIsNavPinned}
+                  onLayoutChange={setIsNavExpanded}
                 />
               )}
               </div>

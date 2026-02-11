@@ -9,9 +9,10 @@ interface NavbarProps {
   activePage: string | null
   activeTab: string | null
   onPinChange?: (isPinned: boolean) => void
+  onLayoutChange?: (isExpanded: boolean) => void
 }
 
-const Navbar = ({ onTabChange, activePage, activeTab, onPinChange }: NavbarProps) => {
+const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChange }: NavbarProps) => {
   const isLoading = !activePage || !activeTab
   const [clickedTab, setClickedTab] = useState<string | null>(null)
   const [isNavPinned, setIsNavPinned] = useState(true)
@@ -23,6 +24,11 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange }: NavbarProps
   useEffect(() => {
     onPinChange?.(isNavPinned)
   }, [isNavPinned, onPinChange])
+
+  // Notify parent component when layout state changes (expanded/wrap vs horizontal scroll)
+  useEffect(() => {
+    onLayoutChange?.(!isHorizontalScroll) // true when expanded/wrap mode
+  }, [isHorizontalScroll, onLayoutChange])
 
   // Check if the nav content overflows and needs scrolling
   useEffect(() => {
@@ -128,7 +134,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange }: NavbarProps
           ref={navContentRef}
           className={`flex gap-3 max-w-5xl mx-auto pb-2 ${
             isHorizontalScroll 
-              ? 'flex-row overflow-x-auto navbar-scroll' 
+              ? 'flex-row justify-center overflow-x-auto navbar-scroll' 
               : 'flex-wrap justify-center overflow-x-visible'
           }`}
           style={isHorizontalScroll ? {
