@@ -443,7 +443,7 @@ const Resume = () => {
       </div>
       
       {/* Content section - outside header wrapper */}
-      <div className="text-white py-20">
+      <div className="text-white">
         <div className="container mx-auto px-4">
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {activeSubsection === "experience" && renderTimeline("experience")}
