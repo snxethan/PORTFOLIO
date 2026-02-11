@@ -15,7 +15,13 @@ interface NavbarProps {
 const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChange }: NavbarProps) => {
   const isLoading = !activePage || !activeTab
   const [clickedTab, setClickedTab] = useState<string | null>(null)
-  const [isNavPinned, setIsNavPinned] = useState(true)
+  // Default pin state: pinned on mobile/tablet, unpinned on desktop
+  const [isNavPinned, setIsNavPinned] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 1024 // pinned on mobile/tablet, unpinned on desktop
+    }
+    return true
+  })
   const [isHorizontalScroll, setIsHorizontalScroll] = useState(true) // true = horizontal scroll, false = wrap
   const [needsToggle, setNeedsToggle] = useState(false) // true if content overflows and needs scroll
   const navContentRef = useRef<HTMLDivElement>(null)
@@ -36,9 +42,9 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
       if (navContentRef.current) {
         const hasOverflow = navContentRef.current.scrollWidth > navContentRef.current.clientWidth
         // Show toggle if: 
-        // 1. In horizontal mode AND has overflow (needs scroll)
+        // 1. Content has overflow (needs scroll) - ANYTIME it needs to scroll, show the expand button
         // 2. In wrap mode (always show to allow going back to horizontal)
-        setNeedsToggle(isHorizontalScroll ? hasOverflow : true)
+        setNeedsToggle(hasOverflow || !isHorizontalScroll)
       }
     }
 
@@ -134,7 +140,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
           ref={navContentRef}
           className={`flex gap-3 max-w-5xl mx-auto pb-2 ${
             isHorizontalScroll 
-              ? 'flex-row justify-center overflow-x-auto navbar-scroll' 
+              ? 'flex-row justify-start overflow-x-auto navbar-scroll' 
               : 'flex-wrap justify-center overflow-x-visible'
           }`}
           style={isHorizontalScroll ? {
