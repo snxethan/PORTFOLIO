@@ -24,7 +24,8 @@ const About = () => {
   const router = useRouter()
 
   useEffect(() => {
-    setLoading(false)
+    // Show skeleton loader for 500ms for consistent UX
+    const timer = setTimeout(() => setLoading(false), 500)
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setSelectedPDF(null)
@@ -53,7 +54,10 @@ const About = () => {
       setSortBy(savedFilter)
     }
     
-    return () => document.removeEventListener("keydown", handleEscape)
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener("keydown", handleEscape)
+    }
   }, [searchParams])
 
   const handleTabChange = (tabId: string) => {

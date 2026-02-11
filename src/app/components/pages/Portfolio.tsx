@@ -73,6 +73,7 @@ const Portfolio: React.FC = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       setLoading(true)
+      const startTime = Date.now() // Track start time for minimum 500ms display
       const CACHE_KEY = "githubProjectsCache"
       const EXPIRY_KEY = "githubProjectsExpiry"
       const now = Date.now()
@@ -108,7 +109,10 @@ const Portfolio: React.FC = () => {
         // Could not fetch projects, use manual projects only
         processProjects([])
       } finally {
-        setLoading(false)
+        // Ensure skeleton shows for at least 500ms
+        const elapsed = Date.now() - startTime
+        const remainingTime = Math.max(0, 500 - elapsed)
+        setTimeout(() => setLoading(false), remainingTime)
       }
     }
 
