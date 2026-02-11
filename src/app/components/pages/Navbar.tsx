@@ -46,7 +46,7 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
       name: "Portfolio",
       tabs: [
         { id: "projects", label: "Projects", page: "portfolio" },
-        { id: "repository", label: "Repository", page: "portfolio" }
+        { id: "repositories", label: "Repositories", page: "portfolio" }
       ]
     }
   ]
