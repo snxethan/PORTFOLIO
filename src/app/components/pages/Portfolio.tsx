@@ -435,8 +435,13 @@ const Portfolio: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Dividing line - only show when search is expanded */}
+      {isSearchExpanded && (
+        <div className="w-full h-[1px] bg-white/10 my-6" />
+      )}
       
-      <section id="portfolio" className="py-20 bg-[#0a0a0a] rounded-xl">
+      <section id="portfolio" className="py-20 bg-[#1e1e1e] border border-[#333333] rounded-xl">
         <div className="container mx-auto px-4">
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {/* Projects Section */}

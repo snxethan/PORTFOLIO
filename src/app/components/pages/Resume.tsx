@@ -429,8 +429,13 @@ const Resume = () => {
           )}
         </div>
       </div>
+
+      {/* Dividing line - only show when search is expanded */}
+      {isSearchExpanded && (
+        <div className="w-full h-[1px] bg-white/10 my-6" />
+      )}
       
-      <div className="bg-[#0a0a0a] rounded-xl text-white py-20">
+      <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl text-white py-20">
         <div className="container mx-auto px-4">
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {activeSubsection === "experience" && renderTimeline("experience")}
