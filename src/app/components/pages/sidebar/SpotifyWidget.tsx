@@ -127,7 +127,7 @@ export default function SpotifyWidget() {
                 handleExternalClick("https://open.spotify.com/user/l7ypevjdnoaz97kdqkkwf832d")
               }
               aria-label="Spotify"
-              className="text-green-500 hover:text-green-400 transition-colors text-lg flex items-center"
+              className="text-gray-400 hover:text-red-600 text-lg flex items-center transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
             >
               <FaSpotify />
             </button>
