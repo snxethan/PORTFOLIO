@@ -256,7 +256,7 @@ const Portfolio: React.FC = () => {
   }, [tags]);
 
   const tagFilteredProjects =
-    selectedTag === null
+    selectedTag === null || selectedTag === "Computer Science"
       ? sortedProjects
       : sortedProjects.filter(
           (project) =>
