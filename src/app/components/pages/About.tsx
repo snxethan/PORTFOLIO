@@ -250,7 +250,7 @@ const About = () => {
   const isFilterActive = sortBy && sortBy !== "newest"
 
   return (
-    <div>
+    <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6">
       {/* Header content */}
       <div className="mb-6">
         <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
@@ -420,7 +420,7 @@ const About = () => {
         <div className="w-full h-[1px] bg-white/10 my-6" />
       )}
       
-      <section id="about" className="py-20 bg-[#1e1e1e] rounded-xl border border-[#333333] text-white">
+      <section id="about" className="py-20 text-white">
         <div className="container mx-auto px-4">
           <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
             {activeSubsection === "certifications" && (
