@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { FaThumbtack } from "react-icons/fa"
+import { MdViewStream, MdWrapText } from "react-icons/md"
 
 interface NavbarProps {
   onTabChange: (page: string, tab: string) => void
@@ -14,11 +15,12 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
   const [clickedTab, setClickedTab] = useState<string | null>(null)
   const [isNavPinned, setIsNavPinned] = useState(true)
   const [isMobileView, setIsMobileView] = useState(false)
+  const [isHorizontalScroll, setIsHorizontalScroll] = useState(true) // true = horizontal scroll, false = wrap
 
-  // Detect if we're on mobile/tablet viewport (below 1024px)
+  // Detect if we're on mobile viewport (below 768px) for pin functionality
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobileView(window.innerWidth < 1024)
+      setIsMobileView(window.innerWidth < 768)
     }
     
     checkMobile()
@@ -67,13 +69,31 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
   return (
     <nav className={`w-full bg-[#222222] py-4 ${isMobileView && isNavPinned ? 'fixed' : 'relative'} top-0 left-0 z-50 animate-elastic-in border-b border-[#333333] md:border-0`}>
       <div className="container mx-auto">
-        {/* Title and Pin button container */}
+        {/* Title with Layout toggle (left) and Pin button (right) */}
         <div className="flex items-center justify-center mb-3 relative">
+          {/* Layout toggle button - visible on all screen sizes, positioned to the left of title */}
+          <button
+            onClick={() => setIsHorizontalScroll(!isHorizontalScroll)}
+            className={`absolute left-4 p-2 rounded-lg bg-[#1e1e1e] border transition-all duration-200 hover:scale-110 ${
+              isHorizontalScroll 
+                ? "border-[#333333] text-gray-400 hover:text-red-600 hover:border-red-600" 
+                : "border-red-600 text-red-600 shadow-md shadow-red-500/20"
+            }`}
+            aria-label={isHorizontalScroll ? "Switch to wrap layout (buttons will wrap)" : "Switch to horizontal scroll (buttons will scroll horizontally)"}
+            title={isHorizontalScroll ? "Click for wrap layout" : "Click for horizontal scroll"}
+          >
+            {isHorizontalScroll ? (
+              <MdWrapText size={18} className="transition-transform duration-200" />
+            ) : (
+              <MdViewStream size={18} className="transition-transform duration-200" />
+            )}
+          </button>
+
           <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             My Portfolio
           </h1>
           
-          {/* Pin/Unpin toggle button - only visible on mobile/tablet (< 1024px), positioned to the right of title */}
+          {/* Pin/Unpin toggle button - only visible on mobile (< 768px), positioned to the right of title */}
           {isMobileView && (
             <button
               onClick={() => setIsNavPinned(!isNavPinned)}
@@ -90,13 +110,17 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
           )}
         </div>
         
-        {/* Navigation subsections - horizontal scroll on mobile */}
+        {/* Navigation subsections - horizontal scroll OR wrap based on toggle */}
         <div 
-          className="flex flex-row gap-3 max-w-5xl mx-auto md:flex-wrap md:justify-center overflow-x-auto md:overflow-x-visible pb-2 navbar-scroll"
-          style={{
+          className={`flex gap-3 max-w-5xl mx-auto pb-2 ${
+            isHorizontalScroll 
+              ? 'flex-row overflow-x-auto navbar-scroll' 
+              : 'flex-wrap justify-center overflow-x-visible'
+          }`}
+          style={isHorizontalScroll ? {
             scrollbarWidth: 'thin',
             scrollbarColor: '#dc2626 transparent',
-          }}
+          } : {}}
         >
           {isLoading ? (
             <div className="flex space-x-4 animate-pulse justify-center">
