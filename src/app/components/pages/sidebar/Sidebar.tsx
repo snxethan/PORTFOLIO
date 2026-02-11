@@ -58,7 +58,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
           <div className="mt-6 h-12 bg-[#333333] rounded" />
         </aside>
       ) : (
-  <aside className={`w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 lg:sticky lg:top-20 my-8 ${className}`}>
+  <aside className={`w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 lg:sticky lg:top-4 my-8 ${className}`}>
           <audio ref={clickSoundRef} src="/sounds/yippe.mp3" preload="auto" />
 
           {/* Avatar */}
@@ -78,6 +78,20 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
         </h2>
 
             <p className="text-gray-400">Full Stack Software Developer</p>
+          </div>
+
+          {/* View Resume Button */}
+          <div className="mt-6 flex justify-center">
+            <TooltipWrapper label="Download Resume">
+              <button
+                onClick={() => window.open('/resume.pdf', '_blank')}
+                aria-label="View Resume"
+                className="flex items-center gap-2 px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg text-gray-300 hover:text-red-600 hover:border-red-600 text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-100"
+              >
+                <FaFilePdf />
+                <span className="text-sm font-medium">View Resume</span>
+              </button>
+            </TooltipWrapper>
           </div>
 
           {/* Professional Links */}
@@ -109,20 +123,6 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                 )
               })}
             </div>
-          </div>
-
-          {/* View Resume Button */}
-          <div className="mt-6 flex justify-center">
-            <TooltipWrapper label="Download Resume">
-              <button
-                onClick={() => window.open('/resume.pdf', '_blank')}
-                aria-label="View Resume"
-                className="flex items-center gap-2 px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg text-gray-300 hover:text-red-600 hover:border-red-600 text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-100"
-              >
-                <FaFilePdf />
-                <span className="text-sm font-medium">View Resume</span>
-              </button>
-            </TooltipWrapper>
           </div>
 
           {/* Personal Links */}
