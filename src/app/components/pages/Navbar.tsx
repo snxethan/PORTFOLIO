@@ -36,7 +36,7 @@ const handleClick = (tab: string) => {
         </h1>
         
         {/* Navigation subsection - matching tab nav style */}
-        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
           <div className="flex items-center justify-center">
             {isLoading ? (
               <ul className="flex space-x-4 animate-pulse">

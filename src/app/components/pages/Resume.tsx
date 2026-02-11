@@ -391,7 +391,7 @@ const Resume = () => {
 
           {/* Tags section */}
           {sortedTags.length > 0 && (
-            <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
+            <div className={`space-y-2 transition-all duration-300 ease-in-out ${
               showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
             }`}>
               <div className="flex flex-wrap gap-2 transition-all duration-300">
