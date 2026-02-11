@@ -447,11 +447,6 @@ const Portfolio: React.FC = () => {
       </div>
         </div>
       </div>
-
-      {/* Dividing line - only show when search is expanded */}
-      {isSearchExpanded && (
-        <div className="w-full h-[1px] bg-white/10 my-6" />
-      )}
       
       {/* Content section - outside header wrapper */}
       <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>

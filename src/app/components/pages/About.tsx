@@ -421,11 +421,6 @@ const About = () => {
       </div>
         </div>
       </div>
-
-      {/* Dividing line - only show when search is expanded */}
-      {isSearchExpanded && (
-        <div className="w-full h-[1px] bg-white/10 my-6" />
-      )}
       
       {/* Content section - outside header wrapper */}
       <section id="about" className="text-white">
