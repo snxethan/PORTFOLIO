@@ -60,7 +60,6 @@ const Portfolio: React.FC = () => {
   const [activeSubsection, setActiveSubsection] = useState("projects")
   const [isAnimating, setIsAnimating] = useState(false)
   const [showFilterMenu, setShowFilterMenu] = useState(false)
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false)
   const [clickedTab, setClickedTab] = useState<string | null>(null)
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -218,13 +217,6 @@ const Portfolio: React.FC = () => {
     setShowFilterMenu(false)
   }
 
-  const toggleSearch = () => {
-    setIsSearchExpanded(!isSearchExpanded)
-    if (isSearchExpanded) {
-      // Clear search when collapsing
-      setSearch("")
-    }
-  }
 
   // Filter both timeline projects and repository projects
   const filteredTimelineProjects = projectsTimelineData.filter((project) => {
@@ -324,31 +316,7 @@ const Portfolio: React.FC = () => {
       
         {/* Navigation subsection */}
         <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
-          {/* Main tab row */}
           <div className="container mx-auto">
-            <div className="relative z-50 flex items-center justify-center gap-3 overflow-visible">
-              {/* Search toggle button - centered */}
-              <button
-                onClick={toggleSearch}
-                className={`h-[42px] px-3 rounded-lg border transition-all duration-200 hover:scale-105 ${
-                  isSearchExpanded
-                    ? "bg-red-600 text-white border-red-600"
-                    : "bg-[#2a2a2a] text-gray-300 border-[#333333] hover:border-red-600/50 hover:bg-[#333333]"
-                }`}
-                title={isSearchExpanded ? "Close search" : "Open search"}
-              >
-                {isSearchExpanded ? <FaTimes className="w-5 h-5" /> : <FaSearch className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-
-          {/* Expandable search section */}
-          <div
-            className={`overflow-visible transition-all duration-300 ease-in-out ${
-              isSearchExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-            }`}
-          >
-            <div className="container mx-auto pt-4 border-t border-[#333333] mt-4">
           {/* Search bar with filter */}
           <div className="flex gap-3 mb-4 overflow-visible relative">
             <div className="flex-1 relative">
@@ -407,7 +375,7 @@ const Portfolio: React.FC = () => {
           )}
 
           {/* Tags section */}
-          {activeSubsection === "repositories" && sortedTags.length > 0 && (
+          {activeSubsection === "repository" && sortedTags.length > 0 && (
             <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
               showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
             }`}>
@@ -450,8 +418,7 @@ const Portfolio: React.FC = () => {
               )}
             </div>
           )}
-        </div>
-      </div>
+          </div>
         </div>
       </div>
       

@@ -64,7 +64,7 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
         </h1>
         
         {/* Navigation subsections - 3 separate subsections + Information */}
-        <div className="flex flex-col gap-3 max-w-5xl mx-auto">
+        <div className="flex flex-row flex-wrap justify-center gap-3 max-w-5xl mx-auto">
           {isLoading ? (
             <div className="flex space-x-4 animate-pulse justify-center">
               {[...Array(7)].map((_, i) => (

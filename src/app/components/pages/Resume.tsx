@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { FaDownload, FaCog, FaChevronDown, FaChevronUp, FaSearch, FaTimes, FaEnvelope, FaGithub, FaLinkedin } from "react-icons/fa"
+import { FaDownload, FaCog, FaChevronDown, FaChevronUp, FaEnvelope, FaGithub, FaLinkedin } from "react-icons/fa"
 import { useSearchParams, useRouter } from "next/navigation"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
@@ -20,7 +20,6 @@ const Resume = () => {
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>("Computer Science")
   const [showAllTags, setShowAllTags] = useState(false)
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false)
   const [clickedTab, setClickedTab] = useState<string | null>(null)
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
   const searchParams = useSearchParams()
@@ -131,14 +130,6 @@ const Resume = () => {
       setActiveSubsection(tabId)
       setIsAnimating(false)
     }, 150)
-  }
-  
-  const toggleSearch = () => {
-    setIsSearchExpanded(!isSearchExpanded)
-    if (isSearchExpanded) {
-      // Clear search when collapsing
-      setSearch("")
-    }
   }
   
   const handleShowAllTagsToggle = () => {
@@ -316,132 +307,108 @@ const Resume = () => {
         <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
           {/* Main tab row */}
           <div className="container mx-auto">
-            <div className="relative z-50 flex items-center justify-center gap-3 overflow-visible">
-              {/* Search toggle button - centered */}
-              <button
-                onClick={toggleSearch}
-                className={`h-[42px] px-3 rounded-lg border transition-all duration-200 hover:scale-105 ${
-                  isSearchExpanded
-                    ? "bg-red-600 text-white border-red-600"
-                    : "bg-[#2a2a2a] text-gray-300 border-[#333333] hover:border-red-600/50 hover:bg-[#333333]"
-                }`}
-                title={isSearchExpanded ? "Close search" : "Open search"}
-              >
-                {isSearchExpanded ? <FaTimes className="w-5 h-5" /> : <FaSearch className="w-5 h-5" />}
-              </button>
+            {/* Search bar with filter */}
+            <div className="flex gap-3 mb-4 overflow-visible relative">
+              <div className="flex-1 relative">
+                <input
+                  type="text"
+                  placeholder="Search by institution, title, or keyword..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full bg-[#2a2a2a] text-white placeholder-gray-400 px-4 py-3 pr-12 rounded-lg border border-[#444444] focus:border-red-600 focus:outline-none transition-all"
+                />
+                {/* Filter gear icon inside search bar */}
+                {filterOptions.length > 0 && (
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                    <button
+                      onClick={() => setShowFilterMenu(!showFilterMenu)}
+                      className={`p-2 rounded-lg transition-all ${
+                        isFilterActive ? "text-red-500" : "text-gray-400 hover:text-gray-300"
+                      }`}
+                      title="Filter options"
+                    >
+                      <FaCog className="w-5 h-5" />
+                    </button>
+                    
+                    {/* Filter dropdown menu */}
+                    {showFilterMenu && (
+                      <>
+                        <div
+                          className="fixed inset-0 z-40"
+                          onClick={() => setShowFilterMenu(false)}
+                        />
+                        <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[9999]">
+                          {filterOptions.map((option) => (
+                            <button
+                              key={option.value}
+                              onClick={() => handleSortChange(option.value)}
+                              className={`w-full text-left px-4 py-2 transition-colors ${
+                                sortBy === option.value
+                                  ? "text-red-500 bg-[#333333]"
+                                  : "text-gray-300 hover:bg-[#333333] hover:text-white"
+                              }`}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* Expandable search section */}
-          <div
-            className={`overflow-visible transition-all duration-300 ease-in-out ${
-              isSearchExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-            }`}
-          >
-            <div className="container mx-auto pt-4 border-t border-[#333333] mt-4">
-          {/* Search bar with filter */}
-          <div className="flex gap-3 mb-4 overflow-visible relative">
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                placeholder="Search by institution, title, or keyword..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-[#2a2a2a] text-white placeholder-gray-400 px-4 py-3 pr-12 rounded-lg border border-[#444444] focus:border-red-600 focus:outline-none transition-all"
-              />
-              {/* Filter gear icon inside search bar */}
-              {filterOptions.length > 0 && (
-                <div className="absolute right-2 top-1/2 -translate-y-1/2">
+            {/* Results count */}
+            {resultsCount && (
+              <div className="text-sm text-gray-400 mb-3">{resultsCount}</div>
+            )}
+
+            {/* Tags section */}
+            {sortedTags.length > 0 && (
+              <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
+                showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
+              }`}>
+                <div className="flex flex-wrap gap-2 transition-all duration-300">
+                  {/* Clear button */}
                   <button
-                    onClick={() => setShowFilterMenu(!showFilterMenu)}
-                    className={`p-2 rounded-lg transition-all ${
-                      isFilterActive ? "text-red-500" : "text-gray-400 hover:text-gray-300"
-                    }`}
-                    title="Filter options"
-                  >
-                    <FaCog className="w-5 h-5" />
-                  </button>
-                  
-                  {/* Filter dropdown menu */}
-                  {showFilterMenu && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-40"
-                        onClick={() => setShowFilterMenu(false)}
-                      />
-                      <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[9999]">
-                        {filterOptions.map((option) => (
-                          <button
-                            key={option.value}
-                            onClick={() => handleSortChange(option.value)}
-                            className={`w-full text-left px-4 py-2 transition-colors ${
-                              sortBy === option.value
-                                ? "text-red-500 bg-[#333333]"
-                                : "text-gray-300 hover:bg-[#333333] hover:text-white"
-                            }`}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Results count */}
-          {resultsCount && (
-            <div className="text-sm text-gray-400 mb-3">{resultsCount}</div>
-          )}
-
-          {/* Tags section */}
-          {sortedTags.length > 0 && (
-            <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
-              showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
-            }`}>
-              <div className="flex flex-wrap gap-2 transition-all duration-300">
-                {/* Clear button */}
-                <button
-                  onClick={() => setSelectedTag(null)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
-                    !selectedTag
-                      ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30"
-                      : "bg-[#333333] text-gray-300 hover:bg-[#444444]"
-                  }`}
-                >
-                  ×
-                </button>
-                
-                {(showAllTags ? sortedTags : sortedTags.slice(0, 8)).map((tag) => (
-                  <button
-                    key={tag}
-                    onClick={() => setSelectedTag(tag === "" ? null : tag)}
+                    onClick={() => setSelectedTag(null)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
-                      selectedTag === tag
+                      !selectedTag
                         ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30"
                         : "bg-[#333333] text-gray-300 hover:bg-[#444444]"
                     }`}
                   >
-                    {tag}
+                    ×
                   </button>
-                ))}
+                  
+                  {(showAllTags ? sortedTags : sortedTags.slice(0, 8)).map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => setSelectedTag(tag === "" ? null : tag)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
+                        selectedTag === tag
+                          ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30"
+                          : "bg-[#333333] text-gray-300 hover:bg-[#444444]"
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+                
+                {/* Show more/less button */}
+                {sortedTags.length > 8 && (
+                  <button
+                    onClick={handleShowAllTagsToggle}
+                    className="text-red-500 hover:text-red-400 text-sm font-medium flex items-center gap-1"
+                  >
+                    {showAllTags ? <FaChevronUp className="w-3 h-3" /> : <FaChevronDown className="w-3 h-3" />}
+                  </button>
+                )}
               </div>
-              
-              {/* Show more/less button */}
-              {sortedTags.length > 8 && (
-                <button
-                  onClick={handleShowAllTagsToggle}
-                  className="text-red-500 hover:text-red-400 text-sm font-medium flex items-center gap-1"
-                >
-                  {showAllTags ? <FaChevronUp className="w-3 h-3" /> : <FaChevronDown className="w-3 h-3" />}
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+            )}
+          </div>
         </div>
       </div>
       
