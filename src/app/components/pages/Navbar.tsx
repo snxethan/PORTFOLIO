@@ -63,68 +63,116 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
           My Portfolio
         </h1>
         
-        {/* Navigation subsection - matching tab nav style */}
-        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6 max-w-5xl mx-auto">
-          <div className="flex items-center justify-center flex-wrap gap-4">
-            {isLoading ? (
-              <div className="flex space-x-4 animate-pulse">
-                {[...Array(7)].map((_, i) => (
-                  <div key={i} className="w-20 h-8 bg-[#333333] rounded-lg" />
-                ))}
+        {/* Navigation subsections - 3 separate subsections + Information */}
+        <div className="flex flex-col gap-3 max-w-5xl mx-auto">
+          {isLoading ? (
+            <div className="flex space-x-4 animate-pulse justify-center">
+              {[...Array(7)].map((_, i) => (
+                <div key={i} className="w-20 h-8 bg-[#333333] rounded-lg" />
+              ))}
+            </div>
+          ) : (
+            <>
+              {/* Information Button - Separate */}
+              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
+                <div className="flex items-center justify-center">
+                  <button
+                    onClick={handleInfoClick}
+                    className={`px-5 py-3 rounded-lg text-sm font-medium transition-transform duration-200 ease-out hover:scale-105 ${
+                      activePage === "portfolio" && !activeTab
+                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default"
+                        : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-400 cursor-pointer"
+                    }`}
+                    title="Portfolio Information"
+                  >
+                    <FaInfoCircle className="inline mr-2" />
+                    Information
+                  </button>
+                </div>
               </div>
-            ) : (
-              <>
-                {/* Information Button */}
-                <button
-                  onClick={handleInfoClick}
-                  className={`px-5 py-3 rounded-lg text-sm font-medium transition-transform duration-200 ease-out hover:scale-105 ${
-                    activePage === "portfolio" && !activeTab
-                      ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default"
-                      : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-400 cursor-pointer"
-                  }`}
-                  title="Portfolio Information"
-                >
-                  <FaInfoCircle className="inline mr-2" />
-                  Information
-                </button>
 
-                {/* Tab Groups */}
-                {tabGroups.map((group, groupIndex) => (
-                  <div key={group.name} className="flex items-center gap-4">
-                    {/* Divider before group (except first) */}
-                    {groupIndex > 0 && (
-                      <div className="h-8 w-px bg-[#444444]" />
-                    )}
+              {/* Subsection 1: Certifications & Skills */}
+              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  {tabGroups[0].tabs.map((tab) => {
+                    const tabKey = `${tab.page}/${tab.id}`
+                    const isActive = activePage === tab.page && activeTab === tab.id
                     
-                    {/* Group tabs */}
-                    <div className="flex gap-2 flex-wrap">
-                      {group.tabs.map((tab) => {
-                        const tabKey = `${tab.page}/${tab.id}`
-                        const isActive = activePage === tab.page && activeTab === tab.id
-                        
-                        return (
-                          <button
-                            key={tabKey}
-                            onClick={() => handleClick(tab.page, tab.id)}
-                            disabled={isActive}
-                            className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
-                              clickedTab === tabKey ? "animate-elastic-in" : ""
-                            } ${
-                              isActive
-                                ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default"
-                                : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-400 cursor-pointer"
-                            }`}
-                          >
-                            {tab.label}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </>
-            )}
-          </div>
+                    return (
+                      <button
+                        key={tabKey}
+                        onClick={() => handleClick(tab.page, tab.id)}
+                        disabled={isActive}
+                        className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
+                          clickedTab === tabKey ? "animate-elastic-in" : ""
+                        } ${
+                          isActive
+                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-400 cursor-pointer"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Subsection 2: Experience & Education */}
+              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  {tabGroups[1].tabs.map((tab) => {
+                    const tabKey = `${tab.page}/${tab.id}`
+                    const isActive = activePage === tab.page && activeTab === tab.id
+                    
+                    return (
+                      <button
+                        key={tabKey}
+                        onClick={() => handleClick(tab.page, tab.id)}
+                        disabled={isActive}
+                        className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
+                          clickedTab === tabKey ? "animate-elastic-in" : ""
+                        } ${
+                          isActive
+                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-400 cursor-pointer"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Subsection 3: Projects & Repositories */}
+              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                  {tabGroups[2].tabs.map((tab) => {
+                    const tabKey = `${tab.page}/${tab.id}`
+                    const isActive = activePage === tab.page && activeTab === tab.id
+                    
+                    return (
+                      <button
+                        key={tabKey}
+                        onClick={() => handleClick(tab.page, tab.id)}
+                        disabled={isActive}
+                        className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
+                          clickedTab === tabKey ? "animate-elastic-in" : ""
+                        } ${
+                          isActive
+                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-400 cursor-pointer"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </nav>
