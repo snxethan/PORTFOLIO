@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { FaInfoCircle } from "react-icons/fa"
+import { useState, useEffect } from "react"
+import { FaInfoCircle, FaChevronDown, FaChevronUp } from "react-icons/fa"
 
 interface NavbarProps {
   onTabChange: (page: string, tab: string) => void
@@ -12,6 +12,19 @@ interface NavbarProps {
 const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
   const isLoading = !activePage || !activeTab
   const [clickedTab, setClickedTab] = useState<string | null>(null)
+  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isMobileSticky, setIsMobileSticky] = useState(false)
+
+  // Detect if we're on mobile (navbar is sticky)
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobileSticky(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Define tab groups with their respective sections
   const tabGroups = [
@@ -58,13 +71,28 @@ const Navbar = ({ onTabChange, activePage, activeTab }: NavbarProps) => {
   return (
     <nav className="w-full bg-[#222222] py-4 fixed top-0 left-0 z-50 md:static animate-elastic-in border-b border-[#333333] md:border-0">
       <div className="container mx-auto">
-        {/* Title - shown on mobile and desktop */}
-        <h1 className="text-2xl font-bold text-center mb-3 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-          My Portfolio
-        </h1>
+        {/* Title with collapse button on mobile */}
+        <div className="flex items-center justify-center mb-3 relative">
+          <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+            My Portfolio
+          </h1>
+          
+          {/* Collapse button - only on mobile when sticky */}
+          {isMobileSticky && (
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="absolute right-4 text-gray-400 hover:text-red-500 transition-colors p-2"
+              aria-label={isCollapsed ? "Expand navigation" : "Collapse navigation"}
+            >
+              {isCollapsed ? <FaChevronDown size={20} /> : <FaChevronUp size={20} />}
+            </button>
+          )}
+        </div>
         
-        {/* Navigation subsections - 3 separate subsections + Information */}
-        <div className="flex flex-row flex-wrap justify-center gap-3 max-w-5xl mx-auto">
+        {/* Navigation subsections - collapsible on mobile */}
+        <div className={`flex flex-row flex-wrap justify-center gap-3 max-w-5xl mx-auto transition-all duration-300 overflow-hidden ${
+          isMobileSticky && isCollapsed ? "max-h-0 opacity-0" : "max-h-[1000px] opacity-100"
+        }`}>
           {isLoading ? (
             <div className="flex space-x-4 animate-pulse justify-center">
               {[...Array(7)].map((_, i) => (
