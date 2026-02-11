@@ -78,7 +78,7 @@ export default function HomeClient() {
               </div>
                 <div
                   key={activeTab}
-                  className="flex-1 bg-[#0a0a0a] border border-[#333333] rounded-xl shadow-lg p-6 overflow-y-auto transition-all duration-500 ease-in-out"
+                  className="flex-1 transition-all duration-500 ease-in-out"
                 >
                  {!activeTab ? (
                     <div className="w-full h-full space-y-4 animate-pulse">
