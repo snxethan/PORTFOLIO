@@ -299,50 +299,52 @@ const Portfolio: React.FC = () => {
         {/* Dividing line */}
         <div className="w-full h-[1px] bg-white/10 mb-6" />
       
-      {/* Main tab row */}
-      <div className="container mx-auto">
-        <div className="relative z-50 flex items-center justify-center overflow-visible">
-          {/* Tab buttons - centered */}
-          <div className="flex gap-2 justify-center flex-wrap">
-            {tabs.map((tab) => (
+        {/* Navigation subsection */}
+        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-4">
+          {/* Main tab row */}
+          <div className="container mx-auto">
+            <div className="relative z-50 flex items-center justify-center overflow-visible">
+              {/* Tab buttons - centered */}
+              <div className="flex gap-2 justify-center flex-wrap">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => handleTabChange(tab.id)}
+                    className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 ${
+                      clickedTab === tab.id ? "animate-elastic-in" : ""
+                    } ${
+                      activeSubsection === tab.id
+                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-md shadow-red-500/10"
+                        : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333]"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search toggle button - hidden on small screens */}
               <button
-                key={tab.id}
-                onClick={() => handleTabChange(tab.id)}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 ${
-                  clickedTab === tab.id ? "animate-elastic-in" : ""
-                } ${
-                  activeSubsection === tab.id
-                    ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-md shadow-red-500/10"
-                    : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333]"
+                onClick={toggleSearch}
+                className={`hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-lg transition-all duration-200 ${
+                  isSearchExpanded
+                    ? "bg-red-600 text-white"
+                    : "bg-[#2a2a2a] text-gray-300 hover:text-white hover:bg-[#333333]"
                 }`}
+                title={isSearchExpanded ? "Close search" : "Open search"}
               >
-                {tab.label}
+                {isSearchExpanded ? <FaTimes className="w-5 h-5" /> : <FaSearch className="w-5 h-5" />}
               </button>
-            ))}
+            </div>
           </div>
 
-          {/* Search toggle button - hidden on small screens */}
-          <button
-            onClick={toggleSearch}
-            className={`hidden sm:block absolute right-0 top-1/2 -translate-y-1/2 p-3 rounded-lg transition-all duration-200 ${
-              isSearchExpanded
-                ? "bg-red-600 text-white"
-                : "bg-[#2a2a2a] text-gray-300 hover:text-white hover:bg-[#333333]"
+          {/* Expandable search section */}
+          <div
+            className={`overflow-visible transition-all duration-300 ease-in-out ${
+              isSearchExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
             }`}
-            title={isSearchExpanded ? "Close search" : "Open search"}
           >
-            {isSearchExpanded ? <FaTimes className="w-5 h-5" /> : <FaSearch className="w-5 h-5" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Expandable search section */}
-      <div
-        className={`overflow-visible transition-all duration-300 ease-in-out ${
-          isSearchExpanded ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <div className="container mx-auto pt-4 border-t border-[#333333] mt-4">
+            <div className="container mx-auto pt-4 border-t border-[#333333] mt-4">
           {/* Search bar with filter */}
           <div className="flex gap-3 mb-4 overflow-visible relative">
             <div className="flex-1 relative">
@@ -446,12 +448,13 @@ const Portfolio: React.FC = () => {
           )}
         </div>
       </div>
+        </div>
+      </div>
 
       {/* Dividing line - only show when search is expanded */}
       {isSearchExpanded && (
         <div className="w-full h-[1px] bg-white/10 my-6" />
       )}
-    </div>
       
       {/* Content section - outside header wrapper */}
       <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
