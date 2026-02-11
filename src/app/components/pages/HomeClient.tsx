@@ -45,6 +45,9 @@ export default function HomeClient() {
     setActiveTab(tab)
     localStorage.setItem("activeTab", tab)
     
+    // Scroll to top when changing pages
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    
     // Update URL with new format: ?page=about (child components will add /subtab if needed)
     router.push(`?page=${tab}`, { scroll: false })
   }

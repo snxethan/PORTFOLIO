@@ -200,6 +200,9 @@ const Portfolio: React.FC = () => {
     // Save to localStorage
     localStorage.setItem("portfolioActiveTab", tabId)
     
+    // Scroll to top when changing tabs
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    
     // Update URL with new format
     router.push(`?page=portfolio/${tabId}`, { scroll: false })
     
@@ -402,7 +405,7 @@ const Portfolio: React.FC = () => {
 
           {/* Tags section */}
           {activeSubsection === "repositories" && sortedTags.length > 0 && (
-            <div className={`space-y-2 transition-all duration-300 ease-in-out ${
+            <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
               showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
             }`}>
               <div className="flex flex-wrap gap-2 transition-all duration-300">

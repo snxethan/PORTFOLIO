@@ -65,6 +65,9 @@ const About = () => {
     // Save to localStorage
     localStorage.setItem("aboutActiveTab", tabId)
     
+    // Scroll to top when changing tabs
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    
     // Update URL with new format
     router.push(`?page=about/${tabId}`, { scroll: false })
     
@@ -376,7 +379,7 @@ const About = () => {
 
           {/* Tags section */}
           {sortedTags.length > 0 && (
-            <div className={`space-y-2 transition-all duration-300 ease-in-out ${
+            <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
               showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
             }`}>
               <div className="flex flex-wrap gap-2 transition-all duration-300">
