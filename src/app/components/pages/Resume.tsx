@@ -297,12 +297,13 @@ const Resume = () => {
                   <button
                     key={tab.id}
                     onClick={() => handleTabChange(tab.id)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
+                    disabled={activeSubsection === tab.id}
+                    className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
                       clickedTab === tab.id ? "animate-elastic-in" : ""
                     } ${
                       activeSubsection === tab.id
-                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-md shadow-red-500/10"
-                        : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333]"
+                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-md shadow-red-500/10 cursor-default"
+                        : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] cursor-pointer"
                     }`}
                   >
                     {tab.label}
@@ -313,7 +314,7 @@ const Resume = () => {
               {/* Search toggle button - responsive positioning */}
               <button
                 onClick={toggleSearch}
-                className={`sm:absolute sm:right-0 p-3 rounded-lg transition-all duration-200 ${
+                className={`sm:absolute sm:right-0 h-[42px] px-3 rounded-lg transition-all duration-200 ${
                   isSearchExpanded
                     ? "bg-red-600 text-white"
                     : "bg-[#2a2a2a] text-gray-300 hover:text-white hover:bg-[#333333]"

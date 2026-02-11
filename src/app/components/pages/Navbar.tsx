@@ -36,7 +36,7 @@ const handleClick = (tab: string) => {
         </h1>
         
         {/* Navigation subsection - matching tab nav style */}
-        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
+        <div className="container mx-auto bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-6">
           <div className="flex items-center justify-center">
             {isLoading ? (
               <ul className="flex space-x-4 animate-pulse">
@@ -52,10 +52,11 @@ const handleClick = (tab: string) => {
                   <li key={tab}>
                     <button
                       onClick={() => handleClick(tab)}
-                      className={`capitalize px-4 py-2 rounded-lg text-sm font-medium transition-transform duration-200 ease-out ${
+                      disabled={activeTab === tab}
+                      className={`capitalize px-5 py-3 rounded-lg text-sm font-medium transition-transform duration-200 ease-out ${
                         activeTab === tab
-                          ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10"
-                          : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-600 hover:scale-105"
+                          ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default"
+                          : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-red-600 hover:scale-105 cursor-pointer"
                       } ${clickedTab === tab ? "animate-elastic-in" : ""}`}
                     >
                       {tab}
