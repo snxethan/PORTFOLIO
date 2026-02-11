@@ -107,7 +107,7 @@ const About = () => {
                 <Icon className="text-white text-2xl" /> 
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-semibold text-base mb-1">{name}</h3>
+                <h3 className="text-white font-semibold text-base mb-1 truncate">{name}</h3>
                 {year && (
                   <span className="text-gray-400 text-sm">{year}</span>
                 )} 
@@ -353,10 +353,10 @@ const About = () => {
 
             {/* Tags section */}
             {sortedTags.length > 0 && (
-              <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
+              <div className={`space-y-2 transition-all duration-300 ease-in-out ${
                 showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
-              }`}>
-                <div className="flex flex-wrap gap-2 transition-all duration-300">
+              }`} style={{ overflow: 'visible' }}>
+                <div className="flex flex-wrap gap-2 transition-all duration-300" style={{ overflow: 'visible' }}>
                   {/* Clear button */}
                   <button
                     onClick={() => setSelectedTag(null)}

@@ -21,9 +21,16 @@ const Resume = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>("Computer Science")
   const [showAllTags, setShowAllTags] = useState(false)
   const [clickedTab, setClickedTab] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
   const searchParams = useSearchParams()
   const router = useRouter()
+
+  // Simulate loading for initial render
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 500)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     // Load toggle preference from cookie
@@ -201,6 +208,27 @@ const Resume = () => {
       )
     }
 
+    if (loading) {
+      return (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse"
+            >
+              <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
+              <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
+              <div className="space-y-2">
+                <div className="h-3 bg-[#333333] rounded w-full" />
+                <div className="h-3 bg-[#333333] rounded w-5/6" />
+                <div className="h-3 bg-[#333333] rounded w-4/6" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )
+    }
+
     return (
       <Timeline
         items={filteredItems}
@@ -248,17 +276,17 @@ const Resume = () => {
       case "experience":
         return {
           title: "Professional Experience Timeline",
-          showContact: true
+          subtitle: "My journey and contributions in software development"
         }
       case "education":
         return {
           title: "Educational Background",
-          showContact: true
+          subtitle: "Academic achievements and continuous learning"
         }
       default:
         return {
           title: "Professional Experience Timeline",
-          showContact: true
+          subtitle: "My journey and contributions in software development"
         }
     }
   }
@@ -274,33 +302,9 @@ const Resume = () => {
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             {pageDescription.title}
           </h2>
-          <div className="text-center mb-4">
-            <h3 className="text-2xl font-bold text-white">Ethan Townsend</h3>
-            <p className="text-lg text-gray-400">Full Stack Software Developer</p>
-            <p className="text-sm text-gray-500">Salt Lake City, UT</p>
-            <div className="flex items-center justify-center gap-4 mt-2">
-              <a href="mailto:snxethan@gmail.com" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="Email">
-                <FaEnvelope className="text-xl" />
-              </a>
-              <a href="https://github.com/snxethan" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="GitHub">
-                <FaGithub className="text-xl" />
-              </a>
-              <a href="https://linkedin.com/in/snxethan" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 transition-colors duration-200" aria-label="LinkedIn">
-                <FaLinkedin className="text-xl" />
-              </a>
-            </div>
-          </div>
-          
-          <div className="flex justify-center">
-            <TooltipWrapper label="View Resume" url={resumePDF}>
-              <button
-                onClick={() => setSelectedPDF(resumePDF)}
-                className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-6 py-3 rounded-lg flex items-center gap-2 transition-transform duration-200 ease-out hover:scale-105 active:scale-95"
-              >
-                <FaDownload /> View Resume
-              </button>
-            </TooltipWrapper>
-          </div>
+          <p className="text-center text-gray-400 mb-4 max-w-3xl mx-auto">
+            {pageDescription.subtitle}
+          </p>
         </div>
       
         {/* Navigation subsection */}

@@ -378,10 +378,10 @@ const Portfolio: React.FC = () => {
 
           {/* Tags section */}
           {activeSubsection === "repositories" && sortedTags.length > 0 && (
-            <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
+            <div className={`space-y-2 transition-all duration-300 ease-in-out ${
               showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
-            }`}>
-              <div className="flex flex-wrap gap-2 transition-all duration-300">
+            }`} style={{ overflow: 'visible' }}>
+              <div className="flex flex-wrap gap-2 transition-all duration-300" style={{ overflow: 'visible' }}>
                 {/* Clear button */}
                 <button
                   onClick={() => setSelectedTag(null)}
@@ -459,7 +459,7 @@ const Portfolio: React.FC = () => {
                       >
                         <div className="p-6 flex-grow">
                           <div className="mb-2">
-                            <h3 className="text-xl font-semibold text-white group-hover:text-red-500 transition-colors duration-300 mb-1">
+                            <h3 className="text-xl font-semibold text-white group-hover:text-red-500 transition-colors duration-300 mb-1 truncate">
                               {project.name}
                             </h3>
                             <div className="flex flex-wrap items-center gap-2">
@@ -474,7 +474,7 @@ const Portfolio: React.FC = () => {
                               )}
                             </div>
                           </div>
-                          <p className="text-gray-300 mb-2">{project.description}</p>
+                          <p className="text-gray-300 mb-2 line-clamp-3 break-words">{project.description}</p>
                           <p className="text-sm text-gray-400 mb-1">
                             Created On:{" "}
                             {new Date(project.created_at).toLocaleDateString("en-US", {
