@@ -271,7 +271,7 @@ const About = () => {
         </div>
       
         {/* Navigation subsection */}
-        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-5 px-4">
+        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
           {/* Main tab row */}
           <div className="container mx-auto">
             <div className="relative z-50 flex items-center justify-center overflow-visible">
@@ -281,7 +281,7 @@ const About = () => {
                   <button
                     key={tab.id}
                     onClick={() => handleTabChange(tab.id)}
-                    className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 ${
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 ${
                       clickedTab === tab.id ? "animate-elastic-in" : ""
                     } ${
                       activeSubsection === tab.id
