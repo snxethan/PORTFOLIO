@@ -256,7 +256,7 @@ const About = () => {
   return (
     <>
       {/* Header section - wrapped in styled container */}
-      <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
+      <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         {/* Header content */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
@@ -269,9 +269,6 @@ const About = () => {
             Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.
           </p>
         </div>
-
-        {/* Dividing line */}
-        <div className="w-full h-[1px] bg-white/10 mb-6" />
       
         {/* Navigation subsection */}
         <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-4">
