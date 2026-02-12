@@ -195,7 +195,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
         {/* Navigation subsections - horizontal scroll OR wrap based on toggle */}
         <div 
           ref={navContentRef}
-          className={`flex gap-3 max-w-5xl mx-auto pb-2 transition-all duration-300 ease-in-out ${
+          className={`flex gap-3 max-w-5xl mx-auto pb-2 transition-all duration-500 ease-in-out ${
             isHorizontalScroll 
               ? `flex-row overflow-x-auto navbar-scroll px-4 ${needsToggle ? 'justify-start' : 'justify-center'}` 
               : 'flex-wrap justify-center overflow-x-visible'
