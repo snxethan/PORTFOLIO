@@ -438,7 +438,7 @@ const Portfolio: React.FC = () => {
                     setSelectedTag(null)
                     setSearch("")
                   }}
-                  className="text-gray-400 hover:text-red-400 transition-colors p-1"
+                  className="text-gray-400 hover:text-red-600 transition-colors p-1"
                   title="Clear filters"
                 >
                   <IoMdClose className="w-5 h-5" />
@@ -451,7 +451,7 @@ const Portfolio: React.FC = () => {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 border ${
                       selectedTag === tag
                         ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30 border-transparent"
-                        : "bg-[#4a4a4a] text-gray-300 hover:bg-[#555555] hover:text-[#dc2626] hover:border-red-600 border-transparent"
+                        : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444] hover:text-[#dc2626] hover:border-red-600 border-transparent"
                     }`}
                   >
                     {tag}

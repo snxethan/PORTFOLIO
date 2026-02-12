@@ -163,8 +163,6 @@ const Timeline: React.FC<TimelineProps> = ({
                 isNewItem ? "animate-fade-in-up border-red-600/30" : ""
               } ${isDisappearing ? "animate-fade-out-down" : ""}`}
             >
-              {/* Timeline dot indicator - centered, red */}
-              <div className="absolute left-1/2 -translate-x-1/2 top-8 w-2 h-2 bg-red-600 rounded-full shadow-lg shadow-red-600/50 z-10"></div>
               {/* Title */}
               <h3 className="text-2xl font-semibold text-white mb-2">
                 {item.institution || item.name}

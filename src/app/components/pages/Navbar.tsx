@@ -138,7 +138,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
           {needsToggle && (
             <button
               onClick={() => setIsHorizontalScroll(!isHorizontalScroll)}
-              className={`absolute right-16 p-1 transition-all duration-200 ${
+              className={`absolute right-16 p-1 transition-all duration-300 hover:scale-110 ${
                 isHorizontalScroll 
                   ? "text-gray-400 hover:text-red-500" 
                   : "text-red-600"
@@ -157,7 +157,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
           {/* Pin/Unpin toggle button - visible on all screen sizes, positioned to the right of title */}
           <button
             onClick={() => setIsNavPinned(!isNavPinned)}
-            className={`absolute right-4 p-1 transition-all duration-300 ${
+            className={`absolute right-4 p-1 transition-all duration-300 hover:scale-110 ${
               isNavPinned 
                 ? "text-red-600" 
                 : "text-gray-400 hover:text-red-500"
@@ -206,8 +206,8 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                           clickedTab === tabKey ? "animate-elastic-in" : ""
                         } ${
                           isActive
-                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default border-transparent"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 cursor-pointer border-transparent"
+                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}
@@ -233,8 +233,8 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                           clickedTab === tabKey ? "animate-elastic-in" : ""
                         } ${
                           isActive
-                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default border-transparent"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 cursor-pointer border-transparent"
+                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}
@@ -260,8 +260,8 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                           clickedTab === tabKey ? "animate-elastic-in" : ""
                         } ${
                           isActive
-                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-md shadow-red-500/10 cursor-default border-transparent"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 cursor-pointer border-transparent"
+                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}
