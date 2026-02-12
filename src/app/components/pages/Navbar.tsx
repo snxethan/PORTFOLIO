@@ -64,7 +64,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
   // Check if the nav content overflows and needs scrolling
   useEffect(() => {
     const checkOverflow = () => {
-      if (isCheckingOverflow.current) return // Prevent concurrent checks
+      if (isCheckingOverflow.current || isTransitioning) return // Prevent checks during transitions
       isCheckingOverflow.current = true
       
       if (navContentRef.current) {
@@ -87,7 +87,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
       clearTimeout(timeoutId)
       window.removeEventListener('resize', checkOverflow)
     }
-  }, [isHorizontalScroll, isLoading, activePage, activeTab])
+  }, [isHorizontalScroll, isLoading, activePage, activeTab, isTransitioning])
 
   // Define tab groups with their respective sections
   const tabGroups = [
@@ -153,14 +153,18 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                 if (isTransitioning) return // Prevent rapid clicks
                 setIsTransitioning(true)
                 setIsHorizontalScroll(!isHorizontalScroll)
-                // Reset after animation completes (300ms)
-                setTimeout(() => setIsTransitioning(false), 400)
+                // Reset after animation completes - increased to 500ms for stability
+                setTimeout(() => setIsTransitioning(false), 500)
               }}
-              className={`absolute right-16 p-1 transition-all duration-300 hover:scale-110 ${
+              className={`absolute right-16 p-1 transition-all duration-300 ${
+                isTransitioning 
+                  ? "opacity-50 cursor-not-allowed scale-100" 
+                  : "hover:scale-110"
+              } ${
                 isHorizontalScroll 
                   ? "text-gray-400 hover:text-red-500" 
                   : "text-red-600"
-              } ${isTransitioning ? "opacity-50 cursor-not-allowed" : ""}`}
+              }`}
               aria-label={isHorizontalScroll ? "Switch to wrap layout (buttons will wrap)" : "Switch to horizontal scroll (buttons will scroll horizontally)"}
               title={isHorizontalScroll ? "Click for wrap layout" : "Click for horizontal scroll"}
               disabled={isTransitioning}
