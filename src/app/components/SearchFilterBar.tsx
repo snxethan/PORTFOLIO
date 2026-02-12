@@ -71,11 +71,11 @@ export default function SearchFilterBar({
               setShowTagsMenu(false);
             }}
             className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent focus:outline-none ${
-              selectedSort !== sortOptions[0]?.value ? "text-red-500" : "text-gray-400 hover:text-gray-300"
+              showFilterMenu || selectedSort !== sortOptions[0]?.value ? "text-red-500" : "text-gray-400 hover:text-gray-300"
             }`}
             title="Sort Options"
           >
-            <FaSort className={`w-5 h-5 transition-colors ${selectedSort !== sortOptions[0]?.value ? "text-red-500" : "group-hover:text-red-500"}`} />
+            <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || selectedSort !== sortOptions[0]?.value ? "text-red-500" : "group-hover:text-red-500"}`} />
           </button>
         </div>
 
