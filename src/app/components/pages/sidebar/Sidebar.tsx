@@ -109,7 +109,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                       <button
                         onClick={() => setShowContact(true)}
                         aria-label={label}
-                        className="text-gray-300 hover:text-red-600 text-2xl transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
+                        className="text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 active:scale-100 hover:shadow-lg hover:shadow-red-600/30"
                       >
                         <Icon />
                       </button>
@@ -117,7 +117,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                       <button
                         onClick={() => handleExternalClick(url)}
                         aria-label={label}
-                        className="text-gray-300 hover:text-red-600 text-2xl transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
+                        className="text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 active:scale-100 hover:shadow-lg hover:shadow-red-600/30"
                       >
                         <Icon />
                       </button>

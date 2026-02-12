@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { FaThumbtack } from "react-icons/fa"
+import { FaThumbtack, FaHome } from "react-icons/fa"
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md"
+import Link from "next/link"
 
 interface NavbarProps {
   onTabChange: (page: string, tab: string) => void
@@ -128,8 +129,18 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
   return (
     <nav className={`w-full bg-[#222222] py-4 ${isNavPinned ? 'fixed' : 'relative'} top-0 left-0 z-50 animate-elastic-in border-b border-[#333333] md:border-0 transition-all duration-300 ease-in-out`}>
       <div className="container mx-auto">
-        {/* Title with Layout toggle (right, left of pin) and Pin button (right) */}
+        {/* Title with Home icon (left), Layout toggle (right, left of pin) and Pin button (right) */}
         <div className="flex items-center justify-center mb-3 relative">
+          {/* Home icon button - positioned to the left of title */}
+          <Link
+            href="/"
+            className="absolute left-4 p-2 rounded-lg hover:bg-gray-700 transition-all duration-300 hover:scale-110 group"
+            aria-label="Home"
+            title="Go to Home"
+          >
+            <FaHome className="w-5 h-5 text-gray-300 group-hover:text-[#dc2626] transition-colors" />
+          </Link>
+          
           <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
             My Portfolio
           </h1>
@@ -207,7 +218,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                         } ${
                           isActive
                             ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#ef4444] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}
@@ -234,7 +245,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                         } ${
                           isActive
                             ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#ef4444] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}
@@ -261,7 +272,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                         } ${
                           isActive
                             ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#ef4444] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}

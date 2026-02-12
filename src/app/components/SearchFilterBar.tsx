@@ -92,7 +92,7 @@ export default function SearchFilterBar({
                 className={`w-full text-left px-4 py-2 transition-colors first:rounded-t-lg last:rounded-b-lg ${
                   selectedSort === option.value
                     ? "bg-red-600 text-white"
-                    : "text-gray-300 hover:bg-[#2a2a2a] hover:text-[#ef4444]"
+                    : "text-gray-300 hover:bg-[#2a2a2a] hover:text-[#dc2626]"
                 }`}
               >
                 {option.label}
@@ -125,7 +125,7 @@ export default function SearchFilterBar({
             <button
               key={tag}
               onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-              className={`px-3 py-1 rounded-full text-sm transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#ef4444] border border-transparent ${
+              className={`px-3 py-1 rounded-full text-sm transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] border border-transparent ${
                 selectedTag === tag
                   ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
                   : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444]"

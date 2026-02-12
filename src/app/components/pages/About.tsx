@@ -142,7 +142,7 @@ const About = () => {
         const year = cert.year 
         const Card = (
           <div
-            className={`group relative flex flex-col bg-[#1a1a1a] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-200 ease-out hover:scale-105 min-h-[140px]`} 
+            className={`group relative flex flex-col bg-[#1a1a1a] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 min-h-[140px]`} 
           >
             <div className="flex items-start gap-4 mb-3">
               <div // Icon container
@@ -153,7 +153,7 @@ const About = () => {
                 <Icon className="text-white text-2xl" /> 
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-semibold text-base mb-1 truncate group-hover:text-[#ef4444] transition-colors duration-300">{name}</h3>
+                <h3 className="text-white font-semibold text-base mb-1 truncate group-hover:text-[#dc2626] transition-colors duration-300">{name}</h3>
                 {year && (
                   <span className="text-gray-400 text-sm">{year}</span>
                 )} 
@@ -161,7 +161,7 @@ const About = () => {
             </div>
             
             {(url?.endsWith(".pdf") || (url && !url.endsWith(".pdf"))) && (
-              <div className="absolute bottom-4 right-4 text-gray-400 group-hover:text-[#ef4444] transition-colors duration-300"> 
+              <div className="absolute bottom-4 right-4 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300"> 
                 {url?.endsWith(".pdf") && <FaFilePdf size={16} aria-label="View Certification" />} 
                 {url && !url.endsWith(".pdf") && <FaExternalLinkAlt size={16} aria-label="Open external link" />} 
               </div>
