@@ -50,9 +50,25 @@ const getCTAIcon = (icon?: string) => {
 
 const Portfolio: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([])
-  const [search, setSearch] = useState("")
-  const [sortBy, setSortBy] = useState("newest")
-  const [selectedTag, setSelectedTag] = useState<string | null>("Computer Science")
+  const [search, setSearch] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('portfolioSearch') || ""
+    }
+    return ""
+  })
+  const [sortBy, setSortBy] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('portfolioSortBy') || "newest"
+    }
+    return "newest"
+  })
+  const [selectedTag, setSelectedTag] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('portfolioSelectedTag')
+      return saved !== null ? saved : "Computer Science"
+    }
+    return "Computer Science"
+  })
   const [showAllTags, setShowAllTags] = useState(false);
   const [tags, setTags] = useState<string[]>(["Computer Science"])
   const [loading, setLoading] = useState(true)
@@ -69,6 +85,29 @@ const Portfolio: React.FC = () => {
   const handleShowAllTagsToggle = () => {
     setShowAllTags(!showAllTags)
   }
+
+  // Persist filter and sort state for Portfolio page
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('portfolioSearch', search)
+    }
+  }, [search])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('portfolioSortBy', sortBy)
+    }
+  }, [sortBy])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (selectedTag !== null) {
+        localStorage.setItem('portfolioSelectedTag', selectedTag)
+      } else {
+        localStorage.removeItem('portfolioSelectedTag')
+      }
+    }
+  }, [selectedTag])
 
   useEffect(() => {
     const fetchProjects = async () => {

@@ -15,16 +15,55 @@ const Resume = () => {
   const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
   const [activeSubsection, setActiveSubsection] = useState("experience")
   const [isAnimating, setIsAnimating] = useState(false)
-  const [search, setSearch] = useState("")
-  const [sortBy, setSortBy] = useState("newest")
+  const [search, setSearch] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('resumeSearch') || ""
+    }
+    return ""
+  })
+  const [sortBy, setSortBy] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('resumeSortBy') || "newest"
+    }
+    return "newest"
+  })
   const [showFilterMenu, setShowFilterMenu] = useState(false)
-  const [selectedTag, setSelectedTag] = useState<string | null>("Computer Science")
+  const [selectedTag, setSelectedTag] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('resumeSelectedTag')
+      return saved !== null ? saved : "Computer Science"
+    }
+    return "Computer Science"
+  })
   const [showAllTags, setShowAllTags] = useState(false)
   const [clickedTab, setClickedTab] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
   const searchParams = useSearchParams()
   const router = useRouter()
+
+  // Persist filter and sort state for Resume page
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('resumeSearch', search)
+    }
+  }, [search])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('resumeSortBy', sortBy)
+    }
+  }, [sortBy])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (selectedTag !== null) {
+        localStorage.setItem('resumeSelectedTag', selectedTag)
+      } else {
+        localStorage.removeItem('resumeSelectedTag')
+      }
+    }
+  }, [selectedTag])
 
   // Simulate loading for initial render
   useEffect(() => {
