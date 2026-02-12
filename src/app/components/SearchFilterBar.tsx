@@ -38,55 +38,7 @@ export default function SearchFilterBar({
   defaultSort,
 }: SearchFilterBarProps) {
   const sortedTags = [...tags].sort();
-  const sortButtonRef = useRef<HTMLButtonElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 });
 
-  // Calculate dropdown position when it opens or on scroll/resize
-  useEffect(() => {
-    const updatePosition = () => {
-      if (showFilterMenu && sortButtonRef.current) {
-        const rect = sortButtonRef.current.getBoundingClientRect();
-        setDropdownPosition({
-          top: rect.bottom + 8, // 8px margin below button
-          right: window.innerWidth - rect.right, // Align right edges
-        });
-      }
-    };
-
-    updatePosition();
-
-    if (showFilterMenu) {
-      window.addEventListener('scroll', updatePosition, true);
-      window.addEventListener('resize', updatePosition);
-      
-      return () => {
-        window.removeEventListener('scroll', updatePosition, true);
-        window.removeEventListener('resize', updatePosition);
-      };
-    }
-  }, [showFilterMenu]);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        showFilterMenu &&
-        dropdownRef.current &&
-        sortButtonRef.current &&
-        !dropdownRef.current.contains(event.target as Node) &&
-        !sortButtonRef.current.contains(event.target as Node)
-      ) {
-        setShowFilterMenu(false);
-      }
-    };
-
-    if (showFilterMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [showFilterMenu, setShowFilterMenu]);
-  
   // Determine if sort is at default value (use first option if defaultSort not provided)
   const effectiveDefaultSort = defaultSort || sortOptions[0]?.value;
   const isSortActive = selectedSort !== effectiveDefaultSort;
@@ -122,7 +74,6 @@ export default function SearchFilterBar({
           {/* Sort Options Button with Dropdown - Wrapped in relative container with high z-index */}
           <div className="relative z-[9999]">
             <button
-              ref={sortButtonRef}
               onClick={() => {
                 setShowFilterMenu(!showFilterMenu);
                 setShowTagsMenu(false);
@@ -135,15 +86,10 @@ export default function SearchFilterBar({
               <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || isSortActive ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
             </button>
             
-            {/* Sort Dropdown Menu - Fixed positioning to escape all parent constraints */}
+            {/* Sort Dropdown Menu - Absolute positioning with high z-index */}
             {showFilterMenu && (
               <div 
-                ref={dropdownRef}
-                className="fixed z-[9999] bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]"
-                style={{
-                  top: `${dropdownPosition.top}px`,
-                  right: `${dropdownPosition.right}px`,
-                }}
+                className="absolute right-0 top-full mt-2 z-[9999] bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]"
               >
                 {sortOptions.map((option) => (
                   <button
