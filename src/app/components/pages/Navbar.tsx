@@ -15,24 +15,46 @@ interface NavbarProps {
 const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChange }: NavbarProps) => {
   const isLoading = !activePage || !activeTab
   const [clickedTab, setClickedTab] = useState<string | null>(null)
-  // Default pin state: pinned on mobile/tablet, unpinned on desktop
+  
+  // Load persisted states from localStorage or use defaults
   const [isNavPinned, setIsNavPinned] = useState(() => {
     if (typeof window !== 'undefined') {
-      return window.innerWidth < 1024 // pinned on mobile/tablet, unpinned on desktop
+      const saved = localStorage.getItem('navbarPinned')
+      if (saved !== null) {
+        return saved === 'true'
+      }
+      return window.innerWidth < 1024 // default: pinned on mobile/tablet, unpinned on desktop
     }
     return true
   })
-  const [isHorizontalScroll, setIsHorizontalScroll] = useState(true) // true = horizontal scroll, false = wrap
+  
+  const [isHorizontalScroll, setIsHorizontalScroll] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('navbarLayout')
+      if (saved !== null) {
+        return saved === 'horizontal'
+      }
+      return true // default: horizontal scroll
+    }
+    return true
+  })
+  
   const [needsToggle, setNeedsToggle] = useState(false) // true if content overflows and needs scroll
   const navContentRef = useRef<HTMLDivElement>(null)
 
-  // Notify parent component when pin state changes
+  // Persist pin state to localStorage and notify parent
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('navbarPinned', isNavPinned.toString())
+    }
     onPinChange?.(isNavPinned)
   }, [isNavPinned, onPinChange])
 
-  // Notify parent component when layout state changes (expanded/wrap vs horizontal scroll)
+  // Persist layout state to localStorage and notify parent
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('navbarLayout', isHorizontalScroll ? 'horizontal' : 'wrap')
+    }
     onLayoutChange?.(!isHorizontalScroll) // true when expanded/wrap mode
   }, [isHorizontalScroll, onLayoutChange])
 
@@ -140,7 +162,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
           ref={navContentRef}
           className={`flex gap-3 max-w-5xl mx-auto pb-2 ${
             isHorizontalScroll 
-              ? 'flex-row justify-start overflow-x-auto navbar-scroll' 
+              ? 'flex-row justify-center overflow-x-auto navbar-scroll px-4' 
               : 'flex-wrap justify-center overflow-x-visible'
           }`}
           style={isHorizontalScroll ? {
