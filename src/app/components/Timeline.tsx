@@ -139,8 +139,8 @@ const Timeline: React.FC<TimelineProps> = ({
   return (
     <div className="w-full mx-auto">
       <div className="relative flex flex-col gap-6">
-        {/* Timeline vertical line */}
-        <div className="absolute left-0 top-6 bottom-6 w-0.5 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+        {/* Timeline vertical line - centered */}
+        <div className="absolute left-1/2 -translate-x-1/2 top-6 bottom-6 w-0.5 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
         
         {items.map((item) => {
           const itemKey = `${item.institution || item.name}-${item.startDate}`
@@ -163,8 +163,8 @@ const Timeline: React.FC<TimelineProps> = ({
                 isNewItem ? "animate-fade-in-up border-red-600/30" : ""
               } ${isDisappearing ? "animate-fade-out-down" : ""}`}
             >
-              {/* Timeline dot indicator */}
-              <div className="absolute left-[-3px] top-8 w-2 h-2 bg-white rounded-full shadow-lg shadow-white/50 z-10"></div>
+              {/* Timeline dot indicator - centered, red */}
+              <div className="absolute left-1/2 -translate-x-1/2 top-8 w-2 h-2 bg-red-600 rounded-full shadow-lg shadow-red-600/50 z-10"></div>
               {/* Title */}
               <h3 className="text-2xl font-semibold text-white mb-2">
                 {item.institution || item.name}

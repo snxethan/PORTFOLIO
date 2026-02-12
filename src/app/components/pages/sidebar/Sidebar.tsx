@@ -80,6 +80,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
         </h2>
 
             <p className="text-gray-400">Full Stack Software Developer</p>
+            <p className="text-gray-400 text-sm mt-1">Salt Lake City, UT</p>
           </div>
 
           {/* View Resume Button */}

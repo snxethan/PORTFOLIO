@@ -315,17 +315,20 @@ const Resume = () => {
       case "experience":
         return {
           title: "Professional Experience Timeline",
-          subtitle: "My journey and contributions in software development"
+          subtitle: "My journey and contributions in software development",
+          description: "Full-stack development roles with focus on backend architecture and cloud platforms."
         }
       case "education":
         return {
           title: "Educational Background",
-          subtitle: "Academic achievements and continuous learning"
+          subtitle: "Academic achievements and continuous learning",
+          description: "Computer science education with hands-on project experience and leadership development."
         }
       default:
         return {
           title: "Professional Experience Timeline",
-          subtitle: "My journey and contributions in software development"
+          subtitle: "My journey and contributions in software development",
+          description: "Full-stack development roles with focus on backend architecture and cloud platforms."
         }
     }
   }
@@ -341,8 +344,11 @@ const Resume = () => {
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
             {pageDescription.title}
           </h2>
-          <p className="text-center text-gray-400 mb-4 max-w-3xl mx-auto transition-transform duration-200 ease-out hover:scale-105">
+          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
             {pageDescription.subtitle}
+          </p>
+          <p className="text-center text-gray-400 max-w-3xl mx-auto">
+            {pageDescription.description}
           </p>
         </div>
       

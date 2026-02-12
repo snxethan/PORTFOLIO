@@ -328,17 +328,20 @@ const Portfolio: React.FC = () => {
       case "projects":
         return {
           title: "Project Timeline",
-          subtitle: "Key projects and contributions throughout my career"
+          subtitle: "Key projects and contributions throughout my career",
+          description: "Full-stack applications, web games, and development tools built with modern technologies."
         }
       case "repositories":
         return {
           title: "Open Source Repositories",
-          subtitle: "Public repositories and contributions on GitHub"
+          subtitle: "Public repositories and contributions on GitHub",
+          description: "Active contributions to open source projects and personal development repositories."
         }
       default:
         return {
           title: "Project Timeline",
-          subtitle: "Key projects and contributions throughout my career"
+          subtitle: "Key projects and contributions throughout my career",
+          description: "Full-stack applications, web games, and development tools built with modern technologies."
         }
     }
   }
@@ -354,8 +357,11 @@ const Portfolio: React.FC = () => {
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
             {pageDescription.title}
           </h2>
-          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto transition-transform duration-200 ease-out hover:scale-105">
+          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
             {pageDescription.subtitle}
+          </p>
+          <p className="text-center text-gray-400 max-w-3xl mx-auto">
+            {pageDescription.description}
           </p>
         </div>
       

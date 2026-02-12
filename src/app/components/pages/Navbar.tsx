@@ -70,9 +70,16 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
       }
     }
 
-    checkOverflow()
+    // Use requestAnimationFrame to ensure DOM has rendered before checking
+    const timeoutId = setTimeout(() => {
+      requestAnimationFrame(checkOverflow)
+    }, 0)
+    
     window.addEventListener('resize', checkOverflow)
-    return () => window.removeEventListener('resize', checkOverflow)
+    return () => {
+      clearTimeout(timeoutId)
+      window.removeEventListener('resize', checkOverflow)
+    }
   }, [isHorizontalScroll, isLoading, activePage, activeTab])
 
   // Define tab groups with their respective sections
