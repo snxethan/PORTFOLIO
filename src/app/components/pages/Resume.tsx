@@ -409,8 +409,8 @@ const Resume = () => {
 
             {/* Tags section */}
             {sortedTags.length > 0 && (
-              <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                showAllTags ? "max-h-[500px] opacity-100" : "max-h-32 opacity-100"
+              <div className={`transition-all duration-300 ease-in-out overflow-hidden pb-2 ${
+                showAllTags ? "max-h-[500px] opacity-100" : "max-h-40 opacity-100"
               }`}>
                 <div className="flex flex-wrap gap-2 transition-all duration-300 overflow-visible py-2">
                   {/* Clear button */}
