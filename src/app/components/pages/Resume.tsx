@@ -338,10 +338,10 @@ const Resume = () => {
       <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         {/* Header content */}
         <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
             {pageDescription.title}
           </h2>
-          <p className="text-center text-gray-400 mb-4 max-w-3xl mx-auto">
+          <p className="text-center text-gray-400 mb-4 max-w-3xl mx-auto transition-transform duration-200 ease-out hover:scale-105">
             {pageDescription.subtitle}
           </p>
         </div>
@@ -358,7 +358,7 @@ const Resume = () => {
                   placeholder="Search by institution, title, keyword, or tags..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-[#2a2a2a] text-white placeholder-gray-400 px-4 py-3 pr-12 rounded-lg border border-[#444444] focus:border-red-600 focus:outline-none transition-all"
+                  className="w-full bg-[#2a2a2a] text-white placeholder-gray-400 px-4 py-3 pr-12 rounded-lg border border-[#444444] focus:border-red-600 focus:outline-none transition-all hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.01]"
                 />
                 {/* Filter gear icon inside search bar */}
                 {filterOptions.length > 0 && (
@@ -380,7 +380,7 @@ const Resume = () => {
                           className="fixed inset-0 z-40"
                           onClick={() => setShowFilterMenu(false)}
                         />
-                        <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[200]">
+                        <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[200] animate-[popIn_0.2s_ease-out]">
                           {filterOptions.map((option) => (
                             <button
                               key={option.value}

@@ -249,3 +249,18 @@ body {
     scrollbar-color: #dc2626 transparent;
   }
 }
+
+/* Pop-in animation for dropdown menus */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.animate-popIn {
+  animation: popIn 0.2s ease-out forwards;
+}

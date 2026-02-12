@@ -114,11 +114,11 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
   }
 
   return (
-    <nav className={`w-full bg-[#222222] py-4 ${isNavPinned ? 'fixed' : 'relative'} top-0 left-0 z-50 animate-elastic-in border-b border-[#333333] md:border-0`}>
+    <nav className={`w-full bg-[#222222] py-4 ${isNavPinned ? 'fixed' : 'relative'} top-0 left-0 z-50 animate-elastic-in border-b border-[#333333] md:border-0 transition-all duration-300 ease-in-out`}>
       <div className="container mx-auto">
         {/* Title with Layout toggle (right, left of pin) and Pin button (right) */}
         <div className="flex items-center justify-center mb-3 relative">
-          <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
             My Portfolio
           </h1>
           
@@ -145,7 +145,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
           {/* Pin/Unpin toggle button - visible on all screen sizes, positioned to the right of title */}
           <button
             onClick={() => setIsNavPinned(!isNavPinned)}
-            className={`absolute right-4 p-2 rounded-lg bg-[#1e1e1e] border transition-all duration-200 hover:scale-110 ${
+            className={`absolute right-4 p-2 rounded-lg bg-[#1e1e1e] border transition-all duration-300 hover:scale-110 ${
               isNavPinned 
                 ? "border-red-600 text-red-600 shadow-md shadow-red-500/20" 
                 : "border-[#333333] text-gray-400 hover:text-red-600 hover:border-red-600"
@@ -153,14 +153,14 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
             aria-label={isNavPinned ? "Unpin navigation (navbar will not follow scroll)" : "Pin navigation (navbar will follow scroll)"}
             title={isNavPinned ? "Click to unpin" : "Click to pin"}
           >
-            <FaThumbtack size={18} className={`transition-transform duration-200 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
+            <FaThumbtack size={18} className={`transition-transform duration-300 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
           </button>
         </div>
         
         {/* Navigation subsections - horizontal scroll OR wrap based on toggle */}
         <div 
           ref={navContentRef}
-          className={`flex gap-3 max-w-5xl mx-auto pb-2 ${
+          className={`flex gap-3 max-w-5xl mx-auto pb-2 transition-all duration-300 ease-in-out ${
             isHorizontalScroll 
               ? `flex-row overflow-x-auto navbar-scroll px-4 ${needsToggle ? 'justify-start' : 'justify-center'}` 
               : 'flex-wrap justify-center overflow-x-visible'
