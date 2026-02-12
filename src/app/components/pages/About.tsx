@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import { FaFilePdf, FaExternalLinkAlt, FaSort, FaChevronDown, FaChevronUp } from "react-icons/fa"
+import { IoMdClose } from "react-icons/io"
 import { useSearchParams, useRouter } from "next/navigation"
 
 import { useExternalLink } from "../ExternalLinkHandler"
@@ -352,7 +353,7 @@ const About = () => {
                   <div className="absolute right-2 top-1/2 -translate-y-1/2">
                     <button
                       onClick={() => setShowFilterMenu(!showFilterMenu)}
-                      className={`p-2 rounded-lg transition-all ${
+                      className={`p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent ${
                         isFilterActive ? "text-red-500" : "text-gray-400 hover:text-gray-300"
                       }`}
                       title="Filter options"
@@ -400,16 +401,16 @@ const About = () => {
                 showAllTags ? "max-h-[500px] opacity-100" : "max-h-40 opacity-100"
               }`}>
                 <div className="flex flex-wrap gap-2 transition-all duration-300 overflow-visible py-2">
-                  {/* Clear button */}
+                  {/* Clear button - icon only */}
                   <button
-                    onClick={() => setSelectedTag(null)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
-                      !selectedTag
-                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30"
-                        : "bg-[#4a4a4a] text-gray-300 hover:bg-[#555555]"
-                    }`}
+                    onClick={() => {
+                      setSelectedTag(null)
+                      setSearch("")
+                    }}
+                    className="text-gray-400 hover:text-red-400 transition-colors p-1"
+                    title="Clear filters"
                   >
-                    ×
+                    <IoMdClose className="w-5 h-5" />
                   </button>
                   
                   {(showAllTags ? sortedTags : sortedTags.slice(0, 8)).map((tag) => (

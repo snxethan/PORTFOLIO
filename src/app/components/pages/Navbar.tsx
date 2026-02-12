@@ -41,6 +41,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
   
   const [needsToggle, setNeedsToggle] = useState(false) // true if content overflows and needs scroll
   const navContentRef = useRef<HTMLDivElement>(null)
+  const isCheckingOverflow = useRef(false) // Prevent concurrent overflow checks
 
   // Persist pin state to localStorage and notify parent
   useEffect(() => {
@@ -61,6 +62,9 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
   // Check if the nav content overflows and needs scrolling
   useEffect(() => {
     const checkOverflow = () => {
+      if (isCheckingOverflow.current) return // Prevent concurrent checks
+      isCheckingOverflow.current = true
+      
       if (navContentRef.current) {
         const hasOverflow = navContentRef.current.scrollWidth > navContentRef.current.clientWidth
         // Show toggle if: 
@@ -68,6 +72,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
         // 2. In wrap mode (always show to allow going back to horizontal)
         setNeedsToggle(hasOverflow || !isHorizontalScroll)
       }
+      isCheckingOverflow.current = false
     }
 
     // Use requestAnimationFrame to ensure DOM has rendered before checking
@@ -133,10 +138,10 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
           {needsToggle && (
             <button
               onClick={() => setIsHorizontalScroll(!isHorizontalScroll)}
-              className={`absolute right-16 p-2 rounded-lg bg-[#1e1e1e] border transition-all duration-200 hover:scale-110 ${
+              className={`absolute right-16 p-1 transition-all duration-200 ${
                 isHorizontalScroll 
-                  ? "border-[#333333] text-gray-400 hover:text-red-600 hover:border-red-600" 
-                  : "border-red-600 text-red-600 shadow-md shadow-red-500/20"
+                  ? "text-gray-400 hover:text-red-500" 
+                  : "text-red-600"
               }`}
               aria-label={isHorizontalScroll ? "Switch to wrap layout (buttons will wrap)" : "Switch to horizontal scroll (buttons will scroll horizontally)"}
               title={isHorizontalScroll ? "Click for wrap layout" : "Click for horizontal scroll"}
@@ -152,10 +157,10 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
           {/* Pin/Unpin toggle button - visible on all screen sizes, positioned to the right of title */}
           <button
             onClick={() => setIsNavPinned(!isNavPinned)}
-            className={`absolute right-4 p-2 rounded-lg bg-[#1e1e1e] border transition-all duration-300 hover:scale-110 ${
+            className={`absolute right-4 p-1 transition-all duration-300 ${
               isNavPinned 
-                ? "border-red-600 text-red-600 shadow-md shadow-red-500/20" 
-                : "border-[#333333] text-gray-400 hover:text-red-600 hover:border-red-600"
+                ? "text-red-600" 
+                : "text-gray-400 hover:text-red-500"
             }`}
             aria-label={isNavPinned ? "Unpin navigation (navbar will not follow scroll)" : "Pin navigation (navbar will follow scroll)"}
             title={isNavPinned ? "Click to unpin" : "Click to pin"}
