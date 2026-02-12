@@ -23,9 +23,12 @@ const About = () => {
   })
   const [sortBy, setSortBy] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('aboutSortBy') || "newest"
+      const saved = localStorage.getItem('aboutSortBy')
+      if (saved) return saved
+      // Default based on active subsection
+      return activeSubsection === "certifications" ? "newest" : "hard-soft"
     }
-    return "newest"
+    return activeSubsection === "certifications" ? "newest" : "hard-soft"
   })
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const [showTagsMenu, setShowTagsMenu] = useState(false)
@@ -220,6 +223,10 @@ const About = () => {
       item.tags?.forEach(tag => tagSet.add(tag))
     })
     const tags = Array.from(tagSet).sort()
+    // Add Hard Skills and Soft Skills filter options for skills subsection
+    if (activeSubsection === "skills") {
+      return ["Hard Skills", "Soft Skills", ...tags]
+    }
     return tags
   }, [activeSubsection])
   
@@ -255,20 +262,28 @@ const About = () => {
     const matchesSearch = skill.name.toLowerCase().includes(search.toLowerCase())
     const matchesFilter = 
       sortBy !== "cs-only" ? true : skill.tags?.includes("Computer Science")
-    const matchesHardSkills = sortBy !== "hard-skills" ? true : skill.highlight === true
-    const matchesSoftSkills = sortBy !== "soft-skills" ? true : skill.highlight !== true
-    const matchesTag = !selectedTag || skill.tags?.includes(selectedTag)
-    return matchesSearch && matchesFilter && matchesHardSkills && matchesSoftSkills && matchesTag
+    const matchesTag = !selectedTag || skill.tags?.includes(selectedTag) || 
+      (selectedTag === "Hard Skills" && skill.highlight === true) ||
+      (selectedTag === "Soft Skills" && skill.highlight !== true)
+    return matchesSearch && matchesFilter && matchesTag
   })
 
   // Apply sorting to skills
   const sortedSkills = [...filteredSkills].sort((a, b) => {
     if (sortBy === "cs-only") return 0  // CS only, no date sort for skills
-    if (sortBy === "hard-skills") return 0  // Hard skills, no additional sort
-    if (sortBy === "soft-skills") return 0  // Soft skills, no additional sort
+    if (sortBy === "hard-soft") {
+      // Hard skills first (highlight=true), then soft skills
+      if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
+      return a.highlight ? -1 : 1
+    }
+    if (sortBy === "soft-hard") {
+      // Soft skills first (highlight=false), then hard skills
+      if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
+      return a.highlight ? 1 : -1
+    }
     if (sortBy === "name-asc") return a.name.localeCompare(b.name)
     if (sortBy === "name-desc") return b.name.localeCompare(a.name)
-    // Default sort (highlight first, then alphabetical)
+    // Default sort (hard skills first, then alphabetical)
     if (a.highlight === b.highlight) {
       return a.name.localeCompare(b.name)
     }
@@ -281,17 +296,19 @@ const About = () => {
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
   ] : [
+    { value: "hard-soft", label: "Hard-Soft" },
+    { value: "soft-hard", label: "Soft-Hard" },
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
-    { value: "hard-skills", label: "Hard Skills" },
-    { value: "soft-skills", label: "Soft Skills" },
   ]
 
   const resultsCount = activeSubsection === "certifications" 
     ? `Showing ${sortedCertifications.length} Certification${sortedCertifications.length !== 1 ? 's' : ''}`
     : `Showing ${sortedSkills.length} Skill${sortedSkills.length !== 1 ? 's' : ''}`
 
-  const isFilterActive = sortBy && sortBy !== "newest"
+  const isFilterActive = activeSubsection === "certifications" 
+    ? sortBy && sortBy !== "newest"
+    : sortBy && sortBy !== "hard-soft"
 
   // Tab-specific descriptions
   const getPageDescription = () => {

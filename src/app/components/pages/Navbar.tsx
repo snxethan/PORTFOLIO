@@ -41,6 +41,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
   })
   
   const [needsToggle, setNeedsToggle] = useState(false) // true if content overflows and needs scroll
+  const [isTransitioning, setIsTransitioning] = useState(false) // Prevent rapid clicks during transition
   const navContentRef = useRef<HTMLDivElement>(null)
   const isCheckingOverflow = useRef(false) // Prevent concurrent overflow checks
 
@@ -148,14 +149,21 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
           {/* Layout toggle button - only visible when content overflows in horizontal mode */}
           {needsToggle && (
             <button
-              onClick={() => setIsHorizontalScroll(!isHorizontalScroll)}
+              onClick={() => {
+                if (isTransitioning) return // Prevent rapid clicks
+                setIsTransitioning(true)
+                setIsHorizontalScroll(!isHorizontalScroll)
+                // Reset after animation completes (300ms)
+                setTimeout(() => setIsTransitioning(false), 400)
+              }}
               className={`absolute right-16 p-1 transition-all duration-300 hover:scale-110 ${
                 isHorizontalScroll 
                   ? "text-gray-400 hover:text-red-500" 
                   : "text-red-600"
-              }`}
+              } ${isTransitioning ? "opacity-50 cursor-not-allowed" : ""}`}
               aria-label={isHorizontalScroll ? "Switch to wrap layout (buttons will wrap)" : "Switch to horizontal scroll (buttons will scroll horizontally)"}
               title={isHorizontalScroll ? "Click for wrap layout" : "Click for horizontal scroll"}
+              disabled={isTransitioning}
             >
               {isHorizontalScroll ? (
                 <MdKeyboardArrowDown size={18} className="transition-transform duration-200" />
