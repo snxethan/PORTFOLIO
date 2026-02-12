@@ -37,7 +37,7 @@ export default function SearchFilterBar({
   const sortedTags = [...tags].sort();
 
   return (
-    <div className="mb-6">
+    <div className="bg-[#1a1a1a] p-4 rounded-lg mb-6">
       {/* Search Bar with Buttons */}
       <div className="relative mb-4">
         <input
@@ -45,7 +45,7 @@ export default function SearchFilterBar({
           placeholder={placeholder}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full p-4 pr-32 bg-[#1e1e1e] border border-gray-600 rounded-lg text-white focus:border-red-600 focus:outline-none transition-all hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.01]"
+          className="w-full p-4 pr-32 bg-[#1e1e1e] border border-gray-700 rounded-lg text-white focus:border-red-600 focus:outline-none transition-all hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.01]"
         />
         
         {/* Filter & Sort Buttons Container */}
@@ -104,22 +104,21 @@ export default function SearchFilterBar({
 
       {/* Filter Tags - Animated Dropdown */}
       <div
-        className={`transition-all duration-300 ease-in-out overflow-hidden ${
+        className={`transition-all duration-300 ease-in-out overflow-visible ${
           showTagsMenu ? "max-h-[500px] opacity-100 mb-4" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 overflow-visible">
           {selectedTag && (
             <button
               onClick={() => {
                 setSelectedTag(null);
                 setSearch("");
               }}
-              className="px-3 py-1 rounded-full text-sm transition-all duration-200 flex items-center gap-1 bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105"
+              className="text-gray-400 hover:text-red-600 transition-colors hover:scale-110 transition-all duration-200 p-1"
               title="Clear filters"
             >
-              <span>Clear</span>
-              <IoMdClose className="w-5 h-5 transition-transform duration-200 hover:scale-110" />
+              <IoMdClose className="w-5 h-5" />
             </button>
           )}
           {sortedTags.map((tag) => (
@@ -128,7 +127,7 @@ export default function SearchFilterBar({
               onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 ${
                 selectedTag === tag
-                  ? "bg-red-600 text-white"
+                  ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
                   : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444]"
               }`}
             >
