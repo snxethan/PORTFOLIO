@@ -10,6 +10,7 @@ import TooltipWrapper from "../ToolTipWrapper"
 import { manualProjects } from "../../data/portfolioProjects"
 import Timeline from "../Timeline"
 import { projectsTimelineData } from "../../data/projectsTimelineData"
+import SearchFilterBar from "../SearchFilterBar"
 
 interface Project {
   id: number
@@ -370,113 +371,26 @@ const Portfolio: React.FC = () => {
         {/* Navigation subsection */}
         <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
           <div className="container mx-auto">
-          {/* Search bar with filter */}
-          <div className="flex gap-3 mb-4 overflow-visible relative">
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                placeholder="Search by name, description, or tags..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-[#2a2a2a] text-white placeholder-gray-400 px-4 py-3 pr-12 rounded-lg border border-[#444444] focus:border-red-600 focus:outline-none transition-all hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.01]"
-              />
-              {/* Filter & Sort buttons container */}
-              {(filterOptions.length > 0 || (activeSubsection === "repositories" && sortedTags.length > 0)) && (
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                  {/* Filter Options button - shows tags */}
-                  {activeSubsection === "repositories" && sortedTags.length > 0 && (
-                    <button
-                      onClick={() => setShowTagsMenu(!showTagsMenu)}
-                      className={`p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent group ${
-                        showTagsMenu ? "text-red-500 border-red-600/70" : "text-gray-400 hover:text-gray-300"
-                      }`}
-                      title="Filter options"
-                    >
-                      <FaFilter className={`w-5 h-5 transition-colors ${showTagsMenu ? "text-red-500" : "group-hover:text-red-500"}`} />
-                    </button>
-                  )}
-                  
-                  {/* Sort Options button - shows sort menu */}
-                  {filterOptions.length > 0 && (
-                    <button
-                      onClick={() => setShowFilterMenu(!showFilterMenu)}
-                      className={`p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent group ${
-                        isFilterActive ? "text-red-500" : "text-gray-400 hover:text-gray-300"
-                      }`}
-                      title="Sort options"
-                    >
-                      <FaSort className={`w-5 h-5 transition-colors ${isFilterActive ? "text-red-500" : "group-hover:text-red-500"}`} />
-                    </button>
-                  )}
-                  
-                  {/* Sort dropdown menu */}
-                  {showFilterMenu && filterOptions.length > 0 && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-40"
-                        onClick={() => setShowFilterMenu(false)}
-                      />
-                      <div className="absolute right-0 top-full mt-2 bg-[#2a2a2a] border border-[#444444] rounded-lg shadow-xl py-2 min-w-[200px] z-[200] animate-[popIn_0.2s_ease-out]">
-                        {filterOptions.map((option) => (
-                          <button
-                            key={option.value}
-                            onClick={() => handleFilterChange(option.value)}
-                            className={`w-full text-left px-4 py-2 transition-colors ${
-                              sortBy === option.value
-                                ? "text-red-500 bg-[#333333]"
-                                : "text-gray-300 hover:bg-[#333333] hover:text-white"
-                            }`}
-                          >
-                            {option.label}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
+          {/* Search bar with filter using SearchFilterBar component */}
+          <SearchFilterBar
+            search={search}
+            setSearch={setSearch}
+            placeholder="Search by name, description, or tags..."
+            tags={sortedTags}
+            selectedTag={selectedTag}
+            setSelectedTag={setSelectedTag}
+            sortOptions={filterOptions}
+            selectedSort={sortBy}
+            setSelectedSort={handleFilterChange}
+            showTagsMenu={showTagsMenu}
+            setShowTagsMenu={setShowTagsMenu}
+            showFilterMenu={showFilterMenu}
+            setShowFilterMenu={setShowFilterMenu}
+          />
 
           {/* Results count */}
           {resultsCount && (
             <div className="text-sm text-gray-400 mb-3">{resultsCount}</div>
-          )}
-
-          {/* Tags section - controlled by Filter Options button */}
-          {activeSubsection === "repositories" && sortedTags.length > 0 && (
-            <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
-              showTagsMenu ? "max-h-[500px] opacity-100 mb-4" : "max-h-0 opacity-0"
-            }`}>
-              <div className="flex flex-wrap gap-2 transition-all duration-300 py-2">
-                {/* Clear button - icon only */}
-                <button
-                  onClick={() => {
-                    setSelectedTag(null)
-                    setSearch("")
-                  }}
-                  className="text-gray-400 hover:text-red-600 transition-all duration-200 p-1 hover:scale-110"
-                  title="Clear filters"
-                >
-                  <IoMdClose className="w-5 h-5" />
-                </button>
-                
-                {/* Display ALL tags when menu is open */}
-                {sortedTags.map((tag) => (
-                  <button
-                    key={tag}
-                    onClick={() => setSelectedTag(tag === "" ? null : tag)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 border ${
-                      selectedTag === tag
-                        ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30 border-transparent"
-                        : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444] hover:text-[#dc2626] hover:border-red-600 border-transparent"
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </div>
           )}
           </div>
         </div>
