@@ -396,10 +396,10 @@ const About = () => {
 
             {/* Tags section */}
             {sortedTags.length > 0 && (
-              <div className={`space-y-2 transition-all duration-300 ease-in-out overflow-hidden ${
+              <div className={`space-y-2 transition-all duration-300 ease-in-out ${
                 showAllTags ? "max-h-[500px] opacity-100" : "max-h-24 opacity-100"
               }`}>
-                <div className="flex flex-wrap gap-2 transition-all duration-300 overflow-hidden">
+                <div className="flex flex-wrap gap-2 transition-all duration-300 overflow-visible py-2">
                   {/* Clear button */}
                   <button
                     onClick={() => setSelectedTag(null)}
@@ -431,9 +431,10 @@ const About = () => {
                 {sortedTags.length > 8 && (
                   <button
                     onClick={handleShowAllTagsToggle}
-                    className="text-red-500 hover:text-red-400 text-sm font-medium flex items-center gap-1"
+                    className="text-red-500 hover:text-red-400 text-sm font-medium flex items-center gap-1 py-3 px-4 -ml-4 min-h-[44px]"
                   >
-                    {showAllTags ? <FaChevronUp className="w-3 h-3" /> : <FaChevronDown className="w-3 h-3" />}
+                    {showAllTags ? <FaChevronUp className="w-4 h-4" /> : <FaChevronDown className="w-4 h-4" />}
+                    <span>{showAllTags ? "Show less" : "Show more"}</span>
                   </button>
                 )}
               </div>
