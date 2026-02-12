@@ -87,7 +87,7 @@ export default function SearchFilterBar({
             
             {/* Sort Dropdown Menu */}
             {showFilterMenu && (
-              <div className="absolute right-0 top-full mt-2 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]">
+              <div className="absolute right-0 top-full mt-2 z-[9999] bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]">
                 {sortOptions.map((option) => (
                   <button
                     key={option.value}
