@@ -342,7 +342,7 @@ const About = () => {
               <div className="flex-1 relative">
                 <input
                   type="text"
-                  placeholder="Search by name or keyword..."
+                  placeholder="Search by name, keyword, or tags..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full bg-[#2a2a2a] text-white placeholder-gray-400 px-4 py-3 pr-12 rounded-lg border border-[#444444] focus:border-red-600 focus:outline-none transition-all"
