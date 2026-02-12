@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { FaFilter, FaSort } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
@@ -38,10 +39,50 @@ export default function SearchFilterBar({
   defaultSort,
 }: SearchFilterBarProps) {
   const sortedTags = [...tags].sort();
+  const sortButtonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+  const [mounted, setMounted] = useState(false);
+
+  // Track when component is mounted for portal
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Determine if sort is at default value (use first option if defaultSort not provided)
   const effectiveDefaultSort = defaultSort || sortOptions[0]?.value;
   const isSortActive = selectedSort !== effectiveDefaultSort;
+
+  // Calculate dropdown position when it opens
+  useEffect(() => {
+    if (showFilterMenu && sortButtonRef.current) {
+      const rect = sortButtonRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + 8,
+        left: rect.right - 200, // Align right edge (200px is min-width of dropdown)
+      });
+    }
+  }, [showFilterMenu]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        showFilterMenu &&
+        dropdownRef.current &&
+        sortButtonRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        !sortButtonRef.current.contains(event.target as Node)
+      ) {
+        setShowFilterMenu(false);
+      }
+    };
+
+    if (showFilterMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showFilterMenu, setShowFilterMenu]);
 
   return (
     <div className="bg-[#1a1a1a] p-4 rounded-lg mb-6">
@@ -71,45 +112,20 @@ export default function SearchFilterBar({
             <FaFilter className={`w-5 h-5 transition-colors ${showTagsMenu ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
           </button>
 
-          {/* Sort Options Button with Dropdown - Wrapped in relative container with high z-index */}
-          <div className="relative z-[9999]">
-            <button
-              onClick={() => {
-                setShowFilterMenu(!showFilterMenu);
-                setShowTagsMenu(false);
-              }}
-              className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent focus:outline-none ${
-                showFilterMenu || isSortActive ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
-              }`}
-              title="Sort Options"
-            >
-              <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || isSortActive ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
-            </button>
-            
-            {/* Sort Dropdown Menu - Absolute positioning with high z-index */}
-            {showFilterMenu && (
-              <div 
-                className="absolute right-0 top-full mt-2 z-[9999] bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]"
-              >
-                {sortOptions.map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => {
-                      setSelectedSort(option.value);
-                      setShowFilterMenu(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                      selectedSort === option.value
-                        ? "bg-red-600 text-white"
-                        : "text-gray-300 hover:bg-[#2a2a2a] hover:text-[#dc2626]"
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Sort Options Button - No wrapper needed */}
+          <button
+            ref={sortButtonRef}
+            onClick={() => {
+              setShowFilterMenu(!showFilterMenu);
+              setShowTagsMenu(false);
+            }}
+            className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent focus:outline-none ${
+              showFilterMenu || isSortActive ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
+            }`}
+            title="Sort Options"
+          >
+            <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || isSortActive ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
+          </button>
         </div>
       </div>
 
@@ -147,6 +163,36 @@ export default function SearchFilterBar({
           ))}
         </div>
       </div>
+
+      {/* Sort Dropdown Portal - Rendered outside component hierarchy to escape z-index constraints */}
+      {mounted && showFilterMenu && createPortal(
+        <div 
+          ref={dropdownRef}
+          className="fixed z-[9999] bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]"
+          style={{
+            top: `${dropdownPosition.top}px`,
+            left: `${dropdownPosition.left}px`,
+          }}
+        >
+          {sortOptions.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => {
+                setSelectedSort(option.value);
+                setShowFilterMenu(false);
+              }}
+              className={`w-full text-left px-4 py-2 transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                selectedSort === option.value
+                  ? "bg-red-600 text-white"
+                  : "text-gray-300 hover:bg-[#2a2a2a] hover:text-[#dc2626]"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
