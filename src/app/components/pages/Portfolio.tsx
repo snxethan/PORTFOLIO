@@ -2,7 +2,7 @@
 
 import React from "react"
 import { useState, useEffect } from "react"
-import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevronUp, FaSort, FaSearch, FaTimes } from "react-icons/fa"
+import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevronUp, FaSort, FaSearch, FaTimes, FaFilter } from "react-icons/fa"
 import { IoMdClose } from "react-icons/io"
 import { useSearchParams, useRouter } from "next/navigation"
 import { useExternalLink } from "../ExternalLinkHandler"
@@ -71,6 +71,7 @@ const Portfolio: React.FC = () => {
     return "Computer Science"
   })
   const [showAllTags, setShowAllTags] = useState(false);
+  const [showTagsMenu, setShowTagsMenu] = useState(false);
   const [tags, setTags] = useState<string[]>(["Computer Science"])
   const [loading, setLoading] = useState(true)
   const { handleExternalClick } = useExternalLink()
@@ -379,21 +380,37 @@ const Portfolio: React.FC = () => {
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full bg-[#2a2a2a] text-white placeholder-gray-400 px-4 py-3 pr-12 rounded-lg border border-[#444444] focus:border-red-600 focus:outline-none transition-all hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.01]"
               />
-              {/* Filter gear icon inside search bar */}
-              {filterOptions.length > 0 && (
-                <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                  <button
-                    onClick={() => setShowFilterMenu(!showFilterMenu)}
-                    className={`p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent ${
-                      isFilterActive ? "text-red-500" : "text-gray-400 hover:text-gray-300"
-                    }`}
-                    title="Filter options"
-                  >
-                    <FaSort className="w-5 h-5" />
-                  </button>
+              {/* Filter & Sort buttons container */}
+              {(filterOptions.length > 0 || (activeSubsection === "repositories" && sortedTags.length > 0)) && (
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                  {/* Filter Options button - shows tags */}
+                  {activeSubsection === "repositories" && sortedTags.length > 0 && (
+                    <button
+                      onClick={() => setShowTagsMenu(!showTagsMenu)}
+                      className={`p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent group ${
+                        showTagsMenu ? "text-red-500 border-red-600/70" : "text-gray-400 hover:text-gray-300"
+                      }`}
+                      title="Filter options"
+                    >
+                      <FaFilter className={`w-5 h-5 transition-colors ${showTagsMenu ? "text-red-500" : "group-hover:text-red-500"}`} />
+                    </button>
+                  )}
                   
-                  {/* Filter dropdown menu */}
-                  {showFilterMenu && (
+                  {/* Sort Options button - shows sort menu */}
+                  {filterOptions.length > 0 && (
+                    <button
+                      onClick={() => setShowFilterMenu(!showFilterMenu)}
+                      className={`p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent group ${
+                        isFilterActive ? "text-red-500" : "text-gray-400 hover:text-gray-300"
+                      }`}
+                      title="Sort options"
+                    >
+                      <FaSort className={`w-5 h-5 transition-colors ${isFilterActive ? "text-red-500" : "group-hover:text-red-500"}`} />
+                    </button>
+                  )}
+                  
+                  {/* Sort dropdown menu */}
+                  {showFilterMenu && filterOptions.length > 0 && (
                     <>
                       <div
                         className="fixed inset-0 z-40"
@@ -426,29 +443,30 @@ const Portfolio: React.FC = () => {
             <div className="text-sm text-gray-400 mb-3">{resultsCount}</div>
           )}
 
-          {/* Tags section */}
+          {/* Tags section - controlled by Filter Options button */}
           {activeSubsection === "repositories" && sortedTags.length > 0 && (
-            <div className={`transition-all duration-300 ease-in-out overflow-hidden pb-2 ${
-              showAllTags ? "max-h-[500px] opacity-100" : "max-h-40 opacity-100"
+            <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
+              showTagsMenu ? "max-h-[500px] opacity-100 mb-4" : "max-h-0 opacity-0"
             }`}>
-              <div className="flex flex-wrap gap-2 transition-all duration-300 overflow-visible py-2">
+              <div className="flex flex-wrap gap-2 transition-all duration-300 py-2">
                 {/* Clear button - icon only */}
                 <button
                   onClick={() => {
                     setSelectedTag(null)
                     setSearch("")
                   }}
-                  className="text-gray-400 hover:text-red-600 transition-colors p-1"
+                  className="text-gray-400 hover:text-red-600 transition-all duration-200 p-1 hover:scale-110"
                   title="Clear filters"
                 >
                   <IoMdClose className="w-5 h-5" />
                 </button>
                 
-                {(showAllTags ? sortedTags : sortedTags.slice(0, 8)).map((tag) => (
+                {/* Display ALL tags when menu is open */}
+                {sortedTags.map((tag) => (
                   <button
                     key={tag}
                     onClick={() => setSelectedTag(tag === "" ? null : tag)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 border ${
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 border ${
                       selectedTag === tag
                         ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-500/30 border-transparent"
                         : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444] hover:text-[#dc2626] hover:border-red-600 border-transparent"
@@ -458,19 +476,6 @@ const Portfolio: React.FC = () => {
                   </button>
                 ))}
               </div>
-              
-              {/* Show more/less button */}
-              {sortedTags.length > 8 && (
-                <div className="pt-1">
-                  <button
-                    onClick={handleShowAllTagsToggle}
-                    className="text-red-500 hover:text-red-400 text-sm font-medium flex items-center gap-1 py-2 px-1 min-h-[44px]"
-                  >
-                    {showAllTags ? <FaChevronUp className="w-4 h-4" /> : <FaChevronDown className="w-4 h-4" />}
-                    <span>{showAllTags ? "Show less" : "Show more"}</span>
-                  </button>
-                </div>
-              )}
             </div>
           )}
           </div>
