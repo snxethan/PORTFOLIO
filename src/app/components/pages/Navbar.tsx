@@ -162,7 +162,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
           ref={navContentRef}
           className={`flex gap-3 max-w-5xl mx-auto pb-2 ${
             isHorizontalScroll 
-              ? 'flex-row justify-center overflow-x-auto navbar-scroll px-4' 
+              ? `flex-row overflow-x-auto navbar-scroll px-4 ${needsToggle ? 'justify-start' : 'justify-center'}` 
               : 'flex-wrap justify-center overflow-x-visible'
           }`}
           style={isHorizontalScroll ? {
