@@ -374,6 +374,7 @@ const Resume = () => {
               setShowTagsMenu={setShowTagsMenu}
               showFilterMenu={showFilterMenu}
               setShowFilterMenu={setShowFilterMenu}
+              defaultSort="newest"
             />
 
             {/* Results count */}

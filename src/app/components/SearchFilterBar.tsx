@@ -17,6 +17,7 @@ interface SearchFilterBarProps {
   setShowTagsMenu: (show: boolean) => void;
   showFilterMenu: boolean;
   setShowFilterMenu: (show: boolean) => void;
+  defaultSort?: string; // Optional default sort value for the page
 }
 
 export default function SearchFilterBar({
@@ -33,8 +34,13 @@ export default function SearchFilterBar({
   setShowTagsMenu,
   showFilterMenu,
   setShowFilterMenu,
+  defaultSort,
 }: SearchFilterBarProps) {
   const sortedTags = [...tags].sort();
+  
+  // Determine if sort is at default value (use first option if defaultSort not provided)
+  const effectiveDefaultSort = defaultSort || sortOptions[0]?.value;
+  const isSortActive = selectedSort !== effectiveDefaultSort;
 
   return (
     <div className="bg-[#1a1a1a] p-4 rounded-lg mb-6">
@@ -71,11 +77,11 @@ export default function SearchFilterBar({
               setShowTagsMenu(false);
             }}
             className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent focus:outline-none ${
-              showFilterMenu || selectedSort !== sortOptions[0]?.value ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
+              showFilterMenu || isSortActive ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
             }`}
             title="Sort Options"
           >
-            <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || selectedSort !== sortOptions[0]?.value ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
+            <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || isSortActive ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
           </button>
         </div>
 

@@ -296,11 +296,14 @@ const About = () => {
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
   ] : [
-    { value: "hard-soft", label: "Hard-Soft" },
-    { value: "soft-hard", label: "Soft-Hard" },
+    { value: "hard-soft", label: "Skills (Hard-Soft)" },
+    { value: "soft-hard", label: "Skills (Soft-Hard)" },
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
   ]
+  
+  // Get the default sort value for the current page
+  const defaultSort = activeSubsection === "certifications" ? "newest" : "hard-soft"
 
   const resultsCount = activeSubsection === "certifications" 
     ? `Showing ${sortedCertifications.length} Certification${sortedCertifications.length !== 1 ? 's' : ''}`
@@ -372,6 +375,7 @@ const About = () => {
               setShowTagsMenu={setShowTagsMenu}
               showFilterMenu={showFilterMenu}
               setShowFilterMenu={setShowFilterMenu}
+              defaultSort={defaultSort}
             />
 
             {/* Results count */}
