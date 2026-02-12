@@ -70,42 +70,44 @@ export default function SearchFilterBar({
             <FaFilter className={`w-5 h-5 transition-colors ${showTagsMenu ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
           </button>
 
-          {/* Sort Options Button - Shows Sort Dropdown */}
-          <button
-            onClick={() => {
-              setShowFilterMenu(!showFilterMenu);
-              setShowTagsMenu(false);
-            }}
-            className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent focus:outline-none ${
-              showFilterMenu || isSortActive ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
-            }`}
-            title="Sort Options"
-          >
-            <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || isSortActive ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
-          </button>
-        </div>
-
-        {/* Sort Dropdown Menu */}
-        {showFilterMenu && (
-          <div className="absolute right-0 top-full mt-2 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg z-[100] min-w-[200px] animate-[popIn_0.2s_ease-out]">
-            {sortOptions.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => {
-                  setSelectedSort(option.value);
-                  setShowFilterMenu(false);
-                }}
-                className={`w-full text-left px-4 py-2 transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                  selectedSort === option.value
-                    ? "bg-red-600 text-white"
-                    : "text-gray-300 hover:bg-[#2a2a2a] hover:text-[#dc2626]"
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
+          {/* Sort Options Button with Dropdown - Wrapped in relative container with high z-index */}
+          <div className="relative z-[9999]">
+            <button
+              onClick={() => {
+                setShowFilterMenu(!showFilterMenu);
+                setShowTagsMenu(false);
+              }}
+              className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent focus:outline-none ${
+                showFilterMenu || isSortActive ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
+              }`}
+              title="Sort Options"
+            >
+              <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || isSortActive ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
+            </button>
+            
+            {/* Sort Dropdown Menu */}
+            {showFilterMenu && (
+              <div className="absolute right-0 top-full mt-2 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]">
+                {sortOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => {
+                      setSelectedSort(option.value);
+                      setShowFilterMenu(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                      selectedSort === option.value
+                        ? "bg-red-600 text-white"
+                        : "text-gray-300 hover:bg-[#2a2a2a] hover:text-[#dc2626]"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Filter Tags - Animated Dropdown */}
