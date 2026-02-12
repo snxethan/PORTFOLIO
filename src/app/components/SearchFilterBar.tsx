@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import { FaFilter, FaSort } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
@@ -37,6 +38,19 @@ export default function SearchFilterBar({
   defaultSort,
 }: SearchFilterBarProps) {
   const sortedTags = [...tags].sort();
+  const sortButtonRef = useRef<HTMLButtonElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 });
+
+  // Calculate dropdown position when it opens
+  useEffect(() => {
+    if (showFilterMenu && sortButtonRef.current) {
+      const rect = sortButtonRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + 8, // 8px margin
+        right: window.innerWidth - rect.right,
+      });
+    }
+  }, [showFilterMenu]);
   
   // Determine if sort is at default value (use first option if defaultSort not provided)
   const effectiveDefaultSort = defaultSort || sortOptions[0]?.value;
@@ -73,6 +87,7 @@ export default function SearchFilterBar({
           {/* Sort Options Button with Dropdown - Wrapped in relative container with high z-index */}
           <div className="relative z-[9999]">
             <button
+              ref={sortButtonRef}
               onClick={() => {
                 setShowFilterMenu(!showFilterMenu);
                 setShowTagsMenu(false);
@@ -85,9 +100,15 @@ export default function SearchFilterBar({
               <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || isSortActive ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
             </button>
             
-            {/* Sort Dropdown Menu */}
+            {/* Sort Dropdown Menu - Fixed positioning to escape all parent constraints */}
             {showFilterMenu && (
-              <div className="absolute right-0 top-full mt-2 z-[9999] bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]">
+              <div 
+                className="fixed z-[9999] bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]"
+                style={{
+                  top: `${dropdownPosition.top}px`,
+                  right: `${dropdownPosition.right}px`,
+                }}
+              >
                 {sortOptions.map((option) => (
                   <button
                     key={option.value}
