@@ -207,7 +207,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                         } ${
                           isActive
                             ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#ef4444] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}
@@ -234,7 +234,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                         } ${
                           isActive
                             ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#ef4444] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}
@@ -261,7 +261,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                         } ${
                           isActive
                             ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
+                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#ef4444] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
                         }`}
                       >
                         {tab.label}

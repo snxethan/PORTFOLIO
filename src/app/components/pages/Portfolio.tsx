@@ -369,7 +369,7 @@ const Portfolio: React.FC = () => {
         </div>
       
         {/* Navigation subsection */}
-        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+        <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl py-4 px-4">
           <div className="container mx-auto">
           {/* Search bar with filter using SearchFilterBar component */}
           <SearchFilterBar
@@ -450,7 +450,7 @@ const Portfolio: React.FC = () => {
                       >
                         <div className="p-6 flex-grow">
                           <div className="mb-2">
-                            <h3 className="text-xl font-semibold text-white group-hover:text-red-500 transition-colors duration-300 mb-1 truncate">
+                            <h3 className="text-xl font-semibold text-white group-hover:text-[#ef4444] transition-colors duration-300 mb-1 truncate">
                               {project.name}
                             </h3>
                             <div className="flex flex-wrap items-center gap-2">
@@ -484,7 +484,7 @@ const Portfolio: React.FC = () => {
                           </p>
                           <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
                             {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
-                              <span key={tag} className="bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                              <span key={tag} className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#ef4444] border border-transparent hover:bg-[#444444]">
                                 {tag.toUpperCase()}
                               </span>
                             ))}

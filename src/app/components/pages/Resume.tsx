@@ -356,7 +356,7 @@ const Resume = () => {
         </div>
       
         {/* Navigation subsection */}
-        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+        <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl py-4 px-4">
           {/* Main tab row */}
           <div className="container mx-auto">
             {/* Search bar with filter using SearchFilterBar component */}

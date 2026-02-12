@@ -45,7 +45,7 @@ export default function SearchFilterBar({
           placeholder={placeholder}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full p-4 pr-32 bg-[#1e1e1e] border border-gray-700 rounded-lg text-white focus:border-red-600 focus:outline-none transition-all hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.01]"
+          className="w-full p-4 pr-32 bg-[#1e1e1e] border border-[#333333] rounded-lg text-white focus:border-red-600 focus:outline-none transition-all hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.01]"
         />
         
         {/* Filter & Sort Buttons Container */}
@@ -57,11 +57,11 @@ export default function SearchFilterBar({
               setShowFilterMenu(false);
             }}
             className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent ${
-              showTagsMenu ? "text-red-500" : "text-gray-400 hover:text-gray-300"
+              showTagsMenu ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
             }`}
             title="Filter Options"
           >
-            <FaFilter className={`w-5 h-5 transition-colors ${showTagsMenu ? "text-red-500" : "group-hover:text-red-500"}`} />
+            <FaFilter className={`w-5 h-5 transition-colors ${showTagsMenu ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
           </button>
 
           {/* Sort Options Button - Shows Sort Dropdown */}
@@ -71,17 +71,17 @@ export default function SearchFilterBar({
               setShowTagsMenu(false);
             }}
             className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent focus:outline-none ${
-              showFilterMenu || selectedSort !== sortOptions[0]?.value ? "text-red-500" : "text-gray-400 hover:text-gray-300"
+              showFilterMenu || selectedSort !== sortOptions[0]?.value ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
             }`}
             title="Sort Options"
           >
-            <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || selectedSort !== sortOptions[0]?.value ? "text-red-500" : "group-hover:text-red-500"}`} />
+            <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || selectedSort !== sortOptions[0]?.value ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
           </button>
         </div>
 
         {/* Sort Dropdown Menu */}
         {showFilterMenu && (
-          <div className="absolute right-0 top-full mt-2 bg-[#1e1e1e] border border-gray-600 rounded-lg shadow-lg z-10 min-w-[200px] animate-[popIn_0.2s_ease-out]">
+          <div className="absolute right-0 top-full mt-2 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg z-10 min-w-[200px] animate-[popIn_0.2s_ease-out]">
             {sortOptions.map((option) => (
               <button
                 key={option.value}
@@ -92,7 +92,7 @@ export default function SearchFilterBar({
                 className={`w-full text-left px-4 py-2 transition-colors first:rounded-t-lg last:rounded-b-lg ${
                   selectedSort === option.value
                     ? "bg-red-600 text-white"
-                    : "text-gray-300 hover:bg-[#2a2a2a] hover:text-red-500"
+                    : "text-gray-300 hover:bg-[#2a2a2a] hover:text-[#ef4444]"
                 }`}
               >
                 {option.label}
@@ -125,13 +125,13 @@ export default function SearchFilterBar({
             <button
               key={tag}
               onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-              className={`px-3 py-1 rounded-full text-sm transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 ${
+              className={`px-3 py-1 rounded-full text-sm transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#ef4444] border border-transparent ${
                 selectedTag === tag
                   ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
                   : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444]"
               }`}
             >
-              {tag}
+              {tag.toUpperCase()}
             </button>
           ))}
         </div>

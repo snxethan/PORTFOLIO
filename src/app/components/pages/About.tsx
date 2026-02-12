@@ -153,7 +153,7 @@ const About = () => {
                 <Icon className="text-white text-2xl" /> 
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-white font-semibold text-base mb-1 truncate">{name}</h3>
+                <h3 className="text-white font-semibold text-base mb-1 truncate group-hover:text-[#ef4444] transition-colors duration-300">{name}</h3>
                 {year && (
                   <span className="text-gray-400 text-sm">{year}</span>
                 )} 
@@ -161,7 +161,7 @@ const About = () => {
             </div>
             
             {(url?.endsWith(".pdf") || (url && !url.endsWith(".pdf"))) && (
-              <div className="absolute bottom-4 right-4 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300"> 
+              <div className="absolute bottom-4 right-4 text-gray-400 group-hover:text-[#ef4444] transition-colors duration-300"> 
                 {url?.endsWith(".pdf") && <FaFilePdf size={16} aria-label="View Certification" />} 
                 {url && !url.endsWith(".pdf") && <FaExternalLinkAlt size={16} aria-label="Open external link" />} 
               </div>
@@ -337,7 +337,7 @@ const About = () => {
         </div>
       
         {/* Navigation subsection */}
-        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+        <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl py-4 px-4">
           {/* Main tab row */}
           <div className="container mx-auto">
             {/* Search bar with filter using SearchFilterBar component */}
