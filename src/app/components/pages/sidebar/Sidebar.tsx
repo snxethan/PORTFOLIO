@@ -79,7 +79,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
           Ethan Townsend
         </h2>
 
-            <p className="text-gray-400">Full Stack Software Developer</p>
+            <p className="text-gray-300">Full Stack Software Developer</p>
             <p className="text-gray-400 text-sm mt-1">Salt Lake City, UT</p>
           </div>
 

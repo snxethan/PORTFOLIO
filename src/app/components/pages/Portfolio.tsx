@@ -547,7 +547,7 @@ const Portfolio: React.FC = () => {
                           </div>
                           <p className="text-gray-300 mb-2 line-clamp-3 break-words">{project.description}</p>
                           <p className="text-sm text-gray-400 mb-1">
-                            Created On:{" "}
+                            <span className="font-bold">Created On:</span>{" "}
                             {new Date(project.created_at).toLocaleDateString("en-US", {
                               year: "numeric",
                               month: "short",
@@ -555,7 +555,7 @@ const Portfolio: React.FC = () => {
                             })}
                           </p>
                           <p className="text-sm text-gray-400 mb-2">
-                            Last Updated:{" "}
+                            <span className="font-bold">Last Updated:</span>{" "}
                             {new Date(project.updated_at).toLocaleDateString("en-US", {
                               year: "numeric",
                               month: "short",
