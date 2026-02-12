@@ -81,7 +81,7 @@ export default function SearchFilterBar({
 
         {/* Sort Dropdown Menu */}
         {showFilterMenu && (
-          <div className="absolute right-0 top-full mt-2 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg z-10 min-w-[200px] animate-[popIn_0.2s_ease-out]">
+          <div className="absolute right-0 top-full mt-2 bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg z-50 min-w-[200px] animate-[popIn_0.2s_ease-out]">
             {sortOptions.map((option) => (
               <button
                 key={option.value}
@@ -125,10 +125,10 @@ export default function SearchFilterBar({
             <button
               key={tag}
               onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
-              className={`px-3 py-1 rounded-full text-sm transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] border border-transparent ${
+              className={`px-3 py-1 rounded-full text-sm transition-all duration-200 border border-transparent ${
                 selectedTag === tag
                   ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
-                  : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444]"
+                  : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626]"
               }`}
             >
               {tag.toUpperCase()}
