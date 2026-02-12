@@ -39,18 +39,53 @@ export default function SearchFilterBar({
 }: SearchFilterBarProps) {
   const sortedTags = [...tags].sort();
   const sortButtonRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 });
 
-  // Calculate dropdown position when it opens
+  // Calculate dropdown position when it opens or on scroll/resize
   useEffect(() => {
-    if (showFilterMenu && sortButtonRef.current) {
-      const rect = sortButtonRef.current.getBoundingClientRect();
-      setDropdownPosition({
-        top: rect.bottom + 8, // 8px margin
-        right: window.innerWidth - rect.right,
-      });
+    const updatePosition = () => {
+      if (showFilterMenu && sortButtonRef.current) {
+        const rect = sortButtonRef.current.getBoundingClientRect();
+        setDropdownPosition({
+          top: rect.bottom + 8, // 8px margin below button
+          right: window.innerWidth - rect.right, // Align right edges
+        });
+      }
+    };
+
+    updatePosition();
+
+    if (showFilterMenu) {
+      window.addEventListener('scroll', updatePosition, true);
+      window.addEventListener('resize', updatePosition);
+      
+      return () => {
+        window.removeEventListener('scroll', updatePosition, true);
+        window.removeEventListener('resize', updatePosition);
+      };
     }
   }, [showFilterMenu]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        showFilterMenu &&
+        dropdownRef.current &&
+        sortButtonRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        !sortButtonRef.current.contains(event.target as Node)
+      ) {
+        setShowFilterMenu(false);
+      }
+    };
+
+    if (showFilterMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showFilterMenu, setShowFilterMenu]);
   
   // Determine if sort is at default value (use first option if defaultSort not provided)
   const effectiveDefaultSort = defaultSort || sortOptions[0]?.value;
@@ -103,6 +138,7 @@ export default function SearchFilterBar({
             {/* Sort Dropdown Menu - Fixed positioning to escape all parent constraints */}
             {showFilterMenu && (
               <div 
+                ref={dropdownRef}
                 className="fixed z-[9999] bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]"
                 style={{
                   top: `${dropdownPosition.top}px`,
