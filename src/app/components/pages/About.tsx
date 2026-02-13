@@ -1,55 +1,172 @@
 "use client"
-import { useEffect, useState } from "react"
-import { FaFilePdf, FaExternalLinkAlt } from "react-icons/fa"
+import React, { useEffect, useState } from "react"
+import { FaFilePdf, FaExternalLinkAlt, FaSort, FaChevronDown, FaChevronUp } from "react-icons/fa"
+import { IoMdClose } from "react-icons/io"
+import { useSearchParams, useRouter } from "next/navigation"
 
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
-import { skills, unrelatedSkills, certifications, Skill, Certification } from "../../data/aboutData"
+import { skills, certifications, Skill, Certification } from "../../data/aboutData"
+import SearchFilterBar from "../SearchFilterBar"
 
 const About = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
+  const [activeSubsection, setActiveSubsection] = useState("certifications")
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [search, setSearch] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('aboutSearch') || ""
+    }
+    return ""
+  })
+  const [sortBy, setSortBy] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('aboutSortBy')
+      if (saved) return saved
+      // Default based on active subsection
+      return activeSubsection === "certifications" ? "newest" : "hard-soft"
+    }
+    return activeSubsection === "certifications" ? "newest" : "hard-soft"
+  })
+  const [showFilterMenu, setShowFilterMenu] = useState(false)
+  const [showTagsMenu, setShowTagsMenu] = useState(false)
+  const [selectedTag, setSelectedTag] = useState<string | null>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('aboutSelectedTag')
+      return saved !== null ? saved : "Computer Science"
+    }
+    return "Computer Science"
+  })
+  const [showAllTags, setShowAllTags] = useState(false)
+  const [clickedTab, setClickedTab] = useState<string | null>(null)
   const { handleExternalClick } = useExternalLink()
+  const searchParams = useSearchParams()
+  const router = useRouter()
+
+  // Persist filter and sort state for About page
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('aboutSearch', search)
+    }
+  }, [search])
 
   useEffect(() => {
-    setLoading(false)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('aboutSortBy', sortBy)
+    }
+  }, [sortBy])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (selectedTag !== null) {
+        localStorage.setItem('aboutSelectedTag', selectedTag)
+      } else {
+        localStorage.removeItem('aboutSelectedTag')
+      }
+    }
+  }, [selectedTag])
+
+  useEffect(() => {
+    // Show skeleton loader for 500ms for consistent UX
+    const timer = setTimeout(() => setLoading(false), 500)
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedPDF(null)
+      if (e.key === "Escape") {
+        setSelectedPDF(null)
+        setShowFilterMenu(false)
+      }
     }
     document.addEventListener("keydown", handleEscape)
-    return () => document.removeEventListener("keydown", handleEscape)
-  }, [])
+    
+    // Load active tab from localStorage first
+    const savedTab = localStorage.getItem("aboutActiveTab")
+    if (savedTab && (savedTab === "certifications" || savedTab === "skills")) {
+      setActiveSubsection(savedTab)
+    }
+    
+    // Handle URL parameters for tab (takes precedence over localStorage)
+    const pageParam = searchParams.get("page")
+    const parts = pageParam?.split("/")
+    const tabParam = parts?.[1]
+    if (tabParam && (tabParam === "certifications" || tabParam === "skills")) {
+      setActiveSubsection(tabParam)
+    }
+    
+    // Load filter from localStorage (per-tab persistence)
+    const savedFilter = localStorage.getItem(`${activeSubsection}-filter`)
+    if (savedFilter) {
+      setSortBy(savedFilter)
+    }
+    
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener("keydown", handleEscape)
+    }
+  }, [searchParams])
+
+  const handleTabChange = (tabId: string) => {
+    setClickedTab(tabId)
+    setTimeout(() => setClickedTab(null), 300)
+    setIsAnimating(true)
+    
+    // Save to localStorage
+    localStorage.setItem("aboutActiveTab", tabId)
+    
+    // Scroll to top when changing tabs
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    
+    // Update URL with new format
+    router.push(`?page=about/${tabId}`, { scroll: false })
+    
+    setTimeout(() => {
+      setActiveSubsection(tabId)
+      setIsAnimating(false)
+    }, 150)
+  }
+  
+  const handleFilterChange = (value: string) => {
+    setSortBy(value)
+    localStorage.setItem(`${activeSubsection}-filter`, value)
+    setShowFilterMenu(false)
+  }
+  
+  const handleShowAllTagsToggle = () => {
+    setShowAllTags(!showAllTags)
+  }
 
   const renderSkillGrid = (items: Skill[] | Certification[]) => {
-    const sortedItems = [...items].sort((a, b) => {
-      if (a.highlight === b.highlight) {
-        return a.name.localeCompare(b.name)
-      }
-      return a.highlight ? -1 : 1
-    })
-
+    // Don't re-sort here - use the already sorted items
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
-      {sortedItems.map(({ name, icon: Icon, highlight, url }) => { 
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {items.map((item) => { 
+        const { name, icon: Icon, highlight, url } = item
+        const cert = item as Certification
+        const year = cert.year 
         const Card = (
           <div
-            className={`group relative flex flex-col items-center bg-[#1e1e1e] hover:bg-[#252525] p-3 sm:p-4 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-transform duration-300 ease-out hover:scale-[1.09] active:scale-95`} 
+            className={`group relative flex flex-col bg-[#1a1a1a] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 min-h-[140px]`} 
           >
-            <div // Icon container
-              className={`inline-block p-1.5 sm:p-2 rounded-lg shadow-lg group-hover:scale-110 transition-transform duration-300 ${
-                highlight ? "bg-gradient-to-br from-red-500 to-red-700" : "bg-red-600/40 group-hover:bg-red-600/50"
-              }`} 
-            >
-              <Icon className="text-white text-lg sm:text-xl" /> 
+            <div className="flex items-start gap-4 mb-3">
+              <div // Icon container
+                className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
+                  highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
+                }`} 
+              >
+                <Icon className="text-white text-2xl" /> 
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-white font-semibold text-base mb-1 truncate group-hover:text-[#dc2626] transition-colors duration-300">{name}</h3>
+                {year && (
+                  <span className="text-gray-400 text-sm">{year}</span>
+                )} 
+              </div>
             </div>
-            {/* Removed whitespace-nowrap to allow text to wrap */}
-            <p className="text-white mt-1.5 sm:mt-2 font-semibold text-xs sm:text-sm text-center">{name}</p> 
             
             {(url?.endsWith(".pdf") || (url && !url.endsWith(".pdf"))) && (
-              <div className="absolute bottom-1.5 right-1.5 sm:bottom-2 sm:right-2 text-gray-400 group-hover:text-red-400 transition-colors duration-300"> 
-                {url?.endsWith(".pdf") && <FaFilePdf size={14} aria-label="View Certification" />} 
-                {url && !url.endsWith(".pdf") && <FaExternalLinkAlt size={14} aria-label="Open external link" />} 
+              <div className="absolute bottom-4 right-4 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300"> 
+                {url?.endsWith(".pdf") && <FaFilePdf size={16} aria-label="View Certification" />} 
+                {url && !url.endsWith(".pdf") && <FaExternalLinkAlt size={16} aria-label="Open external link" />} 
               </div>
             )}
           </div>
@@ -82,9 +199,9 @@ const About = () => {
 }
 
   const renderSkeletonGrid = (count: number) => (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {[...Array(count)].map((_, i) => (
-        <div key={i} className="bg-[#1e1e1e] border border-[#333333] p-3 sm:p-4 rounded-xl animate-pulse flex flex-col items-center mx-auto">
+        <div key={i} className="bg-[#1a1a1a] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4 min-h-[140px]">
           <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#333333] rounded mb-1.5 sm:mb-2" /> 
           <div className="h-2.5 sm:h-3 bg-[#333333] rounded w-16 sm:w-20" />
         </div>
@@ -93,49 +210,201 @@ const About = () => {
   )
 
 
+  const tabs = [
+    { id: "certifications", label: "Certifications" },
+    { id: "skills", label: "Skills" },
+  ]
+  
+  // Extract tags from certifications and skills
+  const allTags = React.useMemo(() => {
+    const tagSet = new Set<string>()
+    const items = activeSubsection === "certifications" ? certifications : skills
+    items.forEach(item => {
+      item.tags?.forEach(tag => tagSet.add(tag))
+    })
+    const tags = Array.from(tagSet).sort()
+    // Add Hard Skills and Soft Skills filter options for skills subsection
+    if (activeSubsection === "skills") {
+      return ["Hard Skills", "Soft Skills", ...tags]
+    }
+    return tags
+  }, [activeSubsection])
+  
+  const sortedTags = React.useMemo(() => {
+    if (!allTags.length) return []
+    return allTags.slice().sort((a, b) => a.localeCompare(b))
+  }, [allTags])
+
+  // Filter certifications based on search, sort, and tag
+  const filteredCertifications = certifications.filter((cert) => {
+    const matchesSearch = cert.name.toLowerCase().includes(search.toLowerCase())
+    const matchesFilter = sortBy !== "cs-only" || cert.tags?.includes("Computer Science")
+    const matchesTag = !selectedTag || cert.tags?.includes(selectedTag)
+    return matchesSearch && matchesFilter && matchesTag
+  })
+
+  // Apply sorting to certifications
+  const sortedCertifications = [...filteredCertifications].sort((a, b) => {
+    if (sortBy === "cs-only") return b.year - a.year  // CS items sorted newest first
+    if (sortBy === "name-asc") return a.name.localeCompare(b.name)
+    if (sortBy === "name-desc") return b.name.localeCompare(a.name)
+    if (sortBy === "oldest") return a.year - b.year
+    if (sortBy === "newest") return b.year - a.year
+    // Default sort (highlight first, then alphabetical)
+    if (a.highlight === b.highlight) {
+      return a.name.localeCompare(b.name)
+    }
+    return a.highlight ? -1 : 1
+  })
+
+  // Filter skills based on search and tag
+  const filteredSkills = skills.filter((skill) => {
+    const matchesSearch = skill.name.toLowerCase().includes(search.toLowerCase())
+    const matchesFilter = 
+      sortBy !== "cs-only" ? true : skill.tags?.includes("Computer Science")
+    const matchesTag = !selectedTag || skill.tags?.includes(selectedTag) || 
+      (selectedTag === "Hard Skills" && skill.highlight === true) ||
+      (selectedTag === "Soft Skills" && skill.highlight !== true)
+    return matchesSearch && matchesFilter && matchesTag
+  })
+
+  // Apply sorting to skills
+  const sortedSkills = [...filteredSkills].sort((a, b) => {
+    if (sortBy === "cs-only") return 0  // CS only, no date sort for skills
+    if (sortBy === "hard-soft") {
+      // Hard skills first (highlight=true), then soft skills
+      if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
+      return a.highlight ? -1 : 1
+    }
+    if (sortBy === "soft-hard") {
+      // Soft skills first (highlight=false), then hard skills
+      if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
+      return a.highlight ? 1 : -1
+    }
+    if (sortBy === "name-asc") return a.name.localeCompare(b.name)
+    if (sortBy === "name-desc") return b.name.localeCompare(a.name)
+    // Default sort (hard skills first, then alphabetical)
+    if (a.highlight === b.highlight) {
+      return a.name.localeCompare(b.name)
+    }
+    return a.highlight ? -1 : 1
+  })
+
+  const filterOptions = activeSubsection === "certifications" ? [
+    { value: "newest", label: "Newest" },
+    { value: "oldest", label: "Oldest" },
+    { value: "name-asc", label: "Name (A–Z)" },
+    { value: "name-desc", label: "Name (Z–A)" },
+  ] : [
+    { value: "hard-soft", label: "Skills (Hard-Soft)" },
+    { value: "soft-hard", label: "Skills (Soft-Hard)" },
+    { value: "name-asc", label: "Name (A–Z)" },
+    { value: "name-desc", label: "Name (Z–A)" },
+  ]
+  
+  // Get the default sort value for the current page
+  const defaultSort = activeSubsection === "certifications" ? "newest" : "hard-soft"
+
+  const resultsCount = activeSubsection === "certifications" 
+    ? `Showing ${sortedCertifications.length} Certification${sortedCertifications.length !== 1 ? 's' : ''}`
+    : `Showing ${sortedSkills.length} Skill${sortedSkills.length !== 1 ? 's' : ''}`
+
+  const isFilterActive = activeSubsection === "certifications" 
+    ? sortBy && sortBy !== "newest"
+    : sortBy && sortBy !== "hard-soft"
+
+  // Tab-specific descriptions
+  const getPageDescription = () => {
+    switch (activeSubsection) {
+      case "certifications":
+        return {
+          title: "Professional Certifications",
+          subtitle: "Industry-recognized credentials and technical certifications",
+          description: "Validated expertise across cloud platforms, cybersecurity, and computer science fundamentals."
+        }
+      case "skills":
+        return {
+          title: "Technical Skills & Expertise",
+          subtitle: "Technologies, frameworks, and tools I work with",
+          description: "Proficient in full-stack development, cloud architecture, and modern software engineering practices."
+        }
+      default:
+        return {
+          title: "Professional Certifications",
+          subtitle: "Industry-recognized credentials and technical certifications",
+          description: "Validated expertise across cloud platforms, cybersecurity, and computer science fundamentals."
+        }
+    }
+  }
+
+  const pageDescription = getPageDescription()
+
   return (
-    <div>
-      <h2 className="text-4xl font-bold text-white mb-6 relative text-center">
-        Information, Certifications, and Skills.
-        <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
-      </h2>
-      <section id="about" className="py-20 bg-[#121212] text-white">
-        <div className="container mx-auto px-4 grid grid-cols-1 gap-16">
-          <div className="text-center space-y-4">
-            <p className="text-lg text-gray-100">I&apos;m a Software Engineer focused on backend or full-stack development.</p>
-            <p className="text-lg text-gray-400">Experienced in Java, C#, Node.js, and cloud platforms. Passionate about clean code, performance optimization, and staying current with industry best practices.</p>
-          </div>
+    <>
+      {/* Header section - wrapped in styled container */}
+      <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
+        {/* Header content */}
+        <div className="mb-6">
+          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
+            {pageDescription.title}
+          </h2>
+          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
+            {pageDescription.subtitle}
+          </p>
+          <p className="text-center text-gray-400 max-w-3xl mx-auto">
+            {pageDescription.description}
+          </p>
+        </div>
+      
+        {/* Navigation subsection */}
+        <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl py-4 px-4">
+          {/* Main tab row */}
+          <div className="container mx-auto">
+            {/* Search bar with filter using SearchFilterBar component */}
+            <SearchFilterBar
+              search={search}
+              setSearch={setSearch}
+              placeholder="Search by name, keyword, or tags..."
+              tags={sortedTags}
+              selectedTag={selectedTag}
+              setSelectedTag={setSelectedTag}
+              sortOptions={filterOptions}
+              selectedSort={sortBy}
+              setSelectedSort={handleFilterChange}
+              showTagsMenu={showTagsMenu}
+              setShowTagsMenu={setShowTagsMenu}
+              showFilterMenu={showFilterMenu}
+              setShowFilterMenu={setShowFilterMenu}
+              defaultSort={defaultSort}
+            />
 
-          <div>
-            <div className="flex flex-col items-center mb-6">
-              <h2 className="text-3xl font-bold text-white">Certifications</h2>
-              <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
-            </div>
-            {loading ? renderSkeletonGrid(6) : renderSkillGrid(certifications)}
+            {/* Results count */}
+            {resultsCount && (
+              <div className="text-sm text-gray-400 mb-3">{resultsCount}</div>
+            )}
           </div>
-
-          <div>
-            <div className="flex flex-col items-center mb-6">
-              <h2 className="text-3xl font-bold text-white">Skills</h2>
-              <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
-            </div>
-            {loading ? renderSkeletonGrid(9) : renderSkillGrid(skills)}
-          </div>
-
-          {unrelatedSkills.length > 0 && (
+        </div>
+      </div>
+      
+      {/* Content section - outside header wrapper */}
+      <section id="about" className="text-white">
+        <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
+          {activeSubsection === "certifications" && (
             <div>
-              <div className="flex flex-col items-center mb-6">
-                <h2 className="text-3xl font-bold text-white">Misc. Skills</h2>
-                <span className="w-64 h-1 mt-2 bg-gradient-to-r from-red-600 to-red-500"></span>
-              </div>
-              {loading ? renderSkeletonGrid(3) : renderSkillGrid(unrelatedSkills)}
+              {loading ? renderSkeletonGrid(6) : renderSkillGrid(sortedCertifications)}
+            </div>
+          )}
+
+          {activeSubsection === "skills" && (
+            <div>
+              {loading ? renderSkeletonGrid(9) : renderSkillGrid(sortedSkills)}
             </div>
           )}
         </div>
       </section>
 
       <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />
-    </div>
+    </>
   )
 }
 

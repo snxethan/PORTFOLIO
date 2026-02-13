@@ -202,3 +202,76 @@ body {
 .animate-fade-out-down {
   animation: fade-out-down 0.3s ease-in forwards;
 }
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-fadeInScale {
+  animation: fadeInScale 0.3s ease-out forwards;
+}
+
+/* Navbar horizontal scroll - red scrollbar visible only when scrolling */
+.navbar-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.navbar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.navbar-scroll::-webkit-scrollbar-thumb {
+  background: #dc2626;
+  border-radius: 3px;
+}
+
+.navbar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #b91c1c;
+}
+
+/* Show scrollbar on desktop only when scrolling */
+@media (min-width: 768px) {
+  .navbar-scroll::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Show scrollbar on mobile when content overflows */
+@media (max-width: 767px) {
+  .navbar-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #dc2626 transparent;
+  }
+}
+
+/* Pop-in animation for dropdown menus */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes popOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9) translateY(-10px);
+  }
+}
+.animate-popIn {
+  animation: popIn 0.2s ease-out forwards;
+}

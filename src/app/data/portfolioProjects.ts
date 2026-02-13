@@ -10,6 +10,7 @@ interface Project {
   source: "github" | "manual"
   ctaLabel?: string
   ctaIcon?: "github" | "external" | "youtube" | "private" | undefined
+  tags?: string[]
 }
 
 export const manualProjects: Project[] = [
@@ -24,7 +25,8 @@ export const manualProjects: Project[] = [
     updated_at: "2025-01-30T00:00:00Z",
     source: "github",
     ctaLabel: "View Repository",
-    ctaIcon: "github"
+    ctaIcon: "github",
+    tags: ["Computer Science"]
   },
   {
     id: 2,
@@ -37,7 +39,8 @@ export const manualProjects: Project[] = [
     updated_at: "2025-01-28T00:00:00Z",
     source: "github",
     ctaLabel: "This repository is private",
-    ctaIcon: "private"
+    ctaIcon: "private",
+    tags: ["Computer Science"]
   },
   {
     id: 3,
@@ -50,7 +53,8 @@ export const manualProjects: Project[] = [
     updated_at: "2023-11-30T00:00:00Z",
     source: "github",
     ctaLabel: "View Repository",
-    ctaIcon: "github"
+    ctaIcon: "github",
+    tags: ["Computer Science"]
   },
   {
     id: 4,
@@ -63,7 +67,8 @@ export const manualProjects: Project[] = [
     updated_at: "2024-03-04T00:00:00Z",
     source: "github",
     ctaLabel: "View Repository",
-    ctaIcon: "github"
+    ctaIcon: "github",
+    tags: ["Computer Science"]
   },
   {
     id: 5,
@@ -76,7 +81,8 @@ export const manualProjects: Project[] = [
     updated_at: "2024-12-04T00:00:00Z",
     source: "github",
     ctaLabel: "This repository is private",
-    ctaIcon: "private"
+    ctaIcon: "private",
+    tags: ["Computer Science"]
   },
   {
     id: 6,
@@ -89,6 +95,7 @@ export const manualProjects: Project[] = [
     updated_at: "2025-09-04T00:00:00Z",
     source: "github",
     ctaLabel: "This repository is private",
-    ctaIcon: "private"
+    ctaIcon: "private",
+    tags: ["Computer Science"]
   }
 ]

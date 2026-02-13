@@ -127,12 +127,12 @@ export default function SpotifyWidget() {
                 handleExternalClick("https://open.spotify.com/user/l7ypevjdnoaz97kdqkkwf832d")
               }
               aria-label="Spotify"
-              className="text-gray-400 hover:text-red-500 transition-colors text-lg flex items-center"
+              className="text-gray-400 hover:text-red-600 text-lg flex items-center transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
             >
               <FaSpotify />
             </button>
           </TooltipWrapper>
-          <span className="text-gray-400 text-sm leading-none">now listening:</span>
+          <span className="text-sm leading-none text-gray-400">now listening:</span>
         </div>
         <div className="flex items-center justify-center">
           <TooltipWrapper label={track!.songUrl}> {/* Tooltip to show the song URL */}

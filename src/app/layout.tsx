@@ -7,8 +7,8 @@ import { Toaster } from 'react-hot-toast'
 
 
 export const metadata: Metadata = {
-  title: "Portfolio | Ethan Townsend",
-  description: "Full Stack Developer Portfolio",
+  title: "Ethan Townsend | Software Engineer",
+  description: "I'm Ethan Townsend. A Backend & Full-Stack Software Engineer, I am interested in all things tech. Learn more about me here!",
   icons: {
     icon: [
       { url: "/favicon.ico", type: "image/x-icon" },
@@ -19,10 +19,10 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "Portfolio | Ethan Townsend",
-    description: "Explore Ethan Townsend's project portfolio, resume, and more.",
-    url: "https://www.snxethan.dev",
-    siteName: "snex.dev",
+    title: "Ethan Townsend | Software Engineer",
+    description: "I'm Ethan Townsend. A Backend & Full-Stack Software Engineer, I am interested in all things tech. Learn more about me here!",
+    url: "https://www.ethantownsend.dev",
+    siteName: "ethantownsend.dev",
     images: [
       {
         url: "https://www.snxethan.dev/images/avatar/snex.png",
@@ -35,8 +35,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Portfolio | Ethan Townsend",
-    description: "Explore Ethan Townsend's project portfolio, resume, and more.",
+    title: "Ethan Townsend | Software Engineer",
+    description: "I'm Ethan Townsend. A Backend & Full-Stack Software Engineer, I am interested in all things tech. Learn more about me here!",
     images: ["https://www.snxethan.dev/images/avatar/snex.png"],
   },  other: {
     'X-Frame-Options': 'SAMEORIGIN',
@@ -54,7 +54,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Ethan Townsend",
-  "url": "https://www.snxethan.dev",
+  "url": "https://www.ethantownsend.dev",
   "image": "https://www.snxethan.dev/images/avatar/snex.png",
   "jobTitle": "Software Engineer",
   "sameAs": [
