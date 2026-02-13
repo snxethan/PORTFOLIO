@@ -1,11 +1,15 @@
 "use client"
 
 import { Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import HomeClient from "./components/pages/HomeClient"
+import LandingPage from "./components/pages/LandingPage"
 import { useEffect, useState } from "react"
 import SecurityPolicyModal from "./components/SecurityPolicyModal"
 
-export default function Page() {
+function PageContent() {
+  const searchParams = useSearchParams()
+  const page = searchParams.get("page")
   const [showSecurityPolicy, setShowSecurityPolicy] = useState(false)
 
   useEffect(() => {
@@ -14,12 +18,22 @@ export default function Page() {
     }
   }, [])
 
+  // If no page parameter, show landing page
+  // Otherwise show the normal HomeClient with tabs
   return (
-    <Suspense fallback={null}>
-      <HomeClient />
+    <>
+      {!page ? <LandingPage /> : <HomeClient />}
       {showSecurityPolicy && (
         <SecurityPolicyModal onClose={() => setShowSecurityPolicy(false)} />
       )}
+    </>
+  )
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <PageContent />
     </Suspense>
   )
 }

@@ -92,21 +92,21 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
   // Define tab groups with their respective sections
   const tabGroups = [
     {
-      name: "About",
+      name: "Ethan Townsend",
       tabs: [
         { id: "certifications", label: "Certifications", page: "about" },
         { id: "skills", label: "Skills", page: "about" }
       ]
     },
     {
-      name: "Resume",
+      name: "Ethan Townsend",
       tabs: [
         { id: "experience", label: "Experience", page: "resume" },
         { id: "education", label: "Education", page: "resume" }
       ]
     },
     {
-      name: "Portfolio",
+      name: "Ethan Townsend",
       tabs: [
         { id: "projects", label: "Projects", page: "portfolio" },
         { id: "repositories", label: "Repositories", page: "portfolio" }
