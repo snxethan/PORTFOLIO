@@ -129,7 +129,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
   }
 
   return (
-    <nav className={`w-full bg-[#222222] py-4 ${isNavPinned ? 'fixed' : 'relative'} top-0 left-0 z-50 animate-elastic-in border-b border-[#333333] md:border-0 transition-all duration-300 ease-in-out`}>
+    <nav className={`w-full bg-[#222222] py-4 ${isNavPinned ? 'fixed' : 'relative'} top-0 left-0 z-50 border-b border-[#333333] md:border-0 transition-all duration-300 ease-in-out`}>
       <div className="container mx-auto">
         {/* Title with Home icon (left), Layout toggle (right, left of pin) and Pin button (right) */}
         <div className="flex items-center justify-center mb-3 relative">
@@ -235,8 +235,6 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                         onClick={() => handleClick(tab.page, tab.id)}
                         disabled={isActive}
                         className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 border ${
-                          clickedTab === tabKey ? "animate-elastic-in" : ""
-                        } ${
                           isActive
                             ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
                             : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
@@ -262,8 +260,6 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                         onClick={() => handleClick(tab.page, tab.id)}
                         disabled={isActive}
                         className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 border ${
-                          clickedTab === tabKey ? "animate-elastic-in" : ""
-                        } ${
                           isActive
                             ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
                             : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
@@ -289,8 +285,6 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                         onClick={() => handleClick(tab.page, tab.id)}
                         disabled={isActive}
                         className={`px-5 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 border ${
-                          clickedTab === tabKey ? "animate-elastic-in" : ""
-                        } ${
                           isActive
                             ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
                             : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
