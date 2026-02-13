@@ -14,7 +14,8 @@ interface NavbarProps {
 }
 
 const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChange }: NavbarProps) => {
-  const isLoading = !activePage || !activeTab
+  // Only show loading state if page data hasn't been initialized (undefined), not if it's explicitly null (homepage)
+  const isLoading = activePage === undefined || activeTab === undefined
   const [clickedTab, setClickedTab] = useState<string | null>(null)
   
   // Load persisted states from localStorage or use defaults
