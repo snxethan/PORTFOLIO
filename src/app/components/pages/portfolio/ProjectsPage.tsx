@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { useSearchParams } from "next/navigation"
 import { projectsTimelineData } from "../../../data/projectsTimelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
@@ -36,7 +35,6 @@ const ProjectsPage = () => {
     return "Computer Science"
   })
   const [loading, setLoading] = useState(true)
-  const searchParams = useSearchParams()
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -83,7 +81,7 @@ const ProjectsPage = () => {
       clearTimeout(timer)
       document.removeEventListener("keydown", handleEscape)
     }
-  }, [searchParams])
+  }, [])
 
   const handleSortChange = (value: string) => {
     setSortBy(value)

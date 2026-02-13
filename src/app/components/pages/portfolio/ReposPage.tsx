@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
 import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
 import { useExternalLink } from "../../ExternalLinkHandler"
 import TooltipWrapper from "../../ToolTipWrapper"
@@ -71,7 +70,6 @@ const ReposPage = () => {
   const [loading, setLoading] = useState(true)
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const { handleExternalClick } = useExternalLink()
-  const searchParams = useSearchParams()
 
   const filterOptions = [
     { value: "newest", label: "Newest" },
@@ -206,7 +204,7 @@ const ReposPage = () => {
     }
     
     return () => document.removeEventListener("keydown", handleEscape)
-  }, [searchParams])
+  }, [])
   
   const handleFilterChange = (value: string) => {
     setSortBy(value)
