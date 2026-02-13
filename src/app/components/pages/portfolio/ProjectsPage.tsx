@@ -64,9 +64,18 @@ const ProjectsPage = () => {
 
     document.addEventListener("keydown", handleEscape)
     
-    const savedFilter = localStorage.getItem('projects-filter')
+    const savedFilter = localStorage.getItem('projectsSortBy')
     if (savedFilter) {
-      setSortBy(savedFilter)
+      const filterOptions = [
+        { value: "newest", label: "Newest" },
+        { value: "oldest", label: "Oldest" },
+        { value: "name-asc", label: "Name (A–Z)" },
+        { value: "name-desc", label: "Name (Z–A)" },
+      ]
+      const isValidFilter = filterOptions.some(option => option.value === savedFilter)
+      if (isValidFilter) {
+        setSortBy(savedFilter)
+      }
     }
     
     return () => {
@@ -77,7 +86,7 @@ const ProjectsPage = () => {
 
   const handleSortChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem('projects-filter', value)
+    localStorage.setItem('projectsSortBy', value)
     setShowFilterMenu(false)
   }
 

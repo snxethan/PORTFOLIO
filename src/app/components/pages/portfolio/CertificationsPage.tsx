@@ -73,7 +73,7 @@ const CertificationsPage = () => {
   
   const handleFilterChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem('certifications-filter', value)
+    localStorage.setItem('certificationsSortBy', value)
     setShowFilterMenu(false)
   }
 

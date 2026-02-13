@@ -73,6 +73,13 @@ const ReposPage = () => {
   const { handleExternalClick } = useExternalLink()
   const searchParams = useSearchParams()
 
+  const filterOptions = [
+    { value: "newest", label: "Newest" },
+    { value: "oldest", label: "Oldest" },
+    { value: "name-asc", label: "Name (A–Z)" },
+    { value: "name-desc", label: "Name (Z–A)" },
+  ]
+
   // Handle tag click from repository cards
   const handleTagClick = (tag: string) => {
     setSelectedTag(tag)
@@ -190,14 +197,8 @@ const ReposPage = () => {
     }
     document.addEventListener("keydown", handleEscape)
     
-    const savedFilter = localStorage.getItem('repositories-filter')
+    const savedFilter = localStorage.getItem('reposSortBy')
     if (savedFilter) {
-      const filterOptions = [
-        { value: "newest", label: "Newest" },
-        { value: "oldest", label: "Oldest" },
-        { value: "name-asc", label: "Name (A–Z)" },
-        { value: "name-desc", label: "Name (Z–A)" },
-      ]
       const isValidFilter = filterOptions.some(option => option.value === savedFilter)
       if (isValidFilter) {
         setSortBy(savedFilter)
@@ -205,11 +206,11 @@ const ReposPage = () => {
     }
     
     return () => document.removeEventListener("keydown", handleEscape)
-  }, [searchParams])
+  }, [searchParams, filterOptions])
   
   const handleFilterChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem('repositories-filter', value)
+    localStorage.setItem('reposSortBy', value)
     setShowFilterMenu(false)
   }
 
@@ -245,13 +246,6 @@ const ReposPage = () => {
             project.topics.includes(selectedTag) ||
             project.language?.toLowerCase() === selectedTag
         )
-
-  const filterOptions = [
-    { value: "newest", label: "Newest" },
-    { value: "oldest", label: "Oldest" },
-    { value: "name-asc", label: "Name (A–Z)" },
-    { value: "name-desc", label: "Name (Z–A)" },
-  ]
 
   const resultsCount = `Showing ${tagFilteredProjects.length} Repositor${tagFilteredProjects.length !== 1 ? "ies" : "y"}`
 

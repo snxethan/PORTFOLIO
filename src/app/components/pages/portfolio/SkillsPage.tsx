@@ -70,7 +70,7 @@ const SkillsPage = () => {
   
   const handleFilterChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem('skills-filter', value)
+    localStorage.setItem('skillsSortBy', value)
     setShowFilterMenu(false)
   }
 

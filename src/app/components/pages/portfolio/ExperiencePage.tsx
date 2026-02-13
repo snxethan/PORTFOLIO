@@ -75,9 +75,18 @@ const ExperiencePage = () => {
 
     document.addEventListener("keydown", handleEscape)
     
-    const savedFilter = localStorage.getItem('experience-filter')
+    const savedFilter = localStorage.getItem('experienceSortBy')
     if (savedFilter) {
-      setSortBy(savedFilter)
+      const filterOptions = [
+        { value: "newest", label: "Newest" },
+        { value: "oldest", label: "Oldest" },
+        { value: "name-asc", label: "Name (A–Z)" },
+        { value: "name-desc", label: "Name (Z–A)" },
+      ]
+      const isValidFilter = filterOptions.some(option => option.value === savedFilter)
+      if (isValidFilter) {
+        setSortBy(savedFilter)
+      }
     }
     
     return () => {
@@ -88,7 +97,7 @@ const ExperiencePage = () => {
 
   const handleSortChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem('experience-filter', value)
+    localStorage.setItem('experienceSortBy', value)
     setShowFilterMenu(false)
     if (value === "cs-only") {
       handleToggleChange(false)
@@ -163,8 +172,8 @@ const ExperiencePage = () => {
     return allTags.slice().sort((a, b) => a.localeCompare(b))
   }, [allTags])
 
-  const renderTimeline = () => {
-    const filteredItems = sortedTimeline.filter((item) => {
+  const getFilteredItems = React.useCallback(() => {
+    return sortedTimeline.filter((item) => {
       if (item.type !== "experience") return false
       
       const matchesCSFilter = sortBy !== "cs-only" || item.isCSRelated
@@ -179,6 +188,10 @@ const ExperiencePage = () => {
       
       return matchesCSFilter && matchesSearch && matchesTag
     })
+  }, [sortedTimeline, sortBy, search, selectedTag])
+
+  const renderTimeline = () => {
+    const filteredItems = getFilteredItems()
 
     if (filteredItems.length === 0) {
       return (
@@ -227,13 +240,8 @@ const ExperiencePage = () => {
     { value: "name-desc", label: "Name (Z–A)" },
   ]
 
-  const filteredCount = sortedTimeline.filter(i => i.type === "experience" && (sortBy !== "cs-only" || i.isCSRelated) && (!search || 
-      i.institution?.toLowerCase().includes(search.toLowerCase()) ||
-      i.location?.toLowerCase().includes(search.toLowerCase()) ||
-      i.summary?.toLowerCase().includes(search.toLowerCase()) ||
-      i.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))) && (!selectedTag || i.tags?.includes(selectedTag))).length
-
-  const resultsCount = `Showing ${filteredCount} Experience${filteredCount !== 1 ? 's' : ''}`
+  const filteredItems = getFilteredItems()
+  const resultsCount = `Showing ${filteredItems.length} Experience${filteredItems.length !== 1 ? 's' : ''}`
 
   return (
     <>
