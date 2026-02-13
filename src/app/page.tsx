@@ -49,11 +49,17 @@ function PageContent() {
     }
   }, [page, router])
 
-  // If no page parameter, show nothing while redirecting
+  // If no page parameter, show skeleton while redirecting
   // Otherwise show the normal HomeClient with tabs
   return (
     <>
-      {!page ? null : <HomeClient />}
+      {!page ? (
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d]">
+          <div className="animate-pulse text-gray-400">Loading...</div>
+        </div>
+      ) : (
+        <HomeClient />
+      )}
       {showSecurityPolicy && (
         <SecurityPolicyModal onClose={() => setShowSecurityPolicy(false)} />
       )}
