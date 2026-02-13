@@ -135,11 +135,19 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
           {/* Home icon button - positioned to the left of title */}
           <Link
             href="/"
-            className="absolute left-4 p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent group"
+            className={`absolute left-4 p-2 rounded-lg transition-all duration-200 border ${
+              activePage === null
+                ? "bg-red-600 border-red-600 shadow-lg shadow-red-600/30" // Active state
+                : "border-transparent hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 group" // Inactive state
+            }`}
             aria-label="Home"
             title="Go to Home"
           >
-            <FaHome className="w-5 h-5 text-gray-400 group-hover:text-[#dc2626] transition-colors" />
+            <FaHome className={`w-5 h-5 transition-colors ${
+              activePage === null
+                ? "text-white" // Active: white icon
+                : "text-gray-400 group-hover:text-[#dc2626]" // Inactive: gray with red hover
+            }`} />
           </Link>
           
           <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
