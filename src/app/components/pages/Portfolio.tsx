@@ -89,6 +89,13 @@ const Portfolio: React.FC = () => {
     setShowAllTags(!showAllTags)
   }
 
+  // Handle tag click from repository cards
+  const handleTagClick = (tag: string) => {
+    setSelectedTag(tag);
+    setShowTagsMenu(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
   // Persist filter and sort state for Portfolio page
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -485,7 +492,11 @@ const Portfolio: React.FC = () => {
                           </p>
                           <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
                             {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
-                              <span key={tag} className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#ef4444] border border-transparent hover:bg-[#444444]">
+                              <span 
+                                key={tag} 
+                                onClick={() => handleTagClick(tag)}
+                                className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#ef4444] border border-transparent hover:bg-[#444444] cursor-pointer active:scale-95"
+                              >
                                 {tag.toUpperCase()}
                               </span>
                             ))}
