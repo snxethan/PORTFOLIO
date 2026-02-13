@@ -206,7 +206,7 @@ const ReposPage = () => {
     }
     
     return () => document.removeEventListener("keydown", handleEscape)
-  }, [searchParams, filterOptions])
+  }, [searchParams])
   
   const handleFilterChange = (value: string) => {
     setSortBy(value)

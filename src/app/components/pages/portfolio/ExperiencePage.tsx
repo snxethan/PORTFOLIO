@@ -6,6 +6,13 @@ import { timelineData } from "../../../data/timelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
 
+const filterOptions = [
+  { value: "newest", label: "Newest" },
+  { value: "oldest", label: "Oldest" },
+  { value: "name-asc", label: "Name (A–Z)" },
+  { value: "name-desc", label: "Name (Z–A)" },
+]
+
 const ExperiencePage = () => {
   const [showAllContent, setShowAllContent] = useState(true)
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
@@ -77,12 +84,6 @@ const ExperiencePage = () => {
     
     const savedFilter = localStorage.getItem('experienceSortBy')
     if (savedFilter) {
-      const filterOptions = [
-        { value: "newest", label: "Newest" },
-        { value: "oldest", label: "Oldest" },
-        { value: "name-asc", label: "Name (A–Z)" },
-        { value: "name-desc", label: "Name (Z–A)" },
-      ]
       const isValidFilter = filterOptions.some(option => option.value === savedFilter)
       if (isValidFilter) {
         setSortBy(savedFilter)
@@ -232,13 +233,6 @@ const ExperiencePage = () => {
       />
     )
   }
-
-  const filterOptions = [
-    { value: "newest", label: "Newest" },
-    { value: "oldest", label: "Oldest" },
-    { value: "name-asc", label: "Name (A–Z)" },
-    { value: "name-desc", label: "Name (Z–A)" },
-  ]
 
   const filteredItems = getFilteredItems()
   const resultsCount = `Showing ${filteredItems.length} Experience${filteredItems.length !== 1 ? 's' : ''}`

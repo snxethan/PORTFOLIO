@@ -6,6 +6,13 @@ import { projectsTimelineData } from "../../../data/projectsTimelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
 
+const filterOptions = [
+  { value: "newest", label: "Newest" },
+  { value: "oldest", label: "Oldest" },
+  { value: "name-asc", label: "Name (A–Z)" },
+  { value: "name-desc", label: "Name (Z–A)" },
+]
+
 const ProjectsPage = () => {
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -66,12 +73,6 @@ const ProjectsPage = () => {
     
     const savedFilter = localStorage.getItem('projectsSortBy')
     if (savedFilter) {
-      const filterOptions = [
-        { value: "newest", label: "Newest" },
-        { value: "oldest", label: "Oldest" },
-        { value: "name-asc", label: "Name (A–Z)" },
-        { value: "name-desc", label: "Name (Z–A)" },
-      ]
       const isValidFilter = filterOptions.some(option => option.value === savedFilter)
       if (isValidFilter) {
         setSortBy(savedFilter)
@@ -166,13 +167,6 @@ const ProjectsPage = () => {
 
     return <Timeline items={sortedProjects} type="project" />
   }
-
-  const filterOptions = [
-    { value: "newest", label: "Newest" },
-    { value: "oldest", label: "Oldest" },
-    { value: "name-asc", label: "Name (A–Z)" },
-    { value: "name-desc", label: "Name (Z–A)" },
-  ]
 
   const resultsCount = `Showing ${sortedProjects.length} Project${sortedProjects.length !== 1 ? 's' : ''}`
 
