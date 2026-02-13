@@ -4,9 +4,12 @@ import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Sidebar from "./sidebar/Sidebar"
 import Navbar from "./Navbar"
-import About from "./About"
-import Resume from "./Resume"
-import Portfolio from "./Portfolio"
+import SkillsPage from "./portfolio/SkillsPage"
+import CertificationsPage from "./portfolio/CertificationsPage"
+import EducationPage from "./portfolio/EducationPage"
+import ExperiencePage from "./portfolio/ExperiencePage"
+import ProjectsPage from "./portfolio/ProjectsPage"
+import ReposPage from "./portfolio/ReposPage"
 import Footer from "./Footer"
 
 export default function HomeClient() {
@@ -21,19 +24,25 @@ export default function HomeClient() {
     const pageParam = searchParams.get("page")
     const storedPage = localStorage.getItem("activePage")
     const storedTab = localStorage.getItem("activeSubTab")
-    const fallbackPage = "about"
-    const fallbackTab = "certifications"
+    const fallbackPage = "portfolio"
+    const fallbackTab = "projects"
 
-    // Parse URL format: ?page=about/certifications
+    // Parse URL format: ?page=portfolio/projects
     const parts = pageParam?.split("/")
     const mainPage = parts?.[0]
     const subTab = parts?.[1]
     
-    // Valid pages list
-    const VALID_PAGES = ['about', 'resume', 'portfolio']
+    // Valid portfolio subsections
+    const VALID_SECTIONS = ['skills', 'certifications', 'education', 'experience', 'projects', 'repos']
     
-    // If mainPage is provided but not valid, normalize to fallback
-    if (mainPage && !VALID_PAGES.includes(mainPage)) {
+    // Ensure we're in portfolio namespace
+    if (mainPage !== 'portfolio') {
+      router.push(`?page=${fallbackPage}/${fallbackTab}`, { scroll: false })
+      return
+    }
+    
+    // If subTab is provided but not valid, normalize to fallback
+    if (subTab && !VALID_SECTIONS.includes(subTab)) {
       router.push(`?page=${fallbackPage}/${fallbackTab}`, { scroll: false })
       return
     }
@@ -57,12 +66,8 @@ export default function HomeClient() {
     // Scroll to top when changing tabs
     window.scrollTo({ top: 0, behavior: "smooth" })
     
-    // Update URL: ?page=portfolio/ for info button, ?page=about/certifications for tabs
-    if (page === "portfolio" && !tab) {
-      router.push(`?page=portfolio/`, { scroll: false })
-    } else {
-      router.push(`?page=${page}/${tab}`, { scroll: false })
-    }
+    // Update URL with portfolio namespace
+    router.push(`?page=${page}/${tab}`, { scroll: false })
   }
 
  
@@ -119,9 +124,12 @@ export default function HomeClient() {
                     </div>
                   ) : (
                     <>
-                      {activePage === "about" && <About />}
-                      {activePage === "resume" && <Resume />}
-                      {activePage === "portfolio" && <Portfolio />}
+                      {activePage === "portfolio" && activeTab === "skills" && <SkillsPage />}
+                      {activePage === "portfolio" && activeTab === "certifications" && <CertificationsPage />}
+                      {activePage === "portfolio" && activeTab === "education" && <EducationPage />}
+                      {activePage === "portfolio" && activeTab === "experience" && <ExperiencePage />}
+                      {activePage === "portfolio" && activeTab === "projects" && <ProjectsPage />}
+                      {activePage === "portfolio" && activeTab === "repos" && <ReposPage />}
                     </>
                   )}
 

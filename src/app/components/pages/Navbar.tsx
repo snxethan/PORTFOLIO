@@ -90,27 +90,27 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
     }
   }, [isHorizontalScroll, isLoading, activePage, activeTab, isTransitioning])
 
-  // Define tab groups with their respective sections
+  // Define tab groups with their respective sections - all under portfolio namespace
   const tabGroups = [
     {
-      name: "Ethan Townsend",
+      name: "Skills & Credentials",
       tabs: [
-        { id: "certifications", label: "Certifications", page: "about" },
-        { id: "skills", label: "Skills", page: "about" }
+        { id: "certifications", label: "Certifications", page: "portfolio" },
+        { id: "skills", label: "Skills", page: "portfolio" }
       ]
     },
     {
-      name: "Ethan Townsend",
+      name: "Background",
       tabs: [
-        { id: "experience", label: "Experience", page: "resume" },
-        { id: "education", label: "Education", page: "resume" }
+        { id: "experience", label: "Experience", page: "portfolio" },
+        { id: "education", label: "Education", page: "portfolio" }
       ]
     },
     {
-      name: "Ethan Townsend",
+      name: "Work",
       tabs: [
         { id: "projects", label: "Projects", page: "portfolio" },
-        { id: "repositories", label: "Repositories", page: "portfolio" }
+        { id: "repos", label: "Repositories", page: "portfolio" }
       ]
     }
   ]

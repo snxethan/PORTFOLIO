@@ -12,8 +12,8 @@ export default function LandingPage() {
   const [isNavExpanded, setIsNavExpanded] = useState(false)
 
   const handleTabChange = (page: string, tab: string) => {
-    // Navigate to the selected page/tab
-    router.push(`/?page=${page}/${tab}`)
+    // Navigate to the portfolio namespace
+    router.push(`/?page=portfolio/${tab}`)
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
