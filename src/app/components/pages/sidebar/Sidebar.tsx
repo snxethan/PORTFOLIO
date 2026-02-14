@@ -75,7 +75,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
 
 
           <div className="mt-4 text-center">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
           Ethan Townsend
         </h2>
 

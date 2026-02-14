@@ -252,7 +252,7 @@ const ReposPage = () => {
     <>
       <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
+          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             Open Source Repositories
           </h2>
           <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
@@ -313,9 +313,11 @@ const ReposPage = () => {
                   >
                     <div className="p-6 flex-grow">
                       <div className="mb-2">
-                        <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 truncate">
-                          {project.name}
-                        </h3>
+                        <TooltipWrapper label={project.name}>
+                          <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 truncate">
+                            {project.name}
+                          </h3>
+                        </TooltipWrapper>
                         <div className="flex flex-wrap items-center gap-2">
                           {project.source === "manual" && (
                             <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>

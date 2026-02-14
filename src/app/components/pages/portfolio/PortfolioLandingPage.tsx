@@ -7,7 +7,7 @@ export default function PortfolioLandingPage() {
       <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         {/* Header content */}
         <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
+          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             Welcome to My Portfolio
           </h2>
           <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">

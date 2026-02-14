@@ -93,7 +93,9 @@ const SkillsPage = () => {
                   <Icon className="text-white text-2xl" /> 
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-white font-semibold text-base mb-1 truncate group-hover:text-[#dc2626] transition-colors duration-300">{name}</h3>
+                  <TooltipWrapper label={name}>
+                    <h3 className="text-white font-semibold text-base mb-1 truncate group-hover:text-[#dc2626] transition-colors duration-300">{name}</h3>
+                  </TooltipWrapper>
                 </div>
               </div>
               
@@ -186,7 +188,7 @@ const SkillsPage = () => {
     <>
       <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
+          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             Technical Skills & Expertise
           </h2>
           <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
