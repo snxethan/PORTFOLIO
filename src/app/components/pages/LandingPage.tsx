@@ -11,9 +11,13 @@ export default function LandingPage() {
   const [isNavPinned, setIsNavPinned] = useState(true)
   const [isNavExpanded, setIsNavExpanded] = useState(false)
 
-  const handleTabChange = (page: string, tab: string) => {
+  const handleTabChange = (page: string, tab: string | null) => {
     // Navigate to the portfolio namespace
-    router.push(`/?page=portfolio/${tab}`)
+    if (tab) {
+      router.push(`/?page=portfolio/${tab}`)
+    } else {
+      router.push(`/?page=portfolio`)
+    }
     window.scrollTo({ top: 0, behavior: "smooth" })
   }
 

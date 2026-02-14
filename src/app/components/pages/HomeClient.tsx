@@ -10,6 +10,7 @@ import EducationPage from "./portfolio/EducationPage"
 import ExperiencePage from "./portfolio/ExperiencePage"
 import ProjectsPage from "./portfolio/ProjectsPage"
 import ReposPage from "./portfolio/ReposPage"
+import PortfolioLandingPage from "./portfolio/PortfolioLandingPage"
 import Footer from "./Footer"
 
 export default function HomeClient() {
@@ -25,49 +26,61 @@ export default function HomeClient() {
     const storedPage = localStorage.getItem("activePage")
     const storedTab = localStorage.getItem("activeSubTab")
     const fallbackPage = "portfolio"
-    const fallbackTab = "projects"
+    const fallbackTab = null // No default tab for portfolio landing
 
-    // Parse URL format: ?page=portfolio/projects
+    // Parse URL format: ?page=portfolio or ?page=portfolio/projects
     const parts = pageParam?.split("/")
     const mainPage = parts?.[0]
-    const subTab = parts?.[1]
+    const subTab = parts?.[1] || null // Can be null for landing page
     
-    // Valid portfolio subsections
-    const VALID_SECTIONS = ['skills', 'certifications', 'education', 'experience', 'projects', 'repos']
+    // Valid portfolio subsections (null is also valid for landing page)
+    const VALID_SECTIONS = [null, 'skills', 'certifications', 'education', 'experience', 'projects', 'repos']
     
     // Ensure we're in portfolio namespace
     if (mainPage !== 'portfolio') {
-      router.push(`?page=${fallbackPage}/${fallbackTab}`, { scroll: false })
+      router.push(`?page=${fallbackPage}`, { scroll: false })
       return
     }
     
-    // If subTab is provided but not valid, normalize to fallback
-    if (subTab && !VALID_SECTIONS.includes(subTab)) {
-      router.push(`?page=${fallbackPage}/${fallbackTab}`, { scroll: false })
+    // If subTab is provided but not valid, go to landing page
+    if (subTab !== null && !VALID_SECTIONS.includes(subTab)) {
+      router.push(`?page=${fallbackPage}`, { scroll: false })
       return
     }
     
     // Priority: URL params > stored values > fallbacks
     const resolvedPage = mainPage || storedPage || fallbackPage
-    const resolvedTab = subTab || storedTab || fallbackTab
+    const resolvedTab = subTab !== null ? subTab : (storedTab || fallbackTab)
     
     setActivePage(resolvedPage)
     setActiveTab(resolvedTab)
     localStorage.setItem("activePage", resolvedPage)
-    localStorage.setItem("activeSubTab", resolvedTab)
+    if (resolvedTab) {
+      localStorage.setItem("activeSubTab", resolvedTab)
+    } else {
+      localStorage.removeItem("activeSubTab")
+    }
   }, [searchParams, router])
 
-  const handleTabChange = (page: string, tab: string) => {
+  const handleTabChange = (page: string, tab: string | null) => {
     setActivePage(page)
     setActiveTab(tab)
     localStorage.setItem("activePage", page)
-    localStorage.setItem("activeSubTab", tab)
+    if (tab) {
+      localStorage.setItem("activeSubTab", tab)
+    } else {
+      localStorage.removeItem("activeSubTab")
+    }
     
     // Scroll to top when changing tabs
     window.scrollTo({ top: 0, behavior: "smooth" })
     
     // Update URL with portfolio namespace
-    router.push(`?page=${page}/${tab}`, { scroll: false })
+    if (tab) {
+      router.push(`?page=${page}/${tab}`, { scroll: false })
+    } else {
+      router.push(`?page=${page}`, { scroll: false })
+    }
   }
 
  
@@ -124,6 +137,7 @@ export default function HomeClient() {
                     </div>
                   ) : (
                     <>
+                      {activePage === "portfolio" && activeTab === null && <PortfolioLandingPage />}
                       {activePage === "portfolio" && activeTab === "skills" && <SkillsPage />}
                       {activePage === "portfolio" && activeTab === "certifications" && <CertificationsPage />}
                       {activePage === "portfolio" && activeTab === "education" && <EducationPage />}

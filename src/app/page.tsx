@@ -17,9 +17,9 @@ function PageContent() {
       setShowSecurityPolicy(true)
     }
     
-    // Default landing: redirect to portfolio/projects
+    // Default landing: redirect to portfolio (landing page)
     if (!page) {
-      router.replace('?page=portfolio/projects')
+      router.replace('?page=portfolio')
       return
     }
     
