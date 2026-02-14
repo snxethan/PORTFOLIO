@@ -49,8 +49,10 @@ export default function HomeClient() {
     }
     
     // Priority: URL params > stored values > fallbacks
-    const resolvedPage = mainPage || storedPage || fallbackPage
-    const resolvedTab = subTab !== null ? subTab : (storedTab || fallbackTab)
+    // When pageParam exists, use its values (mainPage and subTab from URL)
+    // Only use stored values when there's no URL param at all
+    const resolvedPage = pageParam ? mainPage : (storedPage || fallbackPage)
+    const resolvedTab = pageParam ? subTab : (storedTab || fallbackTab)
     
     setActivePage(resolvedPage)
     setActiveTab(resolvedTab)
