@@ -11,21 +11,6 @@ interface TimelineItem {
 }
 
 export const timelineData: TimelineItem[] = [
-    {
-    type: "experience",
-    institution: "Chili's Grill & Bar",
-    location: "Salt Lake City, UT",
-    startDate: "2025-09",
-    endDate: "Present",
-    highlights: [
-      "Line Fryer Cook – Worked as a fryer cook in a fast-paced kitchen.",
-      "Dishwasher – Developed efficiency and teamwork under pressure."
-    ],
-    summary:
-      "Gained high-intensity culinary experience and built a strong work ethic while assisting the kitchen during peak hours.",
-    isCSRelated: false,
-    tags: ["Food Service", "Culinary"]
-  },
   {
     type: "experience",
     institution: "Neumont College of Computer Science",
@@ -42,51 +27,6 @@ export const timelineData: TimelineItem[] = [
       "Held 4 concurrent student leadership and academic support roles to increase involvement, mentorship, and academic performance at NCCS.",
     isCSRelated: true,
     tags: ["Computer Science", "College", "Leadership"]
-  },
-  {
-    type: "experience",
-    institution: "Romano's Chicago Pizzeria",
-    location: "Lake Havasu City, AZ",
-    startDate: "2021-09",
-    endDate: "2023-09",
-    highlights: [
-      "Line Pizza Cook – Promoted from dishwasher to pizza cook in fast-paced kitchen.",
-      "Dishwasher – Developed efficiency and teamwork under pressure."
-    ],
-    summary:
-      "Gained high-intensity culinary experience and built a strong work ethic while assisting the head chef during peak hours.",
-    isCSRelated: false,
-    tags: ["Food Service", "Culinary"]
-  },
-  {
-    type: "experience",
-    institution: "Parks & Rec",
-    location: "Lake Havasu City, AZ",
-    startDate: "2023-06",
-    endDate: "2023-08",
-    highlights: [
-      "Room Lead – Supervised daily activities and group coordination.",
-      "Recreational Staff – Applied pediatric and safety skills with children."
-    ],
-    summary:
-      "Provided supervision and leadership to groups of children in a summer program, utilizing first aid and recreation management.",
-    isCSRelated: false,
-    tags: ["Recreation", "Leadership"]
-  },
-  {
-    type: "experience",
-    institution: "Jack in the Box",
-    location: "Lake Havasu City, AZ",
-    startDate: "2020-06",
-    endDate: "2021-06",
-    highlights: [
-      "Fry-Cook – Prepared high-volume food orders, maintaining health standards.",
-      "Cashier – Handled customer service, transactions, and teamwork under pressure."
-    ],
-    summary:
-      "First job experience that sparked interest in culinary work and customer satisfaction.",
-    isCSRelated: false,
-    tags: ["Food Service", "Customer Service"]
   },
   {
     type: "education",
@@ -106,18 +46,6 @@ export const timelineData: TimelineItem[] = [
   },
   {
     type: "education",
-    institution: "Lake Havasu High School",
-    location: "Lake Havasu City, AZ",
-    startDate: "2019-08",
-    endDate: "2023-05",
-    highlights: ["High School Diploma"],
-    summary:
-      "Graduated with academic distinction while participating in dual enrollment and career elective programs.",
-    isCSRelated: false,
-    tags: ["Highschool", "Education"]
-  },
-  {
-    type: "education",
     institution: "Mohave Community College",
     location: "Lake Havasu City, AZ",
     startDate: "2021-08",
@@ -127,17 +55,5 @@ export const timelineData: TimelineItem[] = [
       "Earned college credits while in high school through dual enrollment, accelerating progress in computer science education.",
     isCSRelated: true,
     tags: ["Computer Science", "College", "Dual Enrollment"]
-  },
-  {
-    type: "education",
-    institution: "WAVE (Western Arizona Vocational Education)",
-    location: "Lake Havasu City, AZ",
-    startDate: "2020-08",
-    endDate: "2021-05",
-    highlights: ["Culinary Elective Program"],
-    summary:
-      "Developed culinary skills through hands-on training in a vocational setting, combining creativity and technical food preparation techniques.",
-    isCSRelated: false,
-    tags: ["Culinary", "Vocational", "Highschool"]
   }
 ]
