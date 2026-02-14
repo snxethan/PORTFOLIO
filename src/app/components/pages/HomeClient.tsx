@@ -107,8 +107,8 @@ export default function HomeClient() {
             </div>
             <section className="flex-1 flex flex-col gap-6 pb-20">
               <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] shadow-lg overflow-hidden">
-               {!activePage || !activeTab ? (
-                // Skeleton navbar
+               {activePage === null || activePage === undefined ? (
+                // Skeleton navbar - only show when page is not initialized
                 <div className="w-full flex justify-center py-4 animate-pulse space-x-4">
                   {[...Array(7)].map((_, i) => (
                     <div key={i} className="w-20 h-8 bg-[#333333] rounded-lg" />
@@ -128,7 +128,8 @@ export default function HomeClient() {
                   key={`${activePage}/${activeTab}`}
                   className="flex-1 transition-all duration-500 ease-in-out"
                 >
-                 {!activePage ? (
+                 {activePage === null || activePage === undefined ? (
+                    // Skeleton content - only show when page is not initialized
                     <div className="w-full h-full space-y-4 animate-pulse">
                       <div className="h-6 w-1/2 bg-[#333333] rounded" />
                       <div className="h-4 w-full bg-[#333333] rounded" />
