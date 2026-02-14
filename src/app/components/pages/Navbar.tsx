@@ -151,7 +151,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
             }`} />
           </button>
           
-          <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
+          <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             My Portfolio
           </h1>
           
