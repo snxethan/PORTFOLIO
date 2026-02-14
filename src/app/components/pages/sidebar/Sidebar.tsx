@@ -89,10 +89,10 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
               <button
                 onClick={() => setSelectedPDF('/resume/EthanTownsend_Resume_v2.1.pdf')}
                 aria-label="View Resume"
-                className="flex items-center gap-2 px-4 py-2 bg-[#1e1e1e] border border-[#333333] rounded-lg text-gray-300 hover:text-red-600 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 text-lg transition-all duration-200 ease-out hover:scale-105 active:scale-100"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm font-medium shadow-lg shadow-red-600/40"
               >
                 <FaFilePdf />
-                <span className="text-sm font-medium">View Resume</span>
+                <span>View Resume</span>
               </button>
             </TooltipWrapper>
           </div>

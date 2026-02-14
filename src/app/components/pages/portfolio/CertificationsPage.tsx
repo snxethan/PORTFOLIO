@@ -96,9 +96,7 @@ const CertificationsPage = () => {
                   <Icon className="text-white text-2xl" /> 
                 </div>
                 <div className="flex-1 min-w-0">
-                  <TooltipWrapper label={name}>
-                    <h3 className="text-white font-semibold text-base mb-1 truncate group-hover:text-[#dc2626] transition-colors duration-300">{name}</h3>
-                  </TooltipWrapper>
+                  <h3 className="text-white font-semibold text-base mb-1 break-words line-clamp-2 group-hover:text-[#dc2626] transition-colors duration-300">{name}</h3>
                   {year && (
                     <span className="text-gray-400 text-sm">{year}</span>
                   )} 

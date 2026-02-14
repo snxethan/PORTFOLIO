@@ -313,11 +313,9 @@ const ReposPage = () => {
                   >
                     <div className="p-6 flex-grow">
                       <div className="mb-2">
-                        <TooltipWrapper label={project.name}>
-                          <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 truncate">
-                            {project.name}
-                          </h3>
-                        </TooltipWrapper>
+                        <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 break-words line-clamp-2">
+                          {project.name}
+                        </h3>
                         <div className="flex flex-wrap items-center gap-2">
                           {project.source === "manual" && (
                             <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>
