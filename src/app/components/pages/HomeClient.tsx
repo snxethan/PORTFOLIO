@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Sidebar from "./sidebar/Sidebar"
 import Navbar from "./Navbar"
@@ -21,6 +21,9 @@ export default function HomeClient() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
+  // Valid portfolio subsections (null is also valid for landing page)
+  const VALID_SECTIONS = useMemo(() => [null, 'skills', 'certifications', 'education', 'experience', 'projects', 'repos'], [])
+
   useEffect(() => {
     const pageParam = searchParams.get("page")
     const storedPage = localStorage.getItem("activePage")
@@ -32,9 +35,6 @@ export default function HomeClient() {
     const parts = pageParam?.split("/")
     const mainPage = parts?.[0]
     const subTab = parts?.[1] || null // Can be null for landing page
-    
-    // Valid portfolio subsections (null is also valid for landing page)
-    const VALID_SECTIONS = [null, 'skills', 'certifications', 'education', 'experience', 'projects', 'repos']
     
     // Ensure we're in portfolio namespace
     if (mainPage !== 'portfolio') {
@@ -60,7 +60,7 @@ export default function HomeClient() {
     } else {
       localStorage.removeItem("activeSubTab")
     }
-  }, [searchParams, router])
+  }, [searchParams, router, VALID_SECTIONS])
 
   const handleTabChange = (page: string, tab: string | null) => {
     setActivePage(page)
