@@ -1,6 +1,9 @@
 /**
  * Utility functions for localStorage with timestamp-based expiration.
  * Stores values with timestamps and automatically clears expired data.
+ * 
+ * Note: Expiration time is checked at READ time, not stored with the data.
+ * This allows flexibility to change expiration times without invalidating existing data.
  */
 
 interface TimedStorageItem<T> {
@@ -17,7 +20,7 @@ const DEFAULT_EXPIRATION_MS = 30 * 60 * 1000 // 30 minutes
  * Set an item in localStorage with a timestamp
  * @param key - The localStorage key
  * @param value - The value to store
- * @param expirationMs - Optional custom expiration time in milliseconds
+ * @param expirationMs - NOT USED (kept for API consistency). Expiration is checked at read time via getTimedItem()
  */
 export function setTimedItem<T>(
   key: string,
