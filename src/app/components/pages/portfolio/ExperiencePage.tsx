@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import { timelineData } from "../../../data/timelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
+import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
 
 const filterOptions = [
   { value: "newest", label: "Newest" },
@@ -18,13 +19,13 @@ const ExperiencePage = () => {
   const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('experienceSearch') || ""
+      return getTimedItem<string>('experienceSearch') || ""
     }
     return ""
   })
   const [sortBy, setSortBy] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('experienceSortBy') || "newest"
+      return getTimedItem<string>('experienceSortBy') || "newest"
     }
     return "newest"
   })
@@ -32,7 +33,7 @@ const ExperiencePage = () => {
   const [showTagsMenu, setShowTagsMenu] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('experienceSelectedTag')
+      const saved = getTimedItem<string>('experienceSelectedTag')
       return saved !== null ? saved : "Computer Science"
     }
     return "Computer Science"
@@ -41,22 +42,22 @@ const ExperiencePage = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('experienceSearch', search)
+      setTimedItem('experienceSearch', search)
     }
   }, [search])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('experienceSortBy', sortBy)
+      setTimedItem('experienceSortBy', sortBy)
     }
   }, [sortBy])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (selectedTag !== null) {
-        localStorage.setItem('experienceSelectedTag', selectedTag)
+        setTimedItem('experienceSelectedTag', selectedTag)
       } else {
-        localStorage.removeItem('experienceSelectedTag')
+        removeTimedItem('experienceSelectedTag')
       }
     }
   }, [selectedTag])

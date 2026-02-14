@@ -6,6 +6,7 @@ import { useExternalLink } from "../../ExternalLinkHandler"
 import TooltipWrapper from "../../ToolTipWrapper"
 import { manualProjects } from "../../../data/portfolioProjects"
 import SearchFilterBar from "../../SearchFilterBar"
+import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
 
 interface Project {
   id: number
@@ -48,19 +49,19 @@ const ReposPage = () => {
   const [projects, setProjects] = useState<Project[]>([])
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('reposSearch') || ""
+      return getTimedItem<string>('reposSearch') || ""
     }
     return ""
   })
   const [sortBy, setSortBy] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('reposSortBy') || "newest"
+      return getTimedItem<string>('reposSortBy') || "newest"
     }
     return "newest"
   })
   const [selectedTag, setSelectedTag] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('reposSelectedTag')
+      const saved = getTimedItem<string>('reposSelectedTag')
       return saved !== null ? saved : "Computer Science"
     }
     return "Computer Science"
@@ -87,22 +88,22 @@ const ReposPage = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('reposSearch', search)
+      setTimedItem('reposSearch', search)
     }
   }, [search])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('reposSortBy', sortBy)
+      setTimedItem('reposSortBy', sortBy)
     }
   }, [sortBy])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (selectedTag !== null) {
-        localStorage.setItem('reposSelectedTag', selectedTag)
+        setTimedItem('reposSelectedTag', selectedTag)
       } else {
-        localStorage.removeItem('reposSelectedTag')
+        removeTimedItem('reposSelectedTag')
       }
     }
   }, [selectedTag])

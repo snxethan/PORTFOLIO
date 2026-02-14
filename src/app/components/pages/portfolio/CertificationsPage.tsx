@@ -6,19 +6,20 @@ import TooltipWrapper from "../../ToolTipWrapper"
 import PDFModalViewer from "../../PDFModalViewer"
 import { certifications, Certification } from "../../../data/aboutData"
 import SearchFilterBar from "../../SearchFilterBar"
+import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
 
 const CertificationsPage = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('certificationsSearch') || ""
+      return getTimedItem<string>('certificationsSearch') || ""
     }
     return ""
   })
   const [sortBy, setSortBy] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('certificationsSortBy') || "newest"
+      return getTimedItem<string>('certificationsSortBy') || "newest"
     }
     return "newest"
   })
@@ -26,7 +27,7 @@ const CertificationsPage = () => {
   const [showTagsMenu, setShowTagsMenu] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('certificationsSelectedTag')
+      const saved = getTimedItem<string>('certificationsSelectedTag')
       return saved !== null ? saved : "Computer Science"
     }
     return "Computer Science"
@@ -35,22 +36,22 @@ const CertificationsPage = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('certificationsSearch', search)
+      setTimedItem('certificationsSearch', search)
     }
   }, [search])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('certificationsSortBy', sortBy)
+      setTimedItem('certificationsSortBy', sortBy)
     }
   }, [sortBy])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (selectedTag !== null) {
-        localStorage.setItem('certificationsSelectedTag', selectedTag)
+        setTimedItem('certificationsSelectedTag', selectedTag)
       } else {
-        localStorage.removeItem('certificationsSelectedTag')
+        removeTimedItem('certificationsSelectedTag')
       }
     }
   }, [selectedTag])
@@ -73,7 +74,7 @@ const CertificationsPage = () => {
   
   const handleFilterChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem('certificationsSortBy', value)
+    setTimedItem('certificationsSortBy', value)
     setShowFilterMenu(false)
   }
 

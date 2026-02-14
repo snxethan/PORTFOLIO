@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import { projectsTimelineData } from "../../../data/projectsTimelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
+import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
 
 const filterOptions = [
   { value: "newest", label: "Newest" },
@@ -15,13 +16,13 @@ const filterOptions = [
 const ProjectsPage = () => {
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('projectsSearch') || ""
+      return getTimedItem<string>('projectsSearch') || ""
     }
     return ""
   })
   const [sortBy, setSortBy] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('projectsSortBy') || "newest"
+      return getTimedItem<string>('projectsSortBy') || "newest"
     }
     return "newest"
   })
@@ -29,7 +30,7 @@ const ProjectsPage = () => {
   const [showTagsMenu, setShowTagsMenu] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('projectsSelectedTag')
+      const saved = getTimedItem<string>('projectsSelectedTag')
       return saved !== null ? saved : "Computer Science"
     }
     return "Computer Science"
@@ -38,22 +39,22 @@ const ProjectsPage = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('projectsSearch', search)
+      setTimedItem('projectsSearch', search)
     }
   }, [search])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('projectsSortBy', sortBy)
+      setTimedItem('projectsSortBy', sortBy)
     }
   }, [sortBy])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (selectedTag !== null) {
-        localStorage.setItem('projectsSelectedTag', selectedTag)
+        setTimedItem('projectsSelectedTag', selectedTag)
       } else {
-        localStorage.removeItem('projectsSelectedTag')
+        removeTimedItem('projectsSelectedTag')
       }
     }
   }, [selectedTag])
@@ -85,7 +86,7 @@ const ProjectsPage = () => {
 
   const handleSortChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem('projectsSortBy', value)
+    setTimedItem('projectsSortBy', value)
     setShowFilterMenu(false)
   }
 

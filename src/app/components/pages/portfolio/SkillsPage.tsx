@@ -5,18 +5,19 @@ import { useExternalLink } from "../../ExternalLinkHandler"
 import TooltipWrapper from "../../ToolTipWrapper"
 import { skills, Skill } from "../../../data/aboutData"
 import SearchFilterBar from "../../SearchFilterBar"
+import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
 
 const SkillsPage = () => {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('skillsSearch') || ""
+      return getTimedItem<string>('skillsSearch') || ""
     }
     return ""
   })
   const [sortBy, setSortBy] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('skillsSortBy') || "hard-soft"
+      return getTimedItem<string>('skillsSortBy') || "hard-soft"
     }
     return "hard-soft"
   })
@@ -24,7 +25,7 @@ const SkillsPage = () => {
   const [showTagsMenu, setShowTagsMenu] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('skillsSelectedTag')
+      const saved = getTimedItem<string>('skillsSelectedTag')
       return saved !== null ? saved : "Computer Science"
     }
     return "Computer Science"
@@ -33,22 +34,22 @@ const SkillsPage = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('skillsSearch', search)
+      setTimedItem('skillsSearch', search)
     }
   }, [search])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('skillsSortBy', sortBy)
+      setTimedItem('skillsSortBy', sortBy)
     }
   }, [sortBy])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (selectedTag !== null) {
-        localStorage.setItem('skillsSelectedTag', selectedTag)
+        setTimedItem('skillsSelectedTag', selectedTag)
       } else {
-        localStorage.removeItem('skillsSelectedTag')
+        removeTimedItem('skillsSelectedTag')
       }
     }
   }, [selectedTag])
@@ -70,7 +71,7 @@ const SkillsPage = () => {
   
   const handleFilterChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem('skillsSortBy', value)
+    setTimedItem('skillsSortBy', value)
     setShowFilterMenu(false)
   }
 

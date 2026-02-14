@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import { timelineData } from "../../../data/timelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
+import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
 
 const filterOptions = [
   { value: "newest", label: "Newest" },
@@ -18,13 +19,13 @@ const EducationPage = () => {
   const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('educationSearch') || ""
+      return getTimedItem<string>('educationSearch') || ""
     }
     return ""
   })
   const [sortBy, setSortBy] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('educationSortBy') || "newest"
+      return getTimedItem<string>('educationSortBy') || "newest"
     }
     return "newest"
   })
@@ -32,7 +33,7 @@ const EducationPage = () => {
   const [showTagsMenu, setShowTagsMenu] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('educationSelectedTag')
+      const saved = getTimedItem<string>('educationSelectedTag')
       return saved !== null ? saved : "Computer Science"
     }
     return "Computer Science"
@@ -41,22 +42,22 @@ const EducationPage = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('educationSearch', search)
+      setTimedItem('educationSearch', search)
     }
   }, [search])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('educationSortBy', sortBy)
+      setTimedItem('educationSortBy', sortBy)
     }
   }, [sortBy])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (selectedTag !== null) {
-        localStorage.setItem('educationSelectedTag', selectedTag)
+        setTimedItem('educationSelectedTag', selectedTag)
       } else {
-        localStorage.removeItem('educationSelectedTag')
+        removeTimedItem('educationSelectedTag')
       }
     }
   }, [selectedTag])
