@@ -18,7 +18,8 @@ export const projectsTimelineData: TimelineItem[] = [
     tags: ["Computer Science", "Web Development"],
     links: [
       { url: "https://portfoliyou.snxethan.dev/", label: "View Website" },
-      { url: "https://github.com/Ghussy/Rollio", label: "View Repository" }
+      { url: "https://github.com/snxethan/PortfoliYOU-APP", label: "View App Repository" },
+      { url: "https://github.com/snxethan/PortfoliYOU-WEBSITE", label: "View Web Repository" }
     ]
   },
   {
