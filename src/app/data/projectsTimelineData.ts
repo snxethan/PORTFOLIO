@@ -8,18 +8,19 @@ export const projectsTimelineData: TimelineItem[] = [
     endDate: "2024-12",
     highlights: [
       "Modular portfolio creation tool built with modern web technologies",
+      "Desktop application built with Electron for cross-platform compatibility",
       "Component-based architecture for flexible portfolio customization",
       "Responsive design with Tailwind CSS for optimal user experience",
     ],
     summary:
-      "A collaborative project to build a modular portfolio creation platform using React, TypeScript, and Tailwind CSS, enabling users to easily create and customize professional portfolios.",
+      "A collaborative project to build a modular portfolio creation platform using React, TypeScript, Tailwind CSS, and Electron. Features both a web-based download site and a cross-platform desktop application, enabling users to easily create and customize professional portfolios.",
     language: "TypeScript",
-    topics: ["react", "typescript", "tailwind", "portfolio", "web-development"],
+    topics: ["react", "typescript", "tailwind", "portfolio", "web-development", "electron"],
     tags: ["Computer Science", "Web Development"],
     links: [
-      { url: "https://portfoliyou.snxethan.dev/", label: "View Website" },
-      { url: "https://github.com/snxethan/PortfoliYOU-APP", label: "View App Repository" },
-      { url: "https://github.com/snxethan/PortfoliYOU-WEBSITE", label: "View Web Repository" }
+      { url: "https://portfoliyou.snxethan.dev/", label: "Website" },
+      { url: "https://github.com/snxethan/PortfoliYOU-APP", label: "App Repository" },
+      { url: "https://github.com/snxethan/PortfoliYOU-WEBSITE", label: "Web Repository" }
     ]
   },
   {
