@@ -36,13 +36,13 @@ export const timelineData: TimelineItem[] = [
     startDate: "2024-04",
     endDate: "2025-08",
     highlights: [
-      "USG Vice-President – Helped lead student council & affairs.",
-      "Ambassador – Supported admissions tours and events.",
-      "Student Coach – Tutored and helped streamline student success.",
-      "Peer Tutor – Guided freshmen with academics and transition support."
+      "USG Vice-President – Led student government initiatives and campus-wide policy decisions affecting 500+ students.",
+      "Campus Ambassador – Represented the college in recruitment events and guided prospective students through the admissions process.",
+      "Student Success Coach – Mentored students on academic strategies, time management, and goal-setting to improve retention rates.",
+      "Peer Tutor – Provided one-on-one academic support for freshmen in computer science courses, improving student understanding and performance."
     ],
     summary:
-      "Held 4 concurrent student leadership and academic support roles to increase involvement, mentorship, and academic performance at NCCS.",
+      "Served in four concurrent student leadership and academic support roles, fostering a collaborative campus culture while mentoring peers and contributing to institutional excellence at Neumont College of Computer Science.",
     isCSRelated: true,
     tags: ["Computer Science", "College", "Leadership"]
   },
@@ -53,12 +53,12 @@ export const timelineData: TimelineItem[] = [
     startDate: "2023-09",
     endDate: "Present",
     highlights: [
-      "Bachelor of Computer Science – 4.0 GPA",
-      "Capstone & Enterprise Projects – Hands-on software engineering",
-      "USG Vice President & Senator – Student government leadership"
+      "Bachelor of Science in Computer Science – Maintaining 4.0 GPA",
+      "Capstone & Enterprise Projects – Applied software engineering principles to real-world client projects",
+      "Student Government Leadership – Served as USG Vice President and Senator, representing student interests and driving campus improvements"
     ],
     summary:
-      "Actively engaged in student government, projects, and mentoring while maintaining a perfect GPA in a rigorous computer science program.",
+      "Pursuing Bachelor of Science in Computer Science with perfect academic standing while actively contributing to campus leadership and hands-on software development projects.",
     isCSRelated: true,
     tags: ["Computer Science", "College", "Bachelor's Degree"]
   },
@@ -68,9 +68,11 @@ export const timelineData: TimelineItem[] = [
     location: "Lake Havasu City, AZ",
     startDate: "2021-08",
     endDate: "2022-11",
-    highlights: ["Dual Enrollment Credits"],
+    highlights: [
+      "Dual Enrollment Program – Earned college credits in computer science and mathematics while completing high school coursework"
+    ],
     summary:
-      "Earned college credits while in high school through dual enrollment, accelerating progress in computer science education.",
+      "Participated in dual enrollment program, earning transferable college credits and gaining early exposure to collegiate-level computer science curriculum, which accelerated academic progression.",
     isCSRelated: true,
     tags: ["Computer Science", "College", "Dual Enrollment"]
   },
