@@ -1,12 +1,17 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import toast from "react-hot-toast"
 import Sidebar from "./sidebar/Sidebar"
 import Navbar from "./Navbar"
-import About from "./About"
-import Resume from "./Resume"
-import Portfolio from "./Portfolio"
+import SkillsPage from "./portfolio/SkillsPage"
+import CertificationsPage from "./portfolio/CertificationsPage"
+import EducationPage from "./portfolio/EducationPage"
+import ExperiencePage from "./portfolio/ExperiencePage"
+import ProjectsPage from "./portfolio/ProjectsPage"
+import ReposPage from "./portfolio/ReposPage"
+import PortfolioLandingPage from "./portfolio/PortfolioLandingPage"
 import Footer from "./Footer"
 
 export default function HomeClient() {
@@ -17,51 +22,69 @@ export default function HomeClient() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
+  // Valid portfolio subsections (null is also valid for landing page)
+  const VALID_SECTIONS = useMemo(() => [null, 'skills', 'certifications', 'education', 'experience', 'projects', 'repos'], [])
+
   useEffect(() => {
     const pageParam = searchParams.get("page")
     const storedPage = localStorage.getItem("activePage")
     const storedTab = localStorage.getItem("activeSubTab")
-    const fallbackPage = "about"
-    const fallbackTab = "certifications"
+    const fallbackPage = "portfolio"
+    const fallbackTab = null // No default tab for portfolio landing
 
-    // Parse URL format: ?page=about/certifications
+    // Parse URL format: ?page=portfolio or ?page=portfolio/projects
     const parts = pageParam?.split("/")
     const mainPage = parts?.[0]
-    const subTab = parts?.[1]
+    const subTab = parts?.[1] || null // Can be null for landing page
     
-    // Valid pages list
-    const VALID_PAGES = ['about', 'resume', 'portfolio']
+    // Ensure we're in portfolio namespace
+    if (mainPage !== 'portfolio') {
+      toast.error('Page not found. Redirected to homepage.')
+      router.push(`?page=${fallbackPage}`, { scroll: false })
+      return
+    }
     
-    // If mainPage is provided but not valid, normalize to fallback
-    if (mainPage && !VALID_PAGES.includes(mainPage)) {
-      router.push(`?page=${fallbackPage}/${fallbackTab}`, { scroll: false })
+    // If subTab is provided but not valid, go to landing page
+    if (subTab !== null && !VALID_SECTIONS.includes(subTab)) {
+      toast.error('Page not found. Redirected to homepage.')
+      router.push(`?page=${fallbackPage}`, { scroll: false })
       return
     }
     
     // Priority: URL params > stored values > fallbacks
-    const resolvedPage = mainPage || storedPage || fallbackPage
-    const resolvedTab = subTab || storedTab || fallbackTab
+    // When pageParam exists, use its values (mainPage and subTab from URL)
+    // Only use stored values when there's no URL param at all
+    const resolvedPage = pageParam ? mainPage : (storedPage || fallbackPage)
+    const resolvedTab = pageParam ? subTab : (storedTab || fallbackTab)
     
     setActivePage(resolvedPage)
     setActiveTab(resolvedTab)
     localStorage.setItem("activePage", resolvedPage)
-    localStorage.setItem("activeSubTab", resolvedTab)
-  }, [searchParams, router])
+    if (resolvedTab) {
+      localStorage.setItem("activeSubTab", resolvedTab)
+    } else {
+      localStorage.removeItem("activeSubTab")
+    }
+  }, [searchParams, router, VALID_SECTIONS])
 
-  const handleTabChange = (page: string, tab: string) => {
+  const handleTabChange = (page: string, tab: string | null) => {
     setActivePage(page)
     setActiveTab(tab)
     localStorage.setItem("activePage", page)
-    localStorage.setItem("activeSubTab", tab)
+    if (tab) {
+      localStorage.setItem("activeSubTab", tab)
+    } else {
+      localStorage.removeItem("activeSubTab")
+    }
     
     // Scroll to top when changing tabs
     window.scrollTo({ top: 0, behavior: "smooth" })
     
-    // Update URL: ?page=portfolio/ for info button, ?page=about/certifications for tabs
-    if (page === "portfolio" && !tab) {
-      router.push(`?page=portfolio/`, { scroll: false })
-    } else {
+    // Update URL with portfolio namespace
+    if (tab) {
       router.push(`?page=${page}/${tab}`, { scroll: false })
+    } else {
+      router.push(`?page=${page}`, { scroll: false })
     }
   }
 
@@ -89,8 +112,8 @@ export default function HomeClient() {
             </div>
             <section className="flex-1 flex flex-col gap-6 pb-20">
               <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] shadow-lg overflow-hidden">
-               {!activePage || !activeTab ? (
-                // Skeleton navbar
+               {activePage == null ? (
+                // Skeleton navbar - only show when page is not initialized
                 <div className="w-full flex justify-center py-4 animate-pulse space-x-4">
                   {[...Array(7)].map((_, i) => (
                     <div key={i} className="w-20 h-8 bg-[#333333] rounded-lg" />
@@ -110,7 +133,8 @@ export default function HomeClient() {
                   key={`${activePage}/${activeTab}`}
                   className="flex-1 transition-all duration-500 ease-in-out"
                 >
-                 {!activePage ? (
+                 {activePage == null ? (
+                    // Skeleton content - only show when page is not initialized
                     <div className="w-full h-full space-y-4 animate-pulse">
                       <div className="h-6 w-1/2 bg-[#333333] rounded" />
                       <div className="h-4 w-full bg-[#333333] rounded" />
@@ -119,9 +143,13 @@ export default function HomeClient() {
                     </div>
                   ) : (
                     <>
-                      {activePage === "about" && <About />}
-                      {activePage === "resume" && <Resume />}
-                      {activePage === "portfolio" && <Portfolio />}
+                      {activePage === "portfolio" && activeTab === null && <PortfolioLandingPage />}
+                      {activePage === "portfolio" && activeTab === "skills" && <SkillsPage />}
+                      {activePage === "portfolio" && activeTab === "certifications" && <CertificationsPage />}
+                      {activePage === "portfolio" && activeTab === "education" && <EducationPage />}
+                      {activePage === "portfolio" && activeTab === "experience" && <ExperiencePage />}
+                      {activePage === "portfolio" && activeTab === "projects" && <ProjectsPage />}
+                      {activePage === "portfolio" && activeTab === "repos" && <ReposPage />}
                     </>
                   )}
 

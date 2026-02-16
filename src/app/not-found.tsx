@@ -11,7 +11,7 @@ export default function NotFound() {
               404
             </h1>
             <h2 className="text-3xl font-bold tracking-tight mb-2">
-              Warning
+              Page Not Found
             </h2>
             <div className="w-32 h-[2px] mx-auto bg-gradient-to-r from-red-600 to-red-500 rounded-full" />
           </div>
@@ -24,7 +24,7 @@ export default function NotFound() {
             href="https://ethantownsend.dev"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 rounded-lg transition-all duration-200 font-semibold text-lg shadow-md hover:shadow-lg hover:scale-105"
           >
-            Visit Social Landing
+            Return to Homepage
           </a>
         </div>
       </div>

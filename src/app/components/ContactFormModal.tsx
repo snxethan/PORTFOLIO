@@ -63,13 +63,13 @@ export default function ContactFormModal({ onClose }: Props) {
   const modalContent = (
     <div
     // This is the modal overlay. It covers the entire screen and has a semi-transparent background.
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm"
       onClick={close}
     >
       <div
       // This is the modal content. It contains the form and the close button.
         // It has a dark background and a border to make it stand out.
-        className={`bg-[#1e1e1e] text-white border border-[#333] rounded-xl p-6 max-w-md w-full relative ${
+        className={`bg-[#1e1e1e] text-white border border-[#333333] rounded-xl p-8 max-w-md w-full relative shadow-2xl ${
           isAnimatingOut ? "animate-fade-out-down" : "animate-fade-in-up"
         }`} // This is the modal content. It contains the form and the close button.
         // The className is used to apply the animation and styles to the modal.
@@ -84,19 +84,24 @@ export default function ContactFormModal({ onClose }: Props) {
         <button
           onClick={close} // This is the close button. It is an "X" icon that closes the modal when clicked.
           // It has a hover effect to make it more interactive.
-          className="absolute top-1 right-3 text-3xl text-gray-400 hover:text-red-500"
+          className="absolute top-3 right-4 text-3xl text-gray-400 hover:text-red-500 transition-colors duration-200"
         >
           &times; {/* This is the close button. It is an "X" icon that closes the modal when clicked. */}
         </button>
 
-        <h3 className="text-xl font-semibold mb-4">Contact Me</h3>
+        <div className="mb-6 text-center">
+          <h3 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-500 text-transparent bg-clip-text mb-2">
+            Contact Me
+          </h3>
+          <div className="w-32 h-[2px] mx-auto bg-gradient-to-r from-red-600 to-red-500 rounded-full" />
+        </div>
       
-        <form onSubmit={handleSubmit} className="space-y-4"> {/* This is the form element. It contains the input fields and the submit button. */}
+        <form onSubmit={handleSubmit} className="space-y-4 mb-6"> {/* This is the form element. It contains the input fields and the submit button. */}
           <input
             type="text"
             required
             placeholder="Your Name"
-            className="w-full p-2 bg-[#2a2a2a] rounded border border-[#444]"
+            className="w-full p-3 bg-[#2a2a2a] text-white rounded-lg border border-[#444] focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -104,31 +109,31 @@ export default function ContactFormModal({ onClose }: Props) {
             type="email"
             required
             placeholder="Your Email"
-            className="w-full p-2 bg-[#2a2a2a] rounded border border-[#444]"
+            className="w-full p-3 bg-[#2a2a2a] text-white rounded-lg border border-[#444] focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <textarea
             required
             placeholder="Your Message"
-            className="w-full p-2 bg-[#2a2a2a] rounded border border-[#444] h-32"
+            className="w-full p-3 bg-[#2a2a2a] text-white rounded-lg border border-[#444] focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 transition-all h-32 resize-none"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
           <button
             type="submit"
-            className="w-full py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 rounded"
+            className="w-full py-3 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
           >
             Send Message
           </button>
         </form>
         
-        <div className="mt-4 pt-4 border-t border-[#333] text-center">
+        <div className="pt-4 border-t border-[#333333] text-center">
           <p className="text-gray-400 text-sm">
             Or email me directly:{" "}
             <a 
               href="mailto:snxethan@gmail.com" 
-              className="text-red-500 hover:text-red-400 underline"
+              className="text-red-500 hover:text-red-400 underline transition-colors duration-200"
             >
               snxethan@gmail.com
             </a>

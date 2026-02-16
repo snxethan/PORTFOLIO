@@ -6,7 +6,7 @@ import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md"
 import Link from "next/link"
 
 interface NavbarProps {
-  onTabChange: (page: string, tab: string) => void
+  onTabChange: (page: string, tab: string | null) => void
   activePage: string | null
   activeTab: string | null
   onPinChange?: (isPinned: boolean) => void
@@ -90,27 +90,27 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
     }
   }, [isHorizontalScroll, isLoading, activePage, activeTab, isTransitioning])
 
-  // Define tab groups with their respective sections
+  // Define tab groups with their respective sections - all under portfolio namespace
   const tabGroups = [
     {
-      name: "Ethan Townsend",
+      name: "Skills & Credentials",
       tabs: [
-        { id: "certifications", label: "Certifications", page: "about" },
-        { id: "skills", label: "Skills", page: "about" }
+        { id: "certifications", label: "Certifications", page: "portfolio" },
+        { id: "skills", label: "Skills", page: "portfolio" }
       ]
     },
     {
-      name: "Ethan Townsend",
+      name: "Background",
       tabs: [
-        { id: "experience", label: "Experience", page: "resume" },
-        { id: "education", label: "Education", page: "resume" }
+        { id: "experience", label: "Experience", page: "portfolio" },
+        { id: "education", label: "Education", page: "portfolio" }
       ]
     },
     {
-      name: "Ethan Townsend",
+      name: "Work",
       tabs: [
         { id: "projects", label: "Projects", page: "portfolio" },
-        { id: "repositories", label: "Repositories", page: "portfolio" }
+        { id: "repos", label: "Repositories", page: "portfolio" }
       ]
     }
   ]
@@ -134,24 +134,24 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
         {/* Title with Home icon (left), Layout toggle (right, left of pin) and Pin button (right) */}
         <div className="flex items-center justify-center mb-3 relative">
           {/* Home icon button - positioned to the left of title */}
-          <Link
-            href="/"
+          <button
+            onClick={() => onTabChange("portfolio", null)}
             className={`absolute left-4 p-2 rounded-lg transition-all duration-200 border ${
-              activePage === null
+              activePage === "portfolio" && activeTab === null
                 ? "bg-red-600 border-red-600 shadow-lg shadow-red-600/30" // Active state
                 : "border-transparent hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 group" // Inactive state
             }`}
             aria-label="Home"
-            title="Go to Home"
+            title="Go to Portfolio Home"
           >
             <FaHome className={`w-5 h-5 transition-colors ${
-              activePage === null
+              activePage === "portfolio" && activeTab === null
                 ? "text-white" // Active: white icon
                 : "text-gray-400 group-hover:text-[#dc2626]" // Inactive: gray with red hover
             }`} />
-          </Link>
+          </button>
           
-          <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
+          <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             My Portfolio
           </h1>
           

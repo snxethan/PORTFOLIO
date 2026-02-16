@@ -1,14 +1,14 @@
 "use client"
 
 import { Suspense } from "react"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import HomeClient from "./components/pages/HomeClient"
-import LandingPage from "./components/pages/LandingPage"
 import { useEffect, useState } from "react"
 import SecurityPolicyModal from "./components/SecurityPolicyModal"
 
 function PageContent() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const page = searchParams.get("page")
   const [showSecurityPolicy, setShowSecurityPolicy] = useState(false)
 
@@ -16,13 +16,50 @@ function PageContent() {
     if (window.location.hash === '#security-policy') {
       setShowSecurityPolicy(true)
     }
-  }, [])
+    
+    // Default landing: redirect to portfolio (landing page)
+    if (!page) {
+      router.replace('?page=portfolio')
+      return
+    }
+    
+    // Handle legacy URLs - redirect to new portfolio structure
+    const parts = page.split('/')
+    const mainPage = parts[0]
+    const subPage = parts[1]
+    
+    // Legacy format redirects
+    if (mainPage === 'about') {
+      if (subPage === 'certifications') {
+        router.replace('?page=portfolio/certifications')
+      } else if (subPage === 'skills') {
+        router.replace('?page=portfolio/skills')
+      }
+    } else if (mainPage === 'resume') {
+      if (subPage === 'experience') {
+        router.replace('?page=portfolio/experience')
+      } else if (subPage === 'education') {
+        router.replace('?page=portfolio/education')
+      }
+    } else if (mainPage === 'portfolio') {
+      if (subPage === 'repositories') {
+        router.replace('?page=portfolio/repos')
+      }
+      // portfolio/projects stays the same
+    }
+  }, [page, router])
 
-  // If no page parameter, show landing page
+  // If no page parameter, show skeleton while redirecting
   // Otherwise show the normal HomeClient with tabs
   return (
     <>
-      {!page ? <LandingPage /> : <HomeClient />}
+      {!page ? (
+        <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d]">
+          <div className="animate-pulse text-gray-400">Loading...</div>
+        </div>
+      ) : (
+        <HomeClient />
+      )}
       {showSecurityPolicy && (
         <SecurityPolicyModal onClose={() => setShowSecurityPolicy(false)} />
       )}
