@@ -80,7 +80,54 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning className="bg-[#1a1a1a] text-white font-sans">
-        <Toaster position="top-center" />
+        <Toaster 
+          position="top-center"
+          toastOptions={{
+            // Default options for all toasts
+            duration: 4000,
+            style: {
+              background: '#1e1e1e',
+              color: '#fff',
+              border: '1px solid #333333',
+              borderRadius: '0.75rem',
+              padding: '16px',
+              fontSize: '14px',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3)',
+            },
+            // Success toast styling
+            success: {
+              duration: 3000,
+              style: {
+                border: '1px solid #10b981',
+              },
+              iconTheme: {
+                primary: '#10b981',
+                secondary: '#1e1e1e',
+              },
+            },
+            // Error toast styling
+            error: {
+              duration: 4000,
+              style: {
+                border: '1px solid #dc2626',
+              },
+              iconTheme: {
+                primary: '#dc2626',
+                secondary: '#1e1e1e',
+              },
+            },
+            // Loading toast styling
+            loading: {
+              style: {
+                border: '1px solid #ef4444',
+              },
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#1e1e1e',
+              },
+            },
+          }}
+        />
         <ExternalLinkHandler>
           {/* <ClickSoundWrapper> */}
             {children}
