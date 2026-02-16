@@ -16,7 +16,10 @@ export const projectsTimelineData: TimelineItem[] = [
     language: "TypeScript",
     topics: ["react", "typescript", "tailwind", "portfolio", "web-development"],
     tags: ["Computer Science", "Web Development"],
-    url: "https://github.com/Ghussy/Rollio",
+    links: [
+      { url: "https://portfoliyou.snxethan.dev/", label: "View Website" },
+      { url: "https://github.com/Ghussy/Rollio", label: "View Repository" }
+    ]
   },
   {
     type: "project",
@@ -33,6 +36,5 @@ export const projectsTimelineData: TimelineItem[] = [
     language: "TypeScript",
     topics: ["aws", "cloud", "devops", "modernization", "infrastructure"],
     tags: ["Computer Science", "Cloud Computing", "DevOps"],
-    url: "#",
   },
 ]
