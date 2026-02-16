@@ -68,7 +68,7 @@ const Footer = () => {
               height={32}
               className="rounded-full transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:scale-105"
             />
-            <TooltipWrapper label="Social Landing">
+            <TooltipWrapper label="My Portfolio">
               <a href="https://ethantownsend.dev" className="text-sm text-gray-400 hover:text-red-600 transition-colors duration-200">
                 Ethan Townsend &copy; {new Date().getFullYear()}
               </a>
@@ -78,16 +78,14 @@ const Footer = () => {
 {/* Right: Domain Links */}
           <div className="order-2 lg:order-3">
             <div className="footer-links flex flex-col sm:flex-row items-center gap-2">
-              <TooltipWrapper label="Portfolio">
-                <div className="flex gap-4">
-                  <Link href="https://snex.dev" className="hover:text-red-600 hover:scale-105 transition-all duration-200">
-                    snex.dev    
-                  </Link>
-                  <Link href="https://snxethan.dev" className="hover:text-red-600 hover:scale-105 transition-all duration-200">
-                    snxethan.dev
-                  </Link>
-                </div>
-              </TooltipWrapper>
+              <div className="flex gap-4">
+                <Link href="https://snex.dev" className="hover:text-red-600 hover:scale-105 transition-all duration-200">
+                  snex.dev    
+                </Link>
+                <Link href="https://snxethan.dev" className="hover:text-red-600 hover:scale-105 transition-all duration-200">
+                  snxethan.dev
+                </Link>
+              </div>
             </div>
           </div>
         </div>

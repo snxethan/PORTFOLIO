@@ -6,7 +6,7 @@ export default function NotFound() {
   const router = useRouter()
   
   const handleGoHome = () => {
-    router.push("/?page=portfolio")
+    router.replace("/?page=portfolio")
   }
   
   return (
