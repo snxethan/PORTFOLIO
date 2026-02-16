@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import toast from "react-hot-toast"
 import Sidebar from "./sidebar/Sidebar"
 import Navbar from "./Navbar"
 import SkillsPage from "./portfolio/SkillsPage"
@@ -38,12 +39,14 @@ export default function HomeClient() {
     
     // Ensure we're in portfolio namespace
     if (mainPage !== 'portfolio') {
+      toast.error('Page not found. Redirected to homepage.')
       router.push(`?page=${fallbackPage}`, { scroll: false })
       return
     }
     
     // If subTab is provided but not valid, go to landing page
     if (subTab !== null && !VALID_SECTIONS.includes(subTab)) {
+      toast.error('Page not found. Redirected to homepage.')
       router.push(`?page=${fallbackPage}`, { scroll: false })
       return
     }
