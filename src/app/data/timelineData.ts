@@ -13,6 +13,24 @@ interface TimelineItem {
 export const timelineData: TimelineItem[] = [
   {
     type: "experience",
+    institution: "TrueMark",
+    location: "Remote",
+    startDate: "2026-01",
+    endDate: "Present",
+    highlights: [
+      "Backend Software Developer – Engineered scalable backend solutions for enterprise customers.",
+      "AWS Cloud Transformation – Led modernization efforts migrating legacy systems to AWS cloud infrastructure.",
+      "AI Agent Development – Designed and implemented AWS AI agents for automated problem-solving and customer support.",
+      "Code Refactoring – Performed comprehensive manual refactoring to improve code quality, maintainability, and performance.",
+      "Agile Collaboration – Participated in daily standups, sprint planning, and cross-functional team coordination."
+    ],
+    summary:
+      "Backend software developer focused on AWS cloud transformation and modernization. Worked extensively with existing customer codebases, implementing AWS services and AI agents while conducting manual refactoring to enhance system architecture and performance.",
+    isCSRelated: true,
+    tags: ["Computer Science", "Backend Development", "AWS", "Cloud Computing", "AI"]
+  },
+  {
+    type: "experience",
     institution: "Neumont College of Computer Science",
     location: "Salt Lake City, UT",
     startDate: "2024-04",
@@ -55,5 +73,21 @@ export const timelineData: TimelineItem[] = [
       "Earned college credits while in high school through dual enrollment, accelerating progress in computer science education.",
     isCSRelated: true,
     tags: ["Computer Science", "College", "Dual Enrollment"]
+  },
+  {
+    type: "education",
+    institution: "Lake Havasu High School",
+    location: "Lake Havasu City, AZ",
+    startDate: "2019-08",
+    endDate: "2023-05",
+    highlights: [
+      "Computer Science CTE Program – Completed 4 years of specialized computer science career and technical education.",
+      "IT Certifications – Earned industry-recognized information technology certifications through rigorous coursework.",
+      "Computer Science Scholarship – Awarded academic scholarship for college based on exceptional CS performance and achievements."
+    ],
+    summary:
+      "Completed comprehensive computer science CTE program throughout high school, earning IT certifications and a computer science scholarship for college. Built strong foundation in programming, networking, and technical problem-solving.",
+    isCSRelated: true,
+    tags: ["Computer Science", "High School", "CTE", "Certifications"]
   }
 ]
