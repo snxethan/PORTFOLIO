@@ -85,6 +85,7 @@ export default function RootLayout({
           toastOptions={{
             // Default options for all toasts
             duration: 4000,
+            className: 'animate-fade-in-up',
             style: {
               background: '#1e1e1e',
               color: '#fff',
@@ -97,6 +98,7 @@ export default function RootLayout({
             // Success toast styling
             success: {
               duration: 3000,
+              className: 'animate-fade-in-up',
               style: {
                 border: '1px solid #10b981',
               },
@@ -108,6 +110,7 @@ export default function RootLayout({
             // Error toast styling
             error: {
               duration: 4000,
+              className: 'animate-fade-in-up',
               style: {
                 border: '1px solid #dc2626',
               },
@@ -118,6 +121,7 @@ export default function RootLayout({
             },
             // Loading toast styling
             loading: {
+              className: 'animate-fade-in-up',
               style: {
                 border: '1px solid #ef4444',
               },
