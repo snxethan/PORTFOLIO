@@ -8,7 +8,7 @@ import { Toaster } from 'react-hot-toast'
 
 export const metadata: Metadata = {
   title: "Ethan Townsend | Software Engineer",
-  description: "I'm Ethan Townsend. A Backend & Full-Stack Software Engineer, I am interested in all things tech. Learn more about me here!",
+  description: "Im a Software Engineer & Backend Developer",
   icons: {
     icon: [
       { url: "/favicon.ico", type: "image/x-icon" },
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
   openGraph: {
     title: "Ethan Townsend | Software Engineer",
-    description: "I'm Ethan Townsend. A Backend & Full-Stack Software Engineer, I am interested in all things tech. Learn more about me here!",
+    description: "Im a Software Engineer & Backend Developer",
     url: "https://www.ethantownsend.dev",
     siteName: "ethantownsend.dev",
     images: [
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Ethan Townsend | Software Engineer",
-    description: "I'm Ethan Townsend. A Backend & Full-Stack Software Engineer, I am interested in all things tech. Learn more about me here!",
+    description: "Im a Software Engineer & Backend Developer",
     images: ["https://www.snxethan.dev/images/avatar/snex.png"],
   },  other: {
     'X-Frame-Options': 'SAMEORIGIN',
