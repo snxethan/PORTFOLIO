@@ -16,17 +16,15 @@ A modern, responsive portfolio application built with **Next.js 16**, **React 19
 
 ---
 
-## 🌐 Live Domains
+## Live Domains
 
-- **[snxethan.dev](https://www.snxethan.dev/)** - Primary Portfolio
-- **[snex.dev](https://www.snex.dev)** - Domain Alias
-- **[ethantownsend.dev](https://www.ethantownsend.dev)** - Social Landing Page
+- **[ethantownsend.dev](https://www.ethantownsend.dev)** - Portfolio
 
 ---
 
-## ✨ Features
+## Features
 
-### 🎨 Dynamic UI Components
+### Dynamic UI Components
 - **Responsive Sidebar** with seasonal avatars and dynamic status indicators
 - **Tab-based Navigation System** for seamless page transitions
 - **Real-time Spotify Widget** displaying currently playing tracks with album art
@@ -37,7 +35,7 @@ A modern, responsive portfolio application built with **Next.js 16**, **React 19
 - **Click Sound Effects** for interactive feedback
 - **Custom Tooltips** for enhanced user experience
 
-### 🔧 Technical Features
+### Technical Features
 - **Server-Side Rendering (SSR)** with Next.js 16 App Router
 - **Type-safe Development** with strict TypeScript configuration
 - **Responsive Design** with mobile-first approach (min-width: 360px)
@@ -47,7 +45,7 @@ A modern, responsive portfolio application built with **Next.js 16**, **React 19
 - **Session Storage** with timed persistence for UI state
 - **Vercel Analytics** and Speed Insights for performance monitoring
 
-### 🔒 Security & Performance
+### Security & Performance
 - **API Rate Limiting** (1 request/minute per IP on contact form)
 - **Input Validation** and sanitization on all forms
 - **Secure OAuth 2.0** implementation for Spotify authentication
@@ -58,7 +56,7 @@ A modern, responsive portfolio application built with **Next.js 16**, **React 19
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Core Technologies
 | Technology | Version | Purpose |
@@ -152,7 +150,7 @@ portfolio/
 
 ---
 
-## 🚀 API Endpoints
+## API Endpoints
 
 ### Contact Form
 **`POST /api/contact`**
@@ -206,7 +204,7 @@ portfolio/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -265,7 +263,7 @@ RECEIVER_EMAIL=destination@email.com
 </details>
 
 <details>
-<summary><b>📧 How to set up Gmail for contact form</b></summary>
+<summary><b>📝 How to set up Gmail for contact form</b></summary>
 
 1. Enable 2-Factor Authentication on your Gmail account
 2. Go to [Google Account Settings](https://myaccount.google.com/security)
@@ -298,7 +296,7 @@ Visit [http://localhost:3000](http://localhost:3000) to see the application.
 
 ---
 
-## 📦 Deployment
+## Deployment
 
 This project is optimized for deployment on **[Vercel](https://vercel.com)** with zero configuration.
 
@@ -332,7 +330,7 @@ Add all environment variables from `.env.local` to Vercel:
 
 ---
 
-## 🧪 Development Workflow
+## Development Workflow
 
 ### Code Quality
 ```bash
@@ -371,7 +369,7 @@ npm start
 
 ---
 
-## 🎨 Customization
+## Customization
 
 ### Changing Theme Colors
 Edit `src/app/globals.css` to modify color variables and animations.
@@ -387,7 +385,7 @@ Define new keyframe animations in `src/app/globals.css` under the `@keyframes` s
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -418,7 +416,7 @@ Define new keyframe animations in `src/app/globals.css` under the `@keyframes` s
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -472,17 +470,7 @@ If you'd like to use this project as a template for your own portfolio, feel fre
 
 ---
 
-## 👤 Author
-
-**Ethan Townsend** (snxethan)
-
-- Portfolio: [snxethan.dev](https://www.snxethan.dev)
-- GitHub: [@snxethan](https://github.com/snxethan)
-- LinkedIn: Connect via portfolio contact form
-
----
-
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Next.js Team** - For the amazing React framework
 - **Vercel** - For seamless deployment and hosting
@@ -493,37 +481,14 @@ If you'd like to use this project as a template for your own portfolio, feel fre
 
 ---
 
-## 📈 Project Stats
-
-![GitHub stars](https://img.shields.io/github/stars/snxethan/Portfolio?style=social)
-![GitHub forks](https://img.shields.io/github/forks/snxethan/Portfolio?style=social)
-![GitHub issues](https://img.shields.io/github/issues/snxethan/Portfolio)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/snxethan/Portfolio)
-
----
-
-## 🗺️ Roadmap
-
-- [x] Initial portfolio design and setup
-- [x] Spotify integration
-- [x] GitHub repository integration
-- [x] Contact form with email delivery
-- [x] PDF resume viewer
-- [x] Custom animations and transitions
-- [x] Multi-domain support
-- [x] Analytics integration
-- [ ] Blog section with markdown support
-- [ ] Dark/light theme toggle
-- [ ] Internationalization (i18n)
-- [ ] Advanced project filtering
-- [ ] Performance optimizations
-
----
-
 <div align="center">
 
 **[⬆ Back to Top](#ethan-townsend--portfolio)**
 
-Made with ❤️ by [Ethan Townsend](https://www.snxethan.dev)
+Made by [Ethan Townsend](https://www.snxethan.dev) (snxethan)
+
+- Portfolio: [snxethan.dev](https://www.snxethan.dev)
+- GitHub: [@snxethan](https://github.com/snxethan)
+- LinkedIn: [snxethan](https://www.linkedin.com/in/snxethan/)
 
 </div>
