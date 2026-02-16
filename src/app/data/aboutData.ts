@@ -63,7 +63,7 @@ export const skills: Skill[] = [
   { name: "Kafka", icon: SiApachekafka, highlight: true, url: "https://kafka.apache.org/", tags: ["Computer Science", "Streaming", "Backend"] },
   { name: "Docker Compose", icon: SiDocker, url: "https://docs.docker.com/compose/", tags: ["Computer Science", "DevOps", "Containerization"] },
   { name: "AWS", icon: FaAws, highlight: true, url: "https://aws.amazon.com/", tags: ["Computer Science", "Cloud", "DevOps"] },
-  { name: "AWS Transform", icon: FaAws, highlight: true, url: "https://aws.amazon.com/", tags: ["Computer Science", "Cloud", "Migration"] },
+  { name: "AWS Modernization", icon: FaAws, highlight: true, url: "https://aws.amazon.com/modernization/", tags: ["Computer Science", "Cloud", "Migration", "Modernization"] },
   { name: ".NET", icon: SiDotnet, highlight: true, url: "https://dotnet.microsoft.com/", tags: ["Computer Science", "Backend", "Framework"] },
 ]
 
