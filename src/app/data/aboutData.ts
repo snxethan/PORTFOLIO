@@ -1,7 +1,7 @@
 import { IconType } from "react-icons"
 import { BiFork } from "react-icons/bi"
 import { BsUnity, BsPatchCheckFill } from "react-icons/bs"
-import { FaReact, FaNodeJs, FaPython, FaGitAlt, FaJava } from "react-icons/fa"
+import { FaReact, FaNodeJs, FaPython, FaGitAlt, FaJava, FaAws } from "react-icons/fa"
 import { GiSharpLips } from "react-icons/gi"
 import {
   SiJavascript,
@@ -17,6 +17,8 @@ import {
   SiMysql,
   SiFlutter,
   SiBlazor,
+  SiNginx,
+  SiApachekafka,
 } from "react-icons/si"
 
 export interface Skill {
@@ -57,6 +59,12 @@ export const skills: Skill[] = [
   { name: "Postman", icon: SiPostman, highlight: true, url: "https://www.postman.com/", tags: ["Computer Science", "API"] },
   { name: "Flutter", icon: SiFlutter, url: "https://flutter.dev/", tags: ["Computer Science", "Mobile"] },
   { name: "Blazor", icon: SiBlazor, url: "https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor", tags: ["Computer Science", "Web Development"] },
+  { name: "Nginx", icon: SiNginx, highlight: true, url: "https://nginx.org/", tags: ["Computer Science", "Web Server", "DevOps"] },
+  { name: "Kafka", icon: SiApachekafka, highlight: true, url: "https://kafka.apache.org/", tags: ["Computer Science", "Streaming", "Backend"] },
+  { name: "Docker Compose", icon: SiDocker, url: "https://docs.docker.com/compose/", tags: ["Computer Science", "DevOps", "Containerization"] },
+  { name: "AWS", icon: FaAws, highlight: true, url: "https://aws.amazon.com/", tags: ["Computer Science", "Cloud", "DevOps"] },
+  { name: "AWS Transform", icon: FaAws, highlight: true, url: "https://aws.amazon.com/", tags: ["Computer Science", "Cloud", "Migration"] },
+  { name: ".NET", icon: SiDotnet, highlight: true, url: "https://dotnet.microsoft.com/", tags: ["Computer Science", "Backend", "Framework"] },
 ]
 
 export const unrelatedSkills: Skill[] = [
