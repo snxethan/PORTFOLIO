@@ -1,7 +1,14 @@
 "use client"
 import Footer from "./components/pages/Footer"
+import { useRouter } from "next/navigation"
 
 export default function NotFound() {
+  const router = useRouter()
+  
+  const handleGoHome = () => {
+    router.push("/?page=portfolio")
+  }
+  
   return (
     <div className="min-h-screen flex flex-col bg-[#0a0a0a]">
       <div className="flex-1 flex items-center justify-center p-4">
@@ -20,12 +27,12 @@ export default function NotFound() {
             The content you&apos;re looking for is not available.
           </p>
 
-          <a
-            href="https://ethantownsend.dev"
+          <button
+            onClick={handleGoHome}
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 rounded-lg transition-all duration-200 font-semibold text-lg shadow-md hover:shadow-lg hover:scale-105"
           >
             Return to Homepage
-          </a>
+          </button>
         </div>
       </div>
       <Footer />
