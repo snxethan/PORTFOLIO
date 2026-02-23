@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethan Townsend - LinkedIn Banner (Code Block)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            gap: 16px;
+        }
+
+        .banner-container {
+            width: 1584px;
+            height: 396px;
+            background: #000000;
+            border-radius: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .banner-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+        }
+
+        .name-block {
+            display: none;
+        }
+
+        .code-window {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            flex: 1;
+            max-width: none;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(220, 38, 38, 0.45);
+            border-radius: 0;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+            margin-left: 0;
+        }
+
+        .window-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(220, 38, 38, 0.25);
+        }
+
+        .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #22c55e; }
+
+        .code-block {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 4px 16px 18px 620px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 21px;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        .code-key-name { color: #60a5fa; }
+        .code-key-title { color: #f59e0b; }
+        .code-key-education { color: #a78bfa; }
+        .code-key-focus { color: #34d399; }
+        .code-key-experience { color: #f472b6; }
+        .code-key-company { color: #22d3ee; }
+        .code-string { color: #ffffff; }
+        .code-number { color: #fbbf24; }
+        .code-colon { color: #a1a1aa; }
+        .code-brace { color: #e5e7eb; }
+        .code-comma { color: #9ca3af; }
+
+        .banner-actions {
+            width: 1584px;
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);
+        }
+
+        .banner-preview {
+            width: 1584px;
+            max-width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: none;
+        }
+
+        .banner-preview.is-ready {
+            display: block;
+        }
+
+        @media print {
+            body {
+                background: #000000;
+                padding: 0;
+                margin: 0;
+            }
+            .banner-container {
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+        }
+
+        @media (max-width: 1700px) {
+            .banner-container {
+                width: 100%;
+                max-width: 1584px;
+                height: auto;
+                aspect-ratio: 4 / 1;
+                padding: 0;
+            }
+
+            .banner-content {
+                gap: 0;
+            }
+
+            .name-block {
+                min-width: 0;
+            }
+
+            .code-window {
+                max-width: none;
+            }
+
+            .code-block {
+                padding: 4px 16px 18px 620px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="banner-container" id="banner">
+        <div class="banner-content">
+            <div class="code-window" aria-label="Developer profile code block">
+                <div class="window-header">
+                    <span class="window-dot dot-red"></span>
+                    <span class="window-dot dot-yellow"></span>
+                    <span class="window-dot dot-green"></span>
+                </div>
+                <div class="code-block">
+                    <div><span class="code-brace">{</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-key-name">"Name"</span><span class="code-colon"> =</span> <span class="code-string">"Ethan Townsend"</span><span class="code-comma">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-key-title">"Title"</span><span class="code-colon"> =</span> <span class="code-string">"Software Engineer"</span><span class="code-comma">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-key-education">"Education"</span><span class="code-colon"> =</span> <span class="code-string">"B.S. Computer Science, Neumont University"</span><span class="code-comma">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-key-focus">"Focus"</span><span class="code-colon"> =</span> <span class="code-string">"Backend Systems"</span><span class="code-comma">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-key-experience">"Experience"</span><span class="code-colon"> =</span> <span class="code-brace">{</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key-company">"TrueMark"</span><span class="code-colon"> =</span> <span class="code-string">"January (2026) - Present"</span><span class="code-comma">,</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key-company">"Neumont University"</span><span class="code-colon"> =</span> <span class="code-string">"May (2024) - Present"</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-brace">}</span></div>
+                    <div><span class="code-brace">}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="banner-preview" id="banner-preview">
+        <img class="banner-image" id="banner-image" alt="LinkedIn banner preview" />
+    </div>
+
+    <div class="banner-actions">
+        <button class="action-button" id="download-png" type="button">Download PNG</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        const banner = document.getElementById('banner');
+        const bannerPreview = document.getElementById('banner-preview');
+        const bannerImage = document.getElementById('banner-image');
+        const downloadPngButton = document.getElementById('download-png');
+
+        const renderBannerToImage = async () => {
+            const canvas = await html2canvas(banner, {
+                scale: 2,
+                backgroundColor: '#000000',
+                useCORS: true
+            });
+            const dataUrl = canvas.toDataURL('image/png');
+            bannerImage.src = dataUrl;
+            bannerPreview.classList.add('is-ready');
+            return dataUrl;
+        };
+
+        downloadPngButton.addEventListener('click', async () => {
+            const dataUrl = await renderBannerToImage();
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = 'Ethan-Townsend-LinkedIn-Banner-Codeblock.png';
+            link.click();
+        });
+    </script>
+</body>
+</html>
+
