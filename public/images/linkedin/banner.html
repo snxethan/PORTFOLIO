@@ -1,0 +1,324 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethan Townsend - LinkedIn Banner</title>
+    <style>
+        @page {
+            size: 1584px 396px;
+            margin: 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 1584px;
+            height: 396px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000000;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+
+        .banner {
+            width: 1584px;
+            height: 396px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated gradient overlay */
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Grid pattern */
+        .banner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(220, 38, 38, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(220, 38, 38, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            padding: 60px 80px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .name-title {
+            flex: 1;
+        }
+
+        .name {
+            font-size: 56px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 500;
+            color: #ef4444;
+            letter-spacing: 0.5px;
+        }
+
+        .education {
+            font-size: 20px;
+            color: #cbd5e1;
+            margin-top: 12px;
+            font-weight: 400;
+        }
+
+        .experience-section {
+            display: flex;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .experience-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .company {
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.3px;
+        }
+
+        .duration {
+            font-size: 16px;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .divider {
+            width: 2px;
+            height: 50px;
+            background: linear-gradient(to bottom, transparent, #dc2626, transparent);
+        }
+
+        /* Accent elements */
+        .accent-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(220, 38, 38, 0.2) 0%, transparent 70%);
+        }
+
+        .accent-circle-1 {
+            width: 400px;
+            height: 400px;
+            top: -200px;
+            right: -100px;
+        }
+
+        .accent-circle-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -150px;
+            left: 200px;
+        }
+
+        /* Code brackets decoration */
+        .bracket {
+            position: absolute;
+            font-size: 120px;
+            font-weight: 300;
+            color: rgba(220, 38, 38, 0.15);
+            font-family: 'Courier New', monospace;
+        }
+
+        .bracket-left {
+            top: 20px;
+            left: 20px;
+        }
+
+        .bracket-right {
+            bottom: 20px;
+            right: 20px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background: transparent;
+            }
+            
+            html, body {
+                width: 1584px;
+                height: 396px;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .banner {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div class="content">
+            <!-- Left Section -->
+            <div class="left-section">
+                <div>
+                    <div class="name">Ethan Townsend</div>
+                    <div class="title">Software Engineer & Backend Developer</div>
+                    <div class="education">B.S. Computer Science, Neumont University</div>
+                </div>
+
+                <div class="experience-section">
+                    <div class="experience-item">
+                        <div class="company">TrueMark</div>
+                        <div class="duration">January 2026 - Present</div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="experience-item">
+                        <div class="company">Neumont University</div>
+                        <div class="duration">May 2024 - September 2025</div>
+                    </div>
+                </div>
+
+                <div class="tech-stack">
+                    <span class="tech-badge">TypeScript</span>
+                    <span class="tech-badge">React</span>
+                    <span class="tech-badge">Node.js</span>
+                    <span class="tech-badge">Python</span>
+                    <span class="tech-badge">SQL</span>
+                    <span class="tech-badge">AWS</span>
+                </div>
+            </div>
+
+            <!-- Right Section - Code Card -->
+            <div class="right-section">
+                <div class="code-card">
+                    <div class="code-header">
+                        <div class="code-dots">
+                            <div class="dot dot-red"></div>
+                            <div class="dot dot-yellow"></div>
+                            <div class="dot dot-green"></div>
+                        </div>
+                        <span class="code-title">developer.ts</span>
+                    </div>
+                    <div class="code-body">
+                        <div class="code-line">
+                            <span class="line-number">1</span>
+                            <span class="code-content"><span class="keyword">class</span> <span class="class-name">Developer</span> <span class="bracket">{</span></span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">2</span>
+                            <span class="code-content">  <span class="property">name</span>: <span class="string">"Ethan Townsend"</span>;</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">3</span>
+                            <span class="code-content">  <span class="property">role</span>: <span class="string">"Full Stack Engineer"</span>;</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">4</span>
+                            <span class="code-content">  <span class="property">specialties</span>: <span class="bracket">[</span></span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">5</span>
+                            <span class="code-content">    <span class="string">"Backend Development"</span>,</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">6</span>
+                            <span class="code-content">    <span class="string">"API Design"</span>,</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">7</span>
+                            <span class="code-content">    <span class="string">"Database Architecture"</span></span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">8</span>
+                            <span class="code-content">  <span class="bracket">]</span>;</span>
+                        </div>
+                        <div class="code-line">
+                            <span class="line-number">9</span>
+                            <span class="code-content"><span class="bracket">}</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Instructions for capturing the banner
+        console.log(`
+        📸 To save your LinkedIn banner:
+
+        METHOD 1 (Recommended - PDF):
+        1. Press Ctrl + P (Print)
+        2. Select "Save as PDF" or "Microsoft Print to PDF"
+        3. Make sure margins are set to "None"
+        4. Click Save
+        5. Convert PDF to PNG/JPG using online tool if needed
+
+        METHOD 2 (Screenshot):
+        1. Press Win + Shift + S (Snipping Tool)
+        2. Select the banner area (1584x396px)
+        3. Save the image
+
+        METHOD 3 (Browser Right-Click):
+        1. Right-click anywhere on page
+        2. Select "Save as..." or use Ctrl + S
+        3. Choose "Webpage, Complete" format
+
+        🔗 File URL: file:///C:/projects/Portfolio/et-portfolio/public/images/linkedin/banner.html
+        💡 The banner is exactly 1584x396px - LinkedIn's perfect size!
+        🎨 Red accents now match your portfolio at snxethan.dev
+        `);
+    </script>
+</body>
+</html>
+
+

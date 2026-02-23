@@ -4,8 +4,8 @@ export const projectsTimelineData: TimelineItem[] = [
   {
     type: "project",
     name: "Portfoli-YOU",
-    startDate: "2024-11",
-    endDate: "2024-12",
+    startDate: "July 2025",
+    endDate: "Present",
     highlights: [
       "Modular portfolio creation tool built with modern web technologies",
       "Desktop application built with Electron for cross-platform compatibility",

@@ -1,0 +1,423 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethan Townsend - LinkedIn Banner</title>
+    /* Deprecated!!!! */
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 16px;
+        }
+
+        .banner-container {
+            width: 1584px;
+            height: 396px;
+            background: transparent;
+            border-radius: 12px;
+            padding: 8px 10px 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .banner-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #dc2626, #ef4444);
+            border-radius: 2px;
+        }
+
+        .name {
+            font-size: 56px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .title {
+            font-size: 28px;
+            color: #ef4444;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .detail-item {
+            font-size: 16px;
+            color: #d1d5db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-label {
+            color: #ef4444;
+            font-weight: 600;
+            min-width: 100px;
+        }
+
+        .detail-value {
+            color: #e5e7eb;
+        }
+
+        .experience-section {
+            display: flex;
+            gap: 18px;
+            margin-top: 15px;
+            justify-content: flex-start;
+            align-items: flex-start;
+            flex-wrap: nowrap;
+            max-width: 640px;
+        }
+
+        .experience-card {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.85) 0%, rgba(45, 45, 45, 0.85) 50%, rgba(26, 26, 26, 0.85) 100%);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            flex: 0 0 260px;
+            color: #e5e7eb;
+        }
+
+        .exp-company {
+            font-weight: 700;
+            color: #ef4444;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .exp-dates {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Right side - decorative element */
+        .right-accent {
+            position: relative;
+            z-index: 2;
+            width: 720px;
+            height: 360px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .code-window {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            border-radius: 10px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .window-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(220, 38, 38, 0.25);
+        }
+
+        .window-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #22c55e; }
+
+        .code-block {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 10px 12px 12px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            color: #e5e7eb;
+            line-height: 1.6;
+        }
+
+        .code-key {
+            color: #93c5fd;
+        }
+
+        .code-key-name {
+            color: #60a5fa;
+        }
+
+        .code-key-title {
+            color: #f59e0b;
+        }
+
+        .code-key-education {
+            color: #a78bfa;
+        }
+
+        .code-key-focus {
+            color: #34d399;
+        }
+
+        .code-key-experience {
+            color: #f472b6;
+        }
+
+        .code-key-company {
+            color: #22d3ee;
+        }
+
+        .code-string {
+            color: #ffffff;
+        }
+
+        .code-number {
+            color: #fbbf24;
+        }
+
+        .code-colon {
+            color: #a1a1aa;
+        }
+
+        .code-brace {
+            color: #e5e7eb;
+        }
+
+        .code-comma {
+            color: #9ca3af;
+        }
+
+        .banner-actions {
+            width: 1584px;
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);
+        }
+
+        .action-button.secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #f3f4f6;
+        }
+
+        .banner-preview {
+            width: 1584px;
+            max-width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: none;
+        }
+
+        .banner-preview.is-ready {
+            display: block;
+        }
+
+        @media print {
+            body {
+                background: transparent;
+                padding: 0;
+                margin: 0;
+            }
+            .banner-container {
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .hint {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1700px) {
+            .banner-container {
+                width: 100%;
+                max-width: 1584px;
+                height: auto;
+                aspect-ratio: 4 / 1;
+                padding: 10px 8px 10px 10px;
+            }
+
+            .name {
+                font-size: 42px;
+            }
+
+            .title {
+                font-size: 22px;
+            }
+
+            .right-accent {
+                width: 520px;
+                height: 300px;
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="banner-container" id="banner">
+        <div class="content-wrapper">
+            <h1 class="name">Ethan Townsend</h1>
+            <div class="accent-line"></div>
+            <div class="title">Software Engineer & Backend Developer</div>
+
+            <div class="details">
+                <div class="detail-item">
+                    <span class="detail-value">B.S. Computer Science, Neumont University</span>
+                </div>
+            </div>
+
+            <div class="experience-section">
+                <div class="experience-card">
+                    <div class="exp-company">TrueMark</div>
+                    <div class="exp-dates">January 2026 - Present</div>
+                </div>
+                <div class="experience-card">
+                    <div class="exp-company">Portfoli-YOU</div>
+                    <div class="exp-dates">September 2025 - Present</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-accent">
+            <div class="code-window" aria-label="Developer profile code block">
+                <div class="window-header">
+                    <span class="window-dot dot-red"></span>
+                    <span class="window-dot dot-yellow"></span>
+                    <span class="window-dot dot-green"></span>
+                </div>
+                <div class="code-block">
+                    <div><span class="code-brace">{</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-key code-key-name">"Name"</span><span class="code-colon">:</span> <span class="code-string">"Ethan Townsend"</span><span class="code-comma">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-key code-key-title">"Title"</span><span class="code-colon">:</span> <span class="code-string">"Software Engineer"</span><span class="code-comma">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-key code-key-education">"Education"</span><span class="code-colon">:</span> <span class="code-string">"B.S. Computer Science"</span><span class="code-comma">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-key code-key-focus">"Focus"</span><span class="code-colon">:</span> <span class="code-string">"Backend"</span><span class="code-comma">,</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-key code-key-experience">"Experience"</span><span class="code-colon">:</span> <span class="code-brace">{</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key code-key-company">"TrueMark"</span><span class="code-colon">:</span> <span class="code-string">"2026-Present"</span><span class="code-comma">,</span></div>
+                    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-key code-key-company">"Portfoli-YOU"</span><span class="code-colon">:</span> <span class="code-string">"2025-Present"</span></div>
+                    <div>&nbsp;&nbsp;<span class="code-brace">}</span></div>
+                    <div><span class="code-brace">}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="banner-preview" id="banner-preview">
+        <img class="banner-image" id="banner-image" alt="LinkedIn banner preview" />
+    </div>
+
+    <div class="banner-actions">
+        <button class="action-button" id="download-png" type="button">Download PNG</button>
+<!--        <button class="action-button" id="download-pdf" type="button">Save as PDF</button>-->
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        const banner = document.getElementById('banner');
+        const bannerPreview = document.getElementById('banner-preview');
+        const bannerImage = document.getElementById('banner-image');
+        const downloadPngButton = document.getElementById('download-png');
+        const downloadPdfButton = document.getElementById('download-pdf');
+
+        const renderBannerToImage = async () => {
+            const canvas = await html2canvas(banner, {
+                scale: 2,
+                backgroundColor: null,
+                useCORS: true
+            });
+            const dataUrl = canvas.toDataURL('image/png');
+            bannerImage.src = dataUrl;
+            bannerPreview.classList.add('is-ready');
+            return dataUrl;
+        };
+
+        downloadPngButton.addEventListener('click', async () => {
+            const dataUrl = await renderBannerToImage();
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = 'Ethan-Townsend-LinkedIn-Banner.png';
+            link.click();
+        });
+
+        downloadPdfButton.addEventListener('click', () => {
+            window.print();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+Programming Languages: Python, Java, JavaScript, C++, C#, SQL, HTML
+Frameworks: React, TypeScript, Next.js, Tailwind CSS, Flutter, Blazor
+Databases: MongoDB, Neo4j, SQL Server (SSMS)
+Technical Skills: Docker, Git, GitHub, Postman, Unity, AWS, AWS Transform, Kafka, Nginx

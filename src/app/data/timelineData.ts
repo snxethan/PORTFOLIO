@@ -15,7 +15,7 @@ export const timelineData: TimelineItem[] = [
     type: "experience",
     institution: "TrueMark",
     location: "Remote",
-    startDate: "2026-01",
+    startDate: "January 2026",
     endDate: "Present",
     highlights: [
       "Backend Software Developer – Engineered scalable backend solutions for enterprise customers.",
@@ -33,8 +33,8 @@ export const timelineData: TimelineItem[] = [
     type: "experience",
     institution: "Neumont College of Computer Science",
     location: "Salt Lake City, UT",
-    startDate: "2024-04",
-    endDate: "2025-08",
+    startDate: "April 2024",
+    endDate: "September 2025",
     highlights: [
       "USG Vice-President – Led student government initiatives and campus-wide policy decisions affecting 500+ students.",
       "Campus Ambassador – Represented the college in recruitment events and guided prospective students through the admissions process.",
@@ -50,7 +50,7 @@ export const timelineData: TimelineItem[] = [
     type: "education",
     institution: "Neumont College of Computer Science",
     location: "Salt Lake City, UT",
-    startDate: "2023-09",
+    startDate: "September 2023",
     endDate: "Present",
     highlights: [
       "Bachelor of Science in Computer Science – Maintaining 4.0 GPA",
@@ -66,8 +66,8 @@ export const timelineData: TimelineItem[] = [
     type: "education",
     institution: "Mohave Community College",
     location: "Lake Havasu City, AZ",
-    startDate: "2021-08",
-    endDate: "2022-11",
+    startDate: "August 2021",
+    endDate: "November 2022",
     highlights: [
       "Dual Enrollment Program – Earned college credits in computer science and mathematics while completing high school coursework"
     ],
@@ -80,8 +80,8 @@ export const timelineData: TimelineItem[] = [
     type: "education",
     institution: "Lake Havasu High School",
     location: "Lake Havasu City, AZ",
-    startDate: "2019-08",
-    endDate: "2023-05",
+    startDate: "August 2019",
+    endDate: "May 2023",
     highlights: [
       "Computer Science CTE Program – Completed 4 years of specialized computer science career and technical education.",
       "IT Certifications – Earned industry-recognized information technology certifications through rigorous coursework.",
