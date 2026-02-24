@@ -26,7 +26,7 @@ export const projectsTimelineData: TimelineItem[] = [
   {
     type: "project",
     name: "TrueMark Customer AWS Transform Modernization",
-    startDate: "2025-01",
+    startDate: "January 2026",
     endDate: "Present",
     highlights: [
       "Cloud infrastructure modernization using AWS services",
