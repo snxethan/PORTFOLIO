@@ -67,7 +67,7 @@ export default function HomeClient() {
     }
 
     // Update document title based on the resolved page and tab
-    const titleMap: { [key: string]: string } = {
+    const titleMap: Record<string, string> = {
       'skills': 'Skills',
       'certifications': 'Certifications',
       'education': 'Education',
