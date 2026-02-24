@@ -65,6 +65,30 @@ export default function HomeClient() {
     } else {
       localStorage.removeItem("activeSubTab")
     }
+
+    // Update document title based on the resolved page and tab
+    const titleMap: Record<string, string> = {
+      'skills': 'Skills',
+      'certifications': 'Certifications',
+      'education': 'Education',
+      'experience': 'Experience',
+      'projects': 'Projects',
+      'repos': 'Repositories'
+    }
+
+    let title = 'Ethan Townsend | Software Engineer'
+    
+    if (resolvedPage === 'portfolio') {
+      if (resolvedTab && titleMap[resolvedTab]) {
+        title = `${titleMap[resolvedTab]} - Ethan Townsend`
+      } else {
+        title = 'Portfolio - Ethan Townsend'
+      }
+    }
+    
+    if (typeof document !== 'undefined') {
+      document.title = title
+    }
   }, [searchParams, router, VALID_SECTIONS])
 
   const handleTabChange = (page: string, tab: string | null) => {
