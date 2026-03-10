@@ -1,22 +1,16 @@
 export const socialLinks = {
   professional: [
     {
-      label: "Email",
-      icon: "FaEnvelope",
-      url: "mailto:snxethan@gmail.com",
-      tooltip: "Contact Me",
+      label: "LinkedIn",
+      icon: "FaLinkedin",
+      url: "https://www.linkedin.com/in/snxethan/",
+      tooltip: "My LinkedIn Profile",
     },
     {
       label: "GitHub",
       icon: "FaGithub",
       url: "https://github.com/snxethan",
       tooltip: "My GitHub Profile",
-    },
-    {
-      label: "LinkedIn",
-      icon: "FaLinkedin",
-      url: "https://www.linkedin.com/in/snxethan/",
-      tooltip: "My LinkedIn Profile",
     },
   ],
   personal: [

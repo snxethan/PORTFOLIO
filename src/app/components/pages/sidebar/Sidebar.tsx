@@ -9,8 +9,6 @@ import { useExternalLink } from "../../ExternalLinkHandler"
 
 import Avatar from "./Avatar"
 import TooltipWrapper from "../../ToolTipWrapper"
-import Portfoliyou from "./Portfoliyou"
-import ContactFormModal from "../../ContactFormModal"
 import PDFModalViewer from "../../PDFModalViewer"
 
 // This component is used to display the sidebar of the website. It contains the user's avatar, professional links, personal links, and a Spotify widget.
@@ -21,7 +19,6 @@ import PDFModalViewer from "../../PDFModalViewer"
 const Sidebar = ({ className = "" }: { className?: string }) => {
   const clickSoundRef = useRef<HTMLAudioElement | null>(null) // Reference to the audio element for the click sound
   const { handleExternalClick } = useExternalLink() // Function to handle external link clicks
-  const [showContact, setShowContact] = useState(false) // State to control the visibility of the contact form modal
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null) // State to control PDF modal visibility
 
   const handleAvatarClick = () => { // Function to handle the avatar click event
@@ -105,23 +102,13 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                 const Icon = Icons[icon as keyof typeof Icons]
                 return (
                   <TooltipWrapper key={label} label={tooltip}>
-                    {label === "Email" ? (
-                      <button
-                        onClick={() => setShowContact(true)}
-                        aria-label={label}
-                        className="text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 active:scale-100"
-                      >
-                        <Icon />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleExternalClick(url)}
-                        aria-label={label}
-                        className="text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 active:scale-100"
-                      >
-                        <Icon />
-                      </button>
-                    )}
+                    <button
+                      onClick={() => handleExternalClick(url)}
+                      aria-label={label}
+                      className="text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 active:scale-100"
+                    >
+                      <Icon />
+                    </button>
                   </TooltipWrapper>
                 )
               })}
@@ -155,7 +142,6 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
         </aside>
       )}
       {/* Contact form modal */}
-      {showContact && <ContactFormModal onClose={() => setShowContact(false)} />}
       {/* PDF modal viewer */}
       {selectedPDF && <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />}
     </>

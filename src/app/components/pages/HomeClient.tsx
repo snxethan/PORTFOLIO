@@ -13,74 +13,113 @@ import ProjectsPage from "./portfolio/ProjectsPage"
 import ReposPage from "./portfolio/ReposPage"
 import PortfolioLandingPage from "./portfolio/PortfolioLandingPage"
 import Footer from "./Footer"
+import { getTimedItem, setTimedItem, removeTimedItem } from "../../utils/timedStorage"
 
 export default function HomeClient() {
   const [activePage, setActivePage] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<string | null>(null)
   const [isNavPinned, setIsNavPinned] = useState(true)
-  const [isNavExpanded, setIsNavExpanded] = useState(false) // true when navbar is in wrap/expanded mode
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  // Valid portfolio subsections (null is also valid for landing page)
-  const VALID_SECTIONS = useMemo(() => [null, 'skills', 'certifications', 'education', 'experience', 'projects', 'repos'], [])
+  const VALID_PAGES = useMemo(() => ["about", "career", "projects"], [])
+  const DEFAULT_TABS = useMemo<Record<string, string | null>>(() => ({
+    about: null,
+    career: "experience",
+    projects: "projects",
+  }), [])
+  const VALID_TABS = useMemo<Record<string, Array<string | null>>>(() => ({
+    about: [null, "certifications", "skills"],
+    career: ["experience", "education"],
+    projects: ["projects", "repos"],
+  }), [])
 
   useEffect(() => {
     const pageParam = searchParams.get("page")
     const storedPage = localStorage.getItem("activePage")
-    const storedTab = localStorage.getItem("activeSubTab")
-    const fallbackPage = "portfolio"
-    const fallbackTab = null // No default tab for portfolio landing
+    const storedTab = getTimedItem<string>("activeSubTab")
+    const fallbackPage = "about"
+    const fallbackTab = DEFAULT_TABS.about
 
-    // Parse URL format: ?page=portfolio or ?page=portfolio/projects
-    const parts = pageParam?.split("/")
-    const mainPage = parts?.[0]
-    const subTab = parts?.[1] || null // Can be null for landing page
-    
-    // Ensure we're in portfolio namespace
-    if (mainPage !== 'portfolio') {
-      toast.error('Page not found. Redirected to homepage.')
-      router.push(`?page=${fallbackPage}`, { scroll: false })
-      return
+    const resolveFromUrl = () => {
+      const parts = pageParam?.split("/")
+      const mainPage = parts?.[0]
+      const subTab = parts?.[1] || null
+
+      if (!mainPage || !VALID_PAGES.includes(mainPage)) {
+        toast.error("Page not found. Redirected to About.")
+        router.push(`?page=${fallbackPage}`, { scroll: false })
+        return null
+      }
+
+      const defaultTab = DEFAULT_TABS[mainPage as keyof typeof DEFAULT_TABS]
+      const resolvedTab = subTab ?? defaultTab
+      const validTabs = VALID_TABS[mainPage as keyof typeof VALID_TABS]
+      const isValidTab = validTabs.includes(resolvedTab)
+
+      if (!isValidTab) {
+        const target = defaultTab ? `?page=${mainPage}/${defaultTab}` : `?page=${mainPage}`
+        toast.error("Page not found. Redirected to About.")
+        router.push(target, { scroll: false })
+        return null
+      }
+
+      return { page: mainPage, tab: resolvedTab }
     }
-    
-    // If subTab is provided but not valid, go to landing page
-    if (subTab !== null && !VALID_SECTIONS.includes(subTab)) {
-      toast.error('Page not found. Redirected to homepage.')
-      router.push(`?page=${fallbackPage}`, { scroll: false })
-      return
+
+    let resolvedPage = fallbackPage
+    let resolvedTab = fallbackTab
+
+    if (pageParam) {
+      const resolved = resolveFromUrl()
+      if (!resolved) return
+      resolvedPage = resolved.page
+      resolvedTab = resolved.tab
+    } else {
+      const candidatePage = storedPage && VALID_PAGES.includes(storedPage)
+        ? storedPage
+        : fallbackPage
+      const defaultTab = DEFAULT_TABS[candidatePage as keyof typeof DEFAULT_TABS]
+      const validTabs = VALID_TABS[candidatePage as keyof typeof VALID_TABS]
+      let candidateTab = storedTab ?? defaultTab
+
+      if (candidateTab === null && candidatePage !== "about") {
+        candidateTab = defaultTab
+      }
+      if (candidateTab !== null && !validTabs.includes(candidateTab)) {
+        candidateTab = defaultTab
+      }
+
+      resolvedPage = candidatePage
+      resolvedTab = candidateTab
     }
-    
-    // Priority: URL params > stored values > fallbacks
-    // When pageParam exists, use its values (mainPage and subTab from URL)
-    // Only use stored values when there's no URL param at all
-    const resolvedPage = pageParam ? mainPage : (storedPage || fallbackPage)
-    const resolvedTab = pageParam ? subTab : (storedTab || fallbackTab)
-    
+
     setActivePage(resolvedPage)
     setActiveTab(resolvedTab)
     localStorage.setItem("activePage", resolvedPage)
     if (resolvedTab) {
-      localStorage.setItem("activeSubTab", resolvedTab)
+      setTimedItem("activeSubTab", resolvedTab, 10 * 60 * 1000)
     } else {
-      localStorage.removeItem("activeSubTab")
+      removeTimedItem("activeSubTab")
     }
-  }, [searchParams, router, VALID_SECTIONS])
+  }, [searchParams, router, VALID_PAGES, VALID_TABS, DEFAULT_TABS])
 
   const handleTabChange = (page: string, tab: string | null) => {
     setActivePage(page)
     setActiveTab(tab)
     localStorage.setItem("activePage", page)
     if (tab) {
-      localStorage.setItem("activeSubTab", tab)
+      setTimedItem("activeSubTab", tab, 10 * 60 * 1000)
     } else {
-      localStorage.removeItem("activeSubTab")
+      removeTimedItem("activeSubTab")
     }
-    
-    // Scroll to top when changing tabs
-    window.scrollTo({ top: 0, behavior: "smooth" })
-    
-    // Update URL with portfolio namespace
+
+    // Scroll to the very top when changing tabs
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    })
+
+    // Update URL with the new page namespace
     if (tab) {
       router.push(`?page=${page}/${tab}`, { scroll: false })
     } else {
@@ -88,35 +127,39 @@ export default function HomeClient() {
     }
   }
 
- 
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
       {/* Main Page Content - Dynamic padding based on pin state AND layout state */}
-      <main className={`flex-grow ${
-        isNavPinned 
-          ? (isNavExpanded ? 'pt-48' : 'pt-32')  // Pinned: 192px if expanded, 128px if horizontal
-          : 'pt-4'  // Unpinned: minimal padding
-      }`}>
+      <main
+        className="flex-grow"
+        style={
+          isNavPinned
+            ? { paddingTop: "calc(var(--navbar-height, 6rem) + 1rem)" }
+            : { paddingTop: "1rem" }
+        }
+      >
         <div className="container mx-auto px-4 pt-4 min-w-[360px]">
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex flex-col gap-6 mb-12 lg:items-center lg:mx-auto lg:w-fit">
-              <div className={`lg:sticky ${
-                isNavPinned 
-                  ? (isNavExpanded ? 'lg:top-52' : 'lg:top-36')  // Pinned: 208px if expanded, 144px if horizontal
-                  : 'lg:top-4'  // Unpinned: minimal top position
-              }`}>
+              <div
+                className="lg:sticky"
+                style={
+                  isNavPinned
+                    ? { top: "calc(var(--navbar-height, 6rem) + 1rem)" }
+                    : { top: "1rem" }
+                }
+              >
                 <Sidebar className=""/>
               </div>
             
             </div>
             <section className="flex-1 flex flex-col gap-6 pb-20">
-              <div className="bg-[#1e1e1e] rounded-xl border border-[#333333] shadow-lg overflow-hidden">
+              <div className="rounded-xl overflow-hidden">
                {activePage == null ? (
                 // Skeleton navbar - only show when page is not initialized
                 <div className="w-full flex justify-center py-4 animate-pulse space-x-4">
-                  {[...Array(7)].map((_, i) => (
-                    <div key={i} className="w-20 h-8 bg-[#333333] rounded-lg" />
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="w-24 h-9 bg-[#333333] rounded-lg" />
                   ))}
                 </div>
               ) : (
@@ -125,7 +168,6 @@ export default function HomeClient() {
                   activePage={activePage} 
                   activeTab={activeTab}
                   onPinChange={setIsNavPinned}
-                  onLayoutChange={setIsNavExpanded}
                 />
               )}
               </div>
@@ -143,13 +185,27 @@ export default function HomeClient() {
                     </div>
                   ) : (
                     <>
-                      {activePage === "portfolio" && activeTab === null && <PortfolioLandingPage />}
-                      {activePage === "portfolio" && activeTab === "skills" && <SkillsPage />}
-                      {activePage === "portfolio" && activeTab === "certifications" && <CertificationsPage />}
-                      {activePage === "portfolio" && activeTab === "education" && <EducationPage />}
-                      {activePage === "portfolio" && activeTab === "experience" && <ExperiencePage />}
-                      {activePage === "portfolio" && activeTab === "projects" && <ProjectsPage />}
-                      {activePage === "portfolio" && activeTab === "repos" && <ReposPage />}
+                      {activePage === "about" && activeTab === null && (
+                        <PortfolioLandingPage onTabChange={handleTabChange} activeTab={activeTab} />
+                      )}
+                      {activePage === "about" && activeTab === "certifications" && (
+                        <CertificationsPage onTabChange={handleTabChange} activeTab={activeTab} />
+                      )}
+                      {activePage === "about" && activeTab === "skills" && (
+                        <SkillsPage onTabChange={handleTabChange} activeTab={activeTab} />
+                      )}
+                      {activePage === "career" && activeTab === "experience" && (
+                        <ExperiencePage onTabChange={handleTabChange} activeTab={activeTab} />
+                      )}
+                      {activePage === "career" && activeTab === "education" && (
+                        <EducationPage onTabChange={handleTabChange} activeTab={activeTab} />
+                      )}
+                      {activePage === "projects" && activeTab === "projects" && (
+                        <ProjectsPage onTabChange={handleTabChange} activeTab={activeTab} />
+                      )}
+                      {activePage === "projects" && activeTab === "repos" && (
+                        <ReposPage onTabChange={handleTabChange} activeTab={activeTab} />
+                      )}
                     </>
                   )}
 

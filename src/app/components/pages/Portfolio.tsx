@@ -2,9 +2,8 @@
 
 import React from "react"
 import { useState, useEffect } from "react"
-import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock, FaChevronDown, FaChevronUp, FaSort, FaSearch, FaTimes, FaFilter } from "react-icons/fa"
-import { IoMdClose } from "react-icons/io"
-import { useSearchParams, useRouter } from "next/navigation"
+import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
+import { useSearchParams } from "next/navigation"
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import { manualProjects } from "../../data/portfolioProjects"
@@ -71,23 +70,15 @@ const Portfolio: React.FC = () => {
     }
     return "Computer Science"
   })
-  const [showAllTags, setShowAllTags] = useState(false);
   const [showTagsMenu, setShowTagsMenu] = useState(false);
   const [tags, setTags] = useState<string[]>(["Computer Science"])
   const [loading, setLoading] = useState(true)
   const { handleExternalClick } = useExternalLink()
   const searchParams = useSearchParams()
-  const router = useRouter()
   // Get activeSubsection from URL immediately to avoid flash
   const pageParam = searchParams?.get("page") || "portfolio/projects"
   const [activeSubsection, setActiveSubsection] = useState(pageParam.split("/")[1] || "projects")
-  const [isAnimating, setIsAnimating] = useState(false)
   const [showFilterMenu, setShowFilterMenu] = useState(false)
-  const [clickedTab, setClickedTab] = useState<string | null>(null)
-
-  const handleShowAllTagsToggle = () => {
-    setShowAllTags(!showAllTags)
-  }
 
   // Handle tag click from repository cards
   const handleTagClick = (tag: string) => {
@@ -244,28 +235,8 @@ const Portfolio: React.FC = () => {
     }
     
     return () => document.removeEventListener("keydown", handleEscape)
-  }, [searchParams])
-  
-  const handleTabChange = (tabId: string) => {
-    setClickedTab(tabId)
-    setTimeout(() => setClickedTab(null), 300)
-    setIsAnimating(true)
-    
-    // Save to localStorage
-    localStorage.setItem("portfolioActiveTab", tabId)
-    
-    // Scroll to top when changing tabs
-    window.scrollTo({ top: 0, behavior: "smooth" })
-    
-    // Update URL with new format
-    router.push(`?page=portfolio/${tabId}`, { scroll: false })
-    
-    setTimeout(() => {
-      setActiveSubsection(tabId)
-      setIsAnimating(false)
-    }, 150)
-  }
-  
+  }, [searchParams, activeSubsection])
+
   const handleFilterChange = (value: string) => {
     setSortBy(value)
     localStorage.setItem(`${activeSubsection}-filter`, value)
@@ -314,11 +285,6 @@ const Portfolio: React.FC = () => {
             project.language?.toLowerCase() === selectedTag
         )
 
-  const tabs = [
-    { id: "projects", label: "Projects" },
-    { id: "repositories", label: "Repositories" },
-  ]
-
   const filterOptions = [
     { value: "newest", label: "Newest" },
     { value: "oldest", label: "Oldest" },
@@ -329,8 +295,6 @@ const Portfolio: React.FC = () => {
   const resultsCount = activeSubsection === "projects"
     ? `Showing ${filteredTimelineProjects.length} Project${filteredTimelineProjects.length !== 1 ? 's' : ''}`
     : `Showing ${tagFilteredProjects.length} Repositor${tagFilteredProjects.length !== 1 ? "ies" : "y"}`
-
-  const isFilterActive = sortBy && sortBy !== "newest"
 
   // Tab-specific descriptions
   const getPageDescription = () => {
@@ -376,7 +340,7 @@ const Portfolio: React.FC = () => {
         </div>
       
         {/* Navigation subsection */}
-        <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl py-4 px-4">
+        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
           <div className="container mx-auto">
           {/* Search bar with filter using SearchFilterBar component */}
           <SearchFilterBar
@@ -405,126 +369,126 @@ const Portfolio: React.FC = () => {
       </div>
       
       {/* Content section - outside header wrapper */}
-      <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
-            {/* Projects Section */}
-            {activeSubsection === "projects" && (
-              <div>
-                {loading ? (
-                  <div className="space-y-4">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse"
-                      >
-                        <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
-                        <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
-                        <div className="space-y-2">
-                          <div className="h-3 bg-[#333333] rounded w-full" />
-                          <div className="h-3 bg-[#333333] rounded w-5/6" />
-                          <div className="h-3 bg-[#333333] rounded w-4/6" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <Timeline items={filteredTimelineProjects} type="project" />
-                )}
-              </div>
-            )}
+      <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
+         {/* Projects Section */}
+         {activeSubsection === "projects" && (
+           <div>
+             {loading ? (
+               <div className="space-y-4">
+                 {[1, 2, 3].map((i) => (
+                   <div
+                     key={i}
+                     className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse"
+                   >
+                     <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
+                     <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
+                     <div className="space-y-2">
+                       <div className="h-3 bg-[#333333] rounded w-full" />
+                       <div className="h-3 bg-[#333333] rounded w-5/6" />
+                       <div className="h-3 bg-[#333333] rounded w-4/6" />
+                     </div>
+                   </div>
+                 ))}
+               </div>
+             ) : (
+               <Timeline items={filteredTimelineProjects} type="project" />
+             )}
+           </div>
+         )}
 
-            {/* Repositories Section */}
-            {activeSubsection === "repositories" && (
-              <div>
-              {/* Project Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {loading
-                  ? [...Array(6)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4"
-                      >
-                        <div className="h-6 bg-[#333333] rounded w-3/4" />
-                        <div className="h-4 bg-[#333333] rounded w-2/3" />
-                        <div className="h-4 bg-[#333333] rounded w-5/6" />
-                        <div className="flex-1" />
-                        <div className="h-10 bg-[#292929] rounded w-full" />
-                      </div>
-                    ))
+         {/* Repositories Section */}
+         {activeSubsection === "repositories" && (
+           <div>
+            {/* Project Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {loading
+                ? [...Array(6)].map((_, i) => (
+                   <div
+                     key={i}
+                     className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4"
+                   >
+                     <div className="h-6 bg-[#333333] rounded w-3/4" />
+                     <div className="h-4 bg-[#333333] rounded w-2/3" />
+                     <div className="h-4 bg-[#333333] rounded w-5/6" />
+                     <div className="flex-1" />
+                     <div className="h-10 bg-[#292929] rounded w-full" />
+                   </div>
+                 ))
 
-                  : tagFilteredProjects.map((project) => (
-                      <div
-                        key={project.id}
-                        className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 flex flex-col"
-                      >
-                        <div className="p-6 flex-grow">
-                          <div className="mb-2">
-                            <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 truncate">
-                              {project.name}
-                            </h3>
-                            <div className="flex flex-wrap items-center gap-2">
-                              {project.source === "manual" && (
-                                <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>
-                              )}
-                              {project.source === "github" && (
-                                <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">GITHUB</span>
-                              )}
-                              {project.topics.includes("neumont") && (
-                                <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">NEU</span>
-                              )}
-                            </div>
-                          </div>
-                          <p className="text-gray-300 mb-2 line-clamp-3 break-words">{project.description}</p>
-                          <p className="text-sm text-gray-400 mb-1">
-                            <span className="font-bold">Created On:</span>{" "}
-                            {new Date(project.created_at).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })}
-                          </p>
-                          <p className="text-sm text-gray-400 mb-2">
-                            <span className="font-bold">Last Updated:</span>{" "}
-                            {new Date(project.updated_at).toLocaleDateString("en-US", {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                            })}
-                          </p>
-                          <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
-                            {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
-                              <span 
-                                key={tag} 
-                                onClick={() => handleTagClick(tag)}
-                                className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#ef4444] border border-transparent hover:bg-[#444444] cursor-pointer active:scale-95"
-                              >
-                                {tag.toUpperCase()}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="px-6 py-4 border-t border-[#333333] bg-[#1a1a1a]">
-                          <TooltipWrapper label={project.html_url} fullWidth>
-                            <button
-                              onClick={() => handleExternalClick(project.html_url, true)}
-                              className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm sm:text-base"
-                            >
-                              {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
-                              <span className="flex-1 break-words text-center leading-tight">
-                                {project.name.toLowerCase() === "portfolio"
-                                  ? "View Repository (This site!)"
-                                  : project.ctaLabel ?? "View Repository"}
-                              </span>
-                            </button>
-                          </TooltipWrapper>
-                        </div>
-                      </div>
-                    ))}
-              </div>
-            </div>
-          )}
-        </div>
+               : tagFilteredProjects.map((project) => (
+                   <div
+                     key={project.id}
+                     className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 flex flex-col"
+                   >
+                     <div className="p-6 flex-grow">
+                       <div className="mb-2">
+                         <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 truncate">
+                           {project.name}
+                         </h3>
+                         <div className="flex flex-wrap items-center gap-2">
+                           {project.source === "manual" && (
+                             <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>
+                           )}
+                           {project.source === "github" && (
+                             <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">GITHUB</span>
+                           )}
+                           {project.topics.includes("neumont") && (
+                             <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">NEU</span>
+                           )}
+                         </div>
+                       </div>
+                       <p className="text-gray-300 mb-2 line-clamp-3 break-words">{project.description}</p>
+                       <p className="text-sm text-gray-400 mb-1">
+                         <span className="font-bold">Created On:</span>{" "}
+                         {new Date(project.created_at).toLocaleDateString("en-US", {
+                           year: "numeric",
+                           month: "short",
+                           day: "numeric",
+                         })}
+                       </p>
+                       <p className="text-sm text-gray-400 mb-2">
+                         <span className="font-bold">Last Updated:</span>{" "}
+                         {new Date(project.updated_at).toLocaleDateString("en-US", {
+                           year: "numeric",
+                           month: "short",
+                           day: "numeric",
+                         })}
+                       </p>
+                       <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
+                         {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
+                           <span
+                             key={tag}
+                             onClick={() => handleTagClick(tag)}
+                             className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#ef4444] border border-transparent hover:bg-[#444444] cursor-pointer active:scale-95"
+                           >
+                             {tag.toUpperCase()}
+                           </span>
+                         ))}
+                       </div>
+                     </div>
+                     <div className="px-6 py-4 border-t border-[#333333] bg-[#1a1a1a]">
+                       <TooltipWrapper label={project.html_url} fullWidth>
+                         <button
+                           onClick={() => handleExternalClick(project.html_url, true)}
+                           className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm sm:text-base"
+                         >
+                           {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
+                           <span className="flex-1 break-words text-center leading-tight">
+                             {project.name.toLowerCase() === "portfolio"
+                               ? "View Repository (This site!)"
+                               : project.ctaLabel ?? "View Repository"}
+                           </span>
+                         </button>
+                       </TooltipWrapper>
+                     </div>
+                   </div>
+                 ))}
+           </div>
+         </div>
+       )}
+      </div>
     </>
-  )
+   )
 }
 
 export default Portfolio

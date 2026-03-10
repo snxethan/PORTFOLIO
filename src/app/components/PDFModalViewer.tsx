@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { X, Loader2 } from "lucide-react"
 import { FaExternalLinkAlt } from "react-icons/fa";
 import ReactDOM from "react-dom"
@@ -23,8 +23,12 @@ const isPdfSupported = (): boolean => {
 const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
-  const [isUnsupported, setIsUnsupported] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const lastOpenedPdfRef = useRef<string | null>(null)
+
+  const openPdfInNewTab = useCallback((url: string) => {
+    window.open(url, "_blank", "noopener,noreferrer")
+  }, [])
 
   const initiateClose = useCallback(() => {
     setIsAnimatingOut(true)
@@ -36,30 +40,39 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
   }, [onClose])
 
   useEffect(() => {
-    if (pdfUrl) {
-      setIsVisible(true)
-      setIsUnsupported(!isPdfSupported())
+    if (!pdfUrl) return
 
-      const originalOverflow = document.body.style.overflow
-      document.body.style.overflow = "hidden"
-
-      const handleEscKey = (e: KeyboardEvent) => {
-        if (e.key === "Escape") initiateClose()
+    if (!isPdfSupported()) {
+      if (lastOpenedPdfRef.current !== pdfUrl) {
+        lastOpenedPdfRef.current = pdfUrl
+        openPdfInNewTab(pdfUrl)
       }
-
-      window.addEventListener("keydown", handleEscKey)
-
-      return () => {
-        document.body.style.overflow = originalOverflow
-        window.removeEventListener("keydown", handleEscKey)
-      }
+      onClose()
+      return
     }
-  }, [pdfUrl, initiateClose])
+
+    setIsVisible(true)
+    setIsLoading(true)
+
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") initiateClose()
+    }
+
+    window.addEventListener("keydown", handleEscKey)
+
+    return () => {
+      document.body.style.overflow = originalOverflow
+      window.removeEventListener("keydown", handleEscKey)
+    }
+  }, [pdfUrl, initiateClose, onClose, openPdfInNewTab])
 
   if (!pdfUrl || !isVisible) return null
 
   return ReactDOM.createPortal(
- <div
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-16"
       onClick={(e) => {
         if (e.target === e.currentTarget) initiateClose()
@@ -70,16 +83,16 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
           isAnimatingOut ? "animate-fade-out-down" : "animate-fade-in-up"
         }`}
         style={{
-          transform: 'translateZ(0)',
-          backfaceVisibility: 'hidden' as const,
-          WebkitOverflowScrolling: 'touch' as const
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden" as const,
+          WebkitOverflowScrolling: "touch" as const,
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-3 sm:p-4 border-b border-[#333]">
           <button
-            onClick={() => window.open(pdfUrl || "", "_blank")}
+            onClick={() => openPdfInNewTab(pdfUrl || "")}
             className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all"
             aria-label="Download or open in new tab"
           >
@@ -95,28 +108,19 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
           </button>
         </div>
 
-        {/* PDF View / Fallback */}
+        {/* PDF View */}
         <div className="flex-1 overflow-auto relative bg-[#1a1a1a]">
-          {isUnsupported ? (
-           <div className="flex flex-col items-center justify-center h-full text-white text-sm p-6 text-center space-y-2">
-            <p>PDF preview is not supported on this device or browser.</p>
-            <p>Please open the PDF in a new tab or download it to view.</p>
-          </div>
-          ) : (
-            <>
-              {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-[#1a1a1a] z-10">
-                  <Loader2 className="h-8 w-8 animate-spin text-white" />
-                </div>
-              )}
-              <iframe
-                src={pdfUrl}
-              className="w-full min-h-[600px] h-[calc(100vh-150px)] max-h-[75vh] border-none"
-                onLoad={() => setIsLoading(false)}
-                loading="lazy"
-              />
-            </>
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-[#1a1a1a] z-10">
+              <Loader2 className="h-8 w-8 animate-spin text-white" />
+            </div>
           )}
+          <iframe
+            src={pdfUrl}
+            className="w-full min-h-[600px] h-[calc(100vh-150px)] max-h-[75vh] border-none"
+            onLoad={() => setIsLoading(false)}
+            loading="lazy"
+          />
         </div>
       </div>
     </div>,

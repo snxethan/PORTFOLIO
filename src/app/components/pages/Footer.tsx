@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import TooltipWrapper from "../ToolTipWrapper"
-import SecurityPolicyModal from "../SecurityPolicyModal"
+import * as Icons from "react-icons/fa"
+import { socialLinks } from "../../data/socialLinks"
 
 const Footer = () => {
-  const [showSecurityPolicy, setShowSecurityPolicy] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -18,9 +18,9 @@ const Footer = () => {
       <footer className="bg-[#121212] text-gray-400 w-full py-6 px-6">
         <div className="max-w-8xl mx-auto flex flex-col items-center gap-6">
           <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-4 text-sm">
-            {/* Left: Security Policy Skeleton */}
+            {/* Left: Summary Skeleton */}
             <div className="order-3 lg:order-1 mt-2 lg:mt-0">
-              <div className="h-5 w-24 bg-[#333333] rounded animate-pulse" />
+              <div className="h-5 w-48 bg-[#333333] rounded animate-pulse" />
             </div>
 
             {/* Center: Logo & Name Skeleton */}
@@ -47,16 +47,26 @@ const Footer = () => {
     <footer className="bg-[#121212] text-gray-400 w-full py-6 px-6">
       <div className="max-w-8xl mx-auto flex flex-col items-center gap-6">
         <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-4 text-sm">
-          {/* Left: Security Policy */}
+          {/* Left: Professional Links */}
           <div className="order-3 lg:order-1 mt-2 lg:mt-0">
-            <TooltipWrapper label="View Security Policy">
-              <button 
-                onClick={() => setShowSecurityPolicy(true)}
-                className="text-sm text-gray-400 hover:text-red-600 hover:scale-105 transition-all duration-200"
-              >
-                Security Policy
-              </button>
-            </TooltipWrapper>
+            <div className="flex items-center gap-4">
+              {socialLinks.professional.map(({ label, icon, url, tooltip }) => {
+                const Icon = Icons[icon as keyof typeof Icons]
+                return (
+                  <TooltipWrapper key={label} label={tooltip}>
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={label}
+                      className="text-gray-400 hover:text-red-600 text-xl transition-all duration-200 ease-out hover:scale-110"
+                    >
+                      <Icon />
+                    </a>
+                  </TooltipWrapper>
+                )
+              })}
+            </div>
           </div>
 
           {/* Center: Logo & Name */}
@@ -75,12 +85,12 @@ const Footer = () => {
             </TooltipWrapper>
           </div>
 
-{/* Right: Domain Links */}
+          {/* Right: Domain Links */}
           <div className="order-2 lg:order-3">
             <div className="footer-links flex flex-col sm:flex-row items-center gap-2">
               <div className="flex gap-4">
                 <Link href="https://snex.dev" className="hover:text-red-600 hover:scale-105 transition-all duration-200">
-                  snex.dev    
+                  snex.dev
                 </Link>
                 <Link href="https://snxethan.dev" className="hover:text-red-600 hover:scale-105 transition-all duration-200">
                   snxethan.dev
@@ -90,7 +100,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      {showSecurityPolicy && <SecurityPolicyModal onClose={() => setShowSecurityPolicy(false)} />}
     </footer>
   )
 }

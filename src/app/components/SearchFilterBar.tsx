@@ -85,7 +85,7 @@ export default function SearchFilterBar({
   }, [showFilterMenu, setShowFilterMenu]);
 
   return (
-    <div className="bg-[#1a1a1a] p-4 rounded-lg mb-6">
+    <div className="bg-transparent p-4 rounded-lg mb-2">
       {/* Search Bar with Buttons */}
       <div className="relative mb-4">
         <input

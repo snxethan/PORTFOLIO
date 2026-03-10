@@ -1,8 +1,11 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { FaExternalLinkAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa"
+import { X } from "lucide-react"
 import TooltipWrapper from "./ToolTipWrapper"
+import Image from "next/image"
+import { createPortal } from "react-dom"
 
 export interface TimelineItem {
   type?: "experience" | "education" | "project"
@@ -29,6 +32,8 @@ interface TimelineProps {
   showAllContent?: boolean
   animatingItems?: Set<string>
   disappearingItems?: Set<string>
+  onTagClick?: (tag: string) => void
+  showLine?: boolean
 }
 
 // Image Carousel Component
@@ -37,7 +42,22 @@ const ImageCarousel: React.FC<{ images: string[]; title: string }> = ({
   title,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const hasMultipleImages = images.length > 1
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isExpanded) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isExpanded])
 
   const nextImage = () => {
     setCurrentIndex((prev) => (prev + 1) % images.length)
@@ -49,25 +69,45 @@ const ImageCarousel: React.FC<{ images: string[]; title: string }> = ({
 
   return (
     <div className="relative mt-4">
-      <div className="relative w-full aspect-video bg-[#0a0a0a] rounded-lg overflow-hidden">
-        <img
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => setIsExpanded(true)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault()
+            setIsExpanded(true)
+          }
+        }}
+        className="relative w-full h-48 sm:h-56 md:h-64 bg-[#0a0a0a] rounded-lg overflow-hidden cursor-pointer"
+        aria-label={`Expand ${title} images`}
+      >
+        <Image
           src={images[currentIndex]}
           alt={`${title} - Image ${currentIndex + 1}`}
-          className="w-full h-full object-contain"
+          fill
+          sizes="(max-width: 768px) 100vw, 640px"
+          className="object-contain"
         />
 
         {/* Carousel Controls */}
         {hasMultipleImages && (
           <>
             <button
-              onClick={prevImage}
+              onClick={(event) => {
+                event.stopPropagation()
+                prevImage()
+              }}
               className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full transition-all duration-300 hover:scale-110"
               aria-label="Previous image"
             >
               <FaChevronLeft />
             </button>
             <button
-              onClick={nextImage}
+              onClick={(event) => {
+                event.stopPropagation()
+                nextImage()
+              }}
               className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 rounded-full transition-all duration-300 hover:scale-110"
               aria-label="Next image"
             >
@@ -79,7 +119,10 @@ const ImageCarousel: React.FC<{ images: string[]; title: string }> = ({
               {images.map((_, i) => (
                 <button
                   key={i}
-                  onClick={() => setCurrentIndex(i)}
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    setCurrentIndex(i)
+                  }}
                   className={`w-2 h-2 rounded-full transition-all ${
                     i === currentIndex
                       ? "bg-red-600 w-6"
@@ -99,17 +142,51 @@ const ImageCarousel: React.FC<{ images: string[]; title: string }> = ({
           Image {currentIndex + 1} of {images.length}
         </p>
       )}
+
+      {isExpanded && isMounted && createPortal(
+        <div
+          className="fixed inset-0 z-[9999] bg-black/80 flex items-center justify-center p-0 sm:p-4"
+          onClick={() => setIsExpanded(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${title} image preview`}
+        >
+          <div
+            className="relative w-full h-full sm:h-auto sm:max-w-5xl sm:aspect-video bg-black sm:rounded-xl overflow-hidden"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Image
+              src={images[currentIndex]}
+              alt={`${title} - Image ${currentIndex + 1}`}
+              fill
+              sizes="100vw"
+              className="object-contain"
+            />
+            <button
+              type="button"
+              onClick={() => setIsExpanded(false)}
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 bg-black/60 hover:bg-black/80 text-white hover:text-red-500 p-2 rounded-full transition-colors"
+              aria-label="Close image preview"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   )
 }
 
 const Timeline: React.FC<TimelineProps> = ({
   items,
-  type: _type,
+  type,
   compact = false,
-  showAllContent: _showAllContent = true,
+  showAllContent = true,
   animatingItems = new Set(),
   disappearingItems = new Set(),
+  onTagClick,
+  showLine = true,
 }) => {
   if (items.length === 0) {
     return null
@@ -137,11 +214,17 @@ const Timeline: React.FC<TimelineProps> = ({
 
   // Full timeline mode - Full width card layout
   return (
-    <div className="w-full mx-auto">
+    <div
+      className="w-full mx-auto"
+      data-timeline-type={type ?? "mixed"}
+      data-show-all-content={showAllContent ? "true" : "false"}
+    >
       <div className="relative flex flex-col gap-6">
         {/* Timeline vertical line - centered */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-6 bottom-6 w-0.5 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
-        
+        {showLine && (
+          <div className="absolute left-1/2 -translate-x-1/2 top-6 bottom-6 w-0.5 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+        )}
+
         {items.map((item) => {
           const itemKey = `${item.institution || item.name}-${item.startDate}`
           const isNewItem = animatingItems.has(itemKey)
@@ -176,7 +259,9 @@ const Timeline: React.FC<TimelineProps> = ({
                 {item.location && (
                   <>
                     <span className="text-gray-600">•</span>
-                    <span className="italic">{item.location}</span>
+                    <span className="bg-[#333333] text-gray-300 px-2 py-1 rounded text-sm">
+                      {item.location}
+                    </span>
                   </>
                 )}
                 {item.language && (
@@ -202,18 +287,29 @@ const Timeline: React.FC<TimelineProps> = ({
               <p className="text-gray-300 mb-4">{item.summary}</p>
 
               {/* Topics/Tags */}
-              {item.topics && item.topics.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {item.topics.map((topic) => (
-                    <span
-                      key={topic}
-                      className="bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full"
-                    >
-                      {topic.toUpperCase()}
-                    </span>
-                  ))}
-                </div>
-              )}
+              {(() => {
+                const displayTags = Array.from(
+                  new Set([...(item.topics ?? []), ...(item.tags ?? [])])
+                )
+                if (displayTags.length === 0) return null
+                const tagClassName = onTagClick
+                  ? "bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 border border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] cursor-pointer active:scale-95"
+                  : "bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full"
+
+                return (
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {displayTags.map((tag) => (
+                      <span
+                        key={tag}
+                        onClick={onTagClick ? () => onTagClick(tag) : undefined}
+                        className={tagClassName}
+                      >
+                        {tag.toUpperCase()}
+                      </span>
+                    ))}
+                  </div>
+                )
+              })()}
 
               {/* Links */}
               {allLinks.length > 0 && (

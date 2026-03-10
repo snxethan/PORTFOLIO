@@ -20,12 +20,11 @@ const DEFAULT_EXPIRATION_MS = 30 * 60 * 1000 // 30 minutes
  * Set an item in localStorage with a timestamp
  * @param key - The localStorage key
  * @param value - The value to store
- * @param expirationMs - NOT USED (kept for API consistency). Expiration is checked at read time via getTimedItem()
+ * @param expirationMs - Optional custom expiration time in milliseconds
  */
 export function setTimedItem<T>(
   key: string,
-  value: T,
-  expirationMs: number = DEFAULT_EXPIRATION_MS
+  value: T
 ): void {
   if (typeof window === 'undefined') return
 

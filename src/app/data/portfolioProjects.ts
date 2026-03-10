@@ -97,5 +97,19 @@ export const manualProjects: Project[] = [
     ctaLabel: "This repository is private",
     ctaIcon: "private",
     tags: ["Computer Science"]
+  },
+  {
+    id: 7,
+    name: "TRUEMARK-LI-CONVERSION",
+    description: "Modernized a legacy customer management monolith by using AWS Transform to break it into microservices, implementing AWS Lambda functions for core business logic, and integrating AWS AI agents to automate customer support tasks.",
+    html_url: "https://github.com/truemark/linktrust-li-conversion",
+    language: ".NET",
+    topics: ["aws", "modernization", "microservices", "lambda", "ai-agents", "c#", "dotnet"],
+    created_at: "2026-01-26T00:00:00Z",
+    updated_at: "2026-03-10T00:00:00Z",
+    source: "github",
+    ctaLabel: "This repository is private",
+    ctaIcon: "private",
+    tags: ["Computer Science", "Cloud", "Modernization", "AWS", "AI"]
   }
 ]

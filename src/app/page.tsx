@@ -17,13 +17,13 @@ function PageContent() {
       setShowSecurityPolicy(true)
     }
     
-    // Default landing: redirect to portfolio (landing page)
+    // Default landing: redirect to About
     if (!page) {
-      router.replace('?page=portfolio')
+      router.replace('?page=about')
       return
     }
     
-    // Handle legacy URLs - redirect to new portfolio structure
+    // Handle legacy URLs - redirect to new structure
     const parts = page.split('/')
     const mainPage = parts[0]
     const subPage = parts[1]
@@ -31,21 +31,26 @@ function PageContent() {
     // Legacy format redirects
     if (mainPage === 'about') {
       if (subPage === 'certifications') {
-        router.replace('?page=portfolio/certifications')
+        router.replace('?page=about/certifications')
       } else if (subPage === 'skills') {
-        router.replace('?page=portfolio/skills')
+        router.replace('?page=about/skills')
       }
     } else if (mainPage === 'resume') {
       if (subPage === 'experience') {
-        router.replace('?page=portfolio/experience')
+        router.replace('?page=career/experience')
       } else if (subPage === 'education') {
-        router.replace('?page=portfolio/education')
+        router.replace('?page=career/education')
       }
     } else if (mainPage === 'portfolio') {
       if (subPage === 'repositories') {
-        router.replace('?page=portfolio/repos')
+        router.replace('?page=projects/repos')
+      } else if (subPage === 'repos') {
+        router.replace('?page=projects/repos')
+      } else if (subPage === 'projects') {
+        router.replace('?page=projects/projects')
+      } else {
+        router.replace('?page=projects')
       }
-      // portfolio/projects stays the same
     }
   }, [page, router])
 

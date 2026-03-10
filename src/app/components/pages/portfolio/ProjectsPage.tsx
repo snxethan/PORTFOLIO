@@ -5,6 +5,8 @@ import { projectsTimelineData } from "../../../data/projectsTimelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
 import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
+import PageTabs from "../../PageTabs"
+import { FaProjectDiagram, FaGithub } from "react-icons/fa"
 
 const filterOptions = [
   { value: "newest", label: "Newest" },
@@ -13,7 +15,17 @@ const filterOptions = [
   { value: "name-desc", label: "Name (Z–A)" },
 ]
 
-const ProjectsPage = () => {
+interface ProjectsPageProps {
+  onTabChange: (page: string, tab: string | null) => void
+  activeTab: string | null
+}
+
+const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
+  const tabs = [
+    { id: "projects", label: "Projects", tabValue: "projects", icon: <FaProjectDiagram /> },
+    { id: "repos", label: "Repositories", tabValue: "repos", icon: <FaGithub /> },
+  ]
+  const activeId = activeTab ?? "projects"
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
       return getTimedItem<string>('projectsSearch') || ""
@@ -90,6 +102,11 @@ const ProjectsPage = () => {
     setShowFilterMenu(false)
   }
 
+  const handleTagClick = (tag: string) => {
+    setSelectedTag(tag)
+    setShowTagsMenu(true)
+  }
+
   const allTags = React.useMemo(() => {
     const tagSet = new Set<string>()
     projectsTimelineData.forEach(item => {
@@ -164,52 +181,51 @@ const ProjectsPage = () => {
       )
     }
 
-    return <Timeline items={sortedProjects} type="project" />
+    return <Timeline items={sortedProjects} type="project" onTagClick={handleTagClick} />
   }
-
-  const resultsCount = `Showing ${sortedProjects.length} Project${sortedProjects.length !== 1 ? 's' : ''}`
 
   return (
     <>
-      <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
+      <div id="page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             Project Timeline
           </h2>
-          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-            Key projects and contributions throughout my career
-          </p>
-          <p className="text-center text-gray-400 max-w-3xl mx-auto">
-            Full-stack applications, web games, and development tools built with modern technologies.
-          </p>
-        </div>
-      
-        <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl py-4 px-4">
-          <div className="container mx-auto">
-            <SearchFilterBar
-              search={search}
-              setSearch={setSearch}
-              placeholder="Search by name, description, or tags..."
-              tags={sortedTags}
-              selectedTag={selectedTag}
-              setSelectedTag={setSelectedTag}
-              sortOptions={filterOptions}
-              selectedSort={sortBy}
-              setSelectedSort={handleSortChange}
-              showTagsMenu={showTagsMenu}
-              setShowTagsMenu={setShowTagsMenu}
-              showFilterMenu={showFilterMenu}
-              setShowFilterMenu={setShowFilterMenu}
-              defaultSort="newest"
+          <div className="flex justify-center mb-4">
+            <PageTabs
+              tabs={tabs}
+              activeId={activeId}
+              onChange={(tab) => onTabChange("projects", tab)}
             />
+          </div>
 
-            {resultsCount && (
-              <div className="text-sm text-gray-400 mb-3">{resultsCount}</div>
-            )}
+          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+            <div className="container mx-auto">
+              <SearchFilterBar
+                search={search}
+                setSearch={setSearch}
+                placeholder="Search by name, description, or tags..."
+                tags={sortedTags}
+                selectedTag={selectedTag}
+                setSelectedTag={setSelectedTag}
+                sortOptions={filterOptions}
+                selectedSort={sortBy}
+                setSelectedSort={handleSortChange}
+                showTagsMenu={showTagsMenu}
+                setShowTagsMenu={setShowTagsMenu}
+                showFilterMenu={showFilterMenu}
+                setShowFilterMenu={setShowFilterMenu}
+                defaultSort="newest"
+              />
+
+              <div className="text-sm text-gray-400 mt-2">
+                Showing {sortedProjects.length} Project{sortedProjects.length !== 1 ? "s" : ""}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      
+
       <div className="text-white">
         <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
           {renderTimeline()}

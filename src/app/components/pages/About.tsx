@@ -1,20 +1,19 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import { FaFilePdf, FaExternalLinkAlt, FaSort, FaChevronDown, FaChevronUp } from "react-icons/fa"
-import { IoMdClose } from "react-icons/io"
-import { useSearchParams, useRouter } from "next/navigation"
+import { FaFilePdf, FaExternalLinkAlt, FaLinkedin } from "react-icons/fa"
+import { useSearchParams } from "next/navigation"
 
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
 import { skills, certifications, Skill, Certification } from "../../data/aboutData"
 import SearchFilterBar from "../SearchFilterBar"
+import { socialLinks } from "../../data/socialLinks"
 
 const About = () => {
   const [loading, setLoading] = useState(true)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const [activeSubsection, setActiveSubsection] = useState("certifications")
-  const [isAnimating, setIsAnimating] = useState(false)
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('aboutSearch') || ""
@@ -25,7 +24,6 @@ const About = () => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('aboutSortBy')
       if (saved) return saved
-      // Default based on active subsection
       return activeSubsection === "certifications" ? "newest" : "hard-soft"
     }
     return activeSubsection === "certifications" ? "newest" : "hard-soft"
@@ -39,11 +37,10 @@ const About = () => {
     }
     return "Computer Science"
   })
-  const [showAllTags, setShowAllTags] = useState(false)
-  const [clickedTab, setClickedTab] = useState<string | null>(null)
   const { handleExternalClick } = useExternalLink()
   const searchParams = useSearchParams()
-  const router = useRouter()
+  const linkedinLink = socialLinks.professional.find((link) => link.label === "LinkedIn")
+  const resumeUrl = "/resume/EthanTownsend_Resume_feb2026.pdf"
 
   // Persist filter and sort state for About page
   useEffect(() => {
@@ -103,38 +100,14 @@ const About = () => {
       clearTimeout(timer)
       document.removeEventListener("keydown", handleEscape)
     }
-  }, [searchParams])
+  }, [searchParams, activeSubsection])
 
-  const handleTabChange = (tabId: string) => {
-    setClickedTab(tabId)
-    setTimeout(() => setClickedTab(null), 300)
-    setIsAnimating(true)
-    
-    // Save to localStorage
-    localStorage.setItem("aboutActiveTab", tabId)
-    
-    // Scroll to top when changing tabs
-    window.scrollTo({ top: 0, behavior: "smooth" })
-    
-    // Update URL with new format
-    router.push(`?page=about/${tabId}`, { scroll: false })
-    
-    setTimeout(() => {
-      setActiveSubsection(tabId)
-      setIsAnimating(false)
-    }, 150)
-  }
-  
   const handleFilterChange = (value: string) => {
     setSortBy(value)
     localStorage.setItem(`${activeSubsection}-filter`, value)
     setShowFilterMenu(false)
   }
   
-  const handleShowAllTagsToggle = () => {
-    setShowAllTags(!showAllTags)
-  }
-
   const renderSkillGrid = (items: Skill[] | Certification[]) => {
     // Don't re-sort here - use the already sorted items
   return (
@@ -210,12 +183,7 @@ const About = () => {
   )
 
 
-  const tabs = [
-    { id: "certifications", label: "Certifications" },
-    { id: "skills", label: "Skills" },
-  ]
-  
-  // Extract tags from certifications and skills
+   // Extract tags from certifications and skills
   const allTags = React.useMemo(() => {
     const tagSet = new Set<string>()
     const items = activeSubsection === "certifications" ? certifications : skills
@@ -309,10 +277,6 @@ const About = () => {
     ? `Showing ${sortedCertifications.length} Certification${sortedCertifications.length !== 1 ? 's' : ''}`
     : `Showing ${sortedSkills.length} Skill${sortedSkills.length !== 1 ? 's' : ''}`
 
-  const isFilterActive = activeSubsection === "certifications" 
-    ? sortBy && sortBy !== "newest"
-    : sortBy && sortBy !== "hard-soft"
-
   // Tab-specific descriptions
   const getPageDescription = () => {
     switch (activeSubsection) {
@@ -357,7 +321,7 @@ const About = () => {
         </div>
       
         {/* Navigation subsection */}
-        <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl py-4 px-4">
+        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
           {/* Main tab row */}
           <div className="container mx-auto">
             {/* Search bar with filter using SearchFilterBar component */}
@@ -388,7 +352,7 @@ const About = () => {
       
       {/* Content section - outside header wrapper */}
       <section id="about" className="text-white">
-        <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
+        <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
           {activeSubsection === "certifications" && (
             <div>
               {loading ? renderSkeletonGrid(6) : renderSkillGrid(sortedCertifications)}
@@ -400,6 +364,48 @@ const About = () => {
               {loading ? renderSkeletonGrid(9) : renderSkillGrid(sortedSkills)}
             </div>
           )}
+        </div>
+      </section>
+
+      <section className="bg-[#222222] rounded-xl border border-[#333333] p-6">
+        <div className="text-center mb-6">
+          <h3 className="text-2xl font-bold text-white">Connect</h3>
+          <p className="text-gray-400 mt-2">Let&apos;s connect and share updates, or grab the latest resume.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-6">
+            <div className="flex items-center gap-3 mb-3 text-white">
+              <FaLinkedin className="text-xl" />
+              <h4 className="text-lg font-semibold">LinkedIn</h4>
+            </div>
+            <p className="text-gray-400 mb-4">Follow my professional updates and feel free to connect.</p>
+            {linkedinLink && (
+              <button
+                type="button"
+                onClick={() => handleExternalClick(linkedinLink.url, true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg transition-all duration-200 hover:scale-105 shadow-lg shadow-red-600/30"
+              >
+                <FaExternalLinkAlt className="text-sm" />
+                Connect on LinkedIn
+              </button>
+            )}
+          </div>
+
+          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-6">
+            <div className="flex items-center gap-3 mb-3 text-white">
+              <FaFilePdf className="text-xl" />
+              <h4 className="text-lg font-semibold">Resume</h4>
+            </div>
+            <p className="text-gray-400 mb-4">Open the latest resume for a full overview of experience and skills.</p>
+            <button
+              type="button"
+              onClick={() => setSelectedPDF(resumeUrl)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg transition-all duration-200 hover:scale-105 shadow-lg shadow-red-600/30"
+            >
+              <FaFilePdf className="text-sm" />
+              View Resume
+            </button>
+          </div>
         </div>
       </section>
 

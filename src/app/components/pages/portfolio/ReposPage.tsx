@@ -1,12 +1,15 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { FaGithub, FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
+import { FaProjectDiagram, FaGithub as FaGithubIcon } from "react-icons/fa"
+import { FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
 import { useExternalLink } from "../../ExternalLinkHandler"
 import TooltipWrapper from "../../ToolTipWrapper"
+
 import { manualProjects } from "../../../data/portfolioProjects"
 import SearchFilterBar from "../../SearchFilterBar"
 import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
+import PageTabs from "../../PageTabs"
 
 interface Project {
   id: number
@@ -35,17 +38,34 @@ interface GitHubApiProject {
   stargazers_count?: number
 }
 
+const filterOptions = [
+  { value: "newest", label: "Newest" },
+  { value: "oldest", label: "Oldest" },
+  { value: "name-asc", label: "Name (A–Z)" },
+  { value: "name-desc", label: "Name (Z–A)" },
+]
+
 const getCTAIcon = (icon?: string) => {
   switch (icon) {
-    case "github": return <FaGithub className="w-5 h-5" />
+    case "github": return <FaGithubIcon className="w-5 h-5" />
     case "external": return <FaExternalLinkAlt className="w-5 h-5" />
     case "youtube": return <FaYoutube className="w-5 h-5" />
     case "private": return <FaLock className="w-5 h-5" />
-    default: return <FaGithub className="w-5 h-5" />
+    default: return <FaGithubIcon className="w-5 h-5" />
   }
 }
 
-const ReposPage = () => {
+interface ReposPageProps {
+  onTabChange: (page: string, tab: string | null) => void
+  activeTab: string | null
+}
+
+const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
+  const tabs = [
+    { id: "projects", label: "Projects", tabValue: "projects", icon: <FaProjectDiagram /> },
+    { id: "repos", label: "Repositories", tabValue: "repos", icon: <FaGithubIcon /> },
+  ]
+  const activeId = activeTab ?? "repos"
   const [projects, setProjects] = useState<Project[]>([])
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -71,20 +91,6 @@ const ReposPage = () => {
   const [loading, setLoading] = useState(true)
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const { handleExternalClick } = useExternalLink()
-
-  const filterOptions = [
-    { value: "newest", label: "Newest" },
-    { value: "oldest", label: "Oldest" },
-    { value: "name-asc", label: "Name (A–Z)" },
-    { value: "name-desc", label: "Name (Z–A)" },
-  ]
-
-  // Handle tag click from repository cards
-  const handleTagClick = (tag: string) => {
-    setSelectedTag(tag)
-    setShowTagsMenu(true)
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -213,6 +219,11 @@ const ReposPage = () => {
     setShowFilterMenu(false)
   }
 
+  const handleTagClick = (tag: string) => {
+    setSelectedTag(tag)
+    setShowTagsMenu(true)
+  }
+
   const filteredProjects = projects.filter((project) => {
     const nameMatch = project.name.toLowerCase().includes(search.toLowerCase())
     const descMatch = project.description?.toLowerCase().includes(search.toLowerCase()) ?? false
@@ -250,41 +261,42 @@ const ReposPage = () => {
 
   return (
     <>
-      <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
+      <div id="page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Open Source Repositories
+            Project Repositories
           </h2>
-          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-            Public repositories and contributions on GitHub
-          </p>
-          <p className="text-center text-gray-400 max-w-3xl mx-auto">
-            Active contributions to open source projects and personal development repositories.
-          </p>
-        </div>
-      
-        <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl py-4 px-4">
-          <div className="container mx-auto">
-            <SearchFilterBar
-              search={search}
-              setSearch={setSearch}
-              placeholder="Search by name, description, or tags..."
-              tags={sortedTags}
-              selectedTag={selectedTag}
-              setSelectedTag={setSelectedTag}
-              sortOptions={filterOptions}
-              selectedSort={sortBy}
-              setSelectedSort={handleFilterChange}
-              showTagsMenu={showTagsMenu}
-              setShowTagsMenu={setShowTagsMenu}
-              showFilterMenu={showFilterMenu}
-              setShowFilterMenu={setShowFilterMenu}
-              defaultSort="newest"
+          <div className="flex justify-center mb-4">
+            <PageTabs
+              tabs={tabs}
+              activeId={activeId}
+              onChange={(tab) => onTabChange("projects", tab)}
             />
+          </div>
 
-            {resultsCount && (
-              <div className="text-sm text-gray-400 mb-3">{resultsCount}</div>
-            )}
+          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+            <div className="container mx-auto">
+              <SearchFilterBar
+                search={search}
+                setSearch={setSearch}
+                placeholder="Search by name, description, or tags..."
+                tags={sortedTags}
+                selectedTag={selectedTag}
+                setSelectedTag={setSelectedTag}
+                sortOptions={filterOptions}
+                selectedSort={sortBy}
+                setSelectedSort={handleFilterChange}
+                showTagsMenu={showTagsMenu}
+                setShowTagsMenu={setShowTagsMenu}
+                showFilterMenu={showFilterMenu}
+                setShowFilterMenu={setShowFilterMenu}
+                defaultSort="newest"
+              />
+
+              {resultsCount && (
+                <div className="text-sm text-gray-400 mt-2">{resultsCount}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -313,7 +325,7 @@ const ReposPage = () => {
                   >
                     <div className="p-6 flex-grow">
                       <div className="mb-2">
-                        <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 break-words line-clamp-2">
+                        <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 truncate">
                           {project.name}
                         </h3>
                         <div className="flex flex-wrap items-center gap-2">
@@ -347,10 +359,10 @@ const ReposPage = () => {
                       </p>
                       <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
                         {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
-                          <span 
-                            key={tag} 
+                          <span
+                            key={tag}
                             onClick={() => handleTagClick(tag)}
-                            className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#ef4444] border border-transparent hover:bg-[#444444] cursor-pointer active:scale-95"
+                            className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 border border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] cursor-pointer active:scale-95"
                           >
                             {tag.toUpperCase()}
                           </span>

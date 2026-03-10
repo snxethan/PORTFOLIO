@@ -1,13 +1,25 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import { FaExternalLinkAlt } from "react-icons/fa"
+import { FaExternalLinkAlt, FaUser, FaCertificate, FaTools } from "react-icons/fa"
 import { useExternalLink } from "../../ExternalLinkHandler"
 import TooltipWrapper from "../../ToolTipWrapper"
 import { skills, Skill } from "../../../data/aboutData"
 import SearchFilterBar from "../../SearchFilterBar"
 import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
+import PageTabs from "../../PageTabs"
 
-const SkillsPage = () => {
+interface SkillsPageProps {
+  onTabChange: (page: string, tab: string | null) => void
+  activeTab: string | null
+}
+
+const SkillsPage = ({ onTabChange, activeTab }: SkillsPageProps) => {
+  const tabs = [
+    { id: "about", label: "About", tabValue: null, icon: <FaUser /> },
+    { id: "certifications", label: "Certifications", tabValue: "certifications", icon: <FaCertificate /> },
+    { id: "skills", label: "Skills", tabValue: "skills", icon: <FaTools /> },
+  ]
+  const activeId = activeTab ?? "skills"
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -184,20 +196,21 @@ const SkillsPage = () => {
 
   return (
     <>
-      <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
+      <div id="page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Technical Skills & Expertise
+            Technical Skills
           </h2>
-          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-            Technologies, frameworks, and tools I work with
-          </p>
-          <p className="text-center text-gray-400 max-w-3xl mx-auto">
-            Proficient in full-stack development, cloud architecture, and modern software engineering practices.
-          </p>
+          <div className="flex justify-center mb-4">
+            <PageTabs
+              tabs={tabs}
+              activeId={activeId}
+              onChange={(tab) => onTabChange("about", tab)}
+            />
+          </div>
         </div>
       
-        <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl py-4 px-4">
+        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
           <div className="container mx-auto">
             <SearchFilterBar
               search={search}
@@ -217,7 +230,7 @@ const SkillsPage = () => {
             />
 
             {resultsCount && (
-              <div className="text-sm text-gray-400 mb-3">{resultsCount}</div>
+              <div className="text-sm text-gray-400 mt-2">{resultsCount}</div>
             )}
           </div>
         </div>

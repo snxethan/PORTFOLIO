@@ -5,7 +5,7 @@ export const projectsTimelineData: TimelineItem[] = [
     type: "project",
     name: "Portfoli-YOU",
     startDate: "July 2025",
-    endDate: "Present",
+    endDate: "January 2026",
     highlights: [
       "Modular portfolio creation tool built with modern web technologies",
       "Desktop application built with Electron for cross-platform compatibility",
@@ -21,13 +21,20 @@ export const projectsTimelineData: TimelineItem[] = [
       { url: "https://portfoliyou.snxethan.dev/", label: "Website" },
       { url: "https://github.com/snxethan/PortfoliYOU-APP", label: "App Repository" },
       { url: "https://github.com/snxethan/PortfoliYOU-WEBSITE", label: "Web Repository" }
-    ]
+    ],
+    images: [
+      "/images/portfoliyou/portfoliyou.png",
+        "/images/projects/portfoliyou/dashboard.jpg",
+        "/images/projects/portfoliyou/portfolioisland.jpg",
+        "/images/projects/portfoliyou/editor.jpg",
+        "/images/projects/portfoliyou/exporter.jpg"
+        ]
   },
   {
     type: "project",
     name: "TrueMark Customer AWS Transform Modernization",
-    startDate: "2025-01",
-    endDate: "Present",
+    startDate: "January 2026",
+    endDate: "March 2026",
     highlights: [
       "Cloud infrastructure modernization using AWS services",
       "Migration of legacy systems to cloud-native architecture",
@@ -35,7 +42,7 @@ export const projectsTimelineData: TimelineItem[] = [
     ],
     summary:
       "Enterprise project focused on transforming and modernizing TrueMark's customer infrastructure through AWS cloud services, implementing modern DevOps practices and cloud-native solutions.",
-    language: "TypeScript",
+    language: "Research & Development",
     topics: ["aws", "cloud", "devops", "modernization", "infrastructure"],
     tags: ["Computer Science", "Cloud Computing", "DevOps"],
   },

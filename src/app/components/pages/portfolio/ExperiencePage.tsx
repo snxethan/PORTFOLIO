@@ -1,10 +1,12 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
+import { FaBriefcase, FaGraduationCap } from "react-icons/fa"
 import { timelineData } from "../../../data/timelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
 import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
+import PageTabs from "../../PageTabs"
 
 const filterOptions = [
   { value: "newest", label: "Newest" },
@@ -13,7 +15,17 @@ const filterOptions = [
   { value: "name-desc", label: "Name (Z–A)" },
 ]
 
-const ExperiencePage = () => {
+interface ExperiencePageProps {
+  onTabChange: (page: string, tab: string | null) => void
+  activeTab: string | null
+}
+
+const ExperiencePage = ({ onTabChange, activeTab }: ExperiencePageProps) => {
+  const tabs = [
+    { id: "experience", label: "Experience", tabValue: "experience", icon: <FaBriefcase /> },
+    { id: "education", label: "Education", tabValue: "education", icon: <FaGraduationCap /> },
+  ]
+  const activeId = activeTab ?? "experience"
   const [showAllContent, setShowAllContent] = useState(true)
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
   const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
@@ -102,6 +114,11 @@ const ExperiencePage = () => {
     if (value === "cs-only") {
       handleToggleChange(false)
     }
+  }
+
+  const handleTagClick = (tag: string) => {
+    setSelectedTag(tag)
+    setShowTagsMenu(true)
   }
 
   const handleToggleChange = (newValue: boolean) => {
@@ -229,6 +246,7 @@ const ExperiencePage = () => {
         showAllContent={sortBy !== "cs-only"}
         animatingItems={animatingItems}
         disappearingItems={disappearingItems}
+        onTagClick={handleTagClick}
       />
     )
   }
@@ -238,41 +256,42 @@ const ExperiencePage = () => {
 
   return (
     <>
-      <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
+      <div id="page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             Professional Experience Timeline
           </h2>
-          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-            My journey and contributions in software development
-          </p>
-          <p className="text-center text-gray-400 max-w-3xl mx-auto">
-            Full-stack development roles with focus on backend architecture and cloud platforms.
-          </p>
-        </div>
-      
-        <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl py-4 px-4">
-          <div className="container mx-auto">
-            <SearchFilterBar
-              search={search}
-              setSearch={setSearch}
-              placeholder="Search by institution, title, keyword, or tags..."
-              tags={sortedTags}
-              selectedTag={selectedTag}
-              setSelectedTag={setSelectedTag}
-              sortOptions={filterOptions}
-              selectedSort={sortBy}
-              setSelectedSort={handleSortChange}
-              showTagsMenu={showTagsMenu}
-              setShowTagsMenu={setShowTagsMenu}
-              showFilterMenu={showFilterMenu}
-              setShowFilterMenu={setShowFilterMenu}
-              defaultSort="newest"
+          <div className="flex justify-center mb-4">
+            <PageTabs
+              tabs={tabs}
+              activeId={activeId}
+              onChange={(tab) => onTabChange("career", tab)}
             />
+          </div>
 
-            {resultsCount && (
-              <div className="text-sm text-gray-400 mb-3">{resultsCount}</div>
-            )}
+          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+            <div className="container mx-auto">
+              <SearchFilterBar
+                search={search}
+                setSearch={setSearch}
+                placeholder="Search by institution, title, keyword, or tags..."
+                tags={sortedTags}
+                selectedTag={selectedTag}
+                setSelectedTag={setSelectedTag}
+                sortOptions={filterOptions}
+                selectedSort={sortBy}
+                setSelectedSort={handleSortChange}
+                showTagsMenu={showTagsMenu}
+                setShowTagsMenu={setShowTagsMenu}
+                showFilterMenu={showFilterMenu}
+                setShowFilterMenu={setShowFilterMenu}
+                defaultSort="newest"
+              />
+
+              {resultsCount && (
+                <div className="text-sm text-gray-400 mt-2">{resultsCount}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>

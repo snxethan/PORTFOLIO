@@ -1,5 +1,4 @@
 import { IconType } from "react-icons"
-import { BiFork } from "react-icons/bi"
 import { BsUnity, BsPatchCheckFill } from "react-icons/bs"
 import { FaReact, FaNodeJs, FaPython, FaGitAlt, FaJava, FaAws } from "react-icons/fa"
 import { GiSharpLips } from "react-icons/gi"

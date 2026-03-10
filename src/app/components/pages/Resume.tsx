@@ -1,22 +1,20 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import { FaDownload, FaSort, FaChevronDown, FaChevronUp, FaEnvelope, FaGithub, FaLinkedin } from "react-icons/fa"
-import { IoMdClose } from "react-icons/io"
-import { useSearchParams, useRouter } from "next/navigation"
-import TooltipWrapper from "../ToolTipWrapper"
+import React, { useEffect, useState, useMemo } from "react"
+import { useSearchParams } from "next/navigation"
 import PDFModalViewer from "../PDFModalViewer"
 import { timelineData } from "../../data/timelineData"
 import Timeline from "../Timeline"
 import SearchFilterBar from "../SearchFilterBar"
 
 const Resume = () => {
+  type TimelineItem = (typeof timelineData)[number]
+
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const [showAllContent, setShowAllContent] = useState(true)
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
   const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
   const [activeSubsection, setActiveSubsection] = useState("experience")
-  const [isAnimating, setIsAnimating] = useState(false)
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('resumeSearch') || ""
@@ -38,12 +36,8 @@ const Resume = () => {
     }
     return "Computer Science"
   })
-  const [showAllTags, setShowAllTags] = useState(false)
-  const [clickedTab, setClickedTab] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  const resumePDF = "/resume/EthanTownsend_Resume_v2.1.pdf"
   const searchParams = useSearchParams()
-  const router = useRouter()
 
   // Persist filter and sort state for Resume page
   useEffect(() => {
@@ -67,6 +61,40 @@ const Resume = () => {
       }
     }
   }, [selectedTag])
+
+  const sortedTimeline = useMemo<TimelineItem[]>(() => {
+    return [...timelineData].sort((a, b) => {
+      if (sortBy === "cs-only") {
+        return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+      }
+      if (sortBy === "name-asc") {
+        return (a.institution || "").localeCompare(b.institution || "")
+      }
+      if (sortBy === "name-desc") {
+        return (b.institution || "").localeCompare(a.institution || "")
+      }
+      if (sortBy === "oldest") {
+        return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+      }
+      if (sortBy === "newest") {
+        return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+      }
+      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    })
+  }, [sortBy])
+
+  const allTags = useMemo(() => {
+    const tagSet = new Set<string>()
+    timelineData.forEach((item) => {
+      item.tags?.forEach((tag) => tagSet.add(tag))
+    })
+    return Array.from(tagSet).sort()
+  }, [])
+
+  const sortedTags = useMemo(() => {
+    if (!allTags.length) return []
+    return allTags.slice().sort((a, b) => a.localeCompare(b))
+  }, [allTags])
 
   // Simulate loading for initial render
   useEffect(() => {
@@ -115,7 +143,7 @@ const Resume = () => {
     }
     
     return () => document.removeEventListener("keydown", handleEscape)
-  }, [searchParams])
+  }, [searchParams, activeSubsection])
 
   const handleToggleChange = (newValue: boolean) => {
     // If switching to show less content (All -> CS), mark items for disappearing animation
@@ -161,67 +189,6 @@ const Resume = () => {
     }
   }
   
-  const handleTabChange = (tabId: string) => {
-    setClickedTab(tabId)
-    setTimeout(() => setClickedTab(null), 300)
-    setIsAnimating(true)
-    
-    // Save to localStorage
-    localStorage.setItem("resumeActiveTab", tabId)
-    
-    // Scroll to top when changing tabs
-    window.scrollTo({ top: 0, behavior: "smooth" })
-    
-    // Update URL with new format
-    router.push(`?page=resume/${tabId}`, { scroll: false })
-    
-    setTimeout(() => {
-      setActiveSubsection(tabId)
-      setIsAnimating(false)
-    }, 150)
-  }
-  
-  const handleShowAllTagsToggle = () => {
-    setShowAllTags(!showAllTags)
-  }
-
-  const sortedTimeline = [...timelineData].sort((a, b) => {
-    if (sortBy === "cs-only") {
-      // CS items sorted by date (newest first)
-      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-    }
-    if (sortBy === "name-asc") {
-      return (a.institution || "").localeCompare(b.institution || "")
-    }
-    if (sortBy === "name-desc") {
-      return (b.institution || "").localeCompare(a.institution || "")
-    }
-    if (sortBy === "oldest") {
-      return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-    }
-    if (sortBy === "newest") {
-      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-    }
-    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-  })
-  
-  // Extract tags from timeline items
-  const allTags = React.useMemo(() => {
-    const tagSet = new Set<string>()
-    timelineData
-      .filter(item => item.type === activeSubsection)
-      .forEach(item => {
-        item.tags?.forEach(tag => tagSet.add(tag))
-      })
-    const tags = Array.from(tagSet).sort()
-    return tags
-  }, [activeSubsection])
-  
-  const sortedTags = React.useMemo(() => {
-    if (!allTags.length) return []
-    return allTags.slice().sort((a, b) => a.localeCompare(b))
-  }, [allTags])
-
   const renderTimeline = (type: "experience" | "education") => {
     const filteredItems = sortedTimeline.filter((item) => {
       if (item.type !== type) return false
@@ -282,12 +249,7 @@ const Resume = () => {
     )
   }
 
-  const tabs = [
-    { id: "experience", label: "Experience" },
-    { id: "education", label: "Education" },
-  ]
-
-  const filterOptions = [
+   const filterOptions = [
     { value: "newest", label: "Newest" },
     { value: "oldest", label: "Oldest" },
     { value: "name-asc", label: "Name (A–Z)" },
@@ -310,9 +272,7 @@ const Resume = () => {
     ? `Showing ${filteredCount} Experience${filteredCount !== 1 ? 's' : ''}`
     : `Showing ${filteredCount} Education Item${filteredCount !== 1 ? 's' : ''}`
 
-  const isFilterActive = sortBy && sortBy !== "newest"
-
-  // Tab-specific descriptions
+   // Tab-specific descriptions
   const getPageDescription = () => {
     switch (activeSubsection) {
       case "experience":
@@ -341,53 +301,43 @@ const Resume = () => {
   return (
     <>
       {/* Header section - wrapped in styled container */}
-      <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
+      <div id="page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
         {/* Header content */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
             {pageDescription.title}
           </h2>
-          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-            {pageDescription.subtitle}
-          </p>
-          <p className="text-center text-gray-400 max-w-3xl mx-auto">
-            {pageDescription.description}
-          </p>
-        </div>
-      
-        {/* Navigation subsection */}
-        <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl py-4 px-4">
-          {/* Main tab row */}
-          <div className="container mx-auto">
-            {/* Search bar with filter using SearchFilterBar component */}
-            <SearchFilterBar
-              search={search}
-              setSearch={setSearch}
-              placeholder="Search by institution, title, keyword, or tags..."
-              tags={sortedTags}
-              selectedTag={selectedTag}
-              setSelectedTag={setSelectedTag}
-              sortOptions={filterOptions}
-              selectedSort={sortBy}
-              setSelectedSort={handleSortChange}
-              showTagsMenu={showTagsMenu}
-              setShowTagsMenu={setShowTagsMenu}
-              showFilterMenu={showFilterMenu}
-              setShowFilterMenu={setShowFilterMenu}
-              defaultSort="newest"
-            />
 
-            {/* Results count */}
-            {resultsCount && (
-              <div className="text-sm text-gray-400 mb-3">{resultsCount}</div>
-            )}
+          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+            <div className="container mx-auto">
+              <SearchFilterBar
+                search={search}
+                setSearch={setSearch}
+                placeholder="Search by institution, title, keyword, or tags..."
+                tags={sortedTags}
+                selectedTag={selectedTag}
+                setSelectedTag={setSelectedTag}
+                sortOptions={filterOptions}
+                selectedSort={sortBy}
+                setSelectedSort={handleSortChange}
+                showTagsMenu={showTagsMenu}
+                setShowTagsMenu={setShowTagsMenu}
+                showFilterMenu={showFilterMenu}
+                setShowFilterMenu={setShowFilterMenu}
+                defaultSort="newest"
+              />
+
+              {resultsCount && (
+                <div className="text-sm text-gray-400 mt-2">{resultsCount}</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-      
+
       {/* Content section - outside header wrapper */}
       <div className="text-white">
-        <div className={`transition-opacity duration-150 ${isAnimating ? 'opacity-0' : 'opacity-100 animate-fade-in-up'}`}>
+        <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
           {activeSubsection === "experience" && renderTimeline("experience")}
           {activeSubsection === "education" && renderTimeline("education")}
         </div>

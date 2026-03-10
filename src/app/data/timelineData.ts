@@ -16,7 +16,7 @@ export const timelineData: TimelineItem[] = [
     institution: "TrueMark",
     location: "Remote",
     startDate: "January 2026",
-    endDate: "Present",
+    endDate: "March 2026",
     highlights: [
       "Backend Software Developer – Engineered scalable backend solutions for enterprise customers.",
       "AWS Cloud Transformation – Led modernization efforts migrating legacy systems to AWS cloud infrastructure.",
@@ -51,7 +51,7 @@ export const timelineData: TimelineItem[] = [
     institution: "Neumont College of Computer Science",
     location: "Salt Lake City, UT",
     startDate: "September 2023",
-    endDate: "Present",
+    endDate: "September 2026",
     highlights: [
       "Bachelor of Science in Computer Science – Maintaining 4.0 GPA",
       "Capstone & Enterprise Projects – Applied software engineering principles to real-world client projects",
