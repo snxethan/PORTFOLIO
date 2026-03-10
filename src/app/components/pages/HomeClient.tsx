@@ -98,7 +98,7 @@ export default function HomeClient() {
     setActiveTab(resolvedTab)
     localStorage.setItem("activePage", resolvedPage)
     if (resolvedTab) {
-      setTimedItem("activeSubTab", resolvedTab, 10 * 60 * 1000)
+      setTimedItem("activeSubTab", resolvedTab)
     } else {
       removeTimedItem("activeSubTab")
     }
@@ -109,7 +109,7 @@ export default function HomeClient() {
     setActiveTab(tab)
     localStorage.setItem("activePage", page)
     if (tab) {
-      setTimedItem("activeSubTab", tab, 10 * 60 * 1000)
+      setTimedItem("activeSubTab", tab)
     } else {
       removeTimedItem("activeSubTab")
     }
