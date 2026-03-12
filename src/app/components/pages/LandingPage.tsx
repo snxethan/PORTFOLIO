@@ -93,7 +93,7 @@ export default function LandingPage() {
                   <button
                     onClick={() => {
                       // Create a link to open PDF in new tab
-                      window.open('/resume/EthanTownsend_Resume_v2.1.pdf', '_blank')
+                      window.open('/resume/EthanTownsend_Resumepdf', '_blank')
                     }}
                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg font-medium hover:scale-105 transition-all duration-200 shadow-lg shadow-red-600/40 hover:shadow-red-600/60"
                   >

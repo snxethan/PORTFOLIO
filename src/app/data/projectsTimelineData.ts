@@ -18,9 +18,9 @@ export const projectsTimelineData: TimelineItem[] = [
     topics: ["react", "typescript", "tailwind", "portfolio", "web-development", "electron"],
     tags: ["Computer Science", "Web Development"],
     links: [
-      { url: "https://portfoliyou.snxethan.dev/", label: "Website" },
-      { url: "https://github.com/snxethan/PortfoliYOU-APP", label: "App Repository" },
-      { url: "https://github.com/snxethan/PortfoliYOU-WEBSITE", label: "Web Repository" }
+      { url: "https://portfoliyou.snxethan.dev/", label: "Website", icon: "external" },
+      { url: "https://github.com/snxethan/PortfoliYOU-APP", label: "App Repository", icon: "github" },
+      { url: "https://github.com/snxethan/PortfoliYOU-WEBSITE", label: "Web Repository", icon: "github" }
     ],
     images: [
       "/images/portfoliyou/portfoliyou.png",

@@ -12,9 +12,9 @@ interface TimedStorageItem<T> {
 }
 
 /**
- * Default expiration time in milliseconds (30 minutes)
+ * Default expiration time in milliseconds (10 minutes)
  */
-const DEFAULT_EXPIRATION_MS = 30 * 60 * 1000 // 30 minutes
+const DEFAULT_EXPIRATION_MS = 10 * 60 * 1000 // 10 minutes
 
 /**
  * Set an item in localStorage with a timestamp
@@ -24,7 +24,8 @@ const DEFAULT_EXPIRATION_MS = 30 * 60 * 1000 // 30 minutes
  */
 export function setTimedItem<T>(
   key: string,
-  value: T
+  value: T,
+  _expirationMs?: number
 ): void {
   if (typeof window === 'undefined') return
 

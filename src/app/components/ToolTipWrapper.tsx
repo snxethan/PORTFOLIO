@@ -8,6 +8,7 @@ import React, {
   ReactNode,
 } from "react"
 import { Loader2 } from "lucide-react"
+import { isPdfPreviewSupported } from "../utils/pdfSupport"
 
 interface PdfThumbnailTooltipProps {
   label: string
@@ -25,19 +26,23 @@ const TooltipWrapper = ({ label, children, url, fullWidth = false }: PdfThumbnai
   const isHovering = useRef(false)
 
   const isPdf = useMemo(() => url?.toLowerCase().endsWith(".pdf") ?? false, [url])
+  const canPreviewPdf = useMemo(
+    () => (isPdf ? isPdfPreviewSupported() : false),
+    [isPdf]
+  )
 
   const handleMouseEnter = useCallback(() => {
     isHovering.current = true
     timeoutRef.current = setTimeout(() => {
       if (isHovering.current) {
         setVisible(true)
-        if (isPdf) {
+        if (canPreviewPdf) {
           setThumbnailLoading(true)
           setThumbnailError(false)
         }
       }
     }, 500)
-  }, [isPdf])
+  }, [canPreviewPdf])
 
   const handleMouseLeave = useCallback(() => {
     isHovering.current = false
@@ -61,7 +66,7 @@ const TooltipWrapper = ({ label, children, url, fullWidth = false }: PdfThumbnai
       {children}
       {visible && (
         <>
-          {isPdf ? (
+          {canPreviewPdf ? (
             <div
               role="tooltip"
               aria-label={label}

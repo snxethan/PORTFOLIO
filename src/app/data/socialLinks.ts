@@ -4,13 +4,13 @@ export const socialLinks = {
       label: "LinkedIn",
       icon: "FaLinkedin",
       url: "https://www.linkedin.com/in/snxethan/",
-      tooltip: "My LinkedIn Profile",
+      tooltip: "My LinkedIn",
     },
     {
       label: "GitHub",
       icon: "FaGithub",
       url: "https://github.com/snxethan",
-      tooltip: "My GitHub Profile",
+      tooltip: "My GitHub",
     },
   ],
   personal: [
@@ -18,7 +18,7 @@ export const socialLinks = {
       label: "Instagram",
       icon: "FaInstagram",
       url: "https://instagram.com/snxethan",
-      tooltip: "My Instagram Profile",
+      tooltip: "My Instagram",
     },
     {
       label: "Discord",

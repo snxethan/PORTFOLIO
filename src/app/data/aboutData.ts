@@ -18,6 +18,8 @@ import {
   SiBlazor,
   SiNginx,
   SiApachekafka,
+  SiPrometheus,
+  SiGrafana
 } from "react-icons/si"
 
 export interface Skill {
@@ -64,6 +66,8 @@ export const skills: Skill[] = [
   { name: "AWS", icon: FaAws, highlight: true, url: "https://aws.amazon.com/", tags: ["Computer Science", "Cloud", "DevOps"] },
   { name: "AWS Modernization", icon: FaAws, highlight: true, url: "https://aws.amazon.com/modernization/", tags: ["Computer Science", "Cloud", "Migration", "Modernization"] },
   { name: ".NET", icon: SiDotnet, highlight: true, url: "https://dotnet.microsoft.com/", tags: ["Computer Science", "Backend", "Framework"] },
+  {name: "Prometheus", icon: SiPrometheus, highlight: true, url: "https://prometheus.io/", tags: ["Computer Science", "Monitoring", "DevOps"]},
+  {name: "Grafana", icon: SiGrafana, highlight: true, url: "https://grafana.com/", tags: ["Computer Science", "Monitoring", "DevOps"]},
 ]
 
 export const unrelatedSkills: Skill[] = [

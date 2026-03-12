@@ -4,20 +4,11 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { X, Loader2 } from "lucide-react"
 import { FaExternalLinkAlt } from "react-icons/fa";
 import ReactDOM from "react-dom"
+import { isPdfPreviewSupported } from "../utils/pdfSupport"
 
 interface PDFModalViewerProps {
   pdfUrl: string | null
   onClose: () => void
-}
-
-const isPdfSupported = (): boolean => {
-  const ua = navigator.userAgent.toLowerCase()
-  const isIOS = /iphone|ipad|ipod/.test(ua)
-  const isSafari = /safari/.test(ua) && !/chrome/.test(ua)
-  const isMobile = /android|iphone|ipad|mobile/.test(ua)
-
-  // Common cases where PDF rendering fails
-  return !(isIOS || isSafari || isMobile)
 }
 
 const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
@@ -42,7 +33,7 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
   useEffect(() => {
     if (!pdfUrl) return
 
-    if (!isPdfSupported()) {
+    if (!isPdfPreviewSupported()) {
       if (lastOpenedPdfRef.current !== pdfUrl) {
         lastOpenedPdfRef.current = pdfUrl
         openPdfInNewTab(pdfUrl)

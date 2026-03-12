@@ -1,11 +1,26 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { FaExternalLinkAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa"
+import { FaExternalLinkAlt, FaChevronLeft, FaChevronRight, FaGithub } from "react-icons/fa"
 import { X } from "lucide-react"
 import TooltipWrapper from "./ToolTipWrapper"
 import Image from "next/image"
 import { createPortal } from "react-dom"
+import { IconType } from "react-icons"
+
+export type TimelineLinkIcon = "external" | "github" | "website"
+
+interface TimelineLink {
+  url: string
+  label: string
+  icon?: TimelineLinkIcon
+}
+
+const linkIconMap: Record<TimelineLinkIcon, IconType> = {
+  external: FaExternalLinkAlt,
+  github: FaGithub,
+  website: FaExternalLinkAlt,
+}
 
 export interface TimelineItem {
   type?: "experience" | "education" | "project"
@@ -21,7 +36,7 @@ export interface TimelineItem {
   topics?: string[] // For projects
   url?: string // For projects (deprecated - use links array)
   tags?: string[] // Tags for filtering
-  links?: Array<{ url: string; label: string }> // Multiple links
+  links?: TimelineLink[] // Multiple links
   images?: string[] // Multiple images with carousel support
 }
 
@@ -231,9 +246,9 @@ const Timeline: React.FC<TimelineProps> = ({
           const isDisappearing = disappearingItems.has(itemKey)
 
           // Combine old url format with new links array
-          const allLinks: Array<{ url: string; label: string }> = []
+          const allLinks: TimelineLink[] = []
           if (item.url) {
-            allLinks.push({ url: item.url, label: "View Project" })
+            allLinks.push({ url: item.url, label: "View Project", icon: "external" })
           }
           if (item.links) {
             allLinks.push(...item.links)
@@ -314,19 +329,22 @@ const Timeline: React.FC<TimelineProps> = ({
               {/* Links */}
               {allLinks.length > 0 && (
                 <div className="flex flex-wrap gap-3 mb-4">
-                  {allLinks.map((link, i) => (
-                    <TooltipWrapper key={i} label={link.url}>
-                      <a
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
-                      >
-                        {link.label}
-                        <FaExternalLinkAlt className="text-sm" />
-                      </a>
-                    </TooltipWrapper>
-                  ))}
+                  {allLinks.map((link, i) => {
+                    const LinkIcon = link.icon ? linkIconMap[link.icon] : FaExternalLinkAlt
+                    return (
+                      <TooltipWrapper key={i} label={link.url}>
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                        >
+                          {link.label}
+                          <LinkIcon className="text-sm" />
+                        </a>
+                      </TooltipWrapper>
+                    )
+                  })}
                 </div>
               )}
 
