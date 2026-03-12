@@ -48,6 +48,7 @@ const getCTAIcon = (icon?: string) => {
   }
 }
 
+const repoBadgeBaseClass = "text-xs font-semibold px-2 py-1 rounded-none cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600"
 
 const Portfolio: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([])
@@ -85,6 +86,10 @@ const Portfolio: React.FC = () => {
     setSelectedTag(tag);
     setShowTagsMenu(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  const handleRepoBadgeClick = (tag: string) => {
+    handleTagClick(tag.toLowerCase())
   }
 
   // Persist filter and sort state for Portfolio page
@@ -186,6 +191,7 @@ const Portfolio: React.FC = () => {
       allProjects.forEach((project) => {
         const projectTags = new Set<string>()
         if (project.language) projectTags.add(project.language.toLowerCase())
+        if (project.source) projectTags.add(project.source.toLowerCase())
         project.topics?.forEach((tag) => projectTags.add(tag.toLowerCase()))
         projectTags.forEach((tag) => uniqueTags.add(tag))
       })
@@ -256,7 +262,8 @@ const Portfolio: React.FC = () => {
     const nameMatch = project.name.toLowerCase().includes(search.toLowerCase())
     const descMatch = project.description?.toLowerCase().includes(search.toLowerCase()) ?? false
     const tagMatch = project.topics?.some((tag) => tag.toLowerCase().includes(search.toLowerCase())) ?? false
-    return nameMatch || descMatch || tagMatch
+    const sourceMatch = project.source?.toLowerCase().includes(search.toLowerCase()) ?? false
+    return nameMatch || descMatch || tagMatch || sourceMatch
   })
 
   const sortedProjects = [...filteredProjects].sort((a, b) => {
@@ -282,7 +289,8 @@ const Portfolio: React.FC = () => {
       : sortedProjects.filter(
           (project) =>
             project.topics.includes(selectedTag) ||
-            project.language?.toLowerCase() === selectedTag
+            project.language?.toLowerCase() === selectedTag ||
+            project.source?.toLowerCase() === selectedTag
         )
 
   const filterOptions = [
@@ -427,13 +435,28 @@ const Portfolio: React.FC = () => {
                          </h3>
                          <div className="flex flex-wrap items-center gap-2">
                            {project.source === "manual" && (
-                             <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>
+                             <span
+                               onClick={() => handleRepoBadgeClick("manual")}
+                               className={`${repoBadgeBaseClass} bg-green-600 text-white border border-green-500`}
+                             >
+                               MANUAL
+                             </span>
                            )}
                            {project.source === "github" && (
-                             <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">GITHUB</span>
+                             <span
+                               onClick={() => handleRepoBadgeClick("github")}
+                               className={`${repoBadgeBaseClass} bg-purple-600 text-white border border-purple-500`}
+                             >
+                               GITHUB
+                             </span>
                            )}
                            {project.topics.includes("neumont") && (
-                             <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">NEU</span>
+                             <span
+                               onClick={() => handleRepoBadgeClick("neumont")}
+                               className={`${repoBadgeBaseClass} bg-yellow-600 text-white border border-yellow-500`}
+                             >
+                               NEU
+                             </span>
                            )}
                          </div>
                        </div>

@@ -31,7 +31,11 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
   }, [onClose])
 
   useEffect(() => {
-    if (!pdfUrl) return
+    if (!pdfUrl) {
+      lastOpenedPdfRef.current = null
+      setIsVisible(false)
+      return
+    }
 
     if (!isPdfPreviewSupported()) {
       if (lastOpenedPdfRef.current !== pdfUrl) {

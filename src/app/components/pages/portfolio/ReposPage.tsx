@@ -55,6 +55,8 @@ const getCTAIcon = (icon?: string) => {
   }
 }
 
+const repoBadgeBaseClass = "text-xs font-semibold px-2 py-1 rounded-none cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600"
+
 interface ReposPageProps {
   onTabChange: (page: string, tab: string | null) => void
   activeTab: string | null
@@ -185,6 +187,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
       allProjects.forEach((project) => {
         const projectTags = new Set<string>()
         if (project.language) projectTags.add(project.language.toLowerCase())
+        if (project.source) projectTags.add(project.source.toLowerCase())
         project.topics?.forEach((tag) => projectTags.add(tag.toLowerCase()))
         projectTags.forEach((tag) => uniqueTags.add(tag))
       })
@@ -224,11 +227,16 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
     setShowTagsMenu(true)
   }
 
+  const handleRepoBadgeClick = (tag: string) => {
+    handleTagClick(tag.toLowerCase())
+  }
+
   const filteredProjects = projects.filter((project) => {
     const nameMatch = project.name.toLowerCase().includes(search.toLowerCase())
     const descMatch = project.description?.toLowerCase().includes(search.toLowerCase()) ?? false
     const tagMatch = project.topics?.some((tag) => tag.toLowerCase().includes(search.toLowerCase())) ?? false
-    return nameMatch || descMatch || tagMatch
+    const sourceMatch = project.source?.toLowerCase().includes(search.toLowerCase()) ?? false
+    return nameMatch || descMatch || tagMatch || sourceMatch
   })
 
   const sortedProjects = [...filteredProjects].sort((a, b) => {
@@ -254,7 +262,8 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
       : sortedProjects.filter(
           (project) =>
             project.topics.includes(selectedTag) ||
-            project.language?.toLowerCase() === selectedTag
+            project.language?.toLowerCase() === selectedTag ||
+            project.source?.toLowerCase() === selectedTag
         )
 
   const resultsCount = `Showing ${tagFilteredProjects.length} Repositor${tagFilteredProjects.length !== 1 ? "ies" : "y"}`
@@ -308,7 +317,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
               ? [...Array(6)].map((_, i) => (
                   <div
                     key={i}
-                    className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4"
+                    className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse flex flex-col gap-4"
                   >
                     <div className="h-6 bg-[#333333] rounded w-3/4" />
                     <div className="h-4 bg-[#333333] rounded w-2/3" />
@@ -321,7 +330,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
               : tagFilteredProjects.map((project) => (
                   <div
                     key={project.id}
-                    className="group bg-[#1e1e1e] hover:bg-[#252525] rounded-xl overflow-hidden border border-[#333333] hover:border-red-600/50 transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 flex flex-col"
+                    className="group bg-[#151515] hover:bg-[#252525] rounded-none overflow-hidden border border-[#333333] hover:border-red-600/50 transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 flex flex-col"
                   >
                     <div className="p-6 flex-grow">
                       <div className="mb-2">
@@ -330,13 +339,28 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                         </h3>
                         <div className="flex flex-wrap items-center gap-2">
                           {project.source === "manual" && (
-                            <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">MANUAL</span>
+                            <span
+                              onClick={() => handleRepoBadgeClick("manual")}
+                              className={`${repoBadgeBaseClass} bg-green-600 text-white border border-green-500`}
+                            >
+                              MANUAL
+                            </span>
                           )}
                           {project.source === "github" && (
-                            <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded-full">GITHUB</span>
+                            <span
+                              onClick={() => handleRepoBadgeClick("github")}
+                              className={`${repoBadgeBaseClass} bg-purple-600 text-white border border-purple-500`}
+                            >
+                              GITHUB
+                            </span>
                           )}
                           {project.topics.includes("neumont") && (
-                            <span className="bg-yellow-600 text-white text-xs px-2 py-1 rounded-full">NEU</span>
+                            <span
+                              onClick={() => handleRepoBadgeClick("neumont")}
+                              className={`${repoBadgeBaseClass} bg-yellow-600 text-white border border-yellow-500`}
+                            >
+                              NEU
+                            </span>
                           )}
                         </div>
                       </div>
@@ -369,7 +393,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                         ))}
                       </div>
                     </div>
-                    <div className="px-6 py-4 border-t border-[#333333] bg-[#1a1a1a]">
+                    <div className="px-6 py-4 border-t border-[#333333] bg-[#151515]">
                       <TooltipWrapper label={project.html_url} fullWidth>
                         <button
                           onClick={() => handleExternalClick(project.html_url, true)}

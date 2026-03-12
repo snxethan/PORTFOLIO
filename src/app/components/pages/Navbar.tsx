@@ -15,19 +15,18 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
   // Only show loading state if page data hasn't been initialized (undefined), not if it's explicitly null (homepage)
   const isLoading = activePage === undefined || activeTab === undefined
 
-  // Load persisted states from localStorage or use defaults
+  // Always start pinned when the user accesses the site
   const [isNavPinned, setIsNavPinned] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('navbarPinned')
       if (saved !== null) {
         return saved === 'true'
       }
-      return window.innerWidth < 1024 // default: pinned on mobile/tablet, unpinned on desktop
     }
     return true
   })
-  
-  const [isHorizontalScroll, setIsHorizontalScroll] = useState(() => {
+
+  const [isHorizontalScroll] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('navbarLayout')
       if (saved !== null) {
@@ -182,7 +181,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                         key={tab.id}
                         onClick={() => handleClick(tab.id, tab.defaultTab)}
                         disabled={isActive}
-                        className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 border ${
+                        className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 border focus:outline-none focus-visible:outline-none ${
                           isActive
                             ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
                             : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"

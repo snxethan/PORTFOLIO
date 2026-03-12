@@ -112,6 +112,7 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
     projectsTimelineData.forEach(item => {
       item.tags?.forEach(tag => tagSet.add(tag))
       item.topics?.forEach(topic => tagSet.add(topic))
+      if (item.language) tagSet.add(item.language)
     })
     return Array.from(tagSet).sort()
   }, [])
@@ -125,13 +126,15 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
     const matchesSearch = !search || 
       project.name?.toLowerCase().includes(search.toLowerCase()) ||
       project.summary?.toLowerCase().includes(search.toLowerCase()) ||
+      project.language?.toLowerCase().includes(search.toLowerCase()) ||
       project.topics?.some((topic) => topic.toLowerCase().includes(search.toLowerCase())) ||
       project.tags?.some((tag) => tag.toLowerCase().includes(search.toLowerCase()))
     
     const matchesTag = !selectedTag || selectedTag === "Computer Science" ||
       project.tags?.includes(selectedTag) ||
-      project.topics?.includes(selectedTag)
-    
+      project.topics?.includes(selectedTag) ||
+      project.language?.toLowerCase() === selectedTag.toLowerCase()
+
     return matchesSearch && matchesTag
   })
 
@@ -166,7 +169,7 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse"
+              className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse"
             >
               <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
               <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />

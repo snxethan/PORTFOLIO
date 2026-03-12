@@ -118,7 +118,7 @@ const About = () => {
         const year = cert.year 
         const Card = (
           <div
-            className={`group relative flex flex-col bg-[#1a1a1a] hover:bg-[#252525] p-6 rounded-xl shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 min-h-[140px]`} 
+            className={`group relative flex flex-col bg-[#151515] hover:bg-[#252525] p-6 rounded-none shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 min-h-[140px]`}
           >
             <div className="flex items-start gap-4 mb-3">
               <div // Icon container
@@ -174,8 +174,8 @@ const About = () => {
   const renderSkeletonGrid = (count: number) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {[...Array(count)].map((_, i) => (
-        <div key={i} className="bg-[#1a1a1a] border border-[#333333] p-6 rounded-xl animate-pulse flex flex-col gap-4 min-h-[140px]">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#333333] rounded mb-1.5 sm:mb-2" /> 
+        <div key={i} className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse flex flex-col gap-4 min-h-[140px]">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#333333] rounded mb-1.5 sm:mb-2" />
           <div className="h-2.5 sm:h-3 bg-[#333333] rounded w-16 sm:w-20" />
         </div>
       ))}
@@ -373,9 +373,9 @@ const About = () => {
           <p className="text-gray-400 mt-2">Let&apos;s connect and share updates, or grab the latest resume.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-6">
+          <div className="bg-[#151515] hover:bg-[#252525] border border-[#333333] rounded-none p-6 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30">
             <div className="flex items-center gap-3 mb-3 text-white">
-              <FaLinkedin className="text-xl" />
+              <FaLinkedin className="text-xl text-red-500" />
               <h4 className="text-lg font-semibold">LinkedIn</h4>
             </div>
             <p className="text-gray-400 mb-4">Follow my professional updates and feel free to connect.</p>
@@ -383,7 +383,7 @@ const About = () => {
               <button
                 type="button"
                 onClick={() => handleExternalClick(linkedinLink.url, true)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg transition-all duration-200 hover:scale-105 shadow-lg shadow-red-600/30"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-none transition-all duration-200 hover:scale-105 shadow-lg shadow-red-600/30"
               >
                 <FaExternalLinkAlt className="text-sm" />
                 Connect on LinkedIn
@@ -391,16 +391,16 @@ const About = () => {
             )}
           </div>
 
-          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-6">
+          <div className="bg-[#151515] hover:bg-[#252525] border border-[#333333] rounded-none p-6 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30">
             <div className="flex items-center gap-3 mb-3 text-white">
-              <FaFilePdf className="text-xl" />
+              <FaFilePdf className="text-xl text-red-500" />
               <h4 className="text-lg font-semibold">Resume</h4>
             </div>
             <p className="text-gray-400 mb-4">Open the latest resume for a full overview of experience and skills.</p>
             <button
               type="button"
               onClick={() => setSelectedPDF(resumeUrl)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg transition-all duration-200 hover:scale-105 shadow-lg shadow-red-600/30"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-none transition-all duration-200 hover:scale-105 shadow-lg shadow-red-600/30"
             >
               <FaFilePdf className="text-sm" />
               View Resume

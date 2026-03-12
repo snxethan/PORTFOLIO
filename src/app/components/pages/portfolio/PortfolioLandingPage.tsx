@@ -129,7 +129,7 @@ export default function PortfolioLandingPage({ onTabChange, activeTab }: AboutLa
 
       <section className="bg-[#222222] rounded-xl border border-[#333333] px-6 py-3 mb-4">
         <div className="text-center">
-          <h3 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">Let's Connect</h3>
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">Let&apos;s Connect</h3>
         </div>
       </section>
 
@@ -139,7 +139,7 @@ export default function PortfolioLandingPage({ onTabChange, activeTab }: AboutLa
             [...Array(3)].map((_, index) => (
               <div
                 key={`connect-skeleton-${index}`}
-                className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-6 animate-pulse"
+                className="bg-[#151515] border border-[#333333] rounded-none p-6 animate-pulse"
               >
                 <div className="h-5 bg-[#333333] rounded w-1/2 mb-3" />
                 <div className="h-4 bg-[#333333] rounded w-full mb-2" />
@@ -153,7 +153,7 @@ export default function PortfolioLandingPage({ onTabChange, activeTab }: AboutLa
                   <button
                     type="button"
                     onClick={() => handleExternalClick(linkedinLink.url, true)}
-                    className="group bg-[#1e1e1e] hover:bg-[#252525] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 text-center transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 w-full"
+                    className="group bg-[#151515] hover:bg-[#252525] border border-[#333333] hover:border-red-600/50 rounded-none p-6 text-center transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 w-full"
                   >
                     <div className="flex items-center gap-4 text-white group-hover:text-red-500 transition-colors duration-200 w-full">
                       <FaLinkedin className="text-xl" />
@@ -168,7 +168,7 @@ export default function PortfolioLandingPage({ onTabChange, activeTab }: AboutLa
                   <button
                     type="button"
                     onClick={() => handleExternalClick(githubLink.url, true)}
-                    className="group bg-[#1e1e1e] hover:bg-[#252525] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 text-center transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 w-full"
+                    className="group bg-[#151515] hover:bg-[#252525] border border-[#333333] hover:border-red-600/50 rounded-none p-6 text-center transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 w-full"
                   >
                     <div className="flex items-center gap-4 text-white group-hover:text-red-500 transition-colors duration-200 w-full">
                       <FaGithub className="text-xl" />
@@ -182,7 +182,7 @@ export default function PortfolioLandingPage({ onTabChange, activeTab }: AboutLa
                 <button
                   type="button"
                   onClick={() => setSelectedPDF(resumeUrl)}
-                  className="group bg-[#1e1e1e] hover:bg-[#252525] border border-[#333333] hover:border-red-600/50 rounded-xl p-6 text-center transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 w-full"
+                  className="group bg-[#151515] hover:bg-[#252525] border border-[#333333] hover:border-red-600/50 rounded-none p-6 text-center transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 w-full"
                 >
                   <div className="flex items-center gap-4  text-white group-hover:text-red-500 transition-colors duration-200 w-full">
                     <FaFilePdf className="text-xl" />
@@ -205,7 +205,7 @@ export default function PortfolioLandingPage({ onTabChange, activeTab }: AboutLa
         {latestProjectItems.length > 0 && (
           <>
             {isLoading ? (
-              <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-6 animate-pulse">
+              <div className="bg-[#151515] border border-[#333333] rounded-xl p-6 animate-pulse">
                 <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
                 <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
                 <div className="space-y-2">

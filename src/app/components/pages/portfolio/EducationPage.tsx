@@ -180,6 +180,8 @@ const EducationPage = ({ onTabChange, activeTab }: EducationPageProps) => {
       .filter(item => item.type === "education")
       .forEach(item => {
         item.tags?.forEach(tag => tagSet.add(tag))
+        if (item.location) tagSet.add(item.location)
+        if (item.language) tagSet.add(item.language)
       })
     return Array.from(tagSet).sort()
   }, [])
@@ -201,8 +203,11 @@ const EducationPage = ({ onTabChange, activeTab }: EducationPageProps) => {
         item.summary?.toLowerCase().includes(search.toLowerCase()) ||
         item.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))
       
-      const matchesTag = !selectedTag || item.tags?.includes(selectedTag)
-      
+      const matchesTag = !selectedTag ||
+        item.tags?.includes(selectedTag) ||
+        item.location?.toLowerCase() === selectedTag.toLowerCase() ||
+        item.language?.toLowerCase() === selectedTag.toLowerCase()
+
       return matchesCSFilter && matchesSearch && matchesTag
     })
   }, [sortedTimeline, sortBy, search, selectedTag])
@@ -224,7 +229,7 @@ const EducationPage = ({ onTabChange, activeTab }: EducationPageProps) => {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="bg-[#1e1e1e] border border-[#333333] p-6 rounded-xl animate-pulse"
+              className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse"
             >
               <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
               <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />

@@ -207,6 +207,9 @@ const Timeline: React.FC<TimelineProps> = ({
     return null
   }
 
+  const badgeBaseClass = "text-xs font-semibold px-2 py-1 rounded-none"
+  const clickableBadgeClass = "cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600"
+
   // Compact mode for side navigation preview
   if (compact) {
     return (
@@ -257,7 +260,7 @@ const Timeline: React.FC<TimelineProps> = ({
           return (
             <div
               key={itemKey}
-              className={`group relative bg-[#1a1a1a] p-6 rounded-xl border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${
+              className={`group relative bg-[#151515] hover:bg-[#252525] p-6 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${
                 isNewItem ? "animate-fade-in-up border-red-600/30" : ""
               } ${isDisappearing ? "animate-fade-out-down" : ""}`}
             >
@@ -274,7 +277,10 @@ const Timeline: React.FC<TimelineProps> = ({
                 {item.location && (
                   <>
                     <span className="text-gray-600">•</span>
-                    <span className="bg-[#333333] text-gray-300 px-2 py-1 rounded text-sm">
+                    <span
+                      onClick={onTagClick ? () => onTagClick(item.location ?? "") : undefined}
+                      className={`${badgeBaseClass} ${getLocationTagClass(item.location)} ${onTagClick ? clickableBadgeClass : ""}`}
+                    >
                       {item.location}
                     </span>
                   </>
@@ -282,7 +288,10 @@ const Timeline: React.FC<TimelineProps> = ({
                 {item.language && (
                   <>
                     <span className="text-gray-600">•</span>
-                    <span className="bg-[#333333] text-gray-300 px-2 py-1 rounded text-sm">
+                    <span
+                      onClick={onTagClick ? () => onTagClick(item.language ?? "") : undefined}
+                      className={`${badgeBaseClass} ${getLanguageTagClass(item.language)} ${onTagClick ? clickableBadgeClass : ""}`}
+                    >
                       {item.language}
                     </span>
                   </>
@@ -364,3 +373,44 @@ const Timeline: React.FC<TimelineProps> = ({
 }
 
 export default Timeline
+
+const getLocationTagClass = (location: string) => {
+  const normalized = location.toLowerCase()
+  if (normalized.includes("remote")) {
+    return "bg-blue-600 text-white border border-blue-500"
+  }
+  if (normalized.includes("hybrid")) {
+    return "bg-purple-600 text-white border border-purple-500"
+  }
+  if (normalized.includes("research") || normalized.includes("dev")) {
+    return "bg-orange-500 text-white border border-orange-500"
+  }
+  return "bg-green-600 text-white border border-green-500"
+}
+
+const getLanguageTagClass = (language: string) => {
+  const normalized = language.toLowerCase()
+  if (normalized.includes("research") || normalized.includes("dev")) {
+    return "bg-orange-500 text-white border border-orange-500"
+  }
+  switch (normalized) {
+    case "typescript":
+      return "bg-blue-600 text-white border border-blue-500"
+    case "javascript":
+      return "bg-yellow-500 text-white border border-yellow-500"
+    case "python":
+      return "bg-emerald-600 text-white border border-emerald-500"
+    case "java":
+      return "bg-orange-500 text-white border border-orange-500"
+    case "c#":
+      return "bg-purple-600 text-white border border-purple-500"
+    case "c++":
+      return "bg-sky-600 text-white border border-sky-500"
+    case "go":
+      return "bg-cyan-500 text-white border border-cyan-500"
+    case "rust":
+      return "bg-amber-600 text-white border border-amber-500"
+    default:
+      return "bg-[#333333] text-white"
+  }
+}
