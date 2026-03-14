@@ -1,47 +1,34 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { FaThumbtack, FaUser, FaBriefcase, FaFolderOpen } from "react-icons/fa"
+import { useState, useEffect, useRef, useCallback } from "react"
+import { FaThumbtack, FaUser, FaBriefcase, FaFolderOpen, FaProjectDiagram, FaGithub, FaCertificate, FaTools, FaGraduationCap } from "react-icons/fa"
 
 interface NavbarProps {
   onTabChange: (page: string, tab: string | null) => void
   activePage: string | null
   activeTab: string | null
   onPinChange?: (isPinned: boolean) => void
-  onLayoutChange?: (isExpanded: boolean) => void
 }
 
-const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChange }: NavbarProps) => {
+interface ContextMenuItem {
+  label: string
+  tab: string | null
+  icon: React.ReactNode
+}
+
+const Navbar = ({ onTabChange, activePage, activeTab, onPinChange }: NavbarProps) => {
+  const CONTEXT_MENU_ANIMATION_MS = 300
+
   // Only show loading state if page data hasn't been initialized (undefined), not if it's explicitly null (homepage)
   const isLoading = activePage === undefined || activeTab === undefined
 
-  // Always start pinned when the user accesses the site
-  const [isNavPinned, setIsNavPinned] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('navbarPinned')
-      if (saved !== null) {
-        return saved === 'true'
-      }
-    }
-    return true
-  })
+  // Keep first SSR + client render deterministic; hydrate persisted preference after mount.
+  const [isNavPinned, setIsNavPinned] = useState(true)
+  const [hasHydratedPin, setHasHydratedPin] = useState(false)
 
-  const [isHorizontalScroll] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('navbarLayout')
-      if (saved !== null) {
-        return saved === 'horizontal'
-      }
-      return false // default: wrap layout
-    }
-    return false
-  })
-  
-  const [needsToggle, setNeedsToggle] = useState(false) // true if content overflows and needs scroll
   const [isPinAnimating, setIsPinAnimating] = useState(false)
   const navRef = useRef<HTMLElement>(null)
   const navContentRef = useRef<HTMLDivElement>(null)
-  const isCheckingOverflow = useRef(false) // Prevent concurrent overflow checks
 
   useEffect(() => {
     if (!navRef.current || typeof window === "undefined") return
@@ -59,61 +46,162 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
     return () => observer.disconnect()
   }, [])
 
-  // Persist pin state to localStorage and notify parent
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('navbarPinned', isNavPinned.toString())
+    if (typeof window === "undefined") return
+
+    const saved = localStorage.getItem("navbarPinned")
+    if (saved !== null) {
+      setIsNavPinned(saved === "true")
     }
+    setHasHydratedPin(true)
+  }, [])
+
+  // Persist pin state only after hydration so we don't overwrite saved value on first mount.
+  useEffect(() => {
+    if (!hasHydratedPin || typeof window === "undefined") return
+    localStorage.setItem("navbarPinned", isNavPinned.toString())
+  }, [hasHydratedPin, isNavPinned])
+
+  useEffect(() => {
     onPinChange?.(isNavPinned)
   }, [isNavPinned, onPinChange])
 
-  // Persist layout state to localStorage and notify parent
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('navbarLayout', isHorizontalScroll ? 'horizontal' : 'wrap')
-    }
-    onLayoutChange?.(!isHorizontalScroll) // true when expanded/wrap mode
-  }, [isHorizontalScroll, onLayoutChange])
-
-  // Check if the nav content overflows and needs scrolling
-  useEffect(() => {
-    const checkOverflow = () => {
-      if (isCheckingOverflow.current) return
-      isCheckingOverflow.current = true
-      
-      if (navContentRef.current) {
-        const hasOverflow = navContentRef.current.scrollWidth > navContentRef.current.clientWidth
-        setNeedsToggle(hasOverflow || !isHorizontalScroll)
-      }
-      isCheckingOverflow.current = false
-    }
-
-    // Use requestAnimationFrame to ensure DOM has rendered before checking
-    const timeoutId = setTimeout(() => {
-      requestAnimationFrame(checkOverflow)
-    }, 0)
-    
-    window.addEventListener('resize', checkOverflow)
-    return () => {
-      clearTimeout(timeoutId)
-      window.removeEventListener('resize', checkOverflow)
-    }
-  }, [isHorizontalScroll, isLoading, activePage, activeTab])
 
   // Main tabs for the top-level sections
   const mainTabs = [
-    { id: "about", label: "About", defaultTab: null, icon: <FaUser /> },
-    { id: "career", label: "Career", defaultTab: "experience", icon: <FaBriefcase /> },
-    { id: "projects", label: "Projects", defaultTab: "projects", icon: <FaFolderOpen /> },
+    { id: "about", label: "About", icon: <FaUser /> },
+    { id: "projects", label: "Projects", icon: <FaFolderOpen /> },
+    { id: "career", label: "Career", icon: <FaBriefcase /> },
   ]
 
-  const handleClick = (page: string, tab: string | null) => {
-    const currentKey = `${activePage}/${activeTab ?? ""}`
-    const newKey = `${page}/${tab ?? ""}`
+  const subItems: Record<string, ContextMenuItem[]> = {
+    about: [
+      { label: "About", tab: null, icon: <FaUser /> },
+      { label: "Certifications", tab: "certifications", icon: <FaCertificate /> },
+      { label: "Skills", tab: "skills", icon: <FaTools /> },
+    ],
+    projects: [
+      { label: "Projects", tab: "projects", icon: <FaProjectDiagram /> },
+      { label: "Repositories", tab: "repos", icon: <FaGithub /> },
+    ],
+    career: [
+      { label: "Experience", tab: "experience", icon: <FaBriefcase /> },
+      { label: "Education", tab: "education", icon: <FaGraduationCap /> },
+    ],
+  }
 
-    if (currentKey === newKey) return // prevent redundant clicks
+  const [contextMenu, setContextMenu] = useState<{ page: string; isClosing: boolean } | null>(null)
+  const contextMenuRef = useRef<HTMLDivElement>(null)
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const longPressFiredRef = useRef(false)
+  const hoverOpenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const hoverCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const swapTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Track what's currently rendered so we can decide swap vs. fresh open without reading state
+  const activePageRef = useRef<string | null>(null)
+  const isClosingRef = useRef(false)
 
-    onTabChange(page, tab)
+  const clearAllTimers = useCallback(() => {
+    if (hoverOpenTimerRef.current) { clearTimeout(hoverOpenTimerRef.current); hoverOpenTimerRef.current = null }
+    if (hoverCloseTimerRef.current) { clearTimeout(hoverCloseTimerRef.current); hoverCloseTimerRef.current = null }
+    if (swapTimerRef.current) { clearTimeout(swapTimerRef.current); swapTimerRef.current = null }
+  }, [])
+
+  // Open or swap to a page immediately (no delay — callers handle delays)
+  const openContextMenu = useCallback((page: string) => {
+    if (hoverCloseTimerRef.current) { clearTimeout(hoverCloseTimerRef.current); hoverCloseTimerRef.current = null }
+
+    const currentPage = activePageRef.current
+    const currentlyClosing = isClosingRef.current
+
+    if (!currentPage) {
+      // Nothing open — open fresh
+      activePageRef.current = page
+      isClosingRef.current = false
+      setContextMenu({ page, isClosing: false })
+      return
+    }
+
+    if (currentPage === page && !currentlyClosing) {
+      // Already showing this page — nothing to do
+      return
+    }
+
+    if (currentlyClosing) {
+      // Mid-close animation — cancel it and open the new page immediately
+      if (swapTimerRef.current) { clearTimeout(swapTimerRef.current); swapTimerRef.current = null }
+      activePageRef.current = page
+      isClosingRef.current = false
+      setContextMenu({ page, isClosing: false })
+      return
+    }
+
+    // Open on a different page — fade out current, then open new
+    isClosingRef.current = true
+    setContextMenu({ page: currentPage, isClosing: true })
+
+    swapTimerRef.current = setTimeout(() => {
+      swapTimerRef.current = null
+      activePageRef.current = page
+      isClosingRef.current = false
+      setContextMenu({ page, isClosing: false })
+    }, CONTEXT_MENU_ANIMATION_MS)
+  }, [CONTEXT_MENU_ANIMATION_MS])
+
+  const closeContextMenu = useCallback(() => {
+    if (swapTimerRef.current) { clearTimeout(swapTimerRef.current); swapTimerRef.current = null }
+    if (!activePageRef.current || isClosingRef.current) return
+
+    const page = activePageRef.current
+    isClosingRef.current = true
+    setContextMenu({ page, isClosing: true })
+
+    swapTimerRef.current = setTimeout(() => {
+      swapTimerRef.current = null
+      activePageRef.current = null
+      isClosingRef.current = false
+      setContextMenu(null)
+    }, CONTEXT_MENU_ANIMATION_MS)
+  }, [CONTEXT_MENU_ANIMATION_MS])
+
+  const scheduleOpen = useCallback((page: string) => {
+    if (hoverCloseTimerRef.current) { clearTimeout(hoverCloseTimerRef.current); hoverCloseTimerRef.current = null }
+    if (hoverOpenTimerRef.current) { clearTimeout(hoverOpenTimerRef.current); hoverOpenTimerRef.current = null }
+    // No delay when already open — swap immediately
+    const delay = activePageRef.current !== null ? 0 : 180
+    hoverOpenTimerRef.current = setTimeout(() => openContextMenu(page), delay)
+  }, [openContextMenu])
+
+  const scheduleClose = useCallback(() => {
+    if (hoverOpenTimerRef.current) { clearTimeout(hoverOpenTimerRef.current); hoverOpenTimerRef.current = null }
+    hoverCloseTimerRef.current = setTimeout(() => closeContextMenu(), 220)
+  }, [closeContextMenu])
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    if (!contextMenu) return
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
+        closeContextMenu()
+      }
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeContextMenu()
+    }
+    document.addEventListener("mousedown", handleOutsideClick)
+    document.addEventListener("keydown", handleKeyDown)
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick)
+      document.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [contextMenu, closeContextMenu])
+
+  useEffect(() => {
+    return () => clearAllTimers()
+  }, [clearAllTimers])
+
+  const handleClick = (page: string) => {
+    onTabChange(page, null)
   }
 
   useEffect(() => {
@@ -128,6 +216,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
   }
 
   return (
+    <>
     <nav
       ref={navRef}
       className={`w-full bg-[#222222] py-4 px-6 md:px-8 lg:px-10 ${isNavPinned ? 'fixed ring-1 ring-[#2a2a2a] shadow-lg shadow-black/20' : 'relative'} top-0 left-0 z-50 border-b border-[#333333] md:border-0 transition-all duration-300 ease-in-out ${isPinAnimating ? "animate-pin-bounce" : ""}`}
@@ -155,15 +244,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
           <div className="flex items-center gap-3 lg:ml-auto lg:justify-end w-full lg:w-auto">
             <div
               ref={navContentRef}
-              className={`flex gap-3 transition-all duration-500 ease-in-out w-full lg:w-auto ${
-                isHorizontalScroll
-                  ? `flex-row overflow-x-auto navbar-scroll ${needsToggle ? 'justify-start' : 'justify-center'}`
-                  : 'flex-wrap justify-center lg:justify-end'
-              }`}
-              style={isHorizontalScroll ? {
-                scrollbarWidth: 'thin',
-                scrollbarColor: '#dc2626 transparent',
-              } : {}}
+              className="flex gap-3 transition-all duration-500 ease-in-out w-full lg:w-auto flex-wrap justify-center lg:justify-end"
             >
               {isLoading ? (
                 <div className="flex space-x-4 animate-pulse justify-center w-full">
@@ -179,11 +260,36 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
                     return (
                       <button
                         key={tab.id}
-                        onClick={() => handleClick(tab.id, tab.defaultTab)}
-                        disabled={isActive}
+                        id={`nav-btn-${tab.id}`}
+                        onClick={() => handleClick(tab.id)}
+                        onMouseEnter={() => scheduleOpen(tab.id)}
+                        onMouseLeave={scheduleClose}
+                        onContextMenu={(e) => {
+                          e.preventDefault()
+                          openContextMenu(tab.id)
+                        }}
+                        onTouchStart={() => {
+                          longPressFiredRef.current = false
+                          longPressTimerRef.current = setTimeout(() => {
+                            longPressFiredRef.current = true
+                            openContextMenu(tab.id)
+                          }, 500)
+                        }}
+                        onTouchEnd={() => {
+                          if (longPressTimerRef.current) {
+                            clearTimeout(longPressTimerRef.current)
+                            longPressTimerRef.current = null
+                          }
+                        }}
+                        onTouchMove={() => {
+                          if (longPressTimerRef.current) {
+                            clearTimeout(longPressTimerRef.current)
+                            longPressTimerRef.current = null
+                          }
+                        }}
                         className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 border focus:outline-none focus-visible:outline-none ${
                           isActive
-                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-default border-transparent"
+                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-pointer border-transparent"
                             : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
                         }`}
                       >
@@ -212,6 +318,94 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, onLayoutChang
         </div>
       </div>
     </nav>
+
+    {/* Context menu */}
+    {contextMenu && (
+      <ContextMenuPopup
+        contextMenuRef={contextMenuRef}
+        page={contextMenu.page}
+        anchorId={`nav-btn-${contextMenu.page}`}
+        subItems={subItems}
+        onTabChange={onTabChange}
+        closeContextMenu={closeContextMenu}
+        isClosing={contextMenu.isClosing}
+        onMouseEnter={() => {
+          if (hoverCloseTimerRef.current) {
+            clearTimeout(hoverCloseTimerRef.current)
+            hoverCloseTimerRef.current = null
+          }
+        }}
+        onMouseLeave={scheduleClose}
+      />
+    )}
+    </>
+  )
+}
+
+interface ContextMenuPopupProps {
+  contextMenuRef: React.RefObject<HTMLDivElement | null>
+  page: string
+  anchorId: string
+  subItems: Record<string, ContextMenuItem[]>
+  onTabChange: (page: string, tab: string | null) => void
+  closeContextMenu: () => void
+  isClosing: boolean
+  onMouseEnter: () => void
+  onMouseLeave: () => void
+}
+
+function ContextMenuPopup({ contextMenuRef, page, anchorId, subItems, onTabChange, closeContextMenu, isClosing, onMouseEnter, onMouseLeave }: ContextMenuPopupProps) {
+  const [pos, setPos] = useState<{ left: number; top: number } | null>(null)
+
+  useEffect(() => {
+    const anchor = document.getElementById(anchorId)
+    const el = contextMenuRef.current
+    if (!anchor || !el) return
+
+    const anchorRect = anchor.getBoundingClientRect()
+    const elRect = el.getBoundingClientRect()
+    const vw = window.innerWidth
+
+    let left = anchorRect.left + anchorRect.width / 2 - elRect.width / 2
+    const top = anchorRect.bottom + 8
+
+    if (left + elRect.width > vw - 8) left = vw - elRect.width - 8
+    if (left < 8) left = 8
+
+    setPos({ left, top })
+  }, [anchorId, contextMenuRef])
+
+  const sectionLabel = page.charAt(0).toUpperCase() + page.slice(1)
+
+  return (
+    <div
+      ref={contextMenuRef}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className={`fixed z-[9999] min-w-[170px] rounded-xl border border-[#333333] bg-[#1e1e1e] py-2 shadow-2xl shadow-black/50 ${
+        isClosing ? "animate-fade-out-down" : "animate-fade-in-up"
+      }`}
+      style={pos ? { left: pos.left, top: pos.top } : { visibility: "hidden", left: 0, top: 0 }}
+    >
+      <div className="px-3 pb-1.5 pt-0.5 border-b border-[#333333] mb-1">
+        <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+          {sectionLabel}
+        </span>
+      </div>
+      {subItems[page]?.map((item) => (
+        <button
+          key={item.tab ?? "__top"}
+          onClick={() => {
+            onTabChange(page, item.tab)
+            closeContextMenu()
+          }}
+          className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-300 hover:bg-[#2a2a2a] hover:text-[#dc2626] hover:shadow-[inset_0_0_8px_rgba(220,38,38,0.15)] transition-all duration-150 text-left group"
+        >
+          <span className="text-base text-gray-500 group-hover:text-[#dc2626] transition-colors duration-150">{item.icon}</span>
+          <span>{item.label}</span>
+        </button>
+      ))}
+    </div>
   )
 }
 

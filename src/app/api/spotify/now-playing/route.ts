@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server"
-import { API_URLS } from "../../../config/urls"
+
+const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
+const SPOTIFY_NOW_PLAYING_URL = "https://api.spotify.com/v1/me/player/currently-playing"
 
 export async function GET() {
   const refresh_token = process.env.SPOTIFY_REFRESH_TOKEN!
 
-  const tokenResponse = await fetch(API_URLS.SPOTIFY.TOKEN, {
+  const tokenResponse = await fetch(SPOTIFY_TOKEN_URL, {
     method: "POST",
     headers: {
       Authorization:
@@ -23,14 +25,11 @@ export async function GET() {
   const tokenData = await tokenResponse.json()
   const access_token = tokenData.access_token
 
-  const nowPlayingRes = await fetch(
-    API_URLS.SPOTIFY.NOW_PLAYING,
-    {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    }
-  )
+  const nowPlayingRes = await fetch(SPOTIFY_NOW_PLAYING_URL, {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  })
 
   if (nowPlayingRes.status === 204 || nowPlayingRes.status > 400) {
     return NextResponse.json({ isPlaying: false })

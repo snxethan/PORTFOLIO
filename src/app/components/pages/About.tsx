@@ -1,262 +1,230 @@
 "use client"
-import React, { useEffect, useState } from "react"
-import { FaFilePdf, FaExternalLinkAlt, FaLinkedin } from "react-icons/fa"
-import { useSearchParams } from "next/navigation"
+import React, { useEffect, useMemo, useRef, useState } from "react"
+import { FaFilePdf, FaExternalLinkAlt, FaCertificate, FaTools, FaBriefcase, FaGraduationCap, FaFolderOpen, FaGithub } from "react-icons/fa"
 
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
 import PDFModalViewer from "../PDFModalViewer"
 import { skills, certifications, Skill, Certification } from "../../data/aboutData"
+import PageTabs from "../PageTabs"
 import SearchFilterBar from "../SearchFilterBar"
-import { socialLinks } from "../../data/socialLinks"
+import ResponsiveCardSkeletonGrid from "../ResponsiveCardSkeletonGrid"
 
-const About = () => {
-  const [loading, setLoading] = useState(true)
+const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, refreshSignal }: { onTabChange?: (page: string, tab: string | null) => void; externalSubsection?: string | null; onExternalSubsectionConsumed?: () => void; refreshSignal?: number }) => {
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
-  const [activeSubsection, setActiveSubsection] = useState("certifications")
+  const [activeSubsection, setActiveSubsection] = useState<"certifications" | "skills">("certifications")
   const [search, setSearch] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('aboutSearch') || ""
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("aboutSearch") || ""
     }
     return ""
   })
   const [sortBy, setSortBy] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('aboutSortBy')
-      if (saved) return saved
-      return activeSubsection === "certifications" ? "newest" : "hard-soft"
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("aboutSortBy") || "newest"
     }
-    return activeSubsection === "certifications" ? "newest" : "hard-soft"
+    return "newest"
   })
-  const [showFilterMenu, setShowFilterMenu] = useState(false)
-  const [showTagsMenu, setShowTagsMenu] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('aboutSelectedTag')
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("aboutSelectedTag")
       return saved !== null ? saved : "Computer Science"
     }
     return "Computer Science"
   })
+  const [showFilterMenu, setShowFilterMenu] = useState(false)
+  const [showTagsMenu, setShowTagsMenu] = useState(false)
+  const [cardsLoading, setCardsLoading] = useState(true)
   const { handleExternalClick } = useExternalLink()
-  const searchParams = useSearchParams()
-  const linkedinLink = socialLinks.professional.find((link) => link.label === "LinkedIn")
-  const resumeUrl = "/resume/EthanTownsend_Resume_feb2026.pdf"
-
-  // Persist filter and sort state for About page
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('aboutSearch', search)
-    }
-  }, [search])
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('aboutSortBy', sortBy)
-    }
-  }, [sortBy])
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (selectedTag !== null) {
-        localStorage.setItem('aboutSelectedTag', selectedTag)
-      } else {
-        localStorage.removeItem('aboutSelectedTag')
-      }
-    }
-  }, [selectedTag])
-
-  useEffect(() => {
-    // Show skeleton loader for 500ms for consistent UX
-    const timer = setTimeout(() => setLoading(false), 500)
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setSelectedPDF(null)
-        setShowFilterMenu(false)
-      }
-    }
-    document.addEventListener("keydown", handleEscape)
-    
-    // Load active tab from localStorage first
+    if (typeof window === "undefined") return
     const savedTab = localStorage.getItem("aboutActiveTab")
-    if (savedTab && (savedTab === "certifications" || savedTab === "skills")) {
+    if (savedTab === "certifications" || savedTab === "skills") {
       setActiveSubsection(savedTab)
     }
-    
-    // Handle URL parameters for tab (takes precedence over localStorage)
-    const pageParam = searchParams.get("page")
-    const parts = pageParam?.split("/")
-    const tabParam = parts?.[1]
-    if (tabParam && (tabParam === "certifications" || tabParam === "skills")) {
-      setActiveSubsection(tabParam)
-    }
-    
-    // Load filter from localStorage (per-tab persistence)
-    const savedFilter = localStorage.getItem(`${activeSubsection}-filter`)
-    if (savedFilter) {
-      setSortBy(savedFilter)
-    }
-    
-    return () => {
-      clearTimeout(timer)
-      document.removeEventListener("keydown", handleEscape)
-    }
-  }, [searchParams, activeSubsection])
+  }, [])
 
-  const handleFilterChange = (value: string) => {
-    setSortBy(value)
-    localStorage.setItem(`${activeSubsection}-filter`, value)
+  // Respond to external sub-section override (e.g. from navbar context menu)
+  useEffect(() => {
+    if (externalSubsection === "certifications" || externalSubsection === "skills") {
+      setActiveSubsection(externalSubsection)
+      onExternalSubsectionConsumed?.()
+    }
+  }, [externalSubsection, onExternalSubsectionConsumed])
+
+  // Reset content when the same tab is re-clicked (refreshSignal increments)
+  const isFirstRender = useRef(true)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    setSearch("")
+    setSortBy(activeSubsection === "certifications" ? "newest" : "hard-soft")
+    setSelectedTag("Computer Science")
     setShowFilterMenu(false)
-  }
-  
-  const renderSkillGrid = (items: Skill[] | Certification[]) => {
-    // Don't re-sort here - use the already sorted items
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {items.map((item) => { 
-        const { name, icon: Icon, highlight, url } = item
-        const cert = item as Certification
-        const year = cert.year 
-        const Card = (
-          <div
-            className={`group relative flex flex-col bg-[#151515] hover:bg-[#252525] p-6 rounded-none shadow-lg border border-[#333333] hover:border-red-600/50 transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 min-h-[140px]`}
-          >
-            <div className="flex items-start gap-4 mb-3">
-              <div // Icon container
-                className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
-                  highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
-                }`} 
-              >
-                <Icon className="text-white text-2xl" /> 
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-white font-semibold text-base mb-1 truncate group-hover:text-[#dc2626] transition-colors duration-300">{name}</h3>
-                {year && (
-                  <span className="text-gray-400 text-sm">{year}</span>
-                )} 
-              </div>
-            </div>
-            
-            {(url?.endsWith(".pdf") || (url && !url.endsWith(".pdf"))) && (
-              <div className="absolute bottom-4 right-4 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300"> 
-                {url?.endsWith(".pdf") && <FaFilePdf size={16} aria-label="View Certification" />} 
-                {url && !url.endsWith(".pdf") && <FaExternalLinkAlt size={16} aria-label="Open external link" />} 
-              </div>
-            )}
-          </div>
-        )
+    setShowTagsMenu(false)
+    setCardsLoading(true)
+    const rafId = requestAnimationFrame(() => setCardsLoading(false))
+    return () => cancelAnimationFrame(rafId)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshSignal])
 
-        if (url?.endsWith(".pdf")) {
-          return (
-            <TooltipWrapper key={name} label="View Certification" url={url}>
-              <div onClick={() => setSelectedPDF(url)} className="cursor-pointer">
-                {Card}
-              </div>
-            </TooltipWrapper>
-          )
-        }
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("aboutActiveTab", activeSubsection)
+    }
 
-        return url ? (
-          <TooltipWrapper key={name} label={url}>
-            <div onClick={() => handleExternalClick(url, true)} className="cursor-pointer">
-              {Card}
-            </div>
-          </TooltipWrapper>
-        ) : (
-          <div key={name} className="cursor-pointer">
-            {Card}
-          </div>
-        )
-      })}
-    </div>
-  )
-}
+    const savedSearch = localStorage.getItem(`about-${activeSubsection}-search`)
+    const savedSort = localStorage.getItem(`about-${activeSubsection}-sort`)
+    const savedTag = localStorage.getItem(`about-${activeSubsection}-tag`)
 
-  const renderSkeletonGrid = (count: number) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {[...Array(count)].map((_, i) => (
-        <div key={i} className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse flex flex-col gap-4 min-h-[140px]">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 bg-[#333333] rounded mb-1.5 sm:mb-2" />
-          <div className="h-2.5 sm:h-3 bg-[#333333] rounded w-16 sm:w-20" />
+    setSearch(savedSearch ?? "")
+    setSortBy(savedSort ?? (activeSubsection === "certifications" ? "newest" : "hard-soft"))
+    setSelectedTag(savedTag !== null ? savedTag : "Computer Science")
+    setShowFilterMenu(false)
+    setShowTagsMenu(false)
+  }, [activeSubsection])
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("aboutSearch", search)
+      localStorage.setItem(`about-${activeSubsection}-search`, search)
+    }
+  }, [search, activeSubsection])
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("aboutSortBy", sortBy)
+      localStorage.setItem(`about-${activeSubsection}-sort`, sortBy)
+    }
+  }, [sortBy, activeSubsection])
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (selectedTag !== null) {
+        localStorage.setItem("aboutSelectedTag", selectedTag)
+        localStorage.setItem(`about-${activeSubsection}-tag`, selectedTag)
+      } else {
+        localStorage.removeItem("aboutSelectedTag")
+        localStorage.removeItem(`about-${activeSubsection}-tag`)
+      }
+    }
+  }, [selectedTag, activeSubsection])
+
+  useEffect(() => {
+    let isCancelled = false
+    setCardsLoading(true)
+
+    const rafId = requestAnimationFrame(() => {
+      if (!isCancelled) setCardsLoading(false)
+    })
+
+    return () => {
+      isCancelled = true
+      cancelAnimationFrame(rafId)
+    }
+  }, [activeSubsection])
+
+  const cardSizeClass = "min-h-[180px] h-full min-w-[260px] w-[calc(100%-1.5rem)] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] 2xl:w-[calc((100%-4.5rem)/4)] shrink-0 snap-start"
+
+  const renderCertificationCard = (item: Certification) => {
+    const { name, icon: Icon, highlight, url, year } = item
+    const card = (
+      <div className={`group relative z-0 hover:z-10 flex items-start gap-4 bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
+        <div
+          className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
+            highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
+          }`}
+        >
+          <Icon className="text-white text-xl" />
         </div>
-      ))}
-    </div>
-  )
+        <div className="flex-1 min-w-0">
+          <p className="text-white font-semibold text-base break-words whitespace-normal group-hover:text-[#dc2626] transition-colors duration-300">
+            {name}
+          </p>
+          {year && <span className="text-gray-400 text-sm">{year}</span>}
+        </div>
+        {url && (
+          <div className="absolute bottom-3 right-3 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300">
+            {url.endsWith(".pdf") ? <FaFilePdf size={14} aria-label="View Certification" /> : <FaExternalLinkAlt size={14} aria-label="Open external link" />}
+          </div>
+        )}
+      </div>
+    )
 
+    if (url?.endsWith(".pdf")) {
+      return (
+        <TooltipWrapper key={name} label="View Certification" url={url}>
+          <button type="button" onClick={() => setSelectedPDF(url)} className="text-left">
+            {card}
+          </button>
+        </TooltipWrapper>
+      )
+    }
 
-   // Extract tags from certifications and skills
-  const allTags = React.useMemo(() => {
+    return url ? (
+      <TooltipWrapper key={name} label={url}>
+        <button type="button" onClick={() => handleExternalClick(url, true)} className="text-left">
+          {card}
+        </button>
+      </TooltipWrapper>
+    ) : (
+      <div key={name}>{card}</div>
+    )
+  }
+
+  const renderSkillCard = (item: Skill) => {
+    const { name, icon: Icon, highlight, url } = item
+    const card = (
+      <div className={`group relative z-0 hover:z-10 flex items-start gap-4 bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
+        <div
+          className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
+            highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
+          }`}
+        >
+          <Icon className="text-white text-xl" />
+        </div>
+        <p className="text-white font-semibold text-base break-words whitespace-normal group-hover:text-[#dc2626] transition-colors duration-300">
+          {name}
+        </p>
+        {url && !url.endsWith(".pdf") && (
+          <div className="absolute bottom-3 right-3 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300">
+            <FaExternalLinkAlt size={14} aria-label="Open external link" />
+          </div>
+        )}
+      </div>
+    )
+
+    return url ? (
+      <TooltipWrapper key={name} label={url}>
+        <button type="button" onClick={() => handleExternalClick(url, true)} className="text-left">
+          {card}
+        </button>
+      </TooltipWrapper>
+    ) : (
+      <div key={name}>{card}</div>
+    )
+  }
+
+  const tabs = [
+    { id: "certifications", label: "Certifications" },
+    { id: "skills", label: "Skills" },
+  ]
+
+  const tagOptions = useMemo(() => {
     const tagSet = new Set<string>()
     const items = activeSubsection === "certifications" ? certifications : skills
-    items.forEach(item => {
-      item.tags?.forEach(tag => tagSet.add(tag))
+    items.forEach((item) => {
+      item.tags?.forEach((tag) => tagSet.add(tag))
     })
     const tags = Array.from(tagSet).sort()
-    // Add Hard Skills and Soft Skills filter options for skills subsection
     if (activeSubsection === "skills") {
       return ["Hard Skills", "Soft Skills", ...tags]
     }
     return tags
   }, [activeSubsection])
-  
-  const sortedTags = React.useMemo(() => {
-    if (!allTags.length) return []
-    return allTags.slice().sort((a, b) => a.localeCompare(b))
-  }, [allTags])
-
-  // Filter certifications based on search, sort, and tag
-  const filteredCertifications = certifications.filter((cert) => {
-    const matchesSearch = cert.name.toLowerCase().includes(search.toLowerCase())
-    const matchesFilter = sortBy !== "cs-only" || cert.tags?.includes("Computer Science")
-    const matchesTag = !selectedTag || cert.tags?.includes(selectedTag)
-    return matchesSearch && matchesFilter && matchesTag
-  })
-
-  // Apply sorting to certifications
-  const sortedCertifications = [...filteredCertifications].sort((a, b) => {
-    if (sortBy === "cs-only") return b.year - a.year  // CS items sorted newest first
-    if (sortBy === "name-asc") return a.name.localeCompare(b.name)
-    if (sortBy === "name-desc") return b.name.localeCompare(a.name)
-    if (sortBy === "oldest") return a.year - b.year
-    if (sortBy === "newest") return b.year - a.year
-    // Default sort (highlight first, then alphabetical)
-    if (a.highlight === b.highlight) {
-      return a.name.localeCompare(b.name)
-    }
-    return a.highlight ? -1 : 1
-  })
-
-  // Filter skills based on search and tag
-  const filteredSkills = skills.filter((skill) => {
-    const matchesSearch = skill.name.toLowerCase().includes(search.toLowerCase())
-    const matchesFilter = 
-      sortBy !== "cs-only" ? true : skill.tags?.includes("Computer Science")
-    const matchesTag = !selectedTag || skill.tags?.includes(selectedTag) || 
-      (selectedTag === "Hard Skills" && skill.highlight === true) ||
-      (selectedTag === "Soft Skills" && skill.highlight !== true)
-    return matchesSearch && matchesFilter && matchesTag
-  })
-
-  // Apply sorting to skills
-  const sortedSkills = [...filteredSkills].sort((a, b) => {
-    if (sortBy === "cs-only") return 0  // CS only, no date sort for skills
-    if (sortBy === "hard-soft") {
-      // Hard skills first (highlight=true), then soft skills
-      if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
-      return a.highlight ? -1 : 1
-    }
-    if (sortBy === "soft-hard") {
-      // Soft skills first (highlight=false), then hard skills
-      if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
-      return a.highlight ? 1 : -1
-    }
-    if (sortBy === "name-asc") return a.name.localeCompare(b.name)
-    if (sortBy === "name-desc") return b.name.localeCompare(a.name)
-    // Default sort (hard skills first, then alphabetical)
-    if (a.highlight === b.highlight) {
-      return a.name.localeCompare(b.name)
-    }
-    return a.highlight ? -1 : 1
-  })
 
   const filterOptions = activeSubsection === "certifications" ? [
     { value: "newest", label: "Newest" },
@@ -269,67 +237,175 @@ const About = () => {
     { value: "name-asc", label: "Name (A–Z)" },
     { value: "name-desc", label: "Name (Z–A)" },
   ]
-  
-  // Get the default sort value for the current page
-  const defaultSort = activeSubsection === "certifications" ? "newest" : "hard-soft"
 
-  const resultsCount = activeSubsection === "certifications" 
-    ? `Showing ${sortedCertifications.length} Certification${sortedCertifications.length !== 1 ? 's' : ''}`
-    : `Showing ${sortedSkills.length} Skill${sortedSkills.length !== 1 ? 's' : ''}`
+  const filteredCertifications = useMemo(() => (
+    certifications.filter((cert) => {
+      const matchesSearch = cert.name.toLowerCase().includes(search.toLowerCase())
+      const matchesTag = !selectedTag || cert.tags?.includes(selectedTag)
+      return matchesSearch && matchesTag
+    })
+  ), [search, selectedTag])
 
-  // Tab-specific descriptions
-  const getPageDescription = () => {
-    switch (activeSubsection) {
-      case "certifications":
-        return {
-          title: "Professional Certifications",
-          subtitle: "Industry-recognized credentials and technical certifications",
-          description: "Validated expertise across cloud platforms, cybersecurity, and computer science fundamentals."
-        }
-      case "skills":
-        return {
-          title: "Technical Skills & Expertise",
-          subtitle: "Technologies, frameworks, and tools I work with",
-          description: "Proficient in full-stack development, cloud architecture, and modern software engineering practices."
-        }
-      default:
-        return {
-          title: "Professional Certifications",
-          subtitle: "Industry-recognized credentials and technical certifications",
-          description: "Validated expertise across cloud platforms, cybersecurity, and computer science fundamentals."
-        }
+  const sortedCertifications = useMemo(() => (
+    [...filteredCertifications].sort((a, b) => {
+      if (sortBy === "name-asc") return a.name.localeCompare(b.name)
+      if (sortBy === "name-desc") return b.name.localeCompare(a.name)
+      if (sortBy === "oldest") return a.year - b.year
+      if (sortBy === "newest") return b.year - a.year
+      if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
+      return a.highlight ? -1 : 1
+    })
+  ), [filteredCertifications, sortBy])
+
+  const filteredSkills = useMemo(() => (
+    skills.filter((skill) => {
+      const matchesSearch = skill.name.toLowerCase().includes(search.toLowerCase())
+      const matchesTag = !selectedTag ||
+        skill.tags?.includes(selectedTag) ||
+        (selectedTag === "Hard Skills" && skill.highlight === true) ||
+        (selectedTag === "Soft Skills" && skill.highlight !== true)
+      return matchesSearch && matchesTag
+    })
+  ), [search, selectedTag])
+
+  const sortedSkills = useMemo(() => (
+    [...filteredSkills].sort((a, b) => {
+      if (sortBy === "hard-soft") {
+        if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
+        return a.highlight ? -1 : 1
+      }
+      if (sortBy === "soft-hard") {
+        if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
+        return a.highlight ? 1 : -1
+      }
+      if (sortBy === "name-asc") return a.name.localeCompare(b.name)
+      if (sortBy === "name-desc") return b.name.localeCompare(a.name)
+      if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
+      return a.highlight ? -1 : 1
+    })
+  ), [filteredSkills, sortBy])
+
+  const resultsCount = activeSubsection === "certifications"
+    ? `Showing ${sortedCertifications.length} Certification${sortedCertifications.length !== 1 ? "s" : ""}`
+    : `Showing ${sortedSkills.length} Skill${sortedSkills.length !== 1 ? "s" : ""}`
+
+  const handleFilterChange = (value: string) => {
+    setSortBy(value)
+    setShowFilterMenu(false)
+  }
+
+  const handleJump = (page: string, tab: string | null) => {
+    if (page === "about" && (tab === "certifications" || tab === "skills")) {
+      setActiveSubsection(tab)
+    }
+    onTabChange?.(page, tab)
+  }
+
+  const scrollToCards = () => {
+    if (typeof window === "undefined") return
+    const target = document.getElementById("about-cards")
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" })
     }
   }
 
-  const pageDescription = getPageDescription()
+  const handleAboutTabChange = (tab: string | null) => {
+    const nextTab = tab === "skills" ? "skills" : "certifications"
+    // Always call parent — HomeClient detects same-tab re-clicks and increments the refresh key
+    onTabChange?.("about", nextTab)
+    // Also update internal state immediately so the switch is instant
+    setActiveSubsection(nextTab)
+    requestAnimationFrame(scrollToCards)
+  }
 
   return (
     <>
-      {/* Header section - wrapped in styled container */}
       <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
-        {/* Header content */}
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform duration-200 ease-out hover:scale-110">
-            {pageDescription.title}
+        <div className="mb-5 text-center">
+          <h2 className="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform">
+            Welcome to My Portfolio
           </h2>
-          <p className="text-center text-gray-300 mb-4 max-w-3xl mx-auto">
-            {pageDescription.subtitle}
-          </p>
-          <p className="text-center text-gray-400 max-w-3xl mx-auto">
-            {pageDescription.description}
-          </p>
         </div>
-      
-        {/* Navigation subsection */}
+
+        <p className="mt-4 text-gray-300 max-w-2xl mx-auto text-center">
+          I am Ethan Townsend, a Full-Stack Software Engineer with a passion for back-end development.
+          <br />
+          <br />
+          Jump to my{" "}
+          <button
+            type="button"
+            onClick={() => handleJump("about", "certifications")}
+            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+          >
+            <FaCertificate className="text-base" />
+            Certifications
+          </button>
+          ,{" "}
+          <button
+            type="button"
+            onClick={() => handleJump("about", "skills")}
+            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+          >
+            <FaTools className="text-base" />
+            Skills
+          </button>
+          ,{" "}
+          <button
+            type="button"
+            onClick={() => handleJump("career", "experience")}
+            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+          >
+            <FaBriefcase className="text-base" />
+            Experience
+          </button>
+          ,{" "}
+          <button
+            type="button"
+            onClick={() => handleJump("career", "education")}
+            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+          >
+            <FaGraduationCap className="text-base" />
+            Education
+          </button>
+          , and{" "}
+          <button
+            type="button"
+            onClick={() => handleJump("projects", "projects")}
+            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+          >
+            <FaFolderOpen className="text-base" />
+            Projects
+          </button>
+          ,{" "}
+          <button
+            type="button"
+            onClick={() => handleJump("projects", "repos")}
+            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+          >
+            <FaGithub className="text-base" />
+            Repositories
+          </button>
+          .
+          <br />
+          <br />
+        </p>
+
+        <div className="flex justify-center mb-4">
+          <PageTabs
+            tabs={tabs}
+            activeId={activeSubsection}
+            onChange={handleAboutTabChange}
+          />
+
+        </div>
+
         <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
-          {/* Main tab row */}
           <div className="container mx-auto">
-            {/* Search bar with filter using SearchFilterBar component */}
             <SearchFilterBar
               search={search}
               setSearch={setSearch}
-              placeholder="Search by name, keyword, or tags..."
-              tags={sortedTags}
+              placeholder={`Search ${activeSubsection} by name or tags...`}
+              tags={tagOptions}
               selectedTag={selectedTag}
               setSelectedTag={setSelectedTag}
               sortOptions={filterOptions}
@@ -339,77 +415,56 @@ const About = () => {
               setShowTagsMenu={setShowTagsMenu}
               showFilterMenu={showFilterMenu}
               setShowFilterMenu={setShowFilterMenu}
-              defaultSort={defaultSort}
+              defaultSort={activeSubsection === "certifications" ? "newest" : "hard-soft"}
             />
 
-            {/* Results count */}
             {resultsCount && (
-              <div className="text-sm text-gray-400 mb-3">{resultsCount}</div>
+              <div className="text-sm text-gray-400 mt-2 text-center sm:text-left">{resultsCount}</div>
             )}
           </div>
         </div>
       </div>
-      
-      {/* Content section - outside header wrapper */}
-      <section id="about" className="text-white">
-        <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
-          {activeSubsection === "certifications" && (
-            <div>
-              {loading ? renderSkeletonGrid(6) : renderSkillGrid(sortedCertifications)}
-            </div>
-          )}
 
-          {activeSubsection === "skills" && (
-            <div>
-              {loading ? renderSkeletonGrid(9) : renderSkillGrid(sortedSkills)}
-            </div>
-          )}
-        </div>
-      </section>
-
-      <section className="bg-[#222222] rounded-xl border border-[#333333] p-6">
-        <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold text-white">Connect</h3>
-          <p className="text-gray-400 mt-2">Let&apos;s connect and share updates, or grab the latest resume.</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-[#151515] hover:bg-[#252525] border border-[#333333] rounded-none p-6 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30">
-            <div className="flex items-center gap-3 mb-3 text-white">
-              <FaLinkedin className="text-xl text-red-500" />
-              <h4 className="text-lg font-semibold">LinkedIn</h4>
-            </div>
-            <p className="text-gray-400 mb-4">Follow my professional updates and feel free to connect.</p>
-            {linkedinLink && (
-              <button
-                type="button"
-                onClick={() => handleExternalClick(linkedinLink.url, true)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-none transition-all duration-200 hover:scale-105 shadow-lg shadow-red-600/30"
+      <div
+        id="about-cards"
+        className="mt-0 w-full max-w-full overflow-visible"
+        style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
+      >
+        {cardsLoading ? (
+          <ResponsiveCardSkeletonGrid
+            renderCard={(i) => (
+              <div
+                key={i}
+                className="bg-[#151515] border border-[#333333] p-5 rounded-none animate-pulse min-h-[180px]"
               >
-                <FaExternalLinkAlt className="text-sm" />
-                Connect on LinkedIn
-              </button>
+                <div className="flex items-start gap-4">
+                  <div className="w-11 h-11 bg-[#333333] rounded-lg" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-[#333333] rounded w-3/4" />
+                    <div className="h-3 bg-[#333333] rounded w-1/3" />
+                  </div>
+                </div>
+                <div className="space-y-2 mt-5">
+                  <div className="h-3 bg-[#333333] rounded w-full" />
+                  <div className="h-3 bg-[#333333] rounded w-5/6" />
+                </div>
+              </div>
             )}
-          </div>
-
-          <div className="bg-[#151515] hover:bg-[#252525] border border-[#333333] rounded-none p-6 transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30">
-            <div className="flex items-center gap-3 mb-3 text-white">
-              <FaFilePdf className="text-xl text-red-500" />
-              <h4 className="text-lg font-semibold">Resume</h4>
+          />
+        ) : (
+          <div className="w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain snap-x snap-mandatory">
+            <div className="flex w-full min-w-full items-stretch gap-6 px-3 py-4">
+              {activeSubsection === "certifications"
+                ? sortedCertifications.map(renderCertificationCard)
+                : sortedSkills.map(renderSkillCard)}
             </div>
-            <p className="text-gray-400 mb-4">Open the latest resume for a full overview of experience and skills.</p>
-            <button
-              type="button"
-              onClick={() => setSelectedPDF(resumeUrl)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-none transition-all duration-200 hover:scale-105 shadow-lg shadow-red-600/30"
-            >
-              <FaFilePdf className="text-sm" />
-              View Resume
-            </button>
           </div>
-        </div>
-      </section>
+        )}
+      </div>
 
-      <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />
+      {selectedPDF && (
+        <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />
+      )}
     </>
   )
 }

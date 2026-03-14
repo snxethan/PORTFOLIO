@@ -29,44 +29,36 @@ If you discover a security vulnerability in this portfolio application, please r
 
 ## Security Features
 
-This portfolio application includes several security measures:
+This portfolio application includes layered security measures:
 
 ### API Security
-- **Rate Limiting:** API endpoints implement rate limiting to prevent abuse (1 request/minute per IP on contact form)
-- **Environment Variables:** Sensitive data (API keys, tokens) are stored securely in environment variables
-- **Input Validation:** All user inputs are validated and sanitized
-- **CORS Configuration:** Proper Cross-Origin Resource Sharing policies
+- **Rate Limiting:** `POST /api/contact` enforces per-IP throttling (1 request/minute)
+- **Environment Variables:** Sensitive credentials (Spotify, SMTP) are stored outside source control
+- **Input Validation:** Contact form payloads are validated server-side before processing
+- **Defensive Error Handling:** Spotify routes validate response content type before JSON parsing
 
-### Authentication & Authorization
-- **OAuth 2.0:** Secure Spotify integration with refresh token management
-- **Token Security:** Secure storage and handling of authentication tokens
-- **Session Management:** Proper session handling with timeout mechanisms
+### Authentication & Token Handling
+- **OAuth 2.0:** Spotify integration uses authorization code + refresh token flow
+- **Token Scope:** Access tokens are obtained server-side on demand and not persisted client-side
+- **Least Exposure:** Spotify endpoint URLs are co-located within route handlers to reduce config sprawl
 
-### Form Security
-- **Contact Form:** Secure form handling with server-side validation
-- **Email Security:** Contact form submissions are processed securely via authenticated email service (Nodemailer with Gmail SMTP)
-- **XSS Protection:** Input sanitization to prevent cross-site scripting attacks
-- **CSRF Protection:** Protection against cross-site request forgery
+### Form & Client Safety
+- **Contact Form Security:** Server-side validation and authenticated mail transport (Nodemailer + Gmail app password)
+- **External Link Guard:** Outbound links are routed through a confirmation modal
+- **Limited Client Persistence:** UI preferences use timed local storage via `timedStorage` utility
 
-### External Integrations
-- **Spotify API:** OAuth 2.0 authentication with secure token management
-- **GitHub API:** Read-only public repository access
-- **Third-party APIs:** All external API calls are made securely with proper authentication
-- **Vercel Analytics:** Privacy-focused analytics without personal data collection
-
-### General Security
-- **HTTPS:** All production deployments use HTTPS encryption with SSL certificates
-- **Security Headers:** Appropriate security headers are configured (X-Frame-Options, X-Content-Type-Options, CSP)
-- **Dependency Management:** Regular dependency updates and security audits via npm audit
-- **Code Scanning:** Automated security scanning with CodeQL
-- **No Sensitive Data Storage:** No user data or sensitive information stored client-side
+### Platform Security
+- **HTTPS:** Production deployment uses HTTPS on Vercel
+- **Dependency Hygiene:** Regular lint/build/typecheck and dependency review
+- **No User Account System:** No password database or user-auth session store in this project
 
 ## Known Issues & Mitigations
 
-### PDF Viewer Security
-- **Status:** Currently monitoring PDF.js vulnerability (See SECURITY_ADVISORY.md)
-- **Mitigation:** Only displaying trusted, self-hosted PDF files
-- **Action:** Regular monitoring for dependency updates
+### PDF Rendering Risk (Historical)
+- **Status:** Monitored; historical PDF.js advisory was mitigated
+- **Current Mitigation:** Resume and certification PDFs are trusted/self-hosted assets only
+- **Implementation Detail:** PDF preview support is intentionally restricted on unsupported platforms
+- **Reference:** See `SECURITY_ADVISORY.md` for full history and monitoring notes
 
 ## Security Best Practices
 
@@ -133,10 +125,10 @@ Security updates and patches are released as needed. Check the following for upd
 
 ## Security Audit History
 
-- **Last Full Audit:** February 2026
-- **Last Dependency Update:** February 2026
-- **Last Security Review:** February 2026
+- **Last Full Audit:** March 2026
+- **Last Dependency Update Review:** March 2026
+- **Last Security Review:** March 2026
 
 ---
 
-**Last Updated:** February 16, 2026
+**Last Updated:** March 14, 2026

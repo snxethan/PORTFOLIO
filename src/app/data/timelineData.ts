@@ -8,6 +8,7 @@ interface TimelineItem {
   summary: string
   isCSRelated: boolean
   tags?: string[]
+  language?: string
 }
 
 export const timelineData: TimelineItem[] = [

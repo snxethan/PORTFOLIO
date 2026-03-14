@@ -4,28 +4,41 @@ import { ExternalLinkHandler } from "./components/ExternalLinkHandler"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from 'react-hot-toast'
+import Script from "next/script"
 
 
 export const metadata: Metadata = {
-  title: "Ethan Townsend | Software Engineer",
+  title: "Ethan Townsend",
   description: "Im a Software Engineer & Backend Developer",
   icons: {
-    icon: [
-      { url: "/favicon.ico", type: "image/x-icon" },
-      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
-      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+    // Keep the browser tab icon on the existing root favicon (snex).
+    icon: [{ url: "/favicon.ico", type: "image/x-icon" }],
+    shortcut: "/favicon.ico",
+    apple: "/images/avatar/favicon/apple-touch-icon.png",
+    other: [
+      {
+        rel: "icon",
+        url: "/images/avatar/favicon/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
+      {
+        rel: "icon",
+        url: "/images/avatar/favicon/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
     ],
-    apple: "/apple-touch-icon.png",
   },
-  manifest: "/site.webmanifest",
+  manifest: "/images/avatar/favicon/site.webmanifest",
   openGraph: {
-    title: "Ethan Townsend | Software Engineer",
+    title: "Ethan Townsend",
     description: "Im a Software Engineer & Backend Developer",
     url: "https://www.ethantownsend.dev",
     siteName: "ethantownsend.dev",
     images: [
       {
-        url: "https://www.snxethan.dev/images/avatar/snex.png",
+        url: "https://www.snxethan.dev/images/avatar/avatar.png",
         width: 512,
         height: 512,
         alt: "Ethan Townsend Portfolio Preview",
@@ -35,16 +48,16 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ethan Townsend | Software Engineer",
+    title: "Ethan Townsend",
     description: "Im a Software Engineer & Backend Developer",
-    images: ["https://www.snxethan.dev/images/avatar/snex.png"],
+    images: ["https://www.snxethan.dev/images/avatar/avatar.png"],
   },  other: {
-    'X-Frame-Options': 'SAMEORIGIN',
-    'X-Content-Type-Options': 'nosniff',
-    'X-Robots-Tag': 'index, follow, noimageai, noimageindex',
-    'Permissions-Policy': 'browsing-topics=(), interest-cohort=()',
-    'Content-Security-Policy': "default-src 'self'",
-  }
+    "X-Frame-Options": "SAMEORIGIN",
+    "X-Content-Type-Options": "nosniff",
+    "X-Robots-Tag": "index, follow, noimageai, noimageindex",
+    "Permissions-Policy": "browsing-topics=(), interest-cohort=()",
+    "Content-Security-Policy": "default-src 'self'",
+  },
 }
 export const viewport: Viewport = {
   themeColor: "#1a1a1a",
@@ -54,14 +67,14 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Ethan Townsend",
+  "title": "Ethan Townsend Portfolio",
   "url": "https://www.ethantownsend.dev",
-  "image": "https://www.snxethan.dev/images/avatar/snex.png",
+  "image": "https://www.snxethan.dev/images/avatar/avatar.png",
   "jobTitle": "Software Engineer",
   "sameAs": [
     "https://github.com/snxethan",
-    "https://www.linkedin.com/in/ethantownsend",
+    "https://www.linkedin.com/in/snxethan",
     "https://www.instagram.com/snxethan",
-
   ]
 }
 
@@ -72,15 +85,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <head>
-        {/* Inject structured data */}
-        <script
+      <body suppressHydrationWarning className="bg-[#1a1a1a] text-white font-sans">
+        <Script
+          id="person-jsonld"
           type="application/ld+json"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </head>
-      <body suppressHydrationWarning className="bg-[#1a1a1a] text-white font-sans">
-        <Toaster 
+        <Toaster
           position="top-center"
           toastOptions={{
             // Default options for all toasts
@@ -133,9 +145,7 @@ export default function RootLayout({
           }}
         />
         <ExternalLinkHandler>
-          {/* <ClickSoundWrapper> */}
             {children}
-          {/* </ClickSoundWrapper> */}
         </ExternalLinkHandler>
         <Analytics />
         <SpeedInsights />

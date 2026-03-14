@@ -1,4 +1,4 @@
-import { API_URLS } from "../../../config/urls"
+const SPOTIFY_AUTHORIZE_URL = "https://accounts.spotify.com/authorize"
 
 export async function GET() {
   const scope = "user-read-currently-playing user-read-recently-played"
@@ -12,7 +12,7 @@ export async function GET() {
     redirect_uri, // don't encode — URLSearchParams does it
   })
 
-  const url = `${API_URLS.SPOTIFY.AUTHORIZE}?${params.toString()}`
+  const url = `${SPOTIFY_AUTHORIZE_URL}?${params.toString()}`
 
   return Response.redirect(url, 302)
 }

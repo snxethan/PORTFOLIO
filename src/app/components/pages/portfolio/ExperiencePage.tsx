@@ -1,12 +1,13 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { FaBriefcase, FaGraduationCap } from "react-icons/fa"
 import { timelineData } from "../../../data/timelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
 import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
 import PageTabs from "../../PageTabs"
+import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
 
 const filterOptions = [
   { value: "newest", label: "Newest" },
@@ -18,29 +19,23 @@ const filterOptions = [
 interface ExperiencePageProps {
   onTabChange: (page: string, tab: string | null) => void
   activeTab: string | null
+  onContentReady?: () => void
 }
 
-const ExperiencePage = ({ onTabChange, activeTab }: ExperiencePageProps) => {
+const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePageProps) => {
   const tabs = [
     { id: "experience", label: "Experience", tabValue: "experience", icon: <FaBriefcase /> },
     { id: "education", label: "Education", tabValue: "education", icon: <FaGraduationCap /> },
   ]
   const activeId = activeTab ?? "experience"
-  const [showAllContent, setShowAllContent] = useState(true)
   const [animatingItems, setAnimatingItems] = useState<Set<string>>(new Set())
   const [disappearingItems, setDisappearingItems] = useState<Set<string>>(new Set())
-  const [search, setSearch] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return getTimedItem<string>('experienceSearch') || ""
-    }
-    return ""
-  })
-  const [sortBy, setSortBy] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return getTimedItem<string>('experienceSortBy') || "newest"
-    }
-    return "newest"
-  })
+  const [search, setSearch] = useState(() =>
+    typeof window !== 'undefined' ? (getTimedItem<string>('experienceSearch') ?? "") : ""
+  )
+  const [sortBy, setSortBy] = useState(() =>
+    typeof window !== 'undefined' ? (getTimedItem<string>('experienceSortBy') ?? "newest") : "newest"
+  )
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const [showTagsMenu, setShowTagsMenu] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(() => {
@@ -51,17 +46,18 @@ const ExperiencePage = ({ onTabChange, activeTab }: ExperiencePageProps) => {
     return "Computer Science"
   })
   const [loading, setLoading] = useState(true)
+  const onContentReadyRef = useRef(onContentReady)
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setTimedItem('experienceSearch', search)
-    }
+    onContentReadyRef.current = onContentReady
+  }, [onContentReady])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') setTimedItem('experienceSearch', search)
   }, [search])
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setTimedItem('experienceSortBy', sortBy)
-    }
+    if (typeof window !== 'undefined') setTimedItem('experienceSortBy', sortBy)
   }, [sortBy])
 
   useEffect(() => {
@@ -75,105 +71,77 @@ const ExperiencePage = ({ onTabChange, activeTab }: ExperiencePageProps) => {
   }, [selectedTag])
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500)
-    const savedPreference = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('experienceShowAllContent='))
-      ?.split('=')[1]
-    
-    if (savedPreference) {
-      setShowAllContent(savedPreference === 'true')
-    }
-
+    const rafId = requestAnimationFrame(() => setLoading(false))
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setShowFilterMenu(false)
-      }
+      if (e.key === "Escape") setShowFilterMenu(false)
     }
-
     document.addEventListener("keydown", handleEscape)
-    
-    const savedFilter = localStorage.getItem('experienceSortBy')
-    if (savedFilter) {
-      const isValidFilter = filterOptions.some(option => option.value === savedFilter)
-      if (isValidFilter) {
-        setSortBy(savedFilter)
-      }
-    }
-    
     return () => {
-      clearTimeout(timer)
+      cancelAnimationFrame(rafId)
       document.removeEventListener("keydown", handleEscape)
     }
   }, [])
 
+  useEffect(() => {
+    if (loading) return
+    let rafB = 0
+    const rafA = requestAnimationFrame(() => {
+      rafB = requestAnimationFrame(() => {
+        onContentReadyRef.current?.()
+      })
+    })
+    return () => {
+      cancelAnimationFrame(rafA)
+      if (rafB) cancelAnimationFrame(rafB)
+    }
+  }, [loading])
+
   const handleSortChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem('experienceSortBy', value)
     setShowFilterMenu(false)
-    if (value === "cs-only") {
-      handleToggleChange(false)
-    }
   }
 
   const handleTagClick = (tag: string) => {
     setSelectedTag(tag)
     setShowTagsMenu(true)
+    setTimeout(() => {
+      document.getElementById("experience-page-header")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" })
+    }, 50)
   }
 
   const handleToggleChange = (newValue: boolean) => {
-    const sortedTimeline = [...timelineData].sort((a, b) => {
-      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-    })
+    const sortedTimeline = [...timelineData].sort((a, b) =>
+      new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    )
 
-    if (!newValue && showAllContent) {
+    if (!newValue) {
       const itemsToHide = sortedTimeline
         .filter(item => !item.isCSRelated)
         .map(item => `${item.institution}-${item.startDate}`)
       setDisappearingItems(new Set(itemsToHide))
-      
       setTimeout(() => {
-        setShowAllContent(newValue)
         setDisappearingItems(new Set())
       }, 300)
-      
     } else {
-      if (newValue && !showAllContent) {
-        const newItems = sortedTimeline
-          .filter(item => !item.isCSRelated)
-          .map(item => `${item.institution}-${item.startDate}`)
-        setAnimatingItems(new Set(newItems))
-        
-        setTimeout(() => setAnimatingItems(new Set()), 500)
-      }
-      
-      setShowAllContent(newValue)
+      const newItems = sortedTimeline
+        .filter(item => !item.isCSRelated)
+        .map(item => `${item.institution}-${item.startDate}`)
+      setAnimatingItems(new Set(newItems))
+      setTimeout(() => setAnimatingItems(new Set()), 500)
     }
-    
-    const expires = new Date()
-    expires.setFullYear(expires.getFullYear() + 1)
-    document.cookie = `experienceShowAllContent=${newValue}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`
   }
 
+  // Expose toggle for potential future use — currently unused but wired to Timeline
+  void handleToggleChange
+
   const sortedTimeline = [...timelineData].sort((a, b) => {
-    if (sortBy === "cs-only") {
-      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-    }
-    if (sortBy === "name-asc") {
-      return (a.institution || "").localeCompare(b.institution || "")
-    }
-    if (sortBy === "name-desc") {
-      return (b.institution || "").localeCompare(a.institution || "")
-    }
-    if (sortBy === "oldest") {
-      return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-    }
-    if (sortBy === "newest") {
-      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-    }
+    if (sortBy === "name-asc") return (a.institution || "").localeCompare(b.institution || "")
+    if (sortBy === "name-desc") return (b.institution || "").localeCompare(a.institution || "")
+    if (sortBy === "oldest") return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
     return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
   })
-  
+
   const allTags = React.useMemo(() => {
     const tagSet = new Set<string>()
     timelineData
@@ -181,36 +149,28 @@ const ExperiencePage = ({ onTabChange, activeTab }: ExperiencePageProps) => {
       .forEach(item => {
         item.tags?.forEach(tag => tagSet.add(tag))
         if (item.location) tagSet.add(item.location)
-        if (item.language) tagSet.add(item.language)
       })
     return Array.from(tagSet).sort()
   }, [])
-  
-  const sortedTags = React.useMemo(() => {
-    if (!allTags.length) return []
-    return allTags.slice().sort((a, b) => a.localeCompare(b))
-  }, [allTags])
+
+  const sortedTags = React.useMemo(() =>
+    allTags.slice().sort((a, b) => a.localeCompare(b)),
+  [allTags])
 
   const getFilteredItems = React.useCallback(() => {
     return sortedTimeline.filter((item) => {
       if (item.type !== "experience") return false
-      
-      const matchesCSFilter = sortBy !== "cs-only" || item.isCSRelated
-      
-      const matchesSearch = !search || 
+      const matchesSearch = !search ||
         item.institution?.toLowerCase().includes(search.toLowerCase()) ||
         item.location?.toLowerCase().includes(search.toLowerCase()) ||
         item.summary?.toLowerCase().includes(search.toLowerCase()) ||
         item.highlights?.some(h => h.toLowerCase().includes(search.toLowerCase()))
-      
       const matchesTag = !selectedTag ||
         item.tags?.includes(selectedTag) ||
-        item.location?.toLowerCase() === selectedTag.toLowerCase() ||
-        item.language?.toLowerCase() === selectedTag.toLowerCase()
-
-      return matchesCSFilter && matchesSearch && matchesTag
+        item.location?.toLowerCase() === selectedTag.toLowerCase()
+      return matchesSearch && matchesTag
     })
-  }, [sortedTimeline, sortBy, search, selectedTag])
+  }, [sortedTimeline, search, selectedTag])
 
   const renderTimeline = () => {
     const filteredItems = getFilteredItems()
@@ -225,12 +185,10 @@ const ExperiencePage = ({ onTabChange, activeTab }: ExperiencePageProps) => {
 
     if (loading) {
       return (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse"
-            >
+        <ResponsiveCardSkeletonGrid
+          className="pb-14"
+          renderCard={(i) => (
+            <div key={i} className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse min-h-[14rem]">
               <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
               <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
               <div className="space-y-2">
@@ -239,8 +197,8 @@ const ExperiencePage = ({ onTabChange, activeTab }: ExperiencePageProps) => {
                 <div className="h-3 bg-[#333333] rounded w-4/6" />
               </div>
             </div>
-          ))}
-        </div>
+          )}
+        />
       )
     }
 
@@ -248,10 +206,12 @@ const ExperiencePage = ({ onTabChange, activeTab }: ExperiencePageProps) => {
       <Timeline
         items={filteredItems}
         type="experience"
-        showAllContent={sortBy !== "cs-only"}
+        showAllContent={true}
         animatingItems={animatingItems}
         disappearingItems={disappearingItems}
         onTagClick={handleTagClick}
+        layout="horizontal"
+        showLine={false}
       />
     )
   }
@@ -261,10 +221,10 @@ const ExperiencePage = ({ onTabChange, activeTab }: ExperiencePageProps) => {
 
   return (
     <>
-      <div id="page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
+      <div id="experience-page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Professional Experience Timeline
+            Career
           </h2>
           <div className="flex justify-center mb-4">
             <PageTabs
@@ -292,16 +252,17 @@ const ExperiencePage = ({ onTabChange, activeTab }: ExperiencePageProps) => {
                 setShowFilterMenu={setShowFilterMenu}
                 defaultSort="newest"
               />
-
-              {resultsCount && (
-                <div className="text-sm text-gray-400 mt-2">{resultsCount}</div>
-              )}
+              <div className="text-sm text-gray-400 mt-2">{resultsCount}</div>
             </div>
           </div>
         </div>
       </div>
-      
-      <div className="text-white">
+
+      <div
+        id="experience-cards"
+        className="text-white"
+        style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
+      >
         <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
           {renderTimeline()}
         </div>

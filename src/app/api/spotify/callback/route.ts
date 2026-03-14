@@ -1,12 +1,13 @@
 // src/app/api/spotify/callback/route.ts
 import { NextRequest } from "next/server"
-import { API_URLS } from "../../../config/urls"
+
+const SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const code = searchParams.get("code")
 
-  const response = await fetch(API_URLS.SPOTIFY.TOKEN, {
+  const response = await fetch(SPOTIFY_TOKEN_URL, {
     method: "POST",
     headers: {
       Authorization:

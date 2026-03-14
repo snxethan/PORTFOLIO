@@ -4,14 +4,22 @@ import React, { useCallback, useEffect, useRef, useState } from "react"
 import { X, Loader2 } from "lucide-react"
 import { FaExternalLinkAlt } from "react-icons/fa";
 import ReactDOM from "react-dom"
+import Image from "next/image"
 import { isPdfPreviewSupported } from "../utils/pdfSupport"
 
 interface PDFModalViewerProps {
-  pdfUrl: string | null
+  pdfUrl?: string | null
+  imageUrl?: string | null
+  imageAlt?: string
   onClose: () => void
 }
 
-const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
+const PDFModalViewer: React.FC<PDFModalViewerProps> = ({
+  pdfUrl,
+  imageUrl,
+  imageAlt,
+  onClose,
+}) => {
   const [isVisible, setIsVisible] = useState(false)
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -30,14 +38,17 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
     }, 300)
   }, [onClose])
 
+  const activeUrl = pdfUrl ?? imageUrl ?? null
+  const isImagePreview = Boolean(imageUrl && !pdfUrl)
+
   useEffect(() => {
-    if (!pdfUrl) {
+    if (!activeUrl) {
       lastOpenedPdfRef.current = null
       setIsVisible(false)
       return
     }
 
-    if (!isPdfPreviewSupported()) {
+    if (pdfUrl && !isPdfPreviewSupported()) {
       if (lastOpenedPdfRef.current !== pdfUrl) {
         lastOpenedPdfRef.current = pdfUrl
         openPdfInNewTab(pdfUrl)
@@ -62,9 +73,9 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
       document.body.style.overflow = originalOverflow
       window.removeEventListener("keydown", handleEscKey)
     }
-  }, [pdfUrl, initiateClose, onClose, openPdfInNewTab])
+  }, [activeUrl, pdfUrl, initiateClose, onClose, openPdfInNewTab])
 
-  if (!pdfUrl || !isVisible) return null
+  if (!activeUrl || !isVisible) return null
 
   return ReactDOM.createPortal(
     <div
@@ -87,7 +98,7 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
         {/* Header */}
         <div className="flex items-center justify-between p-3 sm:p-4 border-b border-[#333]">
           <button
-            onClick={() => openPdfInNewTab(pdfUrl || "")}
+            onClick={() => openPdfInNewTab(activeUrl || "")}
             className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all"
             aria-label="Download or open in new tab"
           >
@@ -110,12 +121,25 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({ pdfUrl, onClose }) => {
               <Loader2 className="h-8 w-8 animate-spin text-white" />
             </div>
           )}
-          <iframe
-            src={pdfUrl}
-            className="w-full min-h-[600px] h-[calc(100vh-150px)] max-h-[75vh] border-none"
-            onLoad={() => setIsLoading(false)}
-            loading="lazy"
-          />
+          {isImagePreview ? (
+            <div className="relative w-full h-[calc(100vh-150px)] max-h-[75vh] min-h-[300px]">
+              <Image
+                src={activeUrl}
+                alt={imageAlt || "Image preview"}
+                fill
+                sizes="100vw"
+                className="object-contain"
+                onLoadingComplete={() => setIsLoading(false)}
+              />
+            </div>
+          ) : (
+            <iframe
+              src={activeUrl}
+              className="w-full min-h-[600px] h-[calc(100vh-150px)] max-h-[75vh] border-none"
+              onLoad={() => setIsLoading(false)}
+              loading="lazy"
+            />
+          )}
         </div>
       </div>
     </div>,

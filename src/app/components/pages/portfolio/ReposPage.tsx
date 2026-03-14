@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef, useCallback } from "react"
 import { FaProjectDiagram, FaGithub as FaGithubIcon } from "react-icons/fa"
 import { FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
 import { useExternalLink } from "../../ExternalLinkHandler"
@@ -10,6 +10,7 @@ import { manualProjects } from "../../../data/portfolioProjects"
 import SearchFilterBar from "../../SearchFilterBar"
 import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
 import PageTabs from "../../PageTabs"
+import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
 
 interface Project {
   id: number
@@ -93,6 +94,8 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
   const [loading, setLoading] = useState(true)
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const { handleExternalClick } = useExternalLink()
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -119,21 +122,24 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
   useEffect(() => {
     const fetchProjects = async () => {
       setLoading(true)
-      const startTime = Date.now()
       const CACHE_KEY = "githubProjectsCache"
       const EXPIRY_KEY = "githubProjectsExpiry"
       const now = Date.now()
       const expiry = parseInt(localStorage.getItem(EXPIRY_KEY) || "0")
       const cache = localStorage.getItem(CACHE_KEY)
+      let hasValidCache = false
 
       if (cache && now < expiry) {
         try {
           const data = JSON.parse(cache)
           processProjects(data)
+          hasValidCache = true
+          setLoading(false)
         } catch {
           localStorage.removeItem(CACHE_KEY)
           localStorage.removeItem(EXPIRY_KEY)
           processProjects([])
+          setLoading(false)
         }
       }
 
@@ -150,11 +156,11 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
         localStorage.setItem(EXPIRY_KEY, (now + 1000 * 60 * 5).toString())
         processProjects(data)
       } catch {
-        processProjects([])
+        if (!hasValidCache) {
+          processProjects([])
+        }
       } finally {
-        const elapsed = Date.now() - startTime
-        const remainingTime = Math.max(0, 500 - elapsed)
-        setTimeout(() => setLoading(false), remainingTime)
+        setLoading(false)
       }
     }
 
@@ -204,32 +210,39 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
       }
     }
     document.addEventListener("keydown", handleEscape)
-    
-    const savedFilter = localStorage.getItem('reposSortBy')
-    if (savedFilter) {
-      const isValidFilter = filterOptions.some(option => option.value === savedFilter)
-      if (isValidFilter) {
-        setSortBy(savedFilter)
-      }
-    }
-    
     return () => document.removeEventListener("keydown", handleEscape)
   }, [])
   
   const handleFilterChange = (value: string) => {
     setSortBy(value)
-    localStorage.setItem('reposSortBy', value)
     setShowFilterMenu(false)
   }
 
   const handleTagClick = (tag: string) => {
     setSelectedTag(tag)
     setShowTagsMenu(true)
+    setTimeout(() => {
+      const header = document.getElementById("repos-page-header")
+      if (header) {
+        header.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
+    }, 50)
   }
 
   const handleRepoBadgeClick = (tag: string) => {
     handleTagClick(tag.toLowerCase())
   }
+
+  const handleScroll = useCallback(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+    // Disable pointer events on cards during scroll so hover state is cleared
+    container.style.pointerEvents = "none"
+    if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
+    scrollTimerRef.current = setTimeout(() => {
+      container.style.pointerEvents = ""
+    }, 80)
+  }, [])
 
   const filteredProjects = projects.filter((project) => {
     const nameMatch = project.name.toLowerCase().includes(search.toLowerCase())
@@ -251,10 +264,9 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
     }
   })
 
-  const sortedTags = React.useMemo(() => {
-    if (!tags.length) return []
-    return tags.slice().sort((a, b) => a.localeCompare(b))
-  }, [tags])
+  const sortedTags = React.useMemo(() =>
+    tags.slice().sort((a, b) => a.localeCompare(b)),
+  [tags])
 
   const tagFilteredProjects =
     selectedTag === null || selectedTag === "Computer Science"
@@ -270,10 +282,10 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
 
   return (
     <>
-      <div id="page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
+      <div id="repos-page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Project Repositories
+            Projects
           </h2>
           <div className="flex justify-center mb-4">
             <PageTabs
@@ -310,107 +322,120 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
         </div>
       </div>
       
-      <div className="text-white">
+      <div
+        id="repositories-cards"
+        className="text-white"
+        style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
+      >
         <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {loading
-              ? [...Array(6)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse flex flex-col gap-4"
-                  >
-                    <div className="h-6 bg-[#333333] rounded w-3/4" />
-                    <div className="h-4 bg-[#333333] rounded w-2/3" />
-                    <div className="h-4 bg-[#333333] rounded w-5/6" />
-                    <div className="flex-1" />
-                    <div className="h-10 bg-[#292929] rounded w-full" />
-                  </div>
-                ))
-
-              : tagFilteredProjects.map((project) => (
-                  <div
-                    key={project.id}
-                    className="group bg-[#151515] hover:bg-[#252525] rounded-none overflow-hidden border border-[#333333] hover:border-red-600/50 transition-all duration-200 ease-out hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 flex flex-col"
-                  >
-                    <div className="p-6 flex-grow">
-                      <div className="mb-2">
-                        <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 truncate">
-                          {project.name}
-                        </h3>
-                        <div className="flex flex-wrap items-center gap-2">
-                          {project.source === "manual" && (
-                            <span
-                              onClick={() => handleRepoBadgeClick("manual")}
-                              className={`${repoBadgeBaseClass} bg-green-600 text-white border border-green-500`}
-                            >
-                              MANUAL
-                            </span>
-                          )}
-                          {project.source === "github" && (
-                            <span
-                              onClick={() => handleRepoBadgeClick("github")}
-                              className={`${repoBadgeBaseClass} bg-purple-600 text-white border border-purple-500`}
-                            >
-                              GITHUB
-                            </span>
-                          )}
-                          {project.topics.includes("neumont") && (
-                            <span
-                              onClick={() => handleRepoBadgeClick("neumont")}
-                              className={`${repoBadgeBaseClass} bg-yellow-600 text-white border border-yellow-500`}
-                            >
-                              NEU
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <p className="text-gray-300 mb-2 line-clamp-3 break-words">{project.description}</p>
-                      <p className="text-sm text-gray-400 mb-1">
-                        <span className="font-bold">Created On:</span>{" "}
-                        {new Date(project.created_at).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
-                      <p className="text-sm text-gray-400 mb-2">
-                        <span className="font-bold">Last Updated:</span>{" "}
-                        {new Date(project.updated_at).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </p>
-                      <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
-                        {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
-                          <span
-                            key={tag}
-                            onClick={() => handleTagClick(tag)}
-                            className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 border border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] cursor-pointer active:scale-95"
-                          >
-                            {tag.toUpperCase()}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="px-6 py-4 border-t border-[#333333] bg-[#151515]">
-                      <TooltipWrapper label={project.html_url} fullWidth>
-                        <button
-                          onClick={() => handleExternalClick(project.html_url, true)}
-                          className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm sm:text-base"
-                        >
-                          {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
-                          <span className="flex-1 break-words text-center leading-tight">
-                            {project.name.toLowerCase() === "portfolio"
-                              ? "View Repository (This site!)"
-                              : project.ctaLabel ?? "View Repository"}
-                          </span>
-                        </button>
-                      </TooltipWrapper>
-                    </div>
-                  </div>
-                ))}
-          </div>
+          {loading ? (
+            <ResponsiveCardSkeletonGrid
+              renderCard={(i) => (
+                <div
+                  key={i}
+                  className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse flex flex-col gap-4 min-h-[220px]"
+                >
+                  <div className="h-6 bg-[#333333] rounded w-3/4" />
+                  <div className="h-4 bg-[#333333] rounded w-2/3" />
+                  <div className="h-4 bg-[#333333] rounded w-5/6" />
+                  <div className="flex-1" />
+                  <div className="h-10 bg-[#292929] rounded w-full" />
+                </div>
+              )}
+            />
+          ) : (
+            <div
+              ref={scrollContainerRef}
+              onScroll={handleScroll}
+              className="w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain snap-x snap-proximity"
+            >
+              <div className="flex w-full min-w-full items-stretch gap-6 px-3 py-4">
+                {tagFilteredProjects.map((project) => (
+                    <div
+                      key={project.id}
+                      className="group bg-[#151515] hover:bg-[#252525] rounded-none border border-[#333333] hover:border-red-600/50 transition-[background-color,border-color,box-shadow,transform] duration-200 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 flex flex-col shrink-0 snap-start min-w-[260px] w-[calc(100%-1.5rem)] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] 2xl:w-[calc((100%-4.5rem)/4)]"
+                    >
+                       <div className="p-6 flex-grow">
+                         <div className="mb-2">
+                           <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 truncate">
+                             {project.name}
+                           </h3>
+                           <div className="flex flex-wrap items-center gap-2">
+                             {project.source === "manual" && (
+                               <span
+                                 onClick={() => handleRepoBadgeClick("manual")}
+                                 className={`${repoBadgeBaseClass} bg-green-600 text-white border border-green-500`}
+                               >
+                                 MANUAL
+                               </span>
+                             )}
+                             {project.source === "github" && (
+                               <span
+                                 onClick={() => handleRepoBadgeClick("github")}
+                                 className={`${repoBadgeBaseClass} bg-purple-600 text-white border border-purple-500`}
+                               >
+                                 GITHUB
+                               </span>
+                             )}
+                             {project.topics.includes("neumont") && (
+                               <span
+                                 onClick={() => handleRepoBadgeClick("neumont")}
+                                 className={`${repoBadgeBaseClass} bg-yellow-600 text-white border border-yellow-500`}
+                               >
+                                 NEU
+                               </span>
+                             )}
+                           </div>
+                         </div>
+                         <p className="text-gray-300 mb-2 break-words whitespace-normal">{project.description}</p>
+                         <p className="text-sm text-gray-400 mb-1">
+                           <span className="font-bold">Created On:</span>{" "}
+                           {new Date(project.created_at).toLocaleDateString("en-US", {
+                             year: "numeric",
+                             month: "short",
+                             day: "numeric",
+                           })}
+                         </p>
+                         <p className="text-sm text-gray-400 mb-2">
+                           <span className="font-bold">Last Updated:</span>{" "}
+                           {new Date(project.updated_at).toLocaleDateString("en-US", {
+                             year: "numeric",
+                             month: "short",
+                             day: "numeric",
+                           })}
+                         </p>
+                         <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
+                           {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
+                             <span
+                               key={tag}
+                               onClick={() => handleTagClick(tag)}
+                               className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap max-w-full min-w-0 truncate transition-all duration-200 border border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] cursor-pointer active:scale-95"
+                             >
+                               {tag.toUpperCase()}
+                             </span>
+                           ))}
+                         </div>
+                       </div>
+                       <div className="px-6 py-4 border-t border-[#333333] bg-[#151515]">
+                         <TooltipWrapper label={project.html_url} fullWidth>
+                           <button
+                             onClick={() => handleExternalClick(project.html_url, true)}
+                             className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm sm:text-base"
+                           >
+                             {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
+                             <span className="flex-1 break-words text-center leading-tight">
+                               {project.name.toLowerCase() === "portfolio"
+                                 ? "View Repository (This site!)"
+                                 : project.ctaLabel ?? "View Repository"}
+                             </span>
+                           </button>
+                         </TooltipWrapper>
+                       </div>
+                     </div>
+                   ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

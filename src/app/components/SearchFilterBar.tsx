@@ -41,6 +41,7 @@ export default function SearchFilterBar({
   const sortedTags = [...tags].sort();
   const sortButtonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const tagsRef = useRef<HTMLDivElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
 
@@ -49,9 +50,20 @@ export default function SearchFilterBar({
     setMounted(true);
   }, []);
 
+  // Auto-scroll to tags section when it opens
+  useEffect(() => {
+    if (showTagsMenu && tagsRef.current) {
+      // Wait for the expand animation to begin before scrolling
+      const id = setTimeout(() => {
+        tagsRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 50);
+      return () => clearTimeout(id);
+    }
+  }, [showTagsMenu]);
+
   // Determine if sort is at default value (use first option if defaultSort not provided)
   const effectiveDefaultSort = defaultSort || sortOptions[0]?.value;
-  const isSortActive = selectedSort !== effectiveDefaultSort;
+  const isSortActive = mounted && selectedSort !== effectiveDefaultSort;
 
   // Calculate dropdown position when it opens
   useEffect(() => {
@@ -131,8 +143,9 @@ export default function SearchFilterBar({
 
       {/* Filter Tags - Animated Dropdown */}
       <div
+        ref={tagsRef}
         className={`transition-all duration-300 ease-in-out overflow-visible ${
-          showTagsMenu ? "max-h-[500px] opacity-100 mb-4" : "max-h-0 opacity-0"
+          showTagsMenu ? "max-h-[500px] opacity-100 mb-4" : "max-h-0 opacity-0 pointer-events-none"
         }`}
       >
         <div className="flex flex-wrap gap-2 overflow-visible">

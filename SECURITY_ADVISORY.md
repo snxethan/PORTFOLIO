@@ -2,7 +2,7 @@
 
 ## Status: MONITORING
 
-This document tracks known security vulnerabilities and their mitigation status in the portfolio project.
+This document tracks known security vulnerabilities and mitigation status for this project.
 
 ---
 
@@ -13,34 +13,42 @@ This document tracks known security vulnerabilities and their mitigation status 
 **Status:** ✅ MITIGATED
 
 #### Summary
-Previously, this project had high severity vulnerabilities related to the `pdfjs-dist` package through `@react-pdf-viewer` dependencies.
+A historical high-severity issue existed in older `pdfjs-dist` chains via prior PDF viewer integrations.
 
 #### Issue Details
-- **Package**: `pdfjs-dist@2.16.105`
-- **Vulnerability**: PDF.js vulnerable to arbitrary JavaScript execution upon opening a malicious PDF
+- **Package**: `pdfjs-dist@2.16.105` (historical)
 - **Advisory**: [GHSA-wgrm-67xf-hhpq](https://github.com/advisories/GHSA-wgrm-67xf-hhpq)
 - **Severity**: High
 - **CVE**: Multiple CVEs associated with older PDF.js versions
 
-#### Impact
-The PDF viewer implementation could potentially be exploited if a malicious PDF was processed.
+#### Impact (Historical)
+A malicious PDF could potentially execute JavaScript in vulnerable viewer contexts.
 
-#### Affected Components
-- `PDFModalViewer.tsx` - PDF modal viewer component
-- `Resume.tsx` - Resume PDF display functionality
+#### Affected Components (Historical)
+- `src/app/components/PDFModalViewer.tsx`
+- Legacy resume/certification rendering flows that previously relied on vulnerable package chains
 
 #### Resolution
 **Current Implementation:**
-- Using browser native PDF viewer (window.open) for PDF display
-- Removed direct dependency on vulnerable `@react-pdf-viewer` packages
-- Only displaying trusted, self-hosted PDF files from `/public/resume/` directory
-- Implemented device detection to disable PDF viewer on potentially vulnerable platforms (iOS/Safari)
+- Browser-native PDF handling in modal/open flows
+- Vulnerable `@react-pdf-viewer` dependency path removed
+- Trusted self-hosted PDF assets only (`public/resume/`, `public/certificates/`)
+- Preview support gated by platform checks (`pdfSupport.ts`)
 
 #### Verification
 ```bash
 npm audit --audit-level=high
-# Should show no high-severity vulnerabilities related to PDF.js
+# Expect no high-severity findings tied to PDF.js in current production dependency graph
 ```
+
+---
+
+## March 2026 Maintenance Notes
+
+- Removed unused components/files to reduce maintenance and review surface
+- Simplified state/storage utility usage (`timedStorage`) and removed unused exports
+- Inlined Spotify endpoint constants into route handlers to reduce stale config risks
+- No new advisories introduced by this refactor pass
 
 ---
 
@@ -146,7 +154,7 @@ Some development-only dependencies may show low or moderate severity issues. The
 
 | Date | Package | Severity | CVE | Status | Fix |
 |------|---------|----------|-----|--------|-----|
-| Jan 2025 | pdfjs-dist | High | GHSA-wgrm-67xf-hhpq | ✅ Fixed | Migrated to native PDF viewer |
+| Jan 2025 | pdfjs-dist | High | GHSA-wgrm-67xf-hhpq | ✅ Fixed | Migrated to native PDF handling |
 | - | - | - | - | - | - |
 
 ---
@@ -156,9 +164,9 @@ Some development-only dependencies may show low or moderate severity issues. The
 ### Current Status
 - **High Severity Vulnerabilities:** 0
 - **Medium Severity Vulnerabilities:** 0
-- **Low Severity Vulnerabilities:** TBD (non-production only)
-- **Last Security Audit:** February 16, 2026
-- **Last Dependency Update:** February 16, 2026
+- **Low Severity Vulnerabilities:** 0 known in production dependencies
+- **Last Security Audit:** March 14, 2026
+- **Last Dependency Review:** March 14, 2026
 
 ### Target Goals
 - ✅ Zero high-severity vulnerabilities in production
@@ -219,7 +227,7 @@ When contributing to this project:
 
 ---
 
-**Document Version:** 2.0  
-**Last Updated:** February 16, 2026  
-**Next Review:** May 16, 2026  
+**Document Version:** 2.1  
+**Last Updated:** March 14, 2026  
+**Next Review:** June 14, 2026  
 **Maintained By:** Ethan Townsend (@snxethan)

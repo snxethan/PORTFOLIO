@@ -7,6 +7,7 @@ import SearchFilterBar from "../../SearchFilterBar"
 import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
 import PageTabs from "../../PageTabs"
 import { FaProjectDiagram, FaGithub } from "react-icons/fa"
+import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
 
 const filterOptions = [
   { value: "newest", label: "Newest" },
@@ -72,7 +73,7 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
   }, [selectedTag])
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 500)
+    const rafId = requestAnimationFrame(() => setLoading(false))
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -82,16 +83,8 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
 
     document.addEventListener("keydown", handleEscape)
     
-    const savedFilter = localStorage.getItem('projectsSortBy')
-    if (savedFilter) {
-      const isValidFilter = filterOptions.some(option => option.value === savedFilter)
-      if (isValidFilter) {
-        setSortBy(savedFilter)
-      }
-    }
-    
     return () => {
-      clearTimeout(timer)
+      cancelAnimationFrame(rafId)
       document.removeEventListener("keydown", handleEscape)
     }
   }, [])
@@ -105,6 +98,12 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
   const handleTagClick = (tag: string) => {
     setSelectedTag(tag)
     setShowTagsMenu(true)
+    setTimeout(() => {
+      const header = document.getElementById("projects-page-header")
+      if (header) {
+        header.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
+    }, 50)
   }
 
   const allTags = React.useMemo(() => {
@@ -114,13 +113,8 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
       item.topics?.forEach(topic => tagSet.add(topic))
       if (item.language) tagSet.add(item.language)
     })
-    return Array.from(tagSet).sort()
+    return Array.from(tagSet).sort((a, b) => a.localeCompare(b))
   }, [])
-  
-  const sortedTags = React.useMemo(() => {
-    if (!allTags.length) return []
-    return allTags.slice().sort((a, b) => a.localeCompare(b))
-  }, [allTags])
 
   const filteredTimelineProjects = projectsTimelineData.filter((project) => {
     const matchesSearch = !search || 
@@ -165,11 +159,11 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
 
     if (loading) {
       return (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
+        <ResponsiveCardSkeletonGrid
+          renderCard={(i) => (
             <div
               key={i}
-              className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse"
+              className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse min-h-[14rem]"
             >
               <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
               <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
@@ -179,20 +173,28 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
                 <div className="h-3 bg-[#333333] rounded w-4/6" />
               </div>
             </div>
-          ))}
-        </div>
+          )}
+        />
       )
     }
 
-    return <Timeline items={sortedProjects} type="project" onTagClick={handleTagClick} />
+    return (
+      <Timeline
+        items={sortedProjects}
+        type="project"
+        onTagClick={handleTagClick}
+        layout="horizontal"
+        showLine={false}
+      />
+    )
   }
 
   return (
     <>
-      <div id="page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
+      <div id="projects-page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Project Timeline
+            Projects
           </h2>
           <div className="flex justify-center mb-4">
             <PageTabs
@@ -208,7 +210,7 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
                 search={search}
                 setSearch={setSearch}
                 placeholder="Search by name, description, or tags..."
-                tags={sortedTags}
+                tags={allTags}
                 selectedTag={selectedTag}
                 setSelectedTag={setSelectedTag}
                 sortOptions={filterOptions}
@@ -229,7 +231,11 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
         </div>
       </div>
 
-      <div className="text-white">
+      <div
+        id="projects-cards"
+        className="text-white"
+        style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
+      >
         <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
           {renderTimeline()}
         </div>

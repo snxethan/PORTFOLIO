@@ -25,15 +25,14 @@ A modern, responsive portfolio application built with **Next.js 16**, **React 19
 ## Features
 
 ### Dynamic UI Components
-- **Responsive Sidebar** with seasonal avatars and dynamic status indicators
-- **Tab-based Navigation System** for seamless page transitions
+- **Responsive Sidebar** with seasonal avatars and Spotify integration
+- **Section-based Navigation System** for About, Projects, and Career flows
 - **Real-time Spotify Widget** displaying currently playing tracks with album art
-- **Interactive Project Gallery** with filtering, search, and categorization
+- **Interactive Project & Repository Views** with filtering, search, and categorization
 - **PDF Resume Viewer** with device compatibility detection
 - **Modal-based Contact Form** with email notifications
-- **External Link Warnings** for enhanced security
-- **Click Sound Effects** for interactive feedback
-- **Custom Tooltips** for enhanced user experience
+- **External Link Warnings** for safer outbound navigation
+- **Custom Tooltips** with PDF/image preview support on compatible devices
 
 ### Technical Features
 - **Server-Side Rendering (SSR)** with Next.js 16 App Router
@@ -42,7 +41,7 @@ A modern, responsive portfolio application built with **Next.js 16**, **React 19
 - **Custom Animations** using Tailwind CSS and custom keyframes
 - **API Routes** for serverless backend functionality
 - **GitHub Integration** dynamically fetching and displaying repositories
-- **Session Storage** with timed persistence for UI state
+- **Timed UI State Persistence** via `src/app/utils/timedStorage.ts`
 - **Vercel Analytics** and Speed Insights for performance monitoring
 
 ### Security & Performance
@@ -93,59 +92,60 @@ A modern, responsive portfolio application built with **Next.js 16**, **React 19
 ## 📁 Project Structure
 
 ```
-portfolio/
+et-portfolio/
 ├── src/
 │   ├── app/
-│   │   ├── api/                    # API routes
-│   │   │   ├── contact/           # Contact form endpoint
-│   │   │   │   └── route.ts       # Email handler with rate limiting
-│   │   │   └── spotify/           # Spotify integration
-│   │   │       ├── now-playing/   # Current track endpoint
-│   │   │       ├── login/         # OAuth flow initiation
-│   │   │       └── callback/      # OAuth callback handler
-│   │   ├── components/            # React components
-│   │   │   ├── pages/            # Page components
-│   │   │   │   ├── portfolio/    # Portfolio sub-pages
-│   │   │   │   │   ├── ProjectsPage.tsx
-│   │   │   │   │   ├── ExperiencePage.tsx
-│   │   │   │   │   ├── EducationPage.tsx
-│   │   │   │   │   ├── SkillsPage.tsx
-│   │   │   │   │   ├── CertificationsPage.tsx
-│   │   │   │   │   └── ReposPage.tsx
-│   │   │   │   ├── sidebar/      # Sidebar components
-│   │   │   │   │   ├── Sidebar.tsx
-│   │   │   │   │   ├── Avatar.tsx
-│   │   │   │   │   ├── SpotifyWidget.tsx
-│   │   │   │   │   └── Status.tsx
+│   │   ├── api/
+│   │   │   ├── contact/
+│   │   │   │   └── route.ts
+│   │   │   └── spotify/
+│   │   │       ├── now-playing/
+│   │   │       │   └── route.ts
+│   │   │       ├── login/
+│   │   │       │   └── route.ts
+│   │   │       └── callback/
+│   │   │           └── route.ts
+│   │   ├── components/
+│   │   │   ├── pages/
+│   │   │   │   ├── HomeClient.tsx
 │   │   │   │   ├── About.tsx
-│   │   │   │   ├── Resume.tsx
-│   │   │   │   └── Portfolio.tsx
+│   │   │   │   ├── Navbar.tsx
+│   │   │   │   ├── Footer.tsx
+│   │   │   │   ├── portfolio/
+│   │   │   │   │   ├── ProjectsPage.tsx
+│   │   │   │   │   ├── ReposPage.tsx
+│   │   │   │   │   ├── ExperiencePage.tsx
+│   │   │   │   │   └── EducationPage.tsx
+│   │   │   │   └── sidebar/
+│   │   │   │       ├── Sidebar.tsx
+│   │   │   │       ├── Avatar.tsx
+│   │   │   │       └── SpotifyWidget.tsx
 │   │   │   ├── ContactFormModal.tsx
+│   │   │   ├── ExternalLinkHandler.tsx
 │   │   │   ├── PDFModalViewer.tsx
-│   │   │   ├── ClickSoundWrapper.tsx
+│   │   │   ├── SearchFilterBar.tsx
+│   │   │   ├── Timeline.tsx
 │   │   │   └── ToolTipWrapper.tsx
-│   │   ├── data/                 # Static data files
-│   │   │   ├── portfolioProjects.ts
-│   │   │   ├── timelineData.ts
+│   │   ├── data/
 │   │   │   ├── aboutData.ts
-│   │   │   └── socialLinks.ts
-│   │   ├── config/               # Configuration
-│   │   │   └── urls.ts          # API endpoint URLs
-│   │   ├── utils/               # Utility functions
-│   │   │   └── timedStorage.ts  # Session storage utilities
-│   │   ├── layout.tsx           # Root layout with metadata
-│   │   ├── page.tsx            # Main page component
-│   │   └── globals.css         # Global styles and animations
-│   └── social/                 # Social landing page
-├── public/                     # Static assets
-│   ├── images/                # Images and avatars
-│   ├── sounds/                # Sound effects
-│   └── resume/                # Resume PDF files
-├── .github/                   # GitHub configuration
-├── next.config.ts             # Next.js configuration
-├── tailwind.config.ts         # Tailwind CSS configuration
-├── tsconfig.json             # TypeScript configuration
-└── package.json              # Dependencies and scripts
+│   │   │   ├── portfolioProjects.ts
+│   │   │   ├── projectsTimelineData.ts
+│   │   │   ├── socialLinks.ts
+│   │   │   └── timelineData.ts
+│   │   ├── utils/
+│   │   │   ├── pdfSupport.ts
+│   │   │   └── timedStorage.ts
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── not-found.tsx
+├── public/
+│   ├── images/
+│   ├── sounds/
+│   └── resume/
+├── SECURITY.md
+├── SECURITY_ADVISORY.md
+└── package.json
 ```
 
 ---
@@ -179,8 +179,8 @@ portfolio/
 
 **`GET /api/spotify/now-playing`**
 - Returns currently playing track
-- 5-minute response caching
 - Handles authentication errors gracefully
+- Uses constants co-located in route handler (`SPOTIFY_TOKEN_URL`, `SPOTIFY_NOW_PLAYING_URL`)
 
 **Response:**
 ```json
@@ -197,6 +197,7 @@ portfolio/
 **`GET /api/spotify/login`**
 - Initiates Spotify OAuth 2.0 flow
 - Redirects to Spotify authorization page
+- Uses route-local Spotify authorize constant (`SPOTIFY_AUTHORIZE_URL`)
 
 **`GET /api/spotify/callback`**
 - Handles OAuth callback
@@ -337,6 +338,9 @@ Add all environment variables from `.env.local` to Vercel:
 # Run linter
 npm run lint
 
+# Type-check
+npx tsc --noEmit
+
 # Build for production (test locally)
 npm run build
 npm start
@@ -400,14 +404,9 @@ Define new keyframe animations in `src/app/globals.css` under the `@keyframes` s
 - Ensure Gmail account has 2FA enabled
 
 **Issue: Build fails**
-- Clear `.next` directory: `rm -rf .next`
-- Delete `node_modules` and reinstall: `rm -rf node_modules && npm install`
-- Check for TypeScript errors: `npm run build`
-
-**Issue: PDF viewer not working**
-- PDFs are disabled on iOS/Safari/mobile by design
-- Ensure PDF files are in `public/resume/` directory
-- Check browser console for errors
+- Clear `.next` directory: `Remove-Item -Recurse -Force .next` (PowerShell)
+- Delete `node_modules` and reinstall: `Remove-Item -Recurse -Force node_modules; npm install` (PowerShell)
+- Check TypeScript errors: `npx tsc --noEmit`
 
 ### Getting Help
 - Check [existing issues](https://github.com/snxethan/Portfolio/issues)

@@ -1,70 +1,33 @@
 "use client"
 
 import { Suspense } from "react"
-import { useSearchParams, useRouter } from "next/navigation"
-import HomeClient from "./components/pages/HomeClient"
 import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
+import HomeClient from "./components/pages/HomeClient"
 import SecurityPolicyModal from "./components/SecurityPolicyModal"
 
 function PageContent() {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const page = searchParams.get("page")
   const [showSecurityPolicy, setShowSecurityPolicy] = useState(false)
 
   useEffect(() => {
-    if (window.location.hash === '#security-policy') {
+    if (typeof window === "undefined") return
+
+    const hash = window.location.hash.toLowerCase()
+
+    if (hash === "#security-policy") {
       setShowSecurityPolicy(true)
-    }
-    
-    // Default landing: redirect to About
-    if (!page) {
-      router.replace('?page=about')
       return
     }
-    
-    // Handle legacy URLs - redirect to new structure
-    const parts = page.split('/')
-    const mainPage = parts[0]
-    const subPage = parts[1]
-    
-    // Legacy format redirects
-    if (mainPage === 'about') {
-      if (subPage === 'certifications') {
-        router.replace('?page=about/certifications')
-      } else if (subPage === 'skills') {
-        router.replace('?page=about/skills')
-      }
-    } else if (mainPage === 'resume') {
-      if (subPage === 'experience') {
-        router.replace('?page=career/experience')
-      } else if (subPage === 'education') {
-        router.replace('?page=career/education')
-      }
-    } else if (mainPage === 'portfolio') {
-      if (subPage === 'repositories') {
-        router.replace('?page=projects/repos')
-      } else if (subPage === 'repos') {
-        router.replace('?page=projects/repos')
-      } else if (subPage === 'projects') {
-        router.replace('?page=projects/projects')
-      } else {
-        router.replace('?page=projects')
-      }
-    }
-  }, [page, router])
 
-  // If no page parameter, show skeleton while redirecting
-  // Otherwise show the normal HomeClient with tabs
+    if (hash === "#not-found") {
+      toast.error("That page does not exist. Redirected to home.")
+      window.history.replaceState(null, "", window.location.pathname + window.location.search)
+    }
+  }, [])
+
   return (
     <>
-      {!page ? (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d]">
-          <div className="animate-pulse text-gray-400">Loading...</div>
-        </div>
-      ) : (
-        <HomeClient />
-      )}
+      <HomeClient />
       {showSecurityPolicy && (
         <SecurityPolicyModal onClose={() => setShowSecurityPolicy(false)} />
       )}
