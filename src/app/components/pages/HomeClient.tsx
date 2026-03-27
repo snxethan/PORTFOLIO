@@ -10,6 +10,7 @@ import ProjectsPage from "./portfolio/ProjectsPage"
 import ReposPage from "./portfolio/ReposPage"
 import Footer from "./Footer"
 import About from "./About"
+import SectionScrollRail from "./SectionScrollRail"
 
 const SECTION_IDS = {
   about: "section-about",
@@ -44,6 +45,14 @@ export default function HomeClient() {
   const [projectsRefreshKey, setProjectsRefreshKey] = useState(0)
   const [careerRefreshKey, setCareerRefreshKey] = useState(0)
   const [aboutRefreshKey, setAboutRefreshKey] = useState(0)
+  const [hasStartedScrolling, setHasStartedScrolling] = useState(false)
+  const [hasScrolledOnce, setHasScrolledOnce] = useState(false)
+  const scrollActivityTimeoutRef = useRef<number | null>(null)
+  const [sectionMarkerPositions, setSectionMarkerPositions] = useState<Record<SectionKey, number>>({
+    about: 0,
+    projects: 0.5,
+    career: 1,
+  })
 
   const observerLockSectionRef = useRef<SectionKey | null>(null)
   const observerLockUntilRef = useRef(0)
@@ -52,9 +61,40 @@ export default function HomeClient() {
   const observerLockTimeoutRef = useRef<number | null>(null)
 
   const sectionOrder = useMemo<SectionKey[]>(() => ["about", "projects", "career"], [])
+  const sectionRailItems = useMemo(
+    () => [
+      { id: "about" as const, label: "About" },
+      { id: "projects" as const, label: "Projects" },
+      { id: "career" as const, label: "Career" },
+    ],
+    []
+  )
 
   const pathname = usePathname()
   const lastHandledPathRef = useRef<string | null>(null)
+
+  const computeSectionMarkerPositions = useCallback(() => {
+    if (typeof window === "undefined") return
+
+    const doc = document.documentElement
+    const maxScrollTop = Math.max(1, doc.scrollHeight - window.innerHeight)
+
+    const nextPositions: Record<SectionKey, number> = {
+      about: 0,
+      projects: 0.5,
+      career: 1,
+    }
+
+    sectionOrder.forEach((section) => {
+      const target = document.getElementById(SECTION_IDS[section])
+      if (!target) return
+      const rawTop = target.getBoundingClientRect().top + window.scrollY
+      const normalized = Math.max(0, Math.min(1, rawTop / maxScrollTop))
+      nextPositions[section] = normalized
+    })
+
+    setSectionMarkerPositions(nextPositions)
+  }, [sectionOrder])
 
   const getSectionTop = useCallback((section: SectionKey) => {
     if (typeof window === "undefined") return null
@@ -409,48 +449,47 @@ export default function HomeClient() {
     requestAnimationFrame(() => scrollToSection(section))
   }, [handleSectionTabChange, lockObserverToSection, scrollToSection])
 
+  const handleNavbarTabChange = useCallback((page: string, tab: string | null) => {
+    if (tab !== null && tab !== undefined) {
+      const section = page === "projects" ? "projects" : page === "career" ? "career" : "about"
+      lockObserverToSection(section)
+      handleSectionTabChange(page, tab)
+      return
+    }
+
+    handleNavChange(page)
+  }, [handleNavChange, handleSectionTabChange, lockObserverToSection])
+
   const handlePathSegments = useCallback((segments: string[]) => {
-    if (segments.length === 0) return false
+    if (segments.length === 0) return
 
     const [section, subsection] = segments
 
     if (section === "about") {
-      if (!subsection) {
-        handleNavChange("about")
-        return true
-      }
       if (subsection === "certifications" || subsection === "skills") {
         handleAboutJump("about", subsection)
-        return true
+        return
       }
-      return false
+      handleNavChange("about")
+      return
     }
 
     if (section === "projects") {
-      if (!subsection) {
-        handleNavChange("projects")
-        return true
-      }
       if (subsection === "repos" || subsection === "projects") {
         handleAboutJump("projects", subsection)
-        return true
+        return
       }
-      return false
+      handleNavChange("projects")
+      return
     }
 
     if (section === "career") {
-      if (!subsection) {
-        handleNavChange("career")
-        return true
-      }
       if (subsection === "experience" || subsection === "education") {
         handleAboutJump("career", subsection)
-        return true
+        return
       }
-      return false
+      handleNavChange("career")
     }
-
-    return false
   }, [handleAboutJump, handleNavChange])
 
   useEffect(() => {
@@ -490,6 +529,82 @@ export default function HomeClient() {
   }, [clearObserverLock])
 
   useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const clearScrollActivityTimeout = () => {
+      if (scrollActivityTimeoutRef.current !== null) {
+        window.clearTimeout(scrollActivityTimeoutRef.current)
+        scrollActivityTimeoutRef.current = null
+      }
+    }
+
+    const updateScrollState = () => {
+      if (window.scrollY <= 0) {
+        setHasStartedScrolling(false)
+        clearScrollActivityTimeout()
+        return
+      }
+
+      if (window.scrollY > 48) {
+        setHasScrolledOnce(true)
+      }
+
+      setHasStartedScrolling(true)
+      clearScrollActivityTimeout()
+      scrollActivityTimeoutRef.current = window.setTimeout(() => {
+        setHasStartedScrolling(false)
+        scrollActivityTimeoutRef.current = null
+      }, 260)
+    }
+
+    updateScrollState()
+    window.addEventListener("scroll", updateScrollState, { passive: true })
+
+    return () => {
+      window.removeEventListener("scroll", updateScrollState)
+      clearScrollActivityTimeout()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    computeSectionMarkerPositions()
+
+    const onViewportChange = () => computeSectionMarkerPositions()
+    const onScroll = () => computeSectionMarkerPositions()
+    window.addEventListener("resize", onViewportChange)
+    window.addEventListener("scroll", onScroll, { passive: true })
+
+    const sectionElements = sectionOrder
+      .map((section) => document.getElementById(SECTION_IDS[section]))
+      .filter((el): el is HTMLElement => el !== null)
+
+    const sectionObserver = new ResizeObserver(() => computeSectionMarkerPositions())
+    sectionElements.forEach((el) => sectionObserver.observe(el))
+
+    const rafId = requestAnimationFrame(computeSectionMarkerPositions)
+    const timeoutId = window.setTimeout(computeSectionMarkerPositions, 700)
+
+    return () => {
+      window.removeEventListener("resize", onViewportChange)
+      window.removeEventListener("scroll", onScroll)
+      sectionObserver.disconnect()
+      cancelAnimationFrame(rafId)
+      window.clearTimeout(timeoutId)
+    }
+  }, [
+    aboutRefreshKey,
+    careerRefreshKey,
+    careerTab,
+    computeSectionMarkerPositions,
+    isNavPinned,
+    sectionOrder,
+    projectsRefreshKey,
+    projectsTab,
+  ])
+
+  useEffect(() => {
     if (!pathname || pathname === "/") return
     if (lastHandledPathRef.current === pathname) return
 
@@ -505,17 +620,23 @@ export default function HomeClient() {
       })
 
     lastHandledPathRef.current = pathname
-    requestAnimationFrame(() => {
-      const didHandlePath = handlePathSegments(segments)
-      if (!didHandlePath || window.location.pathname === "/") return
-
-      // Keep deep-link entry behavior, then normalize the address bar back to root.
-      window.history.replaceState(null, "", "/")
-    })
+    requestAnimationFrame(() => handlePathSegments(segments))
   }, [handlePathSegments, pathname])
+
+  const isSectionRailEnabled = !isNavPinned
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
+      <SectionScrollRail
+        items={sectionRailItems}
+        activeSection={activeSection}
+        visible={isSectionRailEnabled && hasStartedScrolling}
+        positions={sectionMarkerPositions}
+        onSelect={(section) => handleNavChange(section)}
+        onTabChange={handleNavbarTabChange}
+        enableHoverPopups={isSectionRailEnabled && hasScrolledOnce}
+        enabled={isSectionRailEnabled}
+      />
       <main
         className="flex-grow"
         style={
@@ -542,17 +663,11 @@ export default function HomeClient() {
             <section id="page-content-top" className="flex-1 min-w-0 flex flex-col gap-10 pb-32">
               <div className="rounded-xl overflow-hidden">
                 <Navbar
-                  onTabChange={(page, tab) => {
-                    if (tab !== null && tab !== undefined) {
-                      // Sub-tab selected from context menu — jump directly
-                      handleAboutJump(page, tab)
-                    } else {
-                      handleNavChange(page)
-                    }
-                  }}
+                  onTabChange={handleNavbarTabChange}
                   activePage={activeSection}
                   activeTab={null}
                   onPinChange={setIsNavPinned}
+                  enableHoverPopups={hasScrolledOnce}
                 />
               </div>
 

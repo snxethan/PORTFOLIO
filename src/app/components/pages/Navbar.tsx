@@ -8,6 +8,7 @@ interface NavbarProps {
   activePage: string | null
   activeTab: string | null
   onPinChange?: (isPinned: boolean) => void
+  enableHoverPopups?: boolean
 }
 
 interface ContextMenuItem {
@@ -16,7 +17,7 @@ interface ContextMenuItem {
   icon: React.ReactNode
 }
 
-const Navbar = ({ onTabChange, activePage, activeTab, onPinChange }: NavbarProps) => {
+const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPopups = true }: NavbarProps) => {
   const CONTEXT_MENU_ANIMATION_MS = 300
 
   // Only show loading state if page data hasn't been initialized (undefined), not if it's explicitly null (homepage)
@@ -200,6 +201,12 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange }: NavbarProps
     return () => clearAllTimers()
   }, [clearAllTimers])
 
+  useEffect(() => {
+    if (!enableHoverPopups) {
+      closeContextMenu()
+    }
+  }, [closeContextMenu, enableHoverPopups])
+
   const handleClick = (page: string) => {
     onTabChange(page, null)
   }
@@ -262,7 +269,9 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange }: NavbarProps
                         key={tab.id}
                         id={`nav-btn-${tab.id}`}
                         onClick={() => handleClick(tab.id)}
-                        onMouseEnter={() => scheduleOpen(tab.id)}
+                        onMouseEnter={() => {
+                          if (enableHoverPopups) scheduleOpen(tab.id)
+                        }}
                         onMouseLeave={scheduleClose}
                         onContextMenu={(e) => {
                           e.preventDefault()
@@ -382,12 +391,12 @@ function ContextMenuPopup({ contextMenuRef, page, anchorId, subItems, onTabChang
       ref={contextMenuRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`fixed z-[9999] min-w-[170px] rounded-xl border border-[#333333] bg-[#1e1e1e] py-2 shadow-2xl shadow-black/50 ${
+      className={`fixed z-[9999] min-w-[140px] max-w-[220px] rounded-lg border border-[#333333] bg-[#1e1e1e] py-1.5 shadow-2xl shadow-black/40 ${
         isClosing ? "animate-fade-out-down" : "animate-fade-in-up"
       }`}
       style={pos ? { left: pos.left, top: pos.top } : { visibility: "hidden", left: 0, top: 0 }}
     >
-      <div className="px-3 pb-1.5 pt-0.5 border-b border-[#333333] mb-1">
+      <div className="mb-1 border-b border-[#333333] px-2.5 pb-1 pt-0.5">
         <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
           {sectionLabel}
         </span>
@@ -399,9 +408,9 @@ function ContextMenuPopup({ contextMenuRef, page, anchorId, subItems, onTabChang
             onTabChange(page, item.tab)
             closeContextMenu()
           }}
-          className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-300 hover:bg-[#2a2a2a] hover:text-[#dc2626] hover:shadow-[inset_0_0_8px_rgba(220,38,38,0.15)] transition-all duration-150 text-left group"
+          className="group flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-xs text-gray-300 transition-all duration-150 hover:bg-[#2a2a2a] hover:text-[#dc2626] hover:shadow-[inset_0_0_8px_rgba(220,38,38,0.15)]"
         >
-          <span className="text-base text-gray-500 group-hover:text-[#dc2626] transition-colors duration-150">{item.icon}</span>
+          <span className="text-sm text-gray-500 transition-colors duration-150 group-hover:text-[#dc2626]">{item.icon}</span>
           <span>{item.label}</span>
         </button>
       ))}

@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState, useCallback } from "react"
 import { FaFilePdf, FaExternalLinkAlt, FaCertificate, FaTools, FaBriefcase, FaGraduationCap, FaFolderOpen, FaGithub } from "react-icons/fa"
 
 import { useExternalLink } from "../ExternalLinkHandler"
@@ -9,6 +9,7 @@ import { skills, certifications, Skill, Certification } from "../../data/aboutDa
 import PageTabs from "../PageTabs"
 import SearchFilterBar from "../SearchFilterBar"
 import ResponsiveCardSkeletonGrid from "../ResponsiveCardSkeletonGrid"
+import { scrollElementIntoViewWithNavbarOffset } from "../../utils/scrollWithNavbarOffset"
 
 const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, refreshSignal }: { onTabChange?: (page: string, tab: string | null) => void; externalSubsection?: string | null; onExternalSubsectionConsumed?: () => void; refreshSignal?: number }) => {
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
@@ -35,7 +36,23 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const [showTagsMenu, setShowTagsMenu] = useState(false)
   const [cardsLoading, setCardsLoading] = useState(true)
+  const cardsScrollContainerRef = useRef<HTMLDivElement>(null)
   const { handleExternalClick } = useExternalLink()
+
+  const shouldRevealCardFirst = useCallback((cardElement: HTMLElement) => {
+    const container = cardsScrollContainerRef.current
+    if (!container) return false
+
+    const cardRect = cardElement.getBoundingClientRect()
+    const containerRect = container.getBoundingClientRect()
+    const isClippedLeft = cardRect.left < containerRect.left + 8
+    const isClippedRight = cardRect.right > containerRect.right - 8
+
+    if (!isClippedLeft && !isClippedRight) return false
+
+    cardElement.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
+    return true
+  }, [])
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -129,8 +146,39 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
 
   const cardSizeClass = "min-h-[180px] h-full min-w-[260px] w-[calc(100%-1.5rem)] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] 2xl:w-[calc((100%-4.5rem)/4)] shrink-0 snap-start"
 
+  const handleCardTagClick = (event: React.MouseEvent<HTMLElement>, tag: string) => {
+    event.preventDefault()
+    event.stopPropagation()
+    setSelectedTag(tag)
+    setShowTagsMenu(true)
+    requestAnimationFrame(scrollToCards)
+  }
+
+  const renderFilterTags = (tags: string[]) => {
+    if (tags.length === 0) return null
+
+    return (
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {tags.map((tag, index) => (
+          <span
+            key={`${tag}-${index}`}
+            onMouseDown={(event) => {
+              event.preventDefault()
+              event.stopPropagation()
+            }}
+            onClick={(event) => handleCardTagClick(event, tag)}
+            className="text-xs px-3 py-1 rounded-full whitespace-nowrap max-w-full min-w-0 truncate transition-all duration-200 border cursor-pointer active:scale-95 bg-[#3a3a3a] text-gray-300 border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626]"
+          >
+            {tag.toUpperCase()}
+          </span>
+        ))}
+      </div>
+    )
+  }
+
   const renderCertificationCard = (item: Certification) => {
     const { name, icon: Icon, highlight, url, year } = item
+    const cardTags = item.tags ?? []
     const card = (
       <div className={`group relative z-0 hover:z-10 flex items-start gap-4 bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
         <div
@@ -145,6 +193,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
             {name}
           </p>
           {year && <span className="text-gray-400 text-sm">{year}</span>}
+          {renderFilterTags(cardTags)}
         </div>
         {url && (
           <div className="absolute bottom-3 right-3 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300">
@@ -157,7 +206,14 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     if (url?.endsWith(".pdf")) {
       return (
         <TooltipWrapper key={name} label="View Certification" url={url}>
-          <button type="button" onClick={() => setSelectedPDF(url)} className="text-left">
+          <button
+            type="button"
+            onClick={(event) => {
+              if (shouldRevealCardFirst(event.currentTarget)) return
+              setSelectedPDF(url)
+            }}
+            className="text-left"
+          >
             {card}
           </button>
         </TooltipWrapper>
@@ -166,7 +222,14 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
 
     return url ? (
       <TooltipWrapper key={name} label={url}>
-        <button type="button" onClick={() => handleExternalClick(url, true)} className="text-left">
+        <button
+          type="button"
+          onClick={(event) => {
+            if (shouldRevealCardFirst(event.currentTarget)) return
+            handleExternalClick(url, true)
+          }}
+          className="text-left"
+        >
           {card}
         </button>
       </TooltipWrapper>
@@ -177,6 +240,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
 
   const renderSkillCard = (item: Skill) => {
     const { name, icon: Icon, highlight, url } = item
+    const cardTags = Array.from(new Set([highlight ? "Hard Skills" : "Soft Skills", ...(item.tags ?? [])]))
     const card = (
       <div className={`group relative z-0 hover:z-10 flex items-start gap-4 bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
         <div
@@ -186,9 +250,12 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
         >
           <Icon className="text-white text-xl" />
         </div>
-        <p className="text-white font-semibold text-base break-words whitespace-normal group-hover:text-[#dc2626] transition-colors duration-300">
-          {name}
-        </p>
+        <div className="min-w-0">
+          <p className="text-white font-semibold text-base break-words whitespace-normal group-hover:text-[#dc2626] transition-colors duration-300">
+            {name}
+          </p>
+          {renderFilterTags(cardTags)}
+        </div>
         {url && !url.endsWith(".pdf") && (
           <div className="absolute bottom-3 right-3 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300">
             <FaExternalLinkAlt size={14} aria-label="Open external link" />
@@ -199,7 +266,14 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
 
     return url ? (
       <TooltipWrapper key={name} label={url}>
-        <button type="button" onClick={() => handleExternalClick(url, true)} className="text-left">
+        <button
+          type="button"
+          onClick={(event) => {
+            if (shouldRevealCardFirst(event.currentTarget)) return
+            handleExternalClick(url, true)
+          }}
+          className="text-left"
+        >
           {card}
         </button>
       </TooltipWrapper>
@@ -209,8 +283,8 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
   }
 
   const tabs = [
-    { id: "certifications", label: "Certifications" },
-    { id: "skills", label: "Skills" },
+    { id: "certifications", label: "Certifications", icon: <FaCertificate /> },
+    { id: "skills", label: "Skills", icon: <FaTools /> },
   ]
 
   const tagOptions = useMemo(() => {
@@ -304,9 +378,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
   const scrollToCards = () => {
     if (typeof window === "undefined") return
     const target = document.getElementById("about-cards")
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "start" })
-    }
+    scrollElementIntoViewWithNavbarOffset(target)
   }
 
   const handleAboutTabChange = (tab: string | null) => {
@@ -416,6 +488,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
               showFilterMenu={showFilterMenu}
               setShowFilterMenu={setShowFilterMenu}
               defaultSort={activeSubsection === "certifications" ? "newest" : "hard-soft"}
+              onFilterInteraction={scrollToCards}
             />
 
             {resultsCount && (
@@ -452,7 +525,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
             )}
           />
         ) : (
-          <div className="w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain snap-x snap-mandatory">
+          <div ref={cardsScrollContainerRef} className="w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain snap-x snap-mandatory">
             <div className="flex w-full min-w-full items-stretch gap-6 px-3 py-4">
               {activeSubsection === "certifications"
                 ? sortedCertifications.map(renderCertificationCard)

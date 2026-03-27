@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { FaFilter, FaSort } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { scrollElementIntoViewWithNavbarOffset } from "../utils/scrollWithNavbarOffset";
 
 interface SearchFilterBarProps {
   search: string;
@@ -20,6 +21,7 @@ interface SearchFilterBarProps {
   showFilterMenu: boolean;
   setShowFilterMenu: (show: boolean) => void;
   defaultSort?: string; // Optional default sort value for the page
+  onFilterInteraction?: () => void;
 }
 
 export default function SearchFilterBar({
@@ -37,6 +39,7 @@ export default function SearchFilterBar({
   showFilterMenu,
   setShowFilterMenu,
   defaultSort,
+  onFilterInteraction,
 }: SearchFilterBarProps) {
   const sortedTags = [...tags].sort();
   const sortButtonRef = useRef<HTMLButtonElement>(null);
@@ -55,7 +58,7 @@ export default function SearchFilterBar({
     if (showTagsMenu && tagsRef.current) {
       // Wait for the expand animation to begin before scrolling
       const id = setTimeout(() => {
-        tagsRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        scrollElementIntoViewWithNavbarOffset(tagsRef.current, 10);
       }, 50);
       return () => clearTimeout(id);
     }
@@ -144,16 +147,17 @@ export default function SearchFilterBar({
       {/* Filter Tags - Animated Dropdown */}
       <div
         ref={tagsRef}
-        className={`transition-all duration-300 ease-in-out overflow-visible ${
+        className={`transition-all duration-300 ease-in-out overflow-hidden ${
           showTagsMenu ? "max-h-[500px] opacity-100 mb-4" : "max-h-0 opacity-0 pointer-events-none"
         }`}
       >
-        <div className="flex flex-wrap gap-2 overflow-visible">
+        <div className="flex max-h-[220px] flex-wrap content-start gap-2 overflow-y-auto pr-1">
           {selectedTag && (
             <button
               onClick={() => {
                 setSelectedTag(null);
                 setSearch("");
+                onFilterInteraction?.();
               }}
               className="text-gray-400 hover:text-red-600 transition-colors hover:scale-110 transition-all duration-200 p-1"
               title="Clear filters"
@@ -164,7 +168,10 @@ export default function SearchFilterBar({
           {sortedTags.map((tag) => (
             <button
               key={tag}
-              onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
+              onClick={() => {
+                setSelectedTag(selectedTag === tag ? null : tag);
+                onFilterInteraction?.();
+              }}
               className={`px-3 py-1 rounded-full text-sm transition-all duration-200 border border-transparent ${
                 selectedTag === tag
                   ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
@@ -193,6 +200,7 @@ export default function SearchFilterBar({
               onClick={() => {
                 setSelectedSort(option.value);
                 setShowFilterMenu(false);
+                onFilterInteraction?.();
               }}
               className={`w-full text-left px-4 py-2 transition-colors first:rounded-t-lg last:rounded-b-lg ${
                 selectedSort === option.value

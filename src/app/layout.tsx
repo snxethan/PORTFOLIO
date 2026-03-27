@@ -92,7 +92,7 @@ export default function RootLayout({
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <Toaster
+        <Toaster 
           position="top-center"
           toastOptions={{
             // Default options for all toasts

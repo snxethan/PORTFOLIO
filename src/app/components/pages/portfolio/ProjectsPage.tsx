@@ -5,6 +5,7 @@ import { projectsTimelineData } from "../../../data/projectsTimelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
 import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
+import { scrollElementIntoViewWithNavbarOffset } from "../../../utils/scrollWithNavbarOffset"
 import PageTabs from "../../PageTabs"
 import { FaProjectDiagram, FaGithub } from "react-icons/fa"
 import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
@@ -89,6 +90,11 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
     }
   }, [])
 
+  const scrollToCards = React.useCallback(() => {
+    const target = document.getElementById("projects-cards")
+    scrollElementIntoViewWithNavbarOffset(target)
+  }, [])
+
   const handleSortChange = (value: string) => {
     setSortBy(value)
     setTimedItem('projectsSortBy', value)
@@ -99,10 +105,7 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
     setSelectedTag(tag)
     setShowTagsMenu(true)
     setTimeout(() => {
-      const header = document.getElementById("projects-page-header")
-      if (header) {
-        header.scrollIntoView({ behavior: "smooth", block: "start" })
-      }
+      scrollToCards()
     }, 50)
   }
 
@@ -221,6 +224,7 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
                 showFilterMenu={showFilterMenu}
                 setShowFilterMenu={setShowFilterMenu}
                 defaultSort="newest"
+                onFilterInteraction={scrollToCards}
               />
 
               <div className="text-sm text-gray-400 mt-2">

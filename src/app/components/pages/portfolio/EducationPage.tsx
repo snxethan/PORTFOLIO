@@ -6,6 +6,7 @@ import { timelineData } from "../../../data/timelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
 import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
+import { scrollElementIntoViewWithNavbarOffset } from "../../../utils/scrollWithNavbarOffset"
 import PageTabs from "../../PageTabs"
 import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
 
@@ -96,6 +97,11 @@ const EducationPage = ({ onTabChange, activeTab, onContentReady }: EducationPage
     }
   }, [loading])
 
+  const scrollToCards = React.useCallback(() => {
+    const target = document.getElementById("education-cards")
+    scrollElementIntoViewWithNavbarOffset(target)
+  }, [])
+
   const handleSortChange = (value: string) => {
     setSortBy(value)
     setShowFilterMenu(false)
@@ -105,8 +111,7 @@ const EducationPage = ({ onTabChange, activeTab, onContentReady }: EducationPage
     setSelectedTag(tag)
     setShowTagsMenu(true)
     setTimeout(() => {
-      document.getElementById("education-page-header")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" })
+      scrollToCards()
     }, 50)
   }
 
@@ -251,6 +256,7 @@ const EducationPage = ({ onTabChange, activeTab, onContentReady }: EducationPage
                 showFilterMenu={showFilterMenu}
                 setShowFilterMenu={setShowFilterMenu}
                 defaultSort="newest"
+                onFilterInteraction={scrollToCards}
               />
               <div className="text-sm text-gray-400 mt-2">{resultsCount}</div>
             </div>

@@ -75,6 +75,7 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
   )
 
   const shouldShowStandardTooltip = !isPdf && !isImage
+  const shouldShowPortalTooltip = canPreviewPdf || canPreviewImage || shouldShowStandardTooltip
 
   const updatePopupPosition = useCallback(() => {
     if (!triggerRef.current || !popupRef.current || typeof window === "undefined") return
@@ -143,9 +144,10 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
     isHovering.current = false
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
 
-    if ((canPreviewPdf || canPreviewImage) && visible) {
+    if (visible) {
       setIsClosing(true)
       setThumbnailLoading(false)
+      clearCloseTimer()
       closeTimerRef.current = setTimeout(() => {
         setVisible(false)
         setIsClosing(false)
@@ -158,10 +160,10 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
     setIsClosing(false)
     setThumbnailLoading(false)
     setPopupPosition(null)
-  }, [canPreviewPdf, canPreviewImage, visible])
+  }, [clearCloseTimer, visible])
 
   useEffect(() => {
-    if (!(canPreviewPdf || canPreviewImage) || !visible) return
+    if (!shouldShowPortalTooltip || (!visible && !isClosing)) return
 
     updatePopupPosition()
 
@@ -174,7 +176,7 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
       window.removeEventListener("resize", handleViewportChange)
       window.removeEventListener("scroll", handleViewportChange, true)
     }
-  }, [canPreviewPdf, canPreviewImage, visible, updatePopupPosition])
+  }, [isClosing, shouldShowPortalTooltip, visible, updatePopupPosition])
 
   useEffect(() => {
     if (!canPreviewPdf && !canPreviewImage && (isPdf || isImage)) {
@@ -205,7 +207,7 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
   }, [updatePopupPosition])
 
   const pdfTooltip =
-    canPreviewPdf && visible && typeof document !== "undefined"
+    canPreviewPdf && (visible || isClosing) && typeof document !== "undefined"
       ? ReactDOM.createPortal(
           <div
             ref={popupRef}
@@ -259,7 +261,7 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
       : null
 
   const imageTooltip =
-    canPreviewImage && visible && typeof document !== "undefined"
+    canPreviewImage && (visible || isClosing) && typeof document !== "undefined"
       ? ReactDOM.createPortal(
           <div
             ref={popupRef}
@@ -309,6 +311,28 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
         )
       : null
 
+  const standardTooltip =
+    shouldShowStandardTooltip && (visible || isClosing) && typeof document !== "undefined"
+      ? ReactDOM.createPortal(
+          <div
+            ref={popupRef}
+            role="tooltip"
+            aria-label={label}
+            className={`fixed z-[9999] pointer-events-none max-w-[90vw] rounded-md bg-red-600 px-2 py-1 text-xs text-white shadow-md ${
+              isClosing ? "animate-fade-out-down" : "animate-fade-in-up"
+            }`}
+            style={
+              popupPosition
+                ? { left: popupPosition.left, top: popupPosition.top }
+                : { visibility: "hidden", left: 0, top: 0 }
+            }
+          >
+            <span className="whitespace-normal break-words">{label}</span>
+          </div>,
+          document.body
+        )
+      : null
+
   return (
     <div
       ref={triggerRef}
@@ -319,15 +343,7 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
       {children}
       {pdfTooltip}
       {imageTooltip}
-      {visible && shouldShowStandardTooltip ? (
-        <div
-          role="tooltip"
-          aria-label={label}
-          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs bg-red-600 text-white rounded-md shadow-md z-50 whitespace-nowrap transition-all duration-200 ease-out opacity-100 scale-100 animate-elastic-in"
-        >
-          {label}
-        </div>
-      ) : null}
+      {standardTooltip}
     </div>
   )
 }

@@ -1,8 +1,9 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useRef, useCallback } from "react"
 import { FaExternalLinkAlt, FaChevronLeft, FaChevronRight, FaGithub } from "react-icons/fa"
 import TooltipWrapper from "./ToolTipWrapper"
+import { useExternalLink } from "./ExternalLinkHandler"
 import Image from "next/image"
 import PDFModalViewer from "./PDFModalViewer"
 import { IconType } from "react-icons"
@@ -171,6 +172,29 @@ const Timeline: React.FC<TimelineProps> = ({
   layout = "vertical",
 }) => {
   const isHorizontal = layout === "horizontal"
+  const horizontalScrollRef = useRef<HTMLDivElement>(null)
+  const { handleExternalClick } = useExternalLink()
+
+  const handleCardClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    if (!isHorizontal || !horizontalScrollRef.current) return
+
+    const target = event.target as HTMLElement | null
+    if (target?.closest("a, button, input, select, textarea, [role='button'], [data-skip-card-scroll='true']")) {
+      return
+    }
+
+    const card = event.currentTarget
+    const container = horizontalScrollRef.current
+    const cardRect = card.getBoundingClientRect()
+    const containerRect = container.getBoundingClientRect()
+    const isClippedLeft = cardRect.left < containerRect.left + 8
+    const isClippedRight = cardRect.right > containerRect.right - 8
+
+    if (isClippedLeft || isClippedRight) {
+      card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
+    }
+  }, [isHorizontal])
+
   if (items.length === 0) {
     return null
   }
@@ -201,6 +225,7 @@ const Timeline: React.FC<TimelineProps> = ({
   // Full timeline mode - Full width card layout
   return (
     <div
+      ref={isHorizontal ? horizontalScrollRef : undefined}
       className={isHorizontal
         ? "w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain py-4 snap-x snap-mandatory"
         : "w-full mx-auto"
@@ -231,6 +256,7 @@ const Timeline: React.FC<TimelineProps> = ({
           return (
             <div
               key={itemKey}
+              onClick={handleCardClick}
               className={`group relative z-0 hover:z-10 flex h-full min-h-[520px] self-stretch flex-col bg-[#151515] hover:bg-[#252525] p-6 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${
                 isHorizontal ? "shrink-0 w-full snap-center" : "w-full"
               } ${
@@ -252,6 +278,7 @@ const Timeline: React.FC<TimelineProps> = ({
                     <span className="text-gray-600">•</span>
                     <span
                       onClick={onTagClick ? () => onTagClick(item.location ?? "") : undefined}
+                      data-skip-card-scroll="true"
                       className={`${badgeBaseClass} ${getLocationTagClass(item.location)} ${onTagClick ? clickableBadgeClass : ""}`}
                     >
                       {item.location}
@@ -263,6 +290,7 @@ const Timeline: React.FC<TimelineProps> = ({
                     <span className="text-gray-600">•</span>
                     <span
                       onClick={onTagClick ? () => onTagClick(item.language ?? "") : undefined}
+                      data-skip-card-scroll="true"
                       className={`${badgeBaseClass} ${getLanguageTagClass(item.language)} ${onTagClick ? clickableBadgeClass : ""}`}
                     >
                       {item.language}
@@ -307,6 +335,7 @@ const Timeline: React.FC<TimelineProps> = ({
                       <span
                         key={tag}
                         onClick={onTagClick ? () => onTagClick(tag) : undefined}
+                        data-skip-card-scroll="true"
                         className={tagClassName}
                       >
                         {tag.toUpperCase()}
@@ -321,17 +350,29 @@ const Timeline: React.FC<TimelineProps> = ({
                 <div className="flex flex-wrap gap-3 mb-4">
                   {allLinks.map((link, i) => {
                     const LinkIcon = link.icon ? linkIconMap[link.icon] : FaExternalLinkAlt
+                    const isProjectLink = (item.type ?? type) === "project"
                     return (
                       <TooltipWrapper key={i} label={link.url}>
-                        <a
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
-                        >
-                          {link.label}
-                          <LinkIcon className="text-sm" />
-                        </a>
+                        {isProjectLink ? (
+                          <button
+                            type="button"
+                            onClick={() => handleExternalClick(link.url, true)}
+                            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                          >
+                            {link.label}
+                            <LinkIcon className="text-sm" />
+                          </button>
+                        ) : (
+                          <a
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
+                          >
+                            {link.label}
+                            <LinkIcon className="text-sm" />
+                          </a>
+                        )}
                       </TooltipWrapper>
                     )
                   })}

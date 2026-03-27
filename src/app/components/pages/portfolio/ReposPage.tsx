@@ -9,6 +9,7 @@ import TooltipWrapper from "../../ToolTipWrapper"
 import { manualProjects } from "../../../data/portfolioProjects"
 import SearchFilterBar from "../../SearchFilterBar"
 import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
+import { scrollElementIntoViewWithNavbarOffset } from "../../../utils/scrollWithNavbarOffset"
 import PageTabs from "../../PageTabs"
 import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
 
@@ -202,6 +203,11 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
 
     fetchProjects()
   }, [])
+
+  const scrollToCards = useCallback(() => {
+    const target = document.getElementById("repositories-cards")
+    scrollElementIntoViewWithNavbarOffset(target)
+  }, [])
   
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -222,10 +228,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
     setSelectedTag(tag)
     setShowTagsMenu(true)
     setTimeout(() => {
-      const header = document.getElementById("repos-page-header")
-      if (header) {
-        header.scrollIntoView({ behavior: "smooth", block: "start" })
-      }
+      scrollToCards()
     }, 50)
   }
 
@@ -312,6 +315,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                 showFilterMenu={showFilterMenu}
                 setShowFilterMenu={setShowFilterMenu}
                 defaultSort="newest"
+                onFilterInteraction={scrollToCards}
               />
 
               {resultsCount && (

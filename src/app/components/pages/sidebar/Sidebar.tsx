@@ -5,14 +5,12 @@ import { useRef, useState } from "react"
 import * as Icons from "react-icons/fa"
 import { FaFilePdf } from "react-icons/fa"
 import { socialLinks } from "@/app/data/socialLinks"
-import { useExternalLink } from "../../ExternalLinkHandler"
 import Avatar from "./Avatar"
 import TooltipWrapper from "../../ToolTipWrapper"
 import PDFModalViewer from "../../PDFModalViewer"
 
 const Sidebar = ({ className = "" }: { className?: string }) => {
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
-  const { handleExternalClick } = useExternalLink()
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
 
   const handleAvatarClick = () => {
@@ -63,13 +61,15 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
               const Icon = Icons[icon as keyof typeof Icons]
               return (
                 <TooltipWrapper key={label} label={tooltip}>
-                  <button
-                    onClick={() => handleExternalClick(url)}
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label={label}
                     className="text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 active:scale-100"
                   >
                     <Icon />
-                  </button>
+                  </a>
                 </TooltipWrapper>
               )
             })}
