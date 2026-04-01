@@ -626,7 +626,7 @@ export default function HomeClient() {
   const isSectionRailEnabled = !isNavPinned
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
+    <div className="flex flex-col min-h-screen min-w-[360px]" style={{ background: "#ece9d8", color: "#000000", fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif' }}>
       <SectionScrollRail
         items={sectionRailItems}
         activeSection={activeSection}

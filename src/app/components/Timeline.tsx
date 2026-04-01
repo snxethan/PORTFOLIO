@@ -253,131 +253,169 @@ const Timeline: React.FC<TimelineProps> = ({
             allLinks.push(...item.links)
           }
 
+          const win2kFont: React.CSSProperties = {
+            fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+            fontSize: "11px",
+          }
+
           return (
             <div
               key={itemKey}
               onClick={handleCardClick}
-              className={`group relative z-0 hover:z-10 flex h-full min-h-[520px] self-stretch flex-col bg-[#151515] hover:bg-[#252525] p-6 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${
+              className={`group relative z-0 hover:z-10 flex h-full min-h-[420px] self-stretch flex-col transition-all duration-150 ${
                 isHorizontal ? "shrink-0 w-full snap-center" : "w-full"
-              } ${
-                 isNewItem ? "animate-fade-in-up border-red-600/30" : ""
-               } ${isDisappearing ? "animate-fade-out-down" : ""}`}
+              } ${isNewItem ? "animate-fade-in-up" : ""} ${isDisappearing ? "animate-fade-out-down" : ""}`}
+              style={{
+                background: "#d4d0c8",
+                borderTop: "1px solid #ffffff",
+                borderLeft: "1px solid #ffffff",
+                borderRight: "1px solid #404040",
+                borderBottom: "1px solid #404040",
+                padding: "0",
+                ...win2kFont,
+              }}
             >
-              {/* Title */}
-              <h3 className="text-2xl font-semibold text-white mb-2 group-hover:text-[#dc2626] transition-colors duration-300">
-                {item.institution || item.name}
-              </h3>
-
-              {/* Dates */}
-              <div className="flex flex-wrap items-center gap-3 mb-4 text-gray-400">
-                <span>
-                  {item.startDate} to {item.endDate}
-                </span>
-                {item.location && (
-                  <>
-                    <span className="text-gray-600">•</span>
-                    <span
-                      onClick={onTagClick ? () => onTagClick(item.location ?? "") : undefined}
-                      data-skip-card-scroll="true"
-                      className={`${badgeBaseClass} ${getLocationTagClass(item.location)} ${onTagClick ? clickableBadgeClass : ""}`}
-                    >
-                      {item.location}
-                    </span>
-                  </>
-                )}
-                {item.language && (
-                  <>
-                    <span className="text-gray-600">•</span>
-                    <span
-                      onClick={onTagClick ? () => onTagClick(item.language ?? "") : undefined}
-                      data-skip-card-scroll="true"
-                      className={`${badgeBaseClass} ${getLanguageTagClass(item.language)} ${onTagClick ? clickableBadgeClass : ""}`}
-                    >
-                      {item.language}
-                    </span>
-                  </>
-                )}
+              {/* Win2K title bar */}
+              <div className="win-titlebar" style={{ fontSize: "11px" }}>
+                <span className="truncate">{item.institution || item.name}</span>
               </div>
 
-              {/* Highlights */}
-              {item.highlights && item.highlights.length > 0 && (
-                <ul className="list-disc list-inside mb-4 text-gray-400 space-y-1">
-                  {item.highlights.map((hl, i) => (
-                    <li key={i}>{hl}</li>
-                  ))}
-                </ul>
-              )}
+              <div style={{ padding: "8px" }} className="flex flex-col flex-1">
+                {/* Title */}
+                <h3 style={{ fontSize: "13px", fontWeight: "bold", color: "#000080", marginBottom: "4px" }}>
+                  {item.institution || item.name}
+                </h3>
 
-              {/* Summary/Description */}
-              <p className="text-gray-300 mb-4">{item.summary}</p>
-
-              {/* Images with Carousel */}
-              {item.images && item.images.length > 0 && (
-                <ImageCarousel
-                  images={item.images}
-                  title={item.institution || item.name || "Timeline Item"}
-                />
-              )}
-
-              {/* Topics/Tags */}
-              {(() => {
-                const displayTags = Array.from(
-                  new Set([...(item.topics ?? []), ...(item.tags ?? [])])
-                )
-                if (displayTags.length === 0) return null
-                const tagClassName = onTagClick
-                  ? "bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 border border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] cursor-pointer active:scale-95"
-                  : "bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full"
-
-                return (
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {displayTags.map((tag) => (
+                {/* Dates */}
+                <div className="flex flex-wrap items-center gap-2 mb-3" style={{ fontSize: "10px", color: "#444444" }}>
+                  <span>{item.startDate} to {item.endDate}</span>
+                  {item.location && (
+                    <>
+                      <span style={{ color: "#808080" }}>•</span>
                       <span
-                        key={tag}
-                        onClick={onTagClick ? () => onTagClick(tag) : undefined}
+                        onClick={onTagClick ? () => onTagClick(item.location ?? "") : undefined}
                         data-skip-card-scroll="true"
-                        className={tagClassName}
+                        style={{
+                          padding: "1px 5px",
+                          background: "#000080",
+                          color: "#ffffff",
+                          fontSize: "9px",
+                          cursor: onTagClick ? "pointer" : "default",
+                        }}
                       >
-                        {tag.toUpperCase()}
+                        {item.location}
                       </span>
-                    ))}
-                  </div>
-                )
-              })()}
-
-              {/* Links */}
-              {allLinks.length > 0 && (
-                <div className="flex flex-wrap gap-3 mb-4">
-                  {allLinks.map((link, i) => {
-                    const LinkIcon = link.icon ? linkIconMap[link.icon] : FaExternalLinkAlt
-                    const isProjectLink = (item.type ?? type) === "project"
-                    return (
-                      <TooltipWrapper key={i} label={link.url}>
-                        {isProjectLink ? (
-                          <button
-                            type="button"
-                            onClick={() => handleExternalClick(link.url, true)}
-                            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
-                          >
-                            {link.label}
-                            <LinkIcon className="text-sm" />
-                          </button>
-                        ) : (
-                          <a
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95"
-                          >
-                            {link.label}
-                            <LinkIcon className="text-sm" />
-                          </a>
-                        )}
-                      </TooltipWrapper>
-                    )
-                  })}
+                    </>
+                  )}
+                  {item.language && (
+                    <>
+                      <span style={{ color: "#808080" }}>•</span>
+                      <span
+                        onClick={onTagClick ? () => onTagClick(item.language ?? "") : undefined}
+                        data-skip-card-scroll="true"
+                        style={{
+                          padding: "1px 5px",
+                          background: "#808000",
+                          color: "#ffffff",
+                          fontSize: "9px",
+                          cursor: onTagClick ? "pointer" : "default",
+                        }}
+                      >
+                        {item.language}
+                      </span>
+                    </>
+                  )}
                 </div>
-              )}
+
+                {/* Highlights */}
+                {item.highlights && item.highlights.length > 0 && (
+                  <ul className="list-disc list-inside mb-3" style={{ fontSize: "11px", color: "#000000" }}>
+                    {item.highlights.map((hl, i) => (
+                      <li key={i} style={{ marginBottom: "2px" }}>{hl}</li>
+                    ))}
+                  </ul>
+                )}
+
+                {/* Summary/Description */}
+                <p className="mb-3" style={{ fontSize: "11px", color: "#222222" }}>{item.summary}</p>
+
+                {/* Images with Carousel */}
+                {item.images && item.images.length > 0 && (
+                  <ImageCarousel
+                    images={item.images}
+                    title={item.institution || item.name || "Timeline Item"}
+                  />
+                )}
+
+                {/* Topics/Tags */}
+                {(() => {
+                  const displayTags = Array.from(
+                    new Set([...(item.topics ?? []), ...(item.tags ?? [])])
+                  )
+                  if (displayTags.length === 0) return null
+
+                  return (
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {displayTags.map((tag) => (
+                        <span
+                          key={tag}
+                          onClick={onTagClick ? () => onTagClick(tag) : undefined}
+                          data-skip-card-scroll="true"
+                          style={{
+                            padding: "1px 5px",
+                            fontSize: "9px",
+                            background: "#c0bdb4",
+                            color: "#000000",
+                            borderTop: "1px solid #808080",
+                            borderLeft: "1px solid #808080",
+                            borderRight: "1px solid #ffffff",
+                            borderBottom: "1px solid #ffffff",
+                            cursor: onTagClick ? "pointer" : "default",
+                          }}
+                        >
+                          {tag.toUpperCase()}
+                        </span>
+                      ))}
+                    </div>
+                  )
+                })()}
+
+                {/* Links */}
+                {allLinks.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-auto pt-2">
+                    {allLinks.map((link, i) => {
+                      const LinkIcon = link.icon ? linkIconMap[link.icon] : FaExternalLinkAlt
+                      const isProjectLink = (item.type ?? type) === "project"
+                      return (
+                        <TooltipWrapper key={i} label={link.url}>
+                          {isProjectLink ? (
+                            <button
+                              type="button"
+                              onClick={() => handleExternalClick(link.url, true)}
+                              className="win-btn inline-flex items-center gap-1"
+                              style={{ fontSize: "10px", padding: "2px 8px" }}
+                            >
+                              <LinkIcon style={{ fontSize: "10px" }} />
+                              {link.label}
+                            </button>
+                          ) : (
+                            <a
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="win-btn inline-flex items-center gap-1"
+                              style={{ fontSize: "10px", padding: "2px 8px", textDecoration: "none", color: "#000000" }}
+                            >
+                              <LinkIcon style={{ fontSize: "10px" }} />
+                              {link.label}
+                            </a>
+                          )}
+                        </TooltipWrapper>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
           )
         })}

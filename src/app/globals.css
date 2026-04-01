@@ -1,31 +1,343 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* Windows 2000 color palette */
+  --win-silver: #d4d0c8;
+  --win-silver-dark: #c0c0c0;
+  --win-silver-darker: #808080;
+  --win-silver-light: #ece9d8;
+  --win-silver-lighter: #f0ede6;
+  --win-titlebar-start: #0a246a;
+  --win-titlebar-end: #a6caf0;
+  --win-active-title: #0a246a;
+  --win-navy: #000080;
+  --win-text: #000000;
+  --win-white: #ffffff;
+  --win-button-face: #d4d0c8;
+  --win-button-highlight: #ffffff;
+  --win-button-shadow: #808080;
+  --win-button-dark-shadow: #404040;
+  --win-border-light: #ffffff;
+  --win-border-dark: #808080;
 
-:root {
+  --background: var(--win-silver-light);
+  --foreground: var(--win-text);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #222222;
-    --foreground: #ededed;
-  }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  overflow-x: hidden;  /* Keep page width bounded; use local scrollers instead */
-  min-width: 360px;    /* Prevent UI from condensing below 360px */
+  background: var(--win-silver-light);
+  color: var(--win-text);
+  font-family: "Tahoma", "MS Sans Serif", Arial, sans-serif;
+  overflow-x: hidden;
+  min-width: 360px;
 }
+
+/* Windows 2000 raised border (button look) */
+.win-raised {
+  border-style: solid;
+  border-width: 1px;
+  border-top-color: var(--win-button-highlight);
+  border-left-color: var(--win-button-highlight);
+  border-right-color: var(--win-button-dark-shadow);
+  border-bottom-color: var(--win-button-dark-shadow);
+  background-color: var(--win-button-face);
+}
+.win-raised-outer {
+  border-style: solid;
+  border-width: 2px;
+  border-top-color: var(--win-button-highlight);
+  border-left-color: var(--win-button-highlight);
+  border-right-color: var(--win-button-dark-shadow);
+  border-bottom-color: var(--win-button-dark-shadow);
+}
+
+/* Windows 2000 sunken border (inset/field look) */
+.win-sunken {
+  border-style: solid;
+  border-width: 1px;
+  border-top-color: var(--win-button-shadow);
+  border-left-color: var(--win-button-shadow);
+  border-right-color: var(--win-button-highlight);
+  border-bottom-color: var(--win-button-highlight);
+  background-color: var(--win-white);
+}
+
+/* Win2K window chrome */
+.win-window {
+  background-color: var(--win-silver);
+  border-style: solid;
+  border-width: 2px;
+  border-top-color: var(--win-button-highlight);
+  border-left-color: var(--win-button-highlight);
+  border-right-color: var(--win-button-dark-shadow);
+  border-bottom-color: var(--win-button-dark-shadow);
+}
+
+/* Win2K title bar */
+.win-titlebar {
+  background: linear-gradient(to right, var(--win-titlebar-start), var(--win-titlebar-end));
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 3px 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+
+/* Win2K button */
+.win-btn {
+  background-color: var(--win-button-face);
+  color: var(--win-text);
+  border-style: solid;
+  border-width: 1px;
+  border-top-color: var(--win-button-highlight);
+  border-left-color: var(--win-button-highlight);
+  border-right-color: var(--win-button-dark-shadow);
+  border-bottom-color: var(--win-button-dark-shadow);
+  padding: 2px 8px;
+  font-family: "Tahoma", "MS Sans Serif", Arial, sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  min-width: 75px;
+}
+.win-btn:hover {
+  background-color: #e0ddd5;
+}
+.win-btn:active,
+.win-btn-active {
+  border-top-color: var(--win-button-dark-shadow);
+  border-left-color: var(--win-button-dark-shadow);
+  border-right-color: var(--win-button-highlight);
+  border-bottom-color: var(--win-button-highlight);
+}
+
+/* Win2K tab (active & inactive) */
+.win-tab-active {
+  background-color: var(--win-silver);
+  border-style: solid;
+  border-width: 1px;
+  border-top-color: var(--win-button-highlight);
+  border-left-color: var(--win-button-highlight);
+  border-right-color: var(--win-button-dark-shadow);
+  border-bottom-color: var(--win-silver); /* blends with panel below */
+  padding: 3px 10px 4px;
+  font-size: 11px;
+  font-family: "Tahoma", "MS Sans Serif", Arial, sans-serif;
+  position: relative;
+  z-index: 1;
+  margin-bottom: -1px;
+  cursor: default;
+}
+.win-tab-inactive {
+  background-color: #bab8b0;
+  border-style: solid;
+  border-width: 1px;
+  border-top-color: var(--win-button-highlight);
+  border-left-color: var(--win-button-highlight);
+  border-right-color: var(--win-button-dark-shadow);
+  border-bottom-color: var(--win-button-shadow);
+  padding: 2px 10px 3px;
+  font-size: 11px;
+  font-family: "Tahoma", "MS Sans Serif", Arial, sans-serif;
+  cursor: pointer;
+  margin-top: 2px;
+}
+.win-tab-inactive:hover {
+  background-color: #ccc9c0;
+}
+
+/* Ensure clickable elements use pointer cursor */
+button:not(:disabled):hover,
+a[href]:hover,
+[role="button"]:hover {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* Win2K scrollbar */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+::-webkit-scrollbar-track {
+  background: var(--win-silver);
+  border-left: 1px solid var(--win-button-shadow);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--win-button-face);
+  border-style: solid;
+  border-width: 1px;
+  border-top-color: var(--win-button-highlight);
+  border-left-color: var(--win-button-highlight);
+  border-right-color: var(--win-button-dark-shadow);
+  border-bottom-color: var(--win-button-dark-shadow);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c5c2ba;
+}
+::-webkit-scrollbar-button {
+  background: var(--win-button-face);
+  border-style: solid;
+  border-width: 1px;
+  border-top-color: var(--win-button-highlight);
+  border-left-color: var(--win-button-highlight);
+  border-right-color: var(--win-button-dark-shadow);
+  border-bottom-color: var(--win-button-dark-shadow);
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+::-webkit-scrollbar-corner {
+  background: var(--win-silver);
+}
+* {
+  scrollbar-width: auto;
+  scrollbar-color: var(--win-button-face) var(--win-silver);
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-height: 124px) {
+  .footer-links {
+    flex-direction: column;
+  }
+}
+
+/* Win2K taskbar at bottom */
+.win-taskbar {
+  background: linear-gradient(to bottom, #d4d0c8, #c0bdb4);
+  border-top: 2px solid #ffffff;
+  font-family: "Tahoma", "MS Sans Serif", Arial, sans-serif;
+  font-size: 11px;
+}
+
+/* Animation (kept for functional dropdowns) */
+@keyframes fadeInScale {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-fadeInScale {
+  animation: fadeInScale 0.15s ease-out forwards;
+}
+
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.2s ease-out forwards;
+}
+
+@keyframes fade-out-down {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+.animate-fade-out-down {
+  animation: fade-out-down 0.15s ease-in forwards;
+}
+
+@keyframes elastic-in {
+  0% { opacity: 0; transform: scaleX(0.6) scaleY(1.4); }
+  50% { transform: scaleX(1.1) scaleY(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-elastic-in { animation: elastic-in 0.3s ease-out forwards; }
+
+@keyframes elastic-out {
+  0% { opacity: 1; transform: scale(1); }
+  50% { transform: scaleX(1.1) scaleY(0.9); }
+  100% { opacity: 0; transform: scaleX(0.6) scaleY(1.4); }
+}
+.animate-elastic-out { animation: elastic-out 0.25s ease-in forwards; }
+
+@keyframes zoom-rotate {
+  from { opacity: 0; transform: scale(0.7) rotate(-5deg); }
+  to { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+.animate-zoom-rotate { animation: zoom-rotate 0.3s ease-out forwards; }
+
+@keyframes elastic-light {
+  0% { opacity: 0; transform: scale(0.97); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-elastic-light { animation: elastic-light 0.3s ease-out forwards; }
+
+@keyframes tag-extend {
+  0% { opacity: 0; transform: scale(0.8) translateY(-10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.animate-tag-extend { animation: tag-extend 0.3s ease-out forwards; }
+
+@keyframes tag-hide {
+  0% { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(0.8) translateY(-10px); }
+}
+.animate-tag-hide { animation: tag-hide 0.2s ease-in forwards; }
+
+@keyframes fade-out-down {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.9) translateY(-6px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes popOut {
+  0% { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(0.9) translateY(-6px); }
+}
+.animate-popIn { animation: popIn 0.15s ease-out forwards; }
+
+/* Navbar horizontal scroll */
+.navbar-scroll::-webkit-scrollbar { height: 6px; }
+.navbar-scroll::-webkit-scrollbar-track { background: transparent; }
+.navbar-scroll::-webkit-scrollbar-thumb { background: #808080; }
+
+@media (min-width: 768px) {
+  .navbar-scroll::-webkit-scrollbar { display: none; }
+}
+@media (max-width: 767px) {
+  .navbar-scroll { scrollbar-width: thin; scrollbar-color: #808080 transparent; }
+}
+
+.marquee { overflow: hidden; position: relative; width: 100%; }
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: max-content;
+  animation: marquee-scroll 30s linear infinite;
+}
+.marquee-track.slower { animation-duration: 40s; }
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+@keyframes pin-bounce {
+  0% { transform: translateY(0); }
+  35% { transform: translateY(-6px); }
+  70% { transform: translateY(0); }
+  85% { transform: translateY(-3px); }
+  100% { transform: translateY(0); }
+}
+.animate-pin-bounce { animation: pin-bounce 0.38s ease-out; }
 
 /* Ensure clickable elements use the pointer cursor on hover. */
 button:not(:disabled):hover,

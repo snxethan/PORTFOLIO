@@ -167,7 +167,19 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
               event.stopPropagation()
             }}
             onClick={(event) => handleCardTagClick(event, tag)}
-            className="text-xs px-3 py-1 rounded-full whitespace-nowrap max-w-full min-w-0 truncate transition-all duration-200 border cursor-pointer active:scale-95 bg-[#3a3a3a] text-gray-300 border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626]"
+            style={{
+              fontSize: "9px",
+              padding: "1px 5px",
+              background: "#c0bdb4",
+              color: "#000000",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+              borderTop: "1px solid #808080",
+              borderLeft: "1px solid #808080",
+              borderRight: "1px solid #ffffff",
+              borderBottom: "1px solid #ffffff",
+            }}
           >
             {tag.toUpperCase()}
           </span>
@@ -180,24 +192,40 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     const { name, icon: Icon, highlight, url, year } = item
     const cardTags = item.tags ?? []
     const card = (
-      <div className={`group relative z-0 hover:z-10 flex items-start gap-4 bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
+      <div className={`group relative z-0 hover:z-10 flex items-start gap-3 p-3 transition-all duration-150 ${cardSizeClass}`}
+        style={{
+          background: "#d4d0c8",
+          borderTop: "1px solid #808080",
+          borderLeft: "1px solid #808080",
+          borderRight: "1px solid #ffffff",
+          borderBottom: "1px solid #ffffff",
+          fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+          cursor: url ? "pointer" : "default",
+        }}
+      >
         <div
-          className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
-            highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
-          }`}
+          className="flex-shrink-0 flex items-center justify-center"
+          style={{
+            width: 32, height: 32,
+            background: highlight ? "#000080" : "#c0bdb4",
+            borderTop: "1px solid #ffffff",
+            borderLeft: "1px solid #ffffff",
+            borderRight: "1px solid #404040",
+            borderBottom: "1px solid #404040",
+          }}
         >
-          <Icon className="text-white text-xl" />
+          <Icon style={{ color: highlight ? "#ffffff" : "#000080", fontSize: "14px" }} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-white font-semibold text-base break-words whitespace-normal group-hover:text-[#dc2626] transition-colors duration-300">
+          <p style={{ fontSize: "11px", fontWeight: "bold", color: "#000000", wordBreak: "break-word", whiteSpace: "normal" }}>
             {name}
           </p>
-          {year && <span className="text-gray-400 text-sm">{year}</span>}
+          {year && <span style={{ fontSize: "10px", color: "#444444" }}>{year}</span>}
           {renderFilterTags(cardTags)}
         </div>
         {url && (
-          <div className="absolute bottom-3 right-3 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300">
-            {url.endsWith(".pdf") ? <FaFilePdf size={14} aria-label="View Certification" /> : <FaExternalLinkAlt size={14} aria-label="Open external link" />}
+          <div className="absolute bottom-2 right-2" style={{ color: "#808080" }}>
+            {url.endsWith(".pdf") ? <FaFilePdf size={11} aria-label="View Certification" /> : <FaExternalLinkAlt size={11} aria-label="Open external link" />}
           </div>
         )}
       </div>
@@ -242,23 +270,39 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     const { name, icon: Icon, highlight, url } = item
     const cardTags = Array.from(new Set([highlight ? "Hard Skills" : "Soft Skills", ...(item.tags ?? [])]))
     const card = (
-      <div className={`group relative z-0 hover:z-10 flex items-start gap-4 bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
+      <div className={`group relative z-0 hover:z-10 flex items-start gap-3 p-3 transition-all duration-150 ${cardSizeClass}`}
+        style={{
+          background: "#d4d0c8",
+          borderTop: "1px solid #808080",
+          borderLeft: "1px solid #808080",
+          borderRight: "1px solid #ffffff",
+          borderBottom: "1px solid #ffffff",
+          fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+          cursor: url ? "pointer" : "default",
+        }}
+      >
         <div
-          className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
-            highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
-          }`}
+          className="flex-shrink-0 flex items-center justify-center"
+          style={{
+            width: 32, height: 32,
+            background: highlight ? "#000080" : "#c0bdb4",
+            borderTop: "1px solid #ffffff",
+            borderLeft: "1px solid #ffffff",
+            borderRight: "1px solid #404040",
+            borderBottom: "1px solid #404040",
+          }}
         >
-          <Icon className="text-white text-xl" />
+          <Icon style={{ color: highlight ? "#ffffff" : "#000080", fontSize: "14px" }} />
         </div>
         <div className="min-w-0">
-          <p className="text-white font-semibold text-base break-words whitespace-normal group-hover:text-[#dc2626] transition-colors duration-300">
+          <p style={{ fontSize: "11px", fontWeight: "bold", color: "#000000", wordBreak: "break-word", whiteSpace: "normal" }}>
             {name}
           </p>
           {renderFilterTags(cardTags)}
         </div>
         {url && !url.endsWith(".pdf") && (
-          <div className="absolute bottom-3 right-3 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300">
-            <FaExternalLinkAlt size={14} aria-label="Open external link" />
+          <div className="absolute bottom-2 right-2" style={{ color: "#808080" }}>
+            <FaExternalLinkAlt size={11} aria-label="Open external link" />
           </div>
         )}
       </div>
@@ -392,14 +436,27 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
 
   return (
     <>
-      <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
-        <div className="mb-5 text-center">
-          <h2 className="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform">
+      <div className="mb-6 animate-fadeInScale" style={{
+        background: "#d4d0c8",
+        borderTop: "2px solid #ffffff",
+        borderLeft: "2px solid #ffffff",
+        borderRight: "2px solid #404040",
+        borderBottom: "2px solid #404040",
+        fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+      }}>
+        {/* Win2K title bar */}
+        <div className="win-titlebar">
+          <span style={{ fontSize: "11px" }}>📁 About — Ethan Townsend</span>
+        </div>
+
+        <div className="p-4">
+        <div className="mb-4 text-center">
+          <h2 style={{ fontSize: "16px", fontWeight: "bold", color: "#000080" }}>
             Welcome to My Portfolio
           </h2>
         </div>
 
-        <p className="mt-4 text-gray-300 max-w-2xl mx-auto text-center">
+        <p className="mt-2 max-w-2xl mx-auto text-center" style={{ fontSize: "11px", color: "#000000" }}>
           I am Ethan Townsend, a Full-Stack Software Engineer with a passion for back-end development.
           <br />
           <br />
@@ -407,54 +464,60 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
           <button
             type="button"
             onClick={() => handleJump("about", "certifications")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+            className="inline-flex items-center gap-1"
+            style={{ color: "#000080", textDecoration: "underline", fontSize: "11px", background: "transparent", border: "none", cursor: "pointer" }}
           >
-            <FaCertificate className="text-base" />
+            <FaCertificate style={{ fontSize: "11px" }} />
             Certifications
           </button>
           ,{" "}
           <button
             type="button"
             onClick={() => handleJump("about", "skills")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+            className="inline-flex items-center gap-1"
+            style={{ color: "#000080", textDecoration: "underline", fontSize: "11px", background: "transparent", border: "none", cursor: "pointer" }}
           >
-            <FaTools className="text-base" />
+            <FaTools style={{ fontSize: "11px" }} />
             Skills
           </button>
           ,{" "}
           <button
             type="button"
             onClick={() => handleJump("career", "experience")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+            className="inline-flex items-center gap-1"
+            style={{ color: "#000080", textDecoration: "underline", fontSize: "11px", background: "transparent", border: "none", cursor: "pointer" }}
           >
-            <FaBriefcase className="text-base" />
+            <FaBriefcase style={{ fontSize: "11px" }} />
             Experience
           </button>
           ,{" "}
           <button
             type="button"
             onClick={() => handleJump("career", "education")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+            className="inline-flex items-center gap-1"
+            style={{ color: "#000080", textDecoration: "underline", fontSize: "11px", background: "transparent", border: "none", cursor: "pointer" }}
           >
-            <FaGraduationCap className="text-base" />
+            <FaGraduationCap style={{ fontSize: "11px" }} />
             Education
           </button>
           , and{" "}
           <button
             type="button"
             onClick={() => handleJump("projects", "projects")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+            className="inline-flex items-center gap-1"
+            style={{ color: "#000080", textDecoration: "underline", fontSize: "11px", background: "transparent", border: "none", cursor: "pointer" }}
           >
-            <FaFolderOpen className="text-base" />
+            <FaFolderOpen style={{ fontSize: "11px" }} />
             Projects
           </button>
           ,{" "}
           <button
             type="button"
             onClick={() => handleJump("projects", "repos")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
+            className="inline-flex items-center gap-1"
+            style={{ color: "#000080", textDecoration: "underline", fontSize: "11px", background: "transparent", border: "none", cursor: "pointer" }}
           >
-            <FaGithub className="text-base" />
+            <FaGithub style={{ fontSize: "11px" }} />
             Repositories
           </button>
           .
@@ -462,16 +525,22 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
           <br />
         </p>
 
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-3">
           <PageTabs
             tabs={tabs}
             activeId={activeSubsection}
             onChange={handleAboutTabChange}
           />
-
         </div>
 
-        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+        <div style={{
+          background: "#ffffff",
+          borderTop: "1px solid #808080",
+          borderLeft: "1px solid #808080",
+          borderRight: "1px solid #ffffff",
+          borderBottom: "1px solid #ffffff",
+          padding: "6px 8px",
+        }}>
           <div className="container mx-auto">
             <SearchFilterBar
               search={search}
@@ -492,11 +561,12 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
             />
 
             {resultsCount && (
-              <div className="text-sm text-gray-400 mt-2 text-center sm:text-left">{resultsCount}</div>
+              <div style={{ fontSize: "10px", color: "#444444", marginTop: "4px" }}>{resultsCount}</div>
             )}
           </div>
         </div>
-      </div>
+        </div>{/* end p-4 */}
+      </div>{/* end win-window */}
 
       <div
         id="about-cards"
@@ -508,18 +578,21 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
             renderCard={(i) => (
               <div
                 key={i}
-                className="bg-[#151515] border border-[#333333] p-5 rounded-none animate-pulse min-h-[180px]"
+                className="animate-pulse min-h-[120px] p-3"
+                style={{
+                  background: "#d4d0c8",
+                  borderTop: "1px solid #808080",
+                  borderLeft: "1px solid #808080",
+                  borderRight: "1px solid #ffffff",
+                  borderBottom: "1px solid #ffffff",
+                }}
               >
-                <div className="flex items-start gap-4">
-                  <div className="w-11 h-11 bg-[#333333] rounded-lg" />
+                <div className="flex items-start gap-3">
+                  <div style={{ width: 32, height: 32, background: "#c0bdb4" }} />
                   <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-[#333333] rounded w-3/4" />
-                    <div className="h-3 bg-[#333333] rounded w-1/3" />
+                    <div style={{ height: "10px", background: "#c0bdb4", width: "75%" }} />
+                    <div style={{ height: "9px", background: "#c0bdb4", width: "40%" }} />
                   </div>
-                </div>
-                <div className="space-y-2 mt-5">
-                  <div className="h-3 bg-[#333333] rounded w-full" />
-                  <div className="h-3 bg-[#333333] rounded w-5/6" />
                 </div>
               </div>
             )}

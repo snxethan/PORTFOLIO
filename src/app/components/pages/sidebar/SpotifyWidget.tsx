@@ -93,70 +93,75 @@ export default function SpotifyWidget() {
 
   if (!isVisible && !isAnimatingOut) return null // If the widget is not visible and not animating out, return null
 
-  // This is the main container for the widget. It has a dark background, rounded corners, and a shadow effect.
-  const containerClasses = `bg-[#222222] border border-[#333333] rounded-xl p-4 shadow-md ${
-    loading ? "animate-pulse animate-elastic-in" :
-    isAnimatingOut ? "animate-elastic-out" :
-    "animate-elastic-in"
-  }`
+  const containerClasses = isAnimatingOut ? "animate-elastic-out" : "animate-elastic-in"
 
-  // The container has a gradient background and a shadow effect when the track is playing.
   return (
-  <div className={`${containerClasses} max-w-md mx-auto`}>
-      {/* Loading state: Show a skeleton loader while the track is loading */}
+    <div
+      className={`${containerClasses} max-w-md mx-auto`}
+      style={{
+        background: "#d4d0c8",
+        borderTop: "1px solid #ffffff",
+        borderLeft: "1px solid #ffffff",
+        borderRight: "1px solid #404040",
+        borderBottom: "1px solid #404040",
+        fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+      }}
+    >
+      {/* Win2K group box title */}
+      <div className="win-titlebar" style={{ fontSize: "10px", padding: "2px 4px" }}>
+        <FaSpotify style={{ fontSize: "10px" }} />
+        <span>Now Listening</span>
+      </div>
+
       {loading ? (
-        <>
-          <div className="flex justify-center items-center gap-2 mb-2">
-            <div className="w-5 h-5 bg-[#333333] rounded-full" />
-            <span className="h-4 bg-[#333333] w-24 rounded"></span>
+        <div className="p-2 animate-pulse flex items-center gap-2">
+          <div style={{ width: 36, height: 36, background: "#c0bdb4", borderTop: "1px solid #808080", borderLeft: "1px solid #808080", borderRight: "1px solid #fff", borderBottom: "1px solid #fff" }} />
+          <div className="flex flex-col gap-1.5 flex-1">
+            <div style={{ height: "10px", background: "#c0bdb4", borderRadius: 0 }} />
+            <div style={{ height: "9px", background: "#c0bdb4", borderRadius: 0, width: "70%" }} />
           </div>
-          <div className="flex items-center justify-center gap-4 p-2">
-            <div className="w-12 h-12 bg-[#333333] rounded"></div>
-            <div className="flex flex-col gap-2 w-3/5">
-              <div className="h-4 bg-[#333333] rounded w-full"></div>
-              <div className="h-3 bg-[#333333] rounded w-3/4"></div>
-            </div>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="flex items-center justify-center gap-2 mb-2">
-          <TooltipWrapper label="My Spotify Profile">
-            <button
-              onClick={() =>
-                handleExternalClick("https://open.spotify.com/user/l7ypevjdnoaz97kdqkkwf832d")
-              }
-              aria-label="Spotify"
-              className="text-gray-400 hover:text-red-600 text-lg flex items-center transition-transform duration-200 ease-out hover:scale-125 active:scale-100"
-            >
-              <FaSpotify />
-            </button>
-          </TooltipWrapper>
-          <span className="text-sm leading-none text-gray-400">now listening:</span>
         </div>
-        <div className="flex items-center justify-center">
-          <TooltipWrapper label={track!.songUrl}> {/* Tooltip to show the song URL */}
+      ) : (
+        <div className="p-2">
+          <TooltipWrapper label={track!.songUrl}>
             <button
               onClick={() => handleExternalClick(track!.songUrl)}
-              className="relative flex items-center justify-center gap-4 p-2 rounded-lg transition group w-full"
+              className="flex items-center gap-2 w-full text-left"
+              style={{ background: "transparent", border: "none", cursor: "pointer" }}
+              onMouseEnter={e => (e.currentTarget.style.background = "#c0bdb4")}
+              onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
             >
               <Image
                 src={track!.albumImageUrl}
                 alt="Album Art"
-                width={48}
-                height={48}
-                className="w-12 h-12 rounded object-cover border border-[#333333]"
+                width={36}
+                height={36}
+                style={{
+                  width: 36, height: 36, objectFit: "cover",
+                  borderTop: "1px solid #808080", borderLeft: "1px solid #808080",
+                  borderRight: "1px solid #fff", borderBottom: "1px solid #fff",
+                }}
               />
-              <div className="text-left">
-                <p className="text-white font-semibold leading-tight">{track!.title}</p>
-                <p className="text-gray-400 text-sm">{track!.artist}</p>
+              <div className="text-left overflow-hidden">
+                <p style={{ fontSize: "11px", fontWeight: "bold", color: "#000000", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{track!.title}</p>
+                <p style={{ fontSize: "10px", color: "#444444", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{track!.artist}</p>
               </div>
-              <div className="absolute -inset-0.5 rounded-lg opacity-10 blur-sm transition duration-300 group-hover:opacity-10 group-hover:bg-gradient-to-r group-hover:from-red-700 group-hover:to-red-500 z-0"></div>
             </button>
           </TooltipWrapper>
-                  </div>
-
-        </>
+          <div className="mt-1 flex justify-end">
+            <TooltipWrapper label="My Spotify Profile">
+              <button
+                onClick={() => handleExternalClick("https://open.spotify.com/user/l7ypevjdnoaz97kdqkkwf832d")}
+                aria-label="Spotify"
+                className="win-btn flex items-center gap-1"
+                style={{ fontSize: "9px", padding: "1px 5px", minWidth: "auto" }}
+              >
+                <FaSpotify style={{ fontSize: "9px" }} />
+                <span>Open</span>
+              </button>
+            </TooltipWrapper>
+          </div>
+        </div>
       )}
     </div>
   )

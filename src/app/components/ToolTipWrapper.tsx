@@ -206,6 +206,16 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
     updatePopupPosition()
   }, [updatePopupPosition])
 
+  const win2kTooltipStyle: React.CSSProperties = {
+    background: "#d4d0c8",
+    borderTop: "1px solid #ffffff",
+    borderLeft: "1px solid #ffffff",
+    borderRight: "1px solid #404040",
+    borderBottom: "1px solid #404040",
+    boxShadow: "2px 2px 4px rgba(0,0,0,0.4)",
+    fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+  }
+
   const pdfTooltip =
     canPreviewPdf && (visible || isClosing) && typeof document !== "undefined"
       ? ReactDOM.createPortal(
@@ -213,29 +223,32 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
             ref={popupRef}
             role="tooltip"
             aria-label={label}
-            className={`fixed z-[9999] w-[260px] max-w-[90vw] overflow-hidden rounded-xl border border-[#333333] bg-[#1e1e1e] shadow-2xl shadow-black/50 ${
+            className={`fixed z-[9999] w-[260px] max-w-[90vw] overflow-hidden ${
               isClosing ? "animate-fade-out-down" : "animate-fade-in-up"
             }`}
-            style={
-              popupPosition
+            style={{
+              ...(popupPosition
                 ? { left: popupPosition.left, top: popupPosition.top }
-                : { visibility: "hidden", left: 0, top: 0 }
-            }
+                : { visibility: "hidden", left: 0, top: 0 }),
+              ...win2kTooltipStyle,
+            }}
           >
-            <div className="border-b border-[#333333] px-3 pb-1.5 pt-2">
-              <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-                {label}
-              </span>
+            <div className="win-titlebar" style={{ fontSize: "10px", padding: "2px 6px" }}>
+              <span className="truncate">{label}</span>
             </div>
-            <div className="p-3 pt-2">
-              <div className="relative h-[260px] w-full overflow-hidden rounded-lg border border-[#333333] bg-[#111111]">
+            <div style={{ padding: "6px" }}>
+              <div className="relative h-[260px] w-full overflow-hidden" style={{
+                borderTop: "1px solid #808080", borderLeft: "1px solid #808080",
+                borderRight: "1px solid #ffffff", borderBottom: "1px solid #ffffff",
+                background: "#ffffff",
+              }}>
                 {thumbnailLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-[#111111]">
-                    <Loader2 className="h-6 w-6 animate-spin text-white/70" />
+                  <div className="absolute inset-0 flex items-center justify-center" style={{ background: "#ffffff" }}>
+                    <Loader2 className="h-6 w-6 animate-spin" style={{ color: "#000080" }} />
                   </div>
                 )}
                 {thumbnailError ? (
-                  <div className="absolute inset-0 flex items-center justify-center px-3 text-center text-xs text-white/70">
+                  <div className="absolute inset-0 flex items-center justify-center px-3 text-center" style={{ fontSize: "10px", color: "#444444" }}>
                     Unable to generate preview
                   </div>
                 ) : (
@@ -247,10 +260,10 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
                     onError={handleThumbnailError}
                   />
                 )}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                  <div className="flex items-center justify-between text-xs text-white">
+                <div className="absolute inset-x-0 bottom-0 p-1" style={{ background: "#d4d0c8", borderTop: "1px solid #808080" }}>
+                  <div className="flex items-center justify-between" style={{ fontSize: "9px", color: "#000000" }}>
                     <span className="truncate max-w-[160px]">PDF Document</span>
-                    <span className="text-white/70">Preview</span>
+                    <span style={{ color: "#444444" }}>Preview</span>
                   </div>
                 </div>
               </div>
@@ -267,29 +280,33 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
             ref={popupRef}
             role="tooltip"
             aria-label={label}
-            className={`fixed z-[9999] w-[280px] max-w-[90vw] overflow-hidden rounded-xl border border-[#333333] bg-[#1e1e1e] shadow-2xl shadow-black/50 ${
+            className={`fixed z-[9999] w-[280px] max-w-[90vw] overflow-hidden ${
               isClosing ? "animate-fade-out-down" : "animate-fade-in-up"
             }`}
-            style={
-              popupPosition
+            style={{
+              ...(popupPosition
                 ? { left: popupPosition.left, top: popupPosition.top }
-                : { visibility: "hidden", left: 0, top: 0 }
-            }
+                : { visibility: "hidden", left: 0, top: 0 }),
+              ...win2kTooltipStyle,
+            }}
           >
-            <div className="border-b border-[#333333] px-3 pb-1.5 pt-2">
-              <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-                {label}
-              </span>
+            <div className="win-titlebar" style={{ fontSize: "10px", padding: "2px 6px" }}>
+              <span className="truncate">{label}</span>
             </div>
-            <div className="p-3 pt-2">
-              <div className="relative w-full overflow-hidden rounded-lg border border-[#333333] bg-[#111111]" style={{ minHeight: 160 }}>
+            <div style={{ padding: "6px" }}>
+              <div className="relative w-full overflow-hidden" style={{
+                minHeight: 160,
+                borderTop: "1px solid #808080", borderLeft: "1px solid #808080",
+                borderRight: "1px solid #ffffff", borderBottom: "1px solid #ffffff",
+                background: "#ffffff",
+              }}>
                 {thumbnailLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-[#111111]">
-                    <Loader2 className="h-6 w-6 animate-spin text-white/70" />
+                  <div className="absolute inset-0 flex items-center justify-center" style={{ background: "#ffffff" }}>
+                    <Loader2 className="h-6 w-6 animate-spin" style={{ color: "#000080" }} />
                   </div>
                 )}
                 {thumbnailError ? (
-                  <div className="flex items-center justify-center px-3 py-8 text-center text-xs text-white/70">
+                  <div className="flex items-center justify-center px-3 py-8 text-center" style={{ fontSize: "10px", color: "#444444" }}>
                     Unable to load image
                   </div>
                 ) : (
@@ -318,16 +335,18 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
             ref={popupRef}
             role="tooltip"
             aria-label={label}
-            className={`fixed z-[9999] pointer-events-none max-w-[90vw] rounded-md bg-red-600 px-2 py-1 text-xs text-white shadow-md ${
+            className={`fixed z-[9999] pointer-events-none max-w-[90vw] ${
               isClosing ? "animate-fade-out-down" : "animate-fade-in-up"
             }`}
-            style={
-              popupPosition
+            style={{
+              ...(popupPosition
                 ? { left: popupPosition.left, top: popupPosition.top }
-                : { visibility: "hidden", left: 0, top: 0 }
-            }
+                : { visibility: "hidden", left: 0, top: 0 }),
+              ...win2kTooltipStyle,
+              padding: "3px 6px",
+            }}
           >
-            <span className="whitespace-normal break-words">{label}</span>
+            <span style={{ fontSize: "11px", color: "#000000", whiteSpace: "normal", wordBreak: "break-word" }}>{label}</span>
           </div>,
           document.body
         )

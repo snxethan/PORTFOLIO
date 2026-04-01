@@ -19,66 +19,127 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
 
   return (
     <>
-      <aside className={`w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 lg:sticky lg:top-2 my-8 ${className}`}>
+      {/* Win2K window panel */}
+      <aside
+        className={`w-full lg:w-72 self-start relative z-10 lg:sticky lg:top-2 my-4 ${className}`}
+        style={{
+          background: "#d4d0c8",
+          borderTop: "2px solid #ffffff",
+          borderLeft: "2px solid #ffffff",
+          borderRight: "2px solid #404040",
+          borderBottom: "2px solid #404040",
+          fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+        }}
+      >
         <audio ref={clickSoundRef} src="/sounds/yippe.mp3" preload="auto" />
 
-        {/* Avatar */}
-        <div
-          className="relative w-32 h-32 mx-auto rounded-full overflow-hidden group cursor-pointer transition-transform duration-300 ease-out hover:scale-105 active:scale-100"
-          onClick={handleAvatarClick}
-        >
-          <div className="absolute -inset-0.5 rounded-full opacity-0 blur-sm transition duration-300 group-hover:opacity-5 group-hover:bg-gradient-to-r group-hover:from-red-700 group-hover:to-red-500"></div>
-          <Avatar />
-        </div>
-
-        <div className="mt-4 text-center">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Ethan Townsend
-          </h2>
-          <p className="text-gray-300">Full Stack Software Developer</p>
-          <p className="text-gray-400 text-sm mt-1">Salt Lake City, UT</p>
-        </div>
-
-        {/* View Resume Button */}
-        <div className="mt-6 flex justify-center">
-          <TooltipWrapper label="View Resume" url="/resume/EthanTownsend_Resume_march2026.pdf">
-            <button
-              onClick={() => setSelectedPDF('/resume/EthanTownsend_Resume_march2026.pdf')}
-              aria-label="View Resume"
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm font-medium shadow-lg shadow-red-600/40"
-            >
-              <FaFilePdf />
-              <span>View Resume</span>
-            </button>
-          </TooltipWrapper>
-        </div>
-
-        {/* Professional Links */}
-        <div className="mt-6">
-          <div className="w-full h-px bg-gradient-to-r from-transparent via-[#333333] to-transparent"></div>
-          <div className="flex justify-center space-x-6 mt-4">
-            {socialLinks.professional.map(({ label, icon, url, tooltip }) => {
-              const Icon = Icons[icon as keyof typeof Icons]
-              return (
-                <TooltipWrapper key={label} label={tooltip}>
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 active:scale-100"
-                  >
-                    <Icon />
-                  </a>
-                </TooltipWrapper>
-              )
-            })}
+        {/* Window title bar */}
+        <div className="win-titlebar">
+          <span style={{ fontSize: "11px" }}>👤 User Profile</span>
+          <div className="ml-auto flex gap-1">
+            <div style={{
+              background: "#d4d0c8", borderTop: "1px solid #fff", borderLeft: "1px solid #fff",
+              borderRight: "1px solid #404040", borderBottom: "1px solid #404040",
+              width: "16px", height: "14px", fontSize: "9px", display: "flex",
+              alignItems: "center", justifyContent: "center", color: "#000",
+            }}>─</div>
+            <div style={{
+              background: "#d4d0c8", borderTop: "1px solid #fff", borderLeft: "1px solid #fff",
+              borderRight: "1px solid #404040", borderBottom: "1px solid #404040",
+              width: "16px", height: "14px", fontSize: "9px", display: "flex",
+              alignItems: "center", justifyContent: "center", color: "#000",
+            }}>□</div>
           </div>
         </div>
 
-        {/* Spotify Widget */}
-        <div className="mt-6">
-          <SpotifyWidget />
+        {/* Content area */}
+        <div className="p-4">
+          {/* Avatar */}
+          <div
+            className="relative w-28 h-28 mx-auto overflow-hidden cursor-pointer"
+            style={{
+              borderTop: "2px solid #808080",
+              borderLeft: "2px solid #808080",
+              borderRight: "2px solid #ffffff",
+              borderBottom: "2px solid #ffffff",
+            }}
+            onClick={handleAvatarClick}
+          >
+            <Avatar />
+          </div>
+
+          {/* Name & Title */}
+          <div className="mt-3 text-center">
+            <h2 style={{ fontSize: "13px", fontWeight: "bold", color: "#000080" }}>
+              Ethan Townsend
+            </h2>
+            <p style={{ fontSize: "11px", color: "#444444", marginTop: "2px" }}>Full Stack Software Developer</p>
+            <p style={{ fontSize: "10px", color: "#666666", marginTop: "1px" }}>Salt Lake City, UT</p>
+          </div>
+
+          {/* Horizontal separator */}
+          <div style={{ marginTop: "10px", marginBottom: "10px", borderTop: "1px solid #808080", borderBottom: "1px solid #ffffff" }} />
+
+          {/* View Resume Button */}
+          <div className="flex justify-center">
+            <TooltipWrapper label="View Resume" url="/resume/EthanTownsend_Resume_march2026.pdf">
+              <button
+                onClick={() => setSelectedPDF('/resume/EthanTownsend_Resume_march2026.pdf')}
+                aria-label="View Resume"
+                className="win-btn flex items-center gap-1.5"
+                style={{ fontSize: "11px", padding: "3px 12px" }}
+              >
+                <FaFilePdf style={{ fontSize: "12px" }} />
+                <span>View Resume</span>
+              </button>
+            </TooltipWrapper>
+          </div>
+
+          {/* Horizontal separator */}
+          <div style={{ marginTop: "10px", marginBottom: "10px", borderTop: "1px solid #808080", borderBottom: "1px solid #ffffff" }} />
+
+          {/* Professional Links */}
+          <div>
+            <p style={{ fontSize: "10px", fontWeight: "bold", color: "#000000", marginBottom: "6px", textAlign: "center" }}>
+              Links:
+            </p>
+            <div className="flex justify-center gap-4">
+              {socialLinks.professional.map(({ label, icon, url, tooltip }) => {
+                const Icon = Icons[icon as keyof typeof Icons]
+                return (
+                  <TooltipWrapper key={label} label={tooltip}>
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className="flex items-center justify-center"
+                      style={{
+                        background: "#d4d0c8",
+                        borderTop: "1px solid #fff",
+                        borderLeft: "1px solid #fff",
+                        borderRight: "1px solid #404040",
+                        borderBottom: "1px solid #404040",
+                        width: "28px", height: "28px",
+                        fontSize: "14px",
+                        color: "#000080",
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.background = "#c0bdb4")}
+                      onMouseLeave={e => (e.currentTarget.style.background = "#d4d0c8")}
+                    >
+                      <Icon />
+                    </a>
+                  </TooltipWrapper>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Spotify Widget */}
+          <div className="mt-3">
+            <SpotifyWidget />
+          </div>
         </div>
       </aside>
 
