@@ -285,12 +285,26 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
 
   return (
     <>
-      <div id="repos-page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6">
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+      <div
+        id="repos-page-header"
+        className="mb-6"
+        style={{
+          background: "#d4d0c8",
+          borderTop: "2px solid #ffffff",
+          borderLeft: "2px solid #ffffff",
+          borderRight: "2px solid #404040",
+          borderBottom: "2px solid #404040",
+          fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+        }}
+      >
+        <div className="win-titlebar">
+          <span style={{ fontSize: "11px" }}>📂 Projects — Repositories</span>
+        </div>
+        <div className="p-4 mb-2">
+          <div style={{ fontSize: "14px", fontWeight: "bold", color: "#000080", textAlign: "center", marginBottom: "8px" }}>
             Projects
-          </h2>
-          <div className="flex justify-center mb-4">
+          </div>
+          <div className="flex justify-center mb-3">
             <PageTabs
               tabs={tabs}
               activeId={activeId}
@@ -298,7 +312,14 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
             />
           </div>
 
-          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+          <div style={{
+            background: "#ffffff",
+            borderTop: "1px solid #808080",
+            borderLeft: "1px solid #808080",
+            borderRight: "1px solid #ffffff",
+            borderBottom: "1px solid #ffffff",
+            padding: "6px 8px",
+          }}>
             <div className="container mx-auto">
               <SearchFilterBar
                 search={search}
@@ -319,31 +340,31 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
               />
 
               {resultsCount && (
-                <div className="text-sm text-gray-400 mt-2">{resultsCount}</div>
+                <div style={{ fontSize: "10px", color: "#444444", marginTop: "4px" }}>{resultsCount}</div>
               )}
             </div>
           </div>
-        </div>
-      </div>
+        </div>{/* end p-4 */}
+      </div>{/* end win-window */}
       
       <div
         id="repositories-cards"
-        className="text-white"
         style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
       >
         <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
           {loading ? (
             <ResponsiveCardSkeletonGrid
               renderCard={(i) => (
-                <div
-                  key={i}
-                  className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse flex flex-col gap-4 min-h-[220px]"
-                >
-                  <div className="h-6 bg-[#333333] rounded w-3/4" />
-                  <div className="h-4 bg-[#333333] rounded w-2/3" />
-                  <div className="h-4 bg-[#333333] rounded w-5/6" />
+                <div key={i} className="animate-pulse flex flex-col gap-3 p-3 min-h-[200px]" style={{
+                  background: "#d4d0c8",
+                  borderTop: "1px solid #808080", borderLeft: "1px solid #808080",
+                  borderRight: "1px solid #fff", borderBottom: "1px solid #fff",
+                }}>
+                  <div style={{ height: 12, background: "#c0bdb4", width: "75%" }} />
+                  <div style={{ height: 10, background: "#c0bdb4", width: "66%" }} />
+                  <div style={{ height: 10, background: "#c0bdb4", width: "83%" }} />
                   <div className="flex-1" />
-                  <div className="h-10 bg-[#292929] rounded w-full" />
+                  <div style={{ height: 24, background: "#c0bdb4", width: "100%" }} />
                 </div>
               )}
             />
@@ -357,18 +378,31 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                 {tagFilteredProjects.map((project) => (
                     <div
                       key={project.id}
-                      className="group bg-[#151515] hover:bg-[#252525] rounded-none border border-[#333333] hover:border-red-600/50 transition-[background-color,border-color,box-shadow,transform] duration-200 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 flex flex-col shrink-0 snap-start min-w-[260px] w-[calc(100%-1.5rem)] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] 2xl:w-[calc((100%-4.5rem)/4)]"
+                      className="group flex flex-col shrink-0 snap-start min-w-[260px] w-[calc(100%-1.5rem)] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] 2xl:w-[calc((100%-4.5rem)/4)]"
+                      style={{
+                        background: "#d4d0c8",
+                        borderTop: "1px solid #ffffff",
+                        borderLeft: "1px solid #ffffff",
+                        borderRight: "1px solid #404040",
+                        borderBottom: "1px solid #404040",
+                        fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+                      }}
                     >
-                       <div className="p-6 flex-grow">
+                      {/* Win2K title bar */}
+                      <div className="win-titlebar" style={{ fontSize: "11px" }}>
+                        <span className="truncate">{project.name}</span>
+                      </div>
+
+                       <div className="p-3 flex-grow">
                          <div className="mb-2">
-                           <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 truncate">
+                           <h3 style={{ fontSize: "12px", fontWeight: "bold", color: "#000080", marginBottom: "4px" }} className="truncate">
                              {project.name}
                            </h3>
-                           <div className="flex flex-wrap items-center gap-2">
+                           <div className="flex flex-wrap items-center gap-1">
                              {project.source === "manual" && (
                                <span
                                  onClick={() => handleRepoBadgeClick("manual")}
-                                 className={`${repoBadgeBaseClass} bg-green-600 text-white border border-green-500`}
+                                 style={{ fontSize: "9px", padding: "1px 5px", background: "#008000", color: "#ffffff", cursor: "pointer" }}
                                >
                                  MANUAL
                                </span>
@@ -376,7 +410,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                              {project.source === "github" && (
                                <span
                                  onClick={() => handleRepoBadgeClick("github")}
-                                 className={`${repoBadgeBaseClass} bg-purple-600 text-white border border-purple-500`}
+                                 style={{ fontSize: "9px", padding: "1px 5px", background: "#800080", color: "#ffffff", cursor: "pointer" }}
                                >
                                  GITHUB
                                </span>
@@ -384,47 +418,55 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                              {project.topics.includes("neumont") && (
                                <span
                                  onClick={() => handleRepoBadgeClick("neumont")}
-                                 className={`${repoBadgeBaseClass} bg-yellow-600 text-white border border-yellow-500`}
+                                 style={{ fontSize: "9px", padding: "1px 5px", background: "#808000", color: "#ffffff", cursor: "pointer" }}
                                >
                                  NEU
                                </span>
                              )}
                            </div>
                          </div>
-                         <p className="text-gray-300 mb-2 break-words whitespace-normal">{project.description}</p>
-                         <p className="text-sm text-gray-400 mb-1">
-                           <span className="font-bold">Created On:</span>{" "}
-                           {new Date(project.created_at).toLocaleDateString("en-US", {
-                             year: "numeric",
-                             month: "short",
-                             day: "numeric",
-                           })}
+                         <p className="mb-2 break-words whitespace-normal" style={{ fontSize: "11px", color: "#000000" }}>{project.description}</p>
+                         <p style={{ fontSize: "10px", color: "#444444", marginBottom: "2px" }}>
+                           <span style={{ fontWeight: "bold" }}>Created:</span>{" "}
+                           {new Date(project.created_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
                          </p>
-                         <p className="text-sm text-gray-400 mb-2">
-                           <span className="font-bold">Last Updated:</span>{" "}
-                           {new Date(project.updated_at).toLocaleDateString("en-US", {
-                             year: "numeric",
-                             month: "short",
-                             day: "numeric",
-                           })}
+                         <p style={{ fontSize: "10px", color: "#444444", marginBottom: "6px" }}>
+                           <span style={{ fontWeight: "bold" }}>Updated:</span>{" "}
+                           {new Date(project.updated_at).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
                          </p>
-                         <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
+                         <div className="flex flex-wrap gap-1 mt-2">
                            {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
                              <span
                                key={tag}
                                onClick={() => handleTagClick(tag)}
-                               className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap max-w-full min-w-0 truncate transition-all duration-200 border border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] cursor-pointer active:scale-95"
+                               style={{
+                                 fontSize: "9px",
+                                 padding: "1px 5px",
+                                 background: "#c0bdb4",
+                                 color: "#000000",
+                                 borderTop: "1px solid #808080",
+                                 borderLeft: "1px solid #808080",
+                                 borderRight: "1px solid #ffffff",
+                                 borderBottom: "1px solid #ffffff",
+                                 cursor: "pointer",
+                                 whiteSpace: "nowrap",
+                               }}
                              >
                                {tag.toUpperCase()}
                              </span>
                            ))}
                          </div>
                        </div>
-                       <div className="px-6 py-4 border-t border-[#333333] bg-[#151515]">
+                       <div style={{
+                         padding: "6px 8px",
+                         borderTop: "1px solid #808080",
+                         background: "#c8c5bc",
+                       }}>
                          <TooltipWrapper label={project.html_url} fullWidth>
                            <button
                              onClick={() => handleExternalClick(project.html_url, true)}
-                             className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm sm:text-base"
+                             className="win-btn flex items-center justify-center gap-2 w-full"
+                             style={{ fontSize: "11px", padding: "4px 8px" }}
                            >
                              {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
                              <span className="flex-1 break-words text-center leading-tight">

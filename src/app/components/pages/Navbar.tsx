@@ -226,44 +226,71 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
     <>
     <nav
       ref={navRef}
-      className={`w-full bg-[#222222] py-4 px-6 md:px-8 lg:px-10 ${isNavPinned ? 'fixed ring-1 ring-[#2a2a2a] shadow-lg shadow-black/20' : 'relative'} top-0 left-0 z-50 border-b border-[#333333] md:border-0 transition-all duration-300 ease-in-out ${isPinAnimating ? "animate-pin-bounce" : ""}`}
+      className={`w-full ${isNavPinned ? 'fixed' : 'relative'} top-0 left-0 z-50 ${isPinAnimating ? "animate-pin-bounce" : ""}`}
+      style={{
+        background: "linear-gradient(to bottom, #d4d0c8, #c0bdb4)",
+        borderBottom: "2px solid #808080",
+        borderTop: "2px solid #ffffff",
+        boxShadow: "0 2px 0 #404040",
+        fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+      }}
     >
-      <div className="container mx-auto">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-          <div className="flex items-center justify-center lg:justify-start">
-            <h1 className="w-full text-2xl font-bold text-center lg:text-left bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-              ethantownsend.dev
-            </h1>
-            <button
-              onClick={handlePinToggle}
-              className={`lg:hidden p-1 transition-all duration-300 hover:scale-110 ${
-                isNavPinned
-                  ? "text-red-600"
-                  : "text-gray-400 hover:text-red-500"
-              }`}
-              aria-label={isNavPinned ? "Unpin navigation (navbar will not follow scroll)" : "Pin navigation (navbar will follow scroll)"}
-              title={isNavPinned ? "Click to unpin" : "Click to pin"}
-            >
-              <FaThumbtack size={18} className={`transition-transform duration-300 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
-            </button>
+      {/* Win2K title bar strip */}
+      <div className="win-titlebar px-4 py-1">
+        <span style={{ fontSize: "11px", fontWeight: "bold", letterSpacing: "0.02em" }}>
+          🖥️ ethantownsend.dev — Portfolio Navigator
+        </span>
+        <div className="ml-auto flex gap-1">
+          <button
+            onClick={handlePinToggle}
+            style={{
+              background: "#d4d0c8",
+              borderTop: "1px solid #fff",
+              borderLeft: "1px solid #fff",
+              borderRight: "1px solid #404040",
+              borderBottom: "1px solid #404040",
+              width: "16px",
+              height: "14px",
+              fontSize: "9px",
+              lineHeight: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "#000",
+            }}
+            aria-label={isNavPinned ? "Unpin navigation" : "Pin navigation"}
+            title={isNavPinned ? "Click to unpin" : "Click to pin"}
+          >
+            <FaThumbtack size={8} style={{ transform: isNavPinned ? "rotate(0deg)" : "rotate(45deg)" }} />
+          </button>
+        </div>
+      </div>
+
+      {/* Nav buttons area */}
+      <div className="container mx-auto px-4 py-1">
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
+          <div className="flex items-center justify-center lg:justify-start gap-2">
+            <span style={{ fontSize: "13px", fontWeight: "bold", color: "#000080" }}>
+              Navigation:
+            </span>
           </div>
 
-          <div className="flex items-center gap-3 lg:ml-auto lg:justify-end w-full lg:w-auto">
+          <div className="flex items-center gap-2 lg:ml-2 w-full lg:w-auto">
             <div
               ref={navContentRef}
-              className="flex gap-3 transition-all duration-500 ease-in-out w-full lg:w-auto flex-wrap justify-center lg:justify-end"
+              className="flex gap-2 w-full lg:w-auto flex-wrap justify-center lg:justify-start"
             >
               {isLoading ? (
-                <div className="flex space-x-4 animate-pulse justify-center w-full">
+                <div className="flex space-x-2 justify-center w-full">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className="w-24 h-9 bg-[#333333] rounded-lg" />
+                    <div key={i} className="win-btn animate-pulse" style={{ width: "80px", height: "22px" }} />
                   ))}
                 </div>
               ) : (
-                <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-3 px-4 flex items-center gap-2 flex-wrap justify-center lg:justify-end w-full lg:w-auto">
+                <div className="flex items-center gap-1 flex-wrap justify-center lg:justify-start w-full lg:w-auto">
                   {mainTabs.map((tab) => {
                     const isActive = activePage === tab.id
-
                     return (
                       <button
                         key={tab.id}
@@ -296,13 +323,25 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
                             longPressTimerRef.current = null
                           }
                         }}
-                        className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 border focus:outline-none focus-visible:outline-none ${
-                          isActive
-                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-pointer border-transparent"
-                            : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
-                        }`}
+                        className={`inline-flex items-center gap-1.5 focus:outline-none focus-visible:outline-2 focus-visible:outline-[#000080] ${isActive ? "win-btn-active" : ""}`}
+                        style={{
+                          background: isActive ? "#c0bdb4" : "#d4d0c8",
+                          borderTopColor: isActive ? "#404040" : "#ffffff",
+                          borderLeftColor: isActive ? "#404040" : "#ffffff",
+                          borderRightColor: isActive ? "#ffffff" : "#404040",
+                          borderBottomColor: isActive ? "#ffffff" : "#404040",
+                          borderStyle: "solid",
+                          borderWidth: "1px",
+                          padding: "3px 10px",
+                          fontSize: "11px",
+                          fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+                          fontWeight: isActive ? "bold" : "normal",
+                          color: "#000000",
+                          cursor: "pointer",
+                          minWidth: "70px",
+                        }}
                       >
-                        {tab.icon && <span className="text-lg">{tab.icon}</span>}
+                        {tab.icon && <span style={{ fontSize: "12px" }}>{tab.icon}</span>}
                         <span>{tab.label}</span>
                       </button>
                     )
@@ -310,19 +349,6 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
                 </div>
               )}
             </div>
-
-            <button
-              onClick={handlePinToggle}
-              className={`hidden lg:inline-flex p-1 transition-all duration-300 hover:scale-110 ${
-                isNavPinned
-                  ? "text-red-600"
-                  : "text-gray-400 hover:text-red-500"
-              }`}
-              aria-label={isNavPinned ? "Unpin navigation (navbar will not follow scroll)" : "Pin navigation (navbar will follow scroll)"}
-              title={isNavPinned ? "Click to unpin" : "Click to pin"}
-            >
-              <FaThumbtack size={18} className={`transition-transform duration-300 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
-            </button>
           </div>
         </div>
       </div>
@@ -391,15 +417,24 @@ function ContextMenuPopup({ contextMenuRef, page, anchorId, subItems, onTabChang
       ref={contextMenuRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={`fixed z-[9999] min-w-[140px] max-w-[220px] rounded-lg border border-[#333333] bg-[#1e1e1e] py-1.5 shadow-2xl shadow-black/40 ${
+      className={`fixed z-[9999] min-w-[140px] max-w-[200px] ${
         isClosing ? "animate-fade-out-down" : "animate-fade-in-up"
       }`}
-      style={pos ? { left: pos.left, top: pos.top } : { visibility: "hidden", left: 0, top: 0 }}
+      style={{
+        ...(pos ? { left: pos.left, top: pos.top } : { visibility: "hidden", left: 0, top: 0 }),
+        background: "#d4d0c8",
+        borderTop: "1px solid #ffffff",
+        borderLeft: "1px solid #ffffff",
+        borderRight: "1px solid #404040",
+        borderBottom: "1px solid #404040",
+        boxShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+        padding: "2px",
+        fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+      }}
     >
-      <div className="mb-1 border-b border-[#333333] px-2.5 pb-1 pt-0.5">
-        <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-          {sectionLabel}
-        </span>
+      {/* Win2K menu title bar */}
+      <div className="win-titlebar mb-0.5" style={{ fontSize: "11px", padding: "2px 6px" }}>
+        <span>{sectionLabel}</span>
       </div>
       {subItems[page]?.map((item) => (
         <button
@@ -408,9 +443,26 @@ function ContextMenuPopup({ contextMenuRef, page, anchorId, subItems, onTabChang
             onTabChange(page, item.tab)
             closeContextMenu()
           }}
-          className="group flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-xs text-gray-300 transition-all duration-150 hover:bg-[#2a2a2a] hover:text-[#dc2626] hover:shadow-[inset_0_0_8px_rgba(220,38,38,0.15)]"
+          className="flex w-full items-center gap-2 text-left"
+          style={{
+            padding: "3px 8px",
+            fontSize: "11px",
+            color: "#000000",
+            background: "transparent",
+            border: "none",
+            cursor: "default",
+            fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLButtonElement).style.background = "#000080"
+            ;(e.currentTarget as HTMLButtonElement).style.color = "#ffffff"
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLButtonElement).style.background = "transparent"
+            ;(e.currentTarget as HTMLButtonElement).style.color = "#000000"
+          }}
         >
-          <span className="text-sm text-gray-500 transition-colors duration-150 group-hover:text-[#dc2626]">{item.icon}</span>
+          <span style={{ fontSize: "12px", width: "14px", flexShrink: 0 }}>{item.icon}</span>
           <span>{item.label}</span>
         </button>
       ))}

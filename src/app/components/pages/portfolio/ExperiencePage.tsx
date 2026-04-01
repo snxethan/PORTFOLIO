@@ -182,7 +182,7 @@ const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePa
 
     if (filteredItems.length === 0) {
       return (
-        <div className="text-center text-gray-400 py-8">
+        <div className="text-center py-8" style={{ fontSize: "11px", color: "#444444", fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif' }}>
           <p>No items match your current filters.</p>
         </div>
       )
@@ -193,13 +193,16 @@ const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePa
         <ResponsiveCardSkeletonGrid
           className="pb-14"
           renderCard={(i) => (
-            <div key={i} className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse min-h-[14rem]">
-              <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
-              <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
+            <div key={i} className="animate-pulse p-4 min-h-[180px]" style={{
+              background: "#d4d0c8",
+              borderTop: "1px solid #808080", borderLeft: "1px solid #808080",
+              borderRight: "1px solid #fff", borderBottom: "1px solid #fff",
+            }}>
+              <div style={{ height: 14, background: "#c0bdb4", width: "75%", marginBottom: 8 }} />
+              <div style={{ height: 11, background: "#c0bdb4", width: "50%", marginBottom: 8 }} />
               <div className="space-y-2">
-                <div className="h-3 bg-[#333333] rounded w-full" />
-                <div className="h-3 bg-[#333333] rounded w-5/6" />
-                <div className="h-3 bg-[#333333] rounded w-4/6" />
+                <div style={{ height: 10, background: "#c0bdb4" }} />
+                <div style={{ height: 10, background: "#c0bdb4", width: "83%" }} />
               </div>
             </div>
           )}
@@ -226,12 +229,26 @@ const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePa
 
   return (
     <>
-      <div id="experience-page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6">
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+      <div
+        id="experience-page-header"
+        className="mb-6"
+        style={{
+          background: "#d4d0c8",
+          borderTop: "2px solid #ffffff",
+          borderLeft: "2px solid #ffffff",
+          borderRight: "2px solid #404040",
+          borderBottom: "2px solid #404040",
+          fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+        }}
+      >
+        <div className="win-titlebar">
+          <span style={{ fontSize: "11px" }}>💼 Career</span>
+        </div>
+        <div className="p-4 mb-2">
+          <div style={{ fontSize: "14px", fontWeight: "bold", color: "#000080", textAlign: "center", marginBottom: "8px" }}>
             Career
-          </h2>
-          <div className="flex justify-center mb-4">
+          </div>
+          <div className="flex justify-center mb-3">
             <PageTabs
               tabs={tabs}
               activeId={activeId}
@@ -239,7 +256,14 @@ const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePa
             />
           </div>
 
-          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+          <div style={{
+            background: "#ffffff",
+            borderTop: "1px solid #808080",
+            borderLeft: "1px solid #808080",
+            borderRight: "1px solid #ffffff",
+            borderBottom: "1px solid #ffffff",
+            padding: "6px 8px",
+          }}>
             <div className="container mx-auto">
               <SearchFilterBar
                 search={search}
@@ -258,15 +282,14 @@ const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePa
                 defaultSort="newest"
                 onFilterInteraction={scrollToCards}
               />
-              <div className="text-sm text-gray-400 mt-2">{resultsCount}</div>
+              <div style={{ fontSize: "10px", color: "#444444", marginTop: "4px" }}>{resultsCount}</div>
             </div>
           </div>
-        </div>
-      </div>
+        </div>{/* end p-4 */}
+      </div>{/* end win-window */}
 
       <div
         id="experience-cards"
-        className="text-white"
         style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
       >
         <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">

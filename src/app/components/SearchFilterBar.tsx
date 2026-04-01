@@ -99,59 +99,98 @@ export default function SearchFilterBar({
     }
   }, [showFilterMenu, setShowFilterMenu]);
 
+  const win2kFont: React.CSSProperties = {
+    fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+    fontSize: "11px",
+  }
+
   return (
-    <div className="bg-transparent p-4 rounded-lg mb-2">
+    <div className="mb-2" style={win2kFont}>
       {/* Search Bar with Buttons */}
-      <div className="relative mb-4">
+      <div className="relative mb-2 flex items-center gap-1">
         <input
           type="text"
           placeholder={placeholder}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full p-4 pr-32 bg-[#1e1e1e] border border-[#333333] rounded-lg text-white focus:border-red-600 focus:outline-none transition-all hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.01]"
+          style={{
+            ...win2kFont,
+            flex: 1,
+            padding: "3px 6px",
+            background: "#ffffff",
+            color: "#000000",
+            borderTop: "1px solid #808080",
+            borderLeft: "1px solid #808080",
+            borderRight: "1px solid #ffffff",
+            borderBottom: "1px solid #ffffff",
+            outline: "none",
+          }}
         />
         
-        {/* Filter & Sort Buttons Container */}
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-          {/* Filter Options Button - Shows Tags */}
-          <button
-            onClick={() => {
-              setShowTagsMenu(!showTagsMenu);
-              setShowFilterMenu(false);
-            }}
-            className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent ${
-              showTagsMenu ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
-            }`}
-            title="Filter Options"
-          >
-            <FaFilter className={`w-5 h-5 transition-colors ${showTagsMenu ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
-          </button>
+        {/* Filter & Sort Buttons */}
+        <button
+          onClick={() => {
+            setShowTagsMenu(!showTagsMenu);
+            setShowFilterMenu(false);
+          }}
+          className="win-btn flex items-center gap-1"
+          style={{
+            ...win2kFont,
+            padding: "2px 6px",
+            minWidth: "auto",
+            background: showTagsMenu ? "#c0bdb4" : "#d4d0c8",
+            borderTopColor: showTagsMenu ? "#404040" : "#ffffff",
+            borderLeftColor: showTagsMenu ? "#404040" : "#ffffff",
+            borderRightColor: showTagsMenu ? "#ffffff" : "#404040",
+            borderBottomColor: showTagsMenu ? "#ffffff" : "#404040",
+          }}
+          title="Filter Options"
+        >
+          <FaFilter style={{ fontSize: "10px" }} />
+          <span>Filter</span>
+        </button>
 
-          {/* Sort Options Button - No wrapper needed */}
-          <button
-            ref={sortButtonRef}
-            onClick={() => {
-              setShowFilterMenu(!showFilterMenu);
-              setShowTagsMenu(false);
-            }}
-            className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent focus:outline-none ${
-              showFilterMenu || isSortActive ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
-            }`}
-            title="Sort Options"
-          >
-            <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || isSortActive ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
-          </button>
-        </div>
+        <button
+          ref={sortButtonRef}
+          onClick={() => {
+            setShowFilterMenu(!showFilterMenu);
+            setShowTagsMenu(false);
+          }}
+          className="win-btn flex items-center gap-1"
+          style={{
+            ...win2kFont,
+            padding: "2px 6px",
+            minWidth: "auto",
+            background: showFilterMenu ? "#c0bdb4" : "#d4d0c8",
+            borderTopColor: showFilterMenu ? "#404040" : "#ffffff",
+            borderLeftColor: showFilterMenu ? "#404040" : "#ffffff",
+            borderRightColor: showFilterMenu ? "#ffffff" : "#404040",
+            borderBottomColor: showFilterMenu ? "#ffffff" : "#404040",
+          }}
+          title="Sort Options"
+        >
+          <FaSort style={{ fontSize: "10px" }} />
+          <span>Sort{isSortActive ? " *" : ""}</span>
+        </button>
       </div>
 
-      {/* Filter Tags - Animated Dropdown */}
+      {/* Filter Tags */}
       <div
         ref={tagsRef}
-        className={`transition-all duration-300 ease-in-out overflow-hidden ${
-          showTagsMenu ? "max-h-[500px] opacity-100 mb-4" : "max-h-0 opacity-0 pointer-events-none"
+        className={`transition-all duration-200 overflow-hidden ${
+          showTagsMenu ? "max-h-[400px] opacity-100 mb-2" : "max-h-0 opacity-0 pointer-events-none"
         }`}
       >
-        <div className="flex max-h-[220px] flex-wrap content-start gap-2 overflow-y-auto pr-1">
+        <div
+          className="flex max-h-[180px] flex-wrap content-start gap-1 overflow-y-auto p-2"
+          style={{
+            background: "#ffffff",
+            borderTop: "1px solid #808080",
+            borderLeft: "1px solid #808080",
+            borderRight: "1px solid #ffffff",
+            borderBottom: "1px solid #ffffff",
+          }}
+        >
           {selectedTag && (
             <button
               onClick={() => {
@@ -159,10 +198,20 @@ export default function SearchFilterBar({
                 setSearch("");
                 onFilterInteraction?.();
               }}
-              className="text-gray-400 hover:text-red-600 transition-colors hover:scale-110 transition-all duration-200 p-1"
+              className="flex items-center justify-center"
+              style={{
+                ...win2kFont,
+                background: "#d4d0c8",
+                borderTop: "1px solid #fff",
+                borderLeft: "1px solid #fff",
+                borderRight: "1px solid #404040",
+                borderBottom: "1px solid #404040",
+                padding: "1px 4px",
+                cursor: "pointer",
+              }}
               title="Clear filters"
             >
-              <IoMdClose className="w-5 h-5" />
+              <IoMdClose style={{ fontSize: "11px" }} />
             </button>
           )}
           {sortedTags.map((tag) => (
@@ -172,11 +221,17 @@ export default function SearchFilterBar({
                 setSelectedTag(selectedTag === tag ? null : tag);
                 onFilterInteraction?.();
               }}
-              className={`px-3 py-1 rounded-full text-sm transition-all duration-200 border border-transparent ${
-                selectedTag === tag
-                  ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
-                  : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626]"
-              }`}
+              style={{
+                ...win2kFont,
+                padding: "1px 6px",
+                background: selectedTag === tag ? "#000080" : "#d4d0c8",
+                color: selectedTag === tag ? "#ffffff" : "#000000",
+                borderTop: "1px solid #fff",
+                borderLeft: "1px solid #fff",
+                borderRight: "1px solid #404040",
+                borderBottom: "1px solid #404040",
+                cursor: "pointer",
+              }}
             >
               {tag.toUpperCase()}
             </button>
@@ -184,14 +239,23 @@ export default function SearchFilterBar({
         </div>
       </div>
 
-      {/* Sort Dropdown Portal - Rendered outside component hierarchy to escape z-index constraints */}
+      {/* Sort Dropdown Portal */}
       {mounted && showFilterMenu && createPortal(
         <div 
           ref={dropdownRef}
-          className="fixed z-[9999] bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]"
+          className="fixed z-[9999] animate-[popIn_0.15s_ease-out]"
           style={{
             top: `${dropdownPosition.top}px`,
             left: `${dropdownPosition.left}px`,
+            background: "#d4d0c8",
+            borderTop: "1px solid #ffffff",
+            borderLeft: "1px solid #ffffff",
+            borderRight: "1px solid #404040",
+            borderBottom: "1px solid #404040",
+            boxShadow: "2px 2px 4px rgba(0,0,0,0.4)",
+            minWidth: "160px",
+            padding: "2px",
+            ...win2kFont,
           }}
         >
           {sortOptions.map((option) => (
@@ -202,11 +266,27 @@ export default function SearchFilterBar({
                 setShowFilterMenu(false);
                 onFilterInteraction?.();
               }}
-              className={`w-full text-left px-4 py-2 transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                selectedSort === option.value
-                  ? "bg-red-600 text-white"
-                  : "text-gray-300 hover:bg-[#2a2a2a] hover:text-[#dc2626]"
-              }`}
+              className="w-full text-left"
+              style={{
+                padding: "3px 8px",
+                background: selectedSort === option.value ? "#000080" : "transparent",
+                color: selectedSort === option.value ? "#ffffff" : "#000000",
+                border: "none",
+                cursor: "default",
+                ...win2kFont,
+              }}
+              onMouseEnter={e => {
+                if (selectedSort !== option.value) {
+                  (e.currentTarget as HTMLButtonElement).style.background = "#000080"
+                  ;(e.currentTarget as HTMLButtonElement).style.color = "#ffffff"
+                }
+              }}
+              onMouseLeave={e => {
+                if (selectedSort !== option.value) {
+                  (e.currentTarget as HTMLButtonElement).style.background = "transparent"
+                  ;(e.currentTarget as HTMLButtonElement).style.color = "#000000"
+                }
+              }}
             >
               {option.label}
             </button>

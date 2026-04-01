@@ -84,8 +84,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
-      <body suppressHydrationWarning className="bg-[#1a1a1a] text-white font-sans">
+    <html lang="en">
+      <body suppressHydrationWarning className="font-sans" style={{ background: "#ece9d8", color: "#000000" }}>
         <Script
           id="person-jsonld"
           type="application/ld+json"
@@ -95,52 +95,38 @@ export default function RootLayout({
         <Toaster 
           position="top-center"
           toastOptions={{
-            // Default options for all toasts
             duration: 4000,
             className: 'animate-fade-in-up',
             style: {
-              background: '#1e1e1e',
-              color: '#fff',
-              border: '1px solid #333333',
-              borderRadius: '0.75rem',
-              padding: '16px',
-              fontSize: '14px',
-              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3)',
+              background: '#d4d0c8',
+              color: '#000000',
+              border: '1px solid',
+              borderTopColor: '#ffffff',
+              borderLeftColor: '#ffffff',
+              borderRightColor: '#404040',
+              borderBottomColor: '#404040',
+              borderRadius: '0',
+              padding: '8px 12px',
+              fontSize: '11px',
+              fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+              boxShadow: '2px 2px 4px rgba(0,0,0,0.4)',
             },
-            // Success toast styling
             success: {
               duration: 3000,
               className: 'animate-fade-in-up',
-              style: {
-                border: '1px solid #10b981',
-              },
-              iconTheme: {
-                primary: '#10b981',
-                secondary: '#1e1e1e',
-              },
+              style: { borderTopColor: '#008000' },
+              iconTheme: { primary: '#008000', secondary: '#d4d0c8' },
             },
-            // Error toast styling
             error: {
               duration: 4000,
               className: 'animate-fade-in-up',
-              style: {
-                border: '1px solid #dc2626',
-              },
-              iconTheme: {
-                primary: '#dc2626',
-                secondary: '#1e1e1e',
-              },
+              style: { borderTopColor: '#800000' },
+              iconTheme: { primary: '#800000', secondary: '#d4d0c8' },
             },
-            // Loading toast styling
             loading: {
               className: 'animate-fade-in-up',
-              style: {
-                border: '1px solid #ef4444',
-              },
-              iconTheme: {
-                primary: '#ef4444',
-                secondary: '#1e1e1e',
-              },
+              style: {},
+              iconTheme: { primary: '#000080', secondary: '#d4d0c8' },
             },
           }}
         />

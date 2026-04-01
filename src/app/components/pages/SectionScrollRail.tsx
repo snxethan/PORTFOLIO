@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import { FaUser, FaCertificate, FaTools, FaProjectDiagram, FaGithub, FaBriefcase, FaGraduationCap } from "react-icons/fa"
@@ -207,11 +207,14 @@ const SectionScrollRail = ({
             style={{ top: `${normalizedPosition * 100}%` }}
           >
             <span
-              className={`h-4 w-4 rounded-lg border transition-all duration-200 ${
-                isActive
-                  ? "bg-gradient-to-r from-red-600 to-red-500 border-transparent shadow-lg shadow-red-600/40"
-                  : "bg-[#2a2a2a] border-transparent hover:bg-[#333333] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30"
-              }`}
+              className="h-4 w-4 transition-all duration-200"
+              style={{
+                background: isActive ? "#000080" : "#d4d0c8",
+                borderTop: "1px solid #ffffff",
+                borderLeft: "1px solid #ffffff",
+                borderRight: "1px solid #404040",
+                borderBottom: "1px solid #404040",
+              }}
             />
           </button>
         )
@@ -228,19 +231,25 @@ const SectionScrollRail = ({
             }
           }}
           onMouseLeave={scheduleClose}
-          className={`fixed z-[9999] min-w-[140px] max-w-[220px] rounded-lg border border-[#333333] bg-[#1e1e1e] py-1.5 shadow-2xl shadow-black/40 ${
+          className={`fixed z-[9999] min-w-[140px] max-w-[200px] ${
             contextMenu.isClosing ? "animate-fade-out-down" : "animate-fade-in-up"
           }`}
           style={{
             ...(popupPosition
               ? { left: popupPosition.left, top: popupPosition.top }
               : { visibility: "hidden", left: 0, top: 0 }),
+            background: "#d4d0c8",
+            borderTop: "1px solid #ffffff",
+            borderLeft: "1px solid #ffffff",
+            borderRight: "1px solid #404040",
+            borderBottom: "1px solid #404040",
+            boxShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+            padding: "2px",
+            fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
           }}
         >
-          <div className="mb-1 border-b border-[#333333] px-2.5 pb-1 pt-0.5">
-            <span className="text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-              {sectionLabel}
-            </span>
+          <div className="win-titlebar mb-0.5" style={{ fontSize: "11px", padding: "2px 6px" }}>
+            <span>{sectionLabel}</span>
           </div>
           {subItems[contextMenu.page].map((subItem) => (
             <button
@@ -250,9 +259,26 @@ const SectionScrollRail = ({
                 onTabChange(contextMenu.page, subItem.tab)
                 closeContextMenu()
               }}
-              className="group flex w-full items-center gap-2 px-2.5 py-1.5 text-left text-xs text-gray-300 transition-all duration-150 hover:bg-[#2a2a2a] hover:text-[#dc2626] hover:shadow-[inset_0_0_8px_rgba(220,38,38,0.15)]"
+              className="flex w-full items-center gap-2 text-left"
+              style={{
+                padding: "3px 8px",
+                fontSize: "11px",
+                color: "#000000",
+                background: "transparent",
+                border: "none",
+                cursor: "default",
+                fontFamily: '"Tahoma", "MS Sans Serif", Arial, sans-serif',
+              }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLButtonElement).style.background = "#000080"
+                ;(e.currentTarget as HTMLButtonElement).style.color = "#ffffff"
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLButtonElement).style.background = "transparent"
+                ;(e.currentTarget as HTMLButtonElement).style.color = "#000000"
+              }}
             >
-              <span className="text-sm text-gray-500 transition-colors duration-150 group-hover:text-[#dc2626]">{subItem.icon}</span>
+              <span style={{ fontSize: "12px", width: "14px", flexShrink: 0 }}>{subItem.icon}</span>
               <span>{subItem.label}</span>
             </button>
           ))}
