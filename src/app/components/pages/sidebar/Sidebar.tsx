@@ -19,7 +19,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
 
   return (
     <>
-      <aside className={`w-full lg:w-80 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 lg:sticky lg:top-2 my-8 ${className}`}>
+      <aside className={`w-full lg:w-[22rem] xl:w-96 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 lg:sticky lg:top-2 my-8 ${className}`}>
         <audio ref={clickSoundRef} src="/sounds/yippe.mp3" preload="auto" />
 
         {/* Avatar */}
@@ -59,6 +59,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
           <div className="flex justify-center space-x-6 mt-4">
             {socialLinks.professional.map(({ label, icon, url, tooltip }) => {
               const Icon = Icons[icon as keyof typeof Icons]
+              const isLinkedIn = label === "LinkedIn"
               return (
                 <TooltipWrapper key={label} label={tooltip}>
                   <a
@@ -66,7 +67,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 active:scale-100"
+                    className={`inline-flex items-center justify-center ${isLinkedIn ? "rounded-none" : "rounded-full"} p-1 text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 active:scale-100 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] hover:shadow-[0_0_14px_rgba(220,38,38,0.14)] focus-visible:outline-none focus-visible:text-red-500 focus-visible:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] focus-visible:shadow-[0_0_14px_rgba(220,38,38,0.14)]`}
                   >
                     <Icon />
                   </a>

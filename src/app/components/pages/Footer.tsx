@@ -52,6 +52,7 @@ const Footer = () => {
             <div className="flex items-center gap-4">
               {socialLinks.professional.map(({ label, icon, url, tooltip }) => {
                 const Icon = Icons[icon as keyof typeof Icons]
+                const isLinkedIn = label === "LinkedIn"
                 return (
                   <TooltipWrapper key={label} label={tooltip}>
                     <a
@@ -59,7 +60,7 @@ const Footer = () => {
                       target="_blank"
                       rel="noreferrer"
                       aria-label={label}
-                      className="text-gray-400 hover:text-red-600 text-xl transition-all duration-200 ease-out hover:scale-110"
+                      className={`inline-flex items-center justify-center ${isLinkedIn ? "rounded-none" : "rounded-full"} p-1 text-gray-400 hover:text-red-600 text-xl transition-all duration-200 ease-out hover:scale-125 active:scale-100 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] hover:shadow-[0_0_14px_rgba(220,38,38,0.14)] focus-visible:outline-none focus-visible:text-red-500 focus-visible:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] focus-visible:shadow-[0_0_14px_rgba(220,38,38,0.14)]`}
                     >
                       <Icon />
                     </a>
@@ -79,7 +80,7 @@ const Footer = () => {
               className="rounded-full transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:scale-105"
             />
             <TooltipWrapper label="My Portfolio">
-              <a href="https://ethantownsend.dev" className="text-sm text-gray-400 hover:text-red-600 transition-colors duration-200">
+              <a href="https://ethantownsend.dev" className="inline-flex items-center text-sm text-gray-400 hover:text-red-600 transition-all duration-200 ease-out hover:scale-105 active:scale-100 focus-visible:outline-none focus-visible:text-red-500 focus-visible:scale-105">
                 Ethan Townsend &copy; {new Date().getFullYear()}
               </a>
             </TooltipWrapper>
@@ -89,10 +90,10 @@ const Footer = () => {
           <div className="order-2 lg:order-3">
             <div className="footer-links flex flex-col sm:flex-row items-center gap-2">
               <div className="flex gap-4">
-                <Link href="https://snex.dev" className="hover:text-red-600 hover:scale-105 transition-all duration-200">
+                <Link href="https://snex.dev" className="inline-flex items-center hover:text-red-600 transition-all duration-200 ease-out hover:scale-105 active:scale-100 focus-visible:outline-none focus-visible:text-red-500 focus-visible:scale-105">
                   snex.dev
                 </Link>
-                <Link href="https://snxethan.dev" className="hover:text-red-600 hover:scale-105 transition-all duration-200">
+                <Link href="https://snxethan.dev" className="inline-flex items-center hover:text-red-600 transition-all duration-200 ease-out hover:scale-105 active:scale-100 focus-visible:outline-none focus-visible:text-red-500 focus-visible:scale-105">
                   snxethan.dev
                 </Link>
               </div>

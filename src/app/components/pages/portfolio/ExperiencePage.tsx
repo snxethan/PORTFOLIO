@@ -188,25 +188,6 @@ const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePa
       )
     }
 
-    if (loading) {
-      return (
-        <ResponsiveCardSkeletonGrid
-          className="pb-14"
-          renderCard={(i) => (
-            <div key={i} className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse min-h-[14rem]">
-              <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
-              <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
-              <div className="space-y-2">
-                <div className="h-3 bg-[#333333] rounded w-full" />
-                <div className="h-3 bg-[#333333] rounded w-5/6" />
-                <div className="h-3 bg-[#333333] rounded w-4/6" />
-              </div>
-            </div>
-          )}
-        />
-      )
-    }
-
     return (
       <Timeline
         items={filteredItems}
@@ -226,11 +207,14 @@ const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePa
 
   return (
     <>
-      <div id="experience-page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6">
+      <div id="experience-page-header" className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg shadow-black/20 p-6 mb-6">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             Career
           </h2>
+          <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-gray-400">
+            Professional roles, impact, and hands-on experience.
+          </p>
           <div className="flex justify-center mb-4">
             <PageTabs
               tabs={tabs}
@@ -239,7 +223,7 @@ const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePa
             />
           </div>
 
-          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4 shadow-lg shadow-black/20">
             <div className="container mx-auto">
               <SearchFilterBar
                 search={search}
@@ -269,9 +253,26 @@ const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePa
         className="text-white"
         style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
       >
-        <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
-          {renderTimeline()}
-        </div>
+        {loading ? (
+          <ResponsiveCardSkeletonGrid
+            className="pb-14"
+            renderCard={(i) => (
+              <div key={i} className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse min-h-[14rem]">
+                <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
+                <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
+                <div className="space-y-2">
+                  <div className="h-3 bg-[#333333] rounded w-full" />
+                  <div className="h-3 bg-[#333333] rounded w-5/6" />
+                  <div className="h-3 bg-[#333333] rounded w-4/6" />
+                </div>
+              </div>
+            )}
+          />
+        ) : (
+          <div key={`experience-loaded-${activeId}`} className="animate-skeleton-pop">
+            {renderTimeline()}
+          </div>
+        )}
       </div>
     </>
   )

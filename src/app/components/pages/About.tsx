@@ -14,25 +14,9 @@ import { scrollElementIntoViewWithNavbarOffset } from "../../utils/scrollWithNav
 const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, refreshSignal }: { onTabChange?: (page: string, tab: string | null) => void; externalSubsection?: string | null; onExternalSubsectionConsumed?: () => void; refreshSignal?: number }) => {
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
   const [activeSubsection, setActiveSubsection] = useState<"certifications" | "skills">("certifications")
-  const [search, setSearch] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("aboutSearch") || ""
-    }
-    return ""
-  })
-  const [sortBy, setSortBy] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("aboutSortBy") || "newest"
-    }
-    return "newest"
-  })
-  const [selectedTag, setSelectedTag] = useState<string | null>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("aboutSelectedTag")
-      return saved !== null ? saved : "Computer Science"
-    }
-    return "Computer Science"
-  })
+  const [search, setSearch] = useState("")
+  const [sortBy, setSortBy] = useState("newest")
+  const [selectedTag, setSelectedTag] = useState<string | null>("Computer Science")
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const [showTagsMenu, setShowTagsMenu] = useState(false)
   const [cardsLoading, setCardsLoading] = useState(true)
@@ -52,6 +36,22 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
 
     cardElement.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
     return true
+  }, [])
+
+  const resetCardsScrollPosition = useCallback(() => {
+    const container = cardsScrollContainerRef.current
+    if (!container) return
+
+    const track = container.firstElementChild as HTMLElement | null
+    const firstCard = track?.firstElementChild as HTMLElement | null
+
+    if (firstCard) {
+      // Keep About rails on the same snap grid from the first card render.
+      firstCard.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" })
+      return
+    }
+
+    container.scrollTo({ left: 0, behavior: "auto" })
   }, [])
 
   useEffect(() => {
@@ -144,7 +144,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     }
   }, [activeSubsection])
 
-  const cardSizeClass = "min-h-[180px] h-full min-w-[260px] w-[calc(100%-1.5rem)] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] 2xl:w-[calc((100%-4.5rem)/4)] shrink-0 snap-start"
+  const cardSizeClass = "min-h-[180px] h-full min-w-[260px] 2xl:min-w-[220px] w-[calc(100%-2.5rem)] sm:w-[calc((100%-4.5rem)/2)] lg:w-[calc((100%-8rem)/3)] 2xl:w-[calc((100%-14rem)/4)] shrink-0 snap-center"
 
   const handleCardTagClick = (event: React.MouseEvent<HTMLElement>, tag: string) => {
     event.preventDefault()
@@ -167,7 +167,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
               event.stopPropagation()
             }}
             onClick={(event) => handleCardTagClick(event, tag)}
-            className="text-xs px-3 py-1 rounded-full whitespace-nowrap max-w-full min-w-0 truncate transition-all duration-200 border cursor-pointer active:scale-95 bg-[#3a3a3a] text-gray-300 border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626]"
+            className="inline-flex items-center text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 border cursor-pointer active:scale-95 bg-[#3a3a3a] text-gray-300 border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626]"
           >
             {tag.toUpperCase()}
           </span>
@@ -180,23 +180,25 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     const { name, icon: Icon, highlight, url, year } = item
     const cardTags = item.tags ?? []
     const card = (
-      <div className={`group relative z-0 hover:z-10 flex items-start gap-4 bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
-        <div
-          className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
-            highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
-          }`}
-        >
-          <Icon className="text-white text-xl" />
+      <div className={`group relative z-0 hover:z-10 flex h-full flex-col overflow-hidden bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
+        <div className="flex items-start gap-4 min-w-0">
+          <div
+            className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
+              highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
+            }`}
+          >
+            <Icon className="text-white text-xl" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-white font-semibold text-base break-words whitespace-normal group-hover:text-[#dc2626] transition-colors duration-300">
+              {name}
+            </p>
+            {year && <span className="text-gray-400 text-sm">{year}</span>}
+          </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-white font-semibold text-base break-words whitespace-normal group-hover:text-[#dc2626] transition-colors duration-300">
-            {name}
-          </p>
-          {year && <span className="text-gray-400 text-sm">{year}</span>}
-          {renderFilterTags(cardTags)}
-        </div>
+        <div className="mt-4 w-full min-w-0">{renderFilterTags(cardTags)}</div>
         {url && (
-          <div className="absolute bottom-3 right-3 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300">
+          <div className="mt-auto pt-3 flex justify-end text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300">
             {url.endsWith(".pdf") ? <FaFilePdf size={14} aria-label="View Certification" /> : <FaExternalLinkAlt size={14} aria-label="Open external link" />}
           </div>
         )}
@@ -234,7 +236,16 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
         </button>
       </TooltipWrapper>
     ) : (
-      <div key={name}>{card}</div>
+      <button
+        key={name}
+        type="button"
+        onClick={(event) => {
+          shouldRevealCardFirst(event.currentTarget)
+        }}
+        className="text-left"
+      >
+        {card}
+      </button>
     )
   }
 
@@ -242,22 +253,24 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     const { name, icon: Icon, highlight, url } = item
     const cardTags = Array.from(new Set([highlight ? "Hard Skills" : "Soft Skills", ...(item.tags ?? [])]))
     const card = (
-      <div className={`group relative z-0 hover:z-10 flex items-start gap-4 bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
-        <div
-          className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
-            highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
-          }`}
-        >
-          <Icon className="text-white text-xl" />
+      <div className={`group relative z-0 hover:z-10 flex h-full flex-col overflow-hidden bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
+        <div className="flex items-start gap-4 min-w-0">
+          <div
+            className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
+              highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
+            }`}
+          >
+            <Icon className="text-white text-xl" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-white font-semibold text-base break-words whitespace-normal group-hover:text-[#dc2626] transition-colors duration-300">
+              {name}
+            </p>
+          </div>
         </div>
-        <div className="min-w-0">
-          <p className="text-white font-semibold text-base break-words whitespace-normal group-hover:text-[#dc2626] transition-colors duration-300">
-            {name}
-          </p>
-          {renderFilterTags(cardTags)}
-        </div>
+        <div className="mt-4 w-full min-w-0">{renderFilterTags(cardTags)}</div>
         {url && !url.endsWith(".pdf") && (
-          <div className="absolute bottom-3 right-3 text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300">
+          <div className="mt-auto pt-3 flex justify-end text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300">
             <FaExternalLinkAlt size={14} aria-label="Open external link" />
           </div>
         )}
@@ -278,7 +291,16 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
         </button>
       </TooltipWrapper>
     ) : (
-      <div key={name}>{card}</div>
+      <button
+        key={name}
+        type="button"
+        onClick={(event) => {
+          shouldRevealCardFirst(event.currentTarget)
+        }}
+        className="text-left"
+      >
+        {card}
+      </button>
     )
   }
 
@@ -387,12 +409,21 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     onTabChange?.("about", nextTab)
     // Also update internal state immediately so the switch is instant
     setActiveSubsection(nextTab)
-    requestAnimationFrame(scrollToCards)
+    requestAnimationFrame(() => {
+      resetCardsScrollPosition()
+      scrollToCards()
+    })
   }
+
+  useEffect(() => {
+    if (cardsLoading) return
+    // Ensure each subtab render starts from the first card position.
+    requestAnimationFrame(() => resetCardsScrollPosition())
+  }, [activeSubsection, cardsLoading, resetCardsScrollPosition])
 
   return (
     <>
-      <div className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6 animate-fadeInScale">
+      <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg shadow-black/20 p-6 mb-6 animate-fadeInScale">
         <div className="mb-5 text-center">
           <h2 className="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform">
             Welcome to My Portfolio
@@ -462,6 +493,10 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
           <br />
         </p>
 
+        <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-gray-400">
+          Quick highlights of my certifications and technical skillset.
+        </p>
+
         <div className="flex justify-center mb-4">
           <PageTabs
             tabs={tabs}
@@ -471,7 +506,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
 
         </div>
 
-        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4 shadow-lg shadow-black/20">
           <div className="container mx-auto">
             <SearchFilterBar
               search={search}
@@ -525,11 +560,13 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
             )}
           />
         ) : (
-          <div ref={cardsScrollContainerRef} className="w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain snap-x snap-mandatory">
-            <div className="flex w-full min-w-full items-stretch gap-6 px-3 py-4">
-              {activeSubsection === "certifications"
-                ? sortedCertifications.map(renderCertificationCard)
-                : sortedSkills.map(renderSkillCard)}
+          <div key={`about-loaded-${activeSubsection}-${refreshSignal ?? 0}`} className="animate-skeleton-pop">
+            <div ref={cardsScrollContainerRef} className="scroll-edge-fade w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain py-4 snap-x snap-mandatory">
+              <div className="relative flex w-full min-w-full flex-nowrap items-stretch gap-6 px-5 py-4 lg:px-7 2xl:px-9">
+                {activeSubsection === "certifications"
+                  ? sortedCertifications.map(renderCertificationCard)
+                  : sortedSkills.map(renderSkillCard)}
+              </div>
             </div>
           </div>
         )}

@@ -42,16 +42,82 @@ export default function SearchFilterBar({
   onFilterInteraction,
 }: SearchFilterBarProps) {
   const sortedTags = [...tags].sort();
+  const FILTER_MENU_CLOSE_DURATION = 220;
+  const TAG_MENU_CLOSE_DURATION = 220;
   const sortButtonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const [mounted, setMounted] = useState(false);
+  const [isFilterMenuRendered, setIsFilterMenuRendered] = useState(showFilterMenu);
+  const [isFilterMenuClosing, setIsFilterMenuClosing] = useState(false);
+  const [isTagsMenuRendered, setIsTagsMenuRendered] = useState(showTagsMenu);
+  const [isTagsMenuClosing, setIsTagsMenuClosing] = useState(false);
+  const filterMenuTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tagsMenuTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Track when component is mounted for portal
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (filterMenuTimeoutRef.current) {
+      clearTimeout(filterMenuTimeoutRef.current);
+      filterMenuTimeoutRef.current = null;
+    }
+
+    if (showFilterMenu) {
+      setIsFilterMenuRendered(true);
+      setIsFilterMenuClosing(false);
+      return;
+    }
+
+    if (isFilterMenuRendered) {
+      setIsFilterMenuClosing(true);
+      filterMenuTimeoutRef.current = setTimeout(() => {
+        setIsFilterMenuRendered(false);
+        setIsFilterMenuClosing(false);
+        filterMenuTimeoutRef.current = null;
+      }, FILTER_MENU_CLOSE_DURATION);
+    }
+
+    return () => {
+      if (filterMenuTimeoutRef.current) {
+        clearTimeout(filterMenuTimeoutRef.current);
+        filterMenuTimeoutRef.current = null;
+      }
+    };
+  }, [showFilterMenu, isFilterMenuRendered]);
+
+  useEffect(() => {
+    if (tagsMenuTimeoutRef.current) {
+      clearTimeout(tagsMenuTimeoutRef.current);
+      tagsMenuTimeoutRef.current = null;
+    }
+
+    if (showTagsMenu) {
+      setIsTagsMenuRendered(true);
+      setIsTagsMenuClosing(false);
+      return;
+    }
+
+    if (isTagsMenuRendered) {
+      setIsTagsMenuClosing(true);
+      tagsMenuTimeoutRef.current = setTimeout(() => {
+        setIsTagsMenuRendered(false);
+        setIsTagsMenuClosing(false);
+        tagsMenuTimeoutRef.current = null;
+      }, TAG_MENU_CLOSE_DURATION);
+    }
+
+    return () => {
+      if (tagsMenuTimeoutRef.current) {
+        clearTimeout(tagsMenuTimeoutRef.current);
+        tagsMenuTimeoutRef.current = null;
+      }
+    };
+  }, [showTagsMenu, isTagsMenuRendered]);
 
   // Auto-scroll to tags section when it opens
   useEffect(() => {
@@ -63,6 +129,25 @@ export default function SearchFilterBar({
       return () => clearTimeout(id);
     }
   }, [showTagsMenu]);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+
+      if (showFilterMenu) {
+        setShowFilterMenu(false);
+      }
+
+      if (showTagsMenu) {
+        setShowTagsMenu(false);
+      }
+    };
+
+    if (showFilterMenu || showTagsMenu) {
+      document.addEventListener("keydown", handleEscape);
+      return () => document.removeEventListener("keydown", handleEscape);
+    }
+  }, [showFilterMenu, showTagsMenu, setShowFilterMenu, setShowTagsMenu]);
 
   // Determine if sort is at default value (use first option if defaultSort not provided)
   const effectiveDefaultSort = defaultSort || sortOptions[0]?.value;
@@ -108,7 +193,7 @@ export default function SearchFilterBar({
           placeholder={placeholder}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full p-4 pr-32 bg-[#1e1e1e] border border-[#333333] rounded-lg text-white focus:border-red-600 focus:outline-none transition-all hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.01]"
+          className="w-full p-4 pr-32 bg-[#1e1e1e] border border-[#333333] rounded-lg text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] focus:border-red-600 focus:outline-none transition-all hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.01]"
         />
         
         {/* Filter & Sort Buttons Container */}
@@ -145,50 +230,54 @@ export default function SearchFilterBar({
       </div>
 
       {/* Filter Tags - Animated Dropdown */}
-      <div
-        ref={tagsRef}
-        className={`transition-all duration-300 ease-in-out overflow-hidden ${
-          showTagsMenu ? "max-h-[500px] opacity-100 mb-4" : "max-h-0 opacity-0 pointer-events-none"
-        }`}
-      >
-        <div className="flex max-h-[220px] flex-wrap content-start gap-2 overflow-y-auto pr-1">
-          {selectedTag && (
-            <button
-              onClick={() => {
-                setSelectedTag(null);
-                setSearch("");
-                onFilterInteraction?.();
-              }}
-              className="text-gray-400 hover:text-red-600 transition-colors hover:scale-110 transition-all duration-200 p-1"
-              title="Clear filters"
-            >
-              <IoMdClose className="w-5 h-5" />
-            </button>
-          )}
-          {sortedTags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => {
-                setSelectedTag(selectedTag === tag ? null : tag);
-                onFilterInteraction?.();
-              }}
-              className={`px-3 py-1 rounded-full text-sm transition-all duration-200 border border-transparent ${
-                selectedTag === tag
-                  ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
-                  : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626]"
-              }`}
-            >
-              {tag.toUpperCase()}
-            </button>
-          ))}
+      {isTagsMenuRendered && (
+        <div
+          ref={tagsRef}
+          className={`mb-4 overflow-hidden rounded-lg border border-[#333333] bg-[#1e1e1e] shadow-lg shadow-black/20 transition-all duration-200 ease-out origin-top ${
+            isTagsMenuClosing ? "animate-tag-hide pointer-events-none" : "animate-tag-extend"
+          }`}
+        >
+          <div className="flex max-h-[220px] flex-wrap content-start gap-2 overflow-y-auto p-3 pr-1">
+            {selectedTag && (
+              <button
+                onClick={() => {
+                  setSelectedTag(null);
+                  setSearch("");
+                  onFilterInteraction?.();
+                }}
+                className="text-gray-400 hover:text-red-600 transition-colors hover:scale-110 transition-all duration-200 p-1"
+                title="Clear filters"
+              >
+                <IoMdClose className="w-5 h-5" />
+              </button>
+            )}
+            {sortedTags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => {
+                  setSelectedTag(selectedTag === tag ? null : tag);
+                  onFilterInteraction?.();
+                }}
+                className={`px-3 py-1 rounded-full text-sm transition-all duration-200 border border-transparent ${
+                  selectedTag === tag
+                    ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
+                    : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626]"
+                }`}
+              >
+                {tag.toUpperCase()}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Sort Dropdown Portal - Rendered outside component hierarchy to escape z-index constraints */}
-      {mounted && showFilterMenu && createPortal(
+      {mounted && isFilterMenuRendered && createPortal(
         <div 
           ref={dropdownRef}
-          className="fixed z-[9999] bg-[#1e1e1e] border border-[#333333] rounded-lg shadow-lg min-w-[200px] animate-[popIn_0.2s_ease-out]"
+          className={`fixed z-[9999] min-w-[200px] rounded-lg border border-[#333333] bg-[#1e1e1e] shadow-lg origin-top-right ${
+            isFilterMenuClosing ? "animate-sort-menu-out pointer-events-none" : "animate-sort-menu-in"
+          }`}
           style={{
             top: `${dropdownPosition.top}px`,
             left: `${dropdownPosition.left}px`,

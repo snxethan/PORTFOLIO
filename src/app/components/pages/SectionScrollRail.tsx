@@ -57,15 +57,10 @@ const SectionScrollRail = ({
   const [popupPosition, setPopupPosition] = useState<{ left: number; top: number } | null>(null)
   const [isRailHovered, setIsRailHovered] = useState(false)
   const contextMenuRef = useRef<HTMLDivElement>(null)
-  const hoverOpenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const hoverCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const clearTimers = useCallback(() => {
-    if (hoverOpenTimerRef.current) {
-      clearTimeout(hoverOpenTimerRef.current)
-      hoverOpenTimerRef.current = null
-    }
     if (hoverCloseTimerRef.current) {
       clearTimeout(hoverCloseTimerRef.current)
       hoverCloseTimerRef.current = null
@@ -99,19 +94,8 @@ const SectionScrollRail = ({
     }, CONTEXT_MENU_ANIMATION_MS)
   }, [])
 
-  const scheduleOpen = useCallback((page: SectionRailItem["id"]) => {
-    if (!enableHoverPopups) return
-    if (hoverOpenTimerRef.current) clearTimeout(hoverOpenTimerRef.current)
-    const delay = contextMenu ? 0 : 180
-    hoverOpenTimerRef.current = setTimeout(() => openContextMenu(page), delay)
-  }, [contextMenu, enableHoverPopups, openContextMenu])
-
   const scheduleClose = useCallback(() => {
-    if (hoverOpenTimerRef.current) {
-      clearTimeout(hoverOpenTimerRef.current)
-      hoverOpenTimerRef.current = null
-    }
-    hoverCloseTimerRef.current = setTimeout(() => closeContextMenu(), 180)
+    hoverCloseTimerRef.current = setTimeout(() => closeContextMenu(), 220)
   }, [closeContextMenu])
 
   const isRailVisible = enabled && (visible || isRailHovered || !!contextMenu)
@@ -174,19 +158,23 @@ const SectionScrollRail = ({
 
   return (
     <div
-      className={`fixed right-4 z-40 hidden md:block top-[calc(var(--navbar-height,6rem)+1rem)] bottom-8 transition-all duration-300 ${
+      className={`fixed inset-x-0 z-40 hidden md:block top-[calc(var(--navbar-height,6rem)+1rem)] bottom-8 pointer-events-none transition-all duration-300 ${
         isRailVisible
-          ? "opacity-100 translate-x-0"
+          ? "opacity-100"
           : enabled
-            ? "opacity-0 translate-x-2"
-            : "opacity-0 translate-x-2 pointer-events-none"
+            ? "opacity-0"
+            : "opacity-0"
       }`}
       aria-hidden={!isRailVisible}
-      onMouseEnter={() => {
-        if (enabled) setIsRailHovered(true)
-      }}
-      onMouseLeave={() => setIsRailHovered(false)}
     >
+      <div className="container relative mx-auto h-full px-4 lg:px-3 xl:px-2">
+      <div
+        className="pointer-events-auto absolute right-0 top-0 h-full w-16 translate-x-[calc(100%+0.5rem)]"
+        onMouseEnter={() => {
+          if (enabled) setIsRailHovered(true)
+        }}
+        onMouseLeave={() => setIsRailHovered(false)}
+      >
       <div className="absolute inset-y-0 -right-1 w-10" aria-hidden="true" />
       <div className="relative h-full w-16">
       {items.map((item) => {
@@ -199,23 +187,24 @@ const SectionScrollRail = ({
             id={`section-rail-btn-${item.id}`}
             type="button"
             onClick={() => onSelect(item.id)}
-            onMouseEnter={() => scheduleOpen(item.id)}
+            onMouseEnter={() => openContextMenu(item.id)}
             onMouseLeave={scheduleClose}
             aria-label={`Scroll to ${item.label}`}
-            title={item.label}
-            className="group absolute right-0 flex -translate-y-1/2 items-center"
+            className="group absolute right-0 flex -translate-y-1/2 items-center p-1"
             style={{ top: `${normalizedPosition * 100}%` }}
           >
             <span
-              className={`h-4 w-4 rounded-lg border transition-all duration-200 ${
+              className={`h-4 w-4 rounded-md border transition-all duration-200 ${
                 isActive
                   ? "bg-gradient-to-r from-red-600 to-red-500 border-transparent shadow-lg shadow-red-600/40"
-                  : "bg-[#2a2a2a] border-transparent hover:bg-[#333333] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30"
+                  : "bg-[#2a2a2a] border-transparent shadow-md shadow-black/35 hover:bg-[#333333] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30"
               }`}
             />
           </button>
         )
       })}
+      </div>
+      </div>
       </div>
 
       {contextMenu && (
@@ -226,9 +215,13 @@ const SectionScrollRail = ({
               clearTimeout(hoverCloseTimerRef.current)
               hoverCloseTimerRef.current = null
             }
+            if (closeTimerRef.current) {
+              clearTimeout(closeTimerRef.current)
+              closeTimerRef.current = null
+            }
           }}
           onMouseLeave={scheduleClose}
-          className={`fixed z-[9999] min-w-[140px] max-w-[220px] rounded-lg border border-[#333333] bg-[#1e1e1e] py-1.5 shadow-2xl shadow-black/40 ${
+          className={`fixed z-[9999] pointer-events-auto min-w-[140px] max-w-[220px] rounded-lg border border-[#333333] bg-[#1e1e1e] py-1.5 shadow-2xl shadow-black/40 ${
             contextMenu.isClosing ? "animate-fade-out-down" : "animate-fade-in-up"
           }`}
           style={{
@@ -263,8 +256,4 @@ const SectionScrollRail = ({
 }
 
 export default SectionScrollRail
-
-
-
-
 

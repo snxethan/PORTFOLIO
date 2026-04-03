@@ -160,27 +160,6 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
       )
     }
 
-    if (loading) {
-      return (
-        <ResponsiveCardSkeletonGrid
-          renderCard={(i) => (
-            <div
-              key={i}
-              className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse min-h-[14rem]"
-            >
-              <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
-              <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
-              <div className="space-y-2">
-                <div className="h-3 bg-[#333333] rounded w-full" />
-                <div className="h-3 bg-[#333333] rounded w-5/6" />
-                <div className="h-3 bg-[#333333] rounded w-4/6" />
-              </div>
-            </div>
-          )}
-        />
-      )
-    }
-
     return (
       <Timeline
         items={sortedProjects}
@@ -194,11 +173,14 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
 
   return (
     <>
-      <div id="projects-page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6">
+      <div id="projects-page-header" className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg shadow-black/20 p-6 mb-6">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             Projects
           </h2>
+          <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-gray-400">
+            Featured builds and milestones from my project timeline.
+          </p>
           <div className="flex justify-center mb-4">
             <PageTabs
               tabs={tabs}
@@ -207,7 +189,7 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
             />
           </div>
 
-          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4 shadow-lg shadow-black/20">
             <div className="container mx-auto">
               <SearchFilterBar
                 search={search}
@@ -240,9 +222,28 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
         className="text-white"
         style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
       >
-        <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
-          {renderTimeline()}
-        </div>
+        {loading ? (
+          <ResponsiveCardSkeletonGrid
+            renderCard={(i) => (
+              <div
+                key={i}
+                className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse min-h-[14rem]"
+              >
+                <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
+                <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
+                <div className="space-y-2">
+                  <div className="h-3 bg-[#333333] rounded w-full" />
+                  <div className="h-3 bg-[#333333] rounded w-5/6" />
+                  <div className="h-3 bg-[#333333] rounded w-4/6" />
+                </div>
+              </div>
+            )}
+          />
+        ) : (
+          <div key={`projects-loaded-${activeId}`} className="animate-skeleton-pop">
+            {renderTimeline()}
+          </div>
+        )}
       </div>
     </>
   )

@@ -226,7 +226,11 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
     <>
     <nav
       ref={navRef}
-      className={`w-full bg-[#222222] py-4 px-6 md:px-8 lg:px-10 ${isNavPinned ? 'fixed ring-1 ring-[#2a2a2a] shadow-lg shadow-black/20' : 'relative'} top-0 left-0 z-50 border-b border-[#333333] md:border-0 transition-all duration-300 ease-in-out ${isPinAnimating ? "animate-pin-bounce" : ""}`}
+      className={`isolate w-full bg-[#222222] py-4 px-4 md:px-6 lg:px-7 ${
+        isNavPinned
+          ? 'fixed z-50 ring-1 ring-[#2a2a2a] shadow-lg shadow-black/20 border-b border-[#333333] md:border-0'
+          : 'relative z-20 rounded-xl border border-[#333333] shadow-lg shadow-black/20'
+      } top-0 left-0 transition-all duration-300 ease-in-out ${isPinAnimating ? "animate-pin-bounce" : ""}`}
     >
       <div className="container mx-auto">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -260,7 +264,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
                   ))}
                 </div>
               ) : (
-                <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-3 px-4 flex items-center gap-2 flex-wrap justify-center lg:justify-end w-full lg:w-auto">
+                <div className="relative isolate bg-[#1e1e1e] border border-[#333333] rounded-xl py-3 px-4 flex items-center gap-2 flex-wrap justify-center lg:justify-end w-full lg:w-auto">
                   {mainTabs.map((tab) => {
                     const isActive = activePage === tab.id
 
@@ -296,7 +300,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
                             longPressTimerRef.current = null
                           }
                         }}
-                        className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 border focus:outline-none focus-visible:outline-none ${
+                        className={`relative z-0 inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:z-10 focus:z-10 focus-visible:z-10 border focus:outline-none focus-visible:outline-none ${
                           isActive
                             ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-pointer border-transparent"
                             : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"

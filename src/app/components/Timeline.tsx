@@ -227,7 +227,7 @@ const Timeline: React.FC<TimelineProps> = ({
     <div
       ref={isHorizontal ? horizontalScrollRef : undefined}
       className={isHorizontal
-        ? "w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain py-4 snap-x snap-mandatory"
+        ? "scroll-edge-fade w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain py-4 snap-x snap-mandatory"
         : "w-full mx-auto"
       }
       data-timeline-type={type ?? "mixed"}
@@ -257,7 +257,7 @@ const Timeline: React.FC<TimelineProps> = ({
             <div
               key={itemKey}
               onClick={handleCardClick}
-              className={`group relative z-0 hover:z-10 flex h-full min-h-[520px] self-stretch flex-col bg-[#151515] hover:bg-[#252525] p-6 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${
+              className={`group relative z-0 hover:z-10 flex h-full min-h-[520px] self-stretch flex-col overflow-hidden bg-[#151515] hover:bg-[#252525] p-6 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${
                 isHorizontal ? "shrink-0 w-full snap-center" : "w-full"
               } ${
                  isNewItem ? "animate-fade-in-up border-red-600/30" : ""
@@ -326,11 +326,11 @@ const Timeline: React.FC<TimelineProps> = ({
                 )
                 if (displayTags.length === 0) return null
                 const tagClassName = onTagClick
-                  ? "bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 border border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] cursor-pointer active:scale-95"
-                  : "bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full"
+                  ? "inline-flex max-w-full shrink-0 items-center overflow-hidden box-border bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 border border-transparent hover:bg-[#444444] hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] cursor-pointer active:scale-95"
+                  : "inline-flex max-w-full shrink-0 items-center overflow-hidden box-border bg-[#333333] text-gray-300 text-xs px-2 py-1 rounded-full whitespace-nowrap"
 
                 return (
-                  <div className="flex flex-wrap gap-1.5 mb-4">
+                  <div className="mb-4 flex w-full min-w-0 max-w-full flex-wrap gap-1.5">
                     {displayTags.map((tag) => (
                       <span
                         key={tag}

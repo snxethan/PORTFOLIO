@@ -634,7 +634,7 @@ export default function HomeClient() {
         positions={sectionMarkerPositions}
         onSelect={(section) => handleNavChange(section)}
         onTabChange={handleNavbarTabChange}
-        enableHoverPopups={isSectionRailEnabled && hasScrolledOnce}
+        enableHoverPopups={isSectionRailEnabled}
         enabled={isSectionRailEnabled}
       />
       <main
@@ -645,7 +645,7 @@ export default function HomeClient() {
             : { paddingTop: "1rem" }
         }
       >
-        <div className="container mx-auto px-4 pt-4 min-w-[360px]">
+        <div className="container mx-auto px-4 lg:px-3 xl:px-2 pt-4 min-w-[360px]">
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex flex-col gap-6 mb-12 lg:items-center lg:mx-auto lg:w-fit">
               <div
@@ -660,8 +660,11 @@ export default function HomeClient() {
               </div>
             </div>
 
-            <section id="page-content-top" className="flex-1 min-w-0 flex flex-col gap-10 pb-32">
-              <div className="rounded-xl overflow-hidden">
+            <section
+              id="page-content-top"
+              className="flex-1 min-w-0 flex flex-col gap-10 pb-32"
+            >
+              <div className="rounded-xl overflow-visible">
                 <Navbar
                   onTabChange={handleNavbarTabChange}
                   activePage={activeSection}

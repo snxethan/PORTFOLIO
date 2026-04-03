@@ -96,7 +96,6 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
   const [showFilterMenu, setShowFilterMenu] = useState(false)
   const { handleExternalClick } = useExternalLink()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const scrollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -236,15 +235,24 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
     handleTagClick(tag.toLowerCase())
   }
 
-  const handleScroll = useCallback(() => {
+  const handleCardClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     const container = scrollContainerRef.current
     if (!container) return
-    // Disable pointer events on cards during scroll so hover state is cleared
-    container.style.pointerEvents = "none"
-    if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current)
-    scrollTimerRef.current = setTimeout(() => {
-      container.style.pointerEvents = ""
-    }, 80)
+
+    const target = event.target as HTMLElement | null
+    if (target?.closest("a, button, input, select, textarea, [role='button'], [data-skip-card-scroll='true']")) {
+      return
+    }
+
+    const card = event.currentTarget
+    const cardRect = card.getBoundingClientRect()
+    const containerRect = container.getBoundingClientRect()
+    const isClippedLeft = cardRect.left < containerRect.left + 8
+    const isClippedRight = cardRect.right > containerRect.right - 8
+
+    if (isClippedLeft || isClippedRight) {
+      card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
+    }
   }, [])
 
   const filteredProjects = projects.filter((project) => {
@@ -285,11 +293,14 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
 
   return (
     <>
-      <div id="repos-page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6">
+      <div id="repos-page-header" className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg shadow-black/20 p-6 mb-6">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             Projects
           </h2>
+          <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-gray-400">
+            Search through my GitHub repositories and shipped work.
+          </p>
           <div className="flex justify-center mb-4">
             <PageTabs
               tabs={tabs}
@@ -298,7 +309,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
             />
           </div>
 
-          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4 shadow-lg shadow-black/20">
             <div className="container mx-auto">
               <SearchFilterBar
                 search={search}
@@ -331,33 +342,33 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
         className="text-white"
         style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
       >
-        <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
-          {loading ? (
-            <ResponsiveCardSkeletonGrid
-              renderCard={(i) => (
-                <div
-                  key={i}
-                  className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse flex flex-col gap-4 min-h-[220px]"
-                >
-                  <div className="h-6 bg-[#333333] rounded w-3/4" />
-                  <div className="h-4 bg-[#333333] rounded w-2/3" />
-                  <div className="h-4 bg-[#333333] rounded w-5/6" />
-                  <div className="flex-1" />
-                  <div className="h-10 bg-[#292929] rounded w-full" />
-                </div>
-              )}
-            />
-          ) : (
-            <div
-              ref={scrollContainerRef}
-              onScroll={handleScroll}
-              className="w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain snap-x snap-proximity"
-            >
-              <div className="flex w-full min-w-full items-stretch gap-6 px-3 py-4">
-                {tagFilteredProjects.map((project) => (
+        {loading ? (
+          <ResponsiveCardSkeletonGrid
+            renderCard={(i) => (
+              <div
+                key={i}
+                className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse flex flex-col gap-4 min-h-[220px]"
+              >
+                <div className="h-6 bg-[#333333] rounded w-3/4" />
+                <div className="h-4 bg-[#333333] rounded w-2/3" />
+                <div className="h-4 bg-[#333333] rounded w-5/6" />
+                <div className="flex-1" />
+                <div className="h-10 bg-[#292929] rounded w-full" />
+              </div>
+            )}
+          />
+        ) : (
+          <div key={`repos-loaded-${activeId}`} className="animate-skeleton-pop">
+              <div
+                ref={scrollContainerRef}
+                className="scroll-edge-fade w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain py-4 snap-x snap-mandatory"
+              >
+                <div className="relative flex w-full min-w-full flex-nowrap items-stretch gap-6 px-4 pr-16 py-4 lg:px-6 lg:pr-20">
+                  {tagFilteredProjects.map((project) => (
                     <div
                       key={project.id}
-                      className="group bg-[#151515] hover:bg-[#252525] rounded-none border border-[#333333] hover:border-red-600/50 transition-[background-color,border-color,box-shadow,transform] duration-200 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 flex flex-col shrink-0 snap-start min-w-[260px] w-[calc(100%-1.5rem)] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] 2xl:w-[calc((100%-4.5rem)/4)]"
+                      onClick={handleCardClick}
+                      className="group relative z-0 hover:z-10 bg-[#151515] hover:bg-[#252525] rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 flex flex-col shrink-0 snap-center min-w-[260px] w-[calc(100%-2rem)] sm:w-[calc((100%-3.5rem)/2)] lg:w-[calc((100%-6rem)/3)]"
                     >
                        <div className="p-6 flex-grow">
                          <div className="mb-2">
@@ -368,6 +379,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                              {project.source === "manual" && (
                                <span
                                  onClick={() => handleRepoBadgeClick("manual")}
+                                  data-skip-card-scroll="true"
                                  className={`${repoBadgeBaseClass} bg-green-600 text-white border border-green-500`}
                                >
                                  MANUAL
@@ -376,6 +388,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                              {project.source === "github" && (
                                <span
                                  onClick={() => handleRepoBadgeClick("github")}
+                                  data-skip-card-scroll="true"
                                  className={`${repoBadgeBaseClass} bg-purple-600 text-white border border-purple-500`}
                                >
                                  GITHUB
@@ -384,6 +397,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                              {project.topics.includes("neumont") && (
                                <span
                                  onClick={() => handleRepoBadgeClick("neumont")}
+                                  data-skip-card-scroll="true"
                                  className={`${repoBadgeBaseClass} bg-yellow-600 text-white border border-yellow-500`}
                                >
                                  NEU
@@ -413,6 +427,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                              <span
                                key={tag}
                                onClick={() => handleTagClick(tag)}
+                                data-skip-card-scroll="true"
                                className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap max-w-full min-w-0 truncate transition-all duration-200 border border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] cursor-pointer active:scale-95"
                              >
                                {tag.toUpperCase()}
@@ -424,6 +439,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                          <TooltipWrapper label={project.html_url} fullWidth>
                            <button
                              onClick={() => handleExternalClick(project.html_url, true)}
+                              data-skip-card-scroll="true"
                              className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm sm:text-base"
                            >
                              {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
@@ -437,10 +453,10 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                        </div>
                      </div>
                    ))}
+                </div>
               </div>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </>
   )

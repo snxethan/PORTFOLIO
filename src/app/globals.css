@@ -8,8 +8,8 @@
 :root {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+  --font-mono: var(--font-geist-mono, ui-monospace, SFMono-Regular, Consolas, monospace);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -225,6 +225,71 @@ button:disabled {
   animation: fadeInScale 0.3s ease-out forwards;
 }
 
+@keyframes skeleton-content-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-skeleton-pop {
+  animation: skeleton-content-pop 0.32s ease-out both;
+}
+
+/* Horizontal scroll edge fade for card rails */
+.scroll-edge-fade {
+  position: relative;
+  isolation: isolate;
+  --scroll-edge-fade-size: clamp(1.25rem, 3vw, 3rem);
+  padding-inline-start: var(--scroll-edge-fade-size);
+  scroll-padding-inline-start: var(--scroll-edge-fade-size);
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--scroll-edge-fade-size),
+    black calc(100% - var(--scroll-edge-fade-size)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--scroll-edge-fade-size),
+    black calc(100% - var(--scroll-edge-fade-size)),
+    transparent
+  );
+}
+
+@supports not ((mask-image: linear-gradient(black, black)) or (-webkit-mask-image: linear-gradient(black, black))) {
+  .scroll-edge-fade {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .scroll-edge-fade::before,
+  .scroll-edge-fade::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: var(--scroll-edge-fade-size);
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  .scroll-edge-fade::before {
+    left: 0;
+    background: linear-gradient(to right, #222222 0%, rgba(34, 34, 34, 0) 100%);
+  }
+
+  .scroll-edge-fade::after {
+    right: 0;
+    background: linear-gradient(to left, #222222 0%, rgba(34, 34, 34, 0) 100%);
+  }
+}
+
 /* Navbar horizontal scroll - red scrollbar visible only when scrolling */
 .navbar-scroll::-webkit-scrollbar {
   height: 6px;
@@ -284,6 +349,44 @@ button:disabled {
   animation: popIn 0.2s ease-out forwards;
 }
 
+.animate-popOut {
+  animation: popOut 0.2s ease-in forwards;
+}
+
+@keyframes sort-menu-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(-8px);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.01) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes sort-menu-out {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.96) translateY(-8px);
+  }
+}
+
+.animate-sort-menu-in {
+  animation: sort-menu-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-sort-menu-out {
+  animation: sort-menu-out 0.22s ease-in forwards;
+}
+
 .marquee {
   overflow: hidden;
   position: relative;
@@ -312,6 +415,10 @@ button:disabled {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .animate-skeleton-pop {
+    animation: none;
+  }
+
   .marquee-track {
     animation: none;
   }

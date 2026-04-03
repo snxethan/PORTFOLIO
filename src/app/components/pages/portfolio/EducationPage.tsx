@@ -107,6 +107,11 @@ const EducationPage = ({ onTabChange, activeTab, onContentReady }: EducationPage
     setShowFilterMenu(false)
   }
 
+  const scrollToFilterSection = React.useCallback(() => {
+    const target = document.getElementById("education-filter-section")
+    scrollElementIntoViewWithNavbarOffset(target, 20)
+  }, [])
+
   const handleTagClick = (tag: string) => {
     setSelectedTag(tag)
     setShowTagsMenu(true)
@@ -188,25 +193,6 @@ const EducationPage = ({ onTabChange, activeTab, onContentReady }: EducationPage
       )
     }
 
-    if (loading) {
-      return (
-        <ResponsiveCardSkeletonGrid
-          className="pb-14"
-          renderCard={(i) => (
-            <div key={i} className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse min-h-[14rem]">
-              <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
-              <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
-              <div className="space-y-2">
-                <div className="h-3 bg-[#333333] rounded w-full" />
-                <div className="h-3 bg-[#333333] rounded w-5/6" />
-                <div className="h-3 bg-[#333333] rounded w-4/6" />
-              </div>
-            </div>
-          )}
-        />
-      )
-    }
-
     return (
       <Timeline
         items={filteredItems}
@@ -226,11 +212,17 @@ const EducationPage = ({ onTabChange, activeTab, onContentReady }: EducationPage
 
   return (
     <>
-      <div id="education-page-header" className="bg-[#222222] rounded-xl border border-[#333333] p-6 mb-6">
+      <div
+        id="education-page-header"
+        className="rounded-xl border border-[#3a3a3a] bg-gradient-to-br from-[#262626] via-[#202020] to-[#181818] shadow-[0_14px_36px_rgba(0,0,0,0.38)] p-6 mb-6"
+      >
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
             Career
           </h2>
+          <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-gray-400">
+            Academic history, credentials, and learning milestones.
+          </p>
           <div className="flex justify-center mb-4">
             <PageTabs
               tabs={tabs}
@@ -239,7 +231,10 @@ const EducationPage = ({ onTabChange, activeTab, onContentReady }: EducationPage
             />
           </div>
 
-          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4">
+          <div
+            id="education-filter-section"
+            className="rounded-xl border border-[#3a3a3a] bg-gradient-to-r from-[#191919] via-[#1f1a1a] to-[#1b1b1b] py-4 px-4 shadow-lg shadow-black/20"
+          >
             <div className="container mx-auto">
               <SearchFilterBar
                 search={search}
@@ -256,7 +251,7 @@ const EducationPage = ({ onTabChange, activeTab, onContentReady }: EducationPage
                 showFilterMenu={showFilterMenu}
                 setShowFilterMenu={setShowFilterMenu}
                 defaultSort="newest"
-                onFilterInteraction={scrollToCards}
+                onFilterInteraction={scrollToFilterSection}
               />
               <div className="text-sm text-gray-400 mt-2">{resultsCount}</div>
             </div>
@@ -269,9 +264,26 @@ const EducationPage = ({ onTabChange, activeTab, onContentReady }: EducationPage
         className="text-white"
         style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
       >
-        <div className="transition-opacity duration-150 opacity-100 animate-fade-in-up">
-          {renderTimeline()}
-        </div>
+        {loading ? (
+          <ResponsiveCardSkeletonGrid
+            className="pb-14"
+            renderCard={(i) => (
+              <div key={i} className="bg-[#151515] border border-[#333333] p-6 rounded-none animate-pulse min-h-[14rem]">
+                <div className="h-6 bg-[#333333] rounded w-3/4 mb-4" />
+                <div className="h-4 bg-[#333333] rounded w-1/2 mb-4" />
+                <div className="space-y-2">
+                  <div className="h-3 bg-[#333333] rounded w-full" />
+                  <div className="h-3 bg-[#333333] rounded w-5/6" />
+                  <div className="h-3 bg-[#333333] rounded w-4/6" />
+                </div>
+              </div>
+            )}
+          />
+        ) : (
+          <div key={`education-loaded-${activeId}`} className="animate-skeleton-pop">
+            {renderTimeline()}
+          </div>
+        )}
       </div>
     </>
   )
