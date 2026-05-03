@@ -59,6 +59,7 @@ export default function HomeClient() {
   const observerLockCleanupRef = useRef<(() => void) | null>(null)
   const observerLockRafRef = useRef<number | null>(null)
   const observerLockTimeoutRef = useRef<number | null>(null)
+  const userNavigatedToCareerRef = useRef(false)
 
   const sectionOrder = useMemo<SectionKey[]>(() => ["about", "projects", "career"], [])
   const sectionRailItems = useMemo(
@@ -389,6 +390,8 @@ export default function HomeClient() {
 
   const handleCareerContentReady = useCallback((targetId: string) => {
     if (activeSection !== "career") return
+    // Only auto-scroll if the user explicitly navigated to career, not from observer-driven updates on load
+    if (!userNavigatedToCareerRef.current) return
 
     continueScrollToContentCenter(targetId)
     scheduleCareerRecenter(targetId)
@@ -404,6 +407,7 @@ export default function HomeClient() {
 
   const handleNavChange = useCallback((page: string) => {
     const section = sectionOrder.find((item) => item === page) ?? "about"
+    if (section === "career") userNavigatedToCareerRef.current = true
     lockObserverToSection(section)
     requestAnimationFrame(() => scrollToSection(section))
   }, [lockObserverToSection, scrollToSection, sectionOrder])
@@ -421,6 +425,7 @@ export default function HomeClient() {
     }
     if (page === "career" && tab) {
       const nextTab = tab === "education" ? "education" : "experience"
+      userNavigatedToCareerRef.current = true
       setCareerTab((prev) => {
         if (prev === nextTab) setCareerRefreshKey((k) => k + 1)
         return nextTab

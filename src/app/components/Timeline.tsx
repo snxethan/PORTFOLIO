@@ -208,17 +208,11 @@ const Timeline: React.FC<TimelineProps> = ({
       }
 
       try {
-        // Prefer scrolling the first card into view to better respect the
-        // snapping grid and to avoid layout races that can reset container
-        // scroll position. Use inline:start so the first card aligns to the
-        // left of the container.
-        const track = el.firstElementChild as HTMLElement | null
-        const firstCard = track?.firstElementChild as HTMLElement | null
-        if (firstCard) {
-          firstCard.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" })
-        } else {
-          el.scrollTo({ left: 0, behavior: "smooth" })
-        }
+        // Reset only the container's horizontal scroll position.
+        // Do NOT use scrollIntoView here — it scrolls the page vertically
+        // to bring the element into view (even with block:"nearest"), which
+        // causes the career section to auto-scroll into view on every page load.
+        el.scrollTo({ left: 0, behavior: "smooth" })
       } catch {
         el.scrollLeft = 0
       }
