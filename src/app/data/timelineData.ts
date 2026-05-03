@@ -6,12 +6,30 @@ interface TimelineItem {
   endDate: string | "Present"
   highlights: string[]
   summary: string
-  isCSRelated: boolean
+  csRelated: boolean
   tags?: string[]
   language?: string
 }
 
 export const timelineData: TimelineItem[] = [
+  // pocketrn goes here
+    {
+    type: "experience",
+    institution: "Cloud Range Cybersecurity",
+    location: "Remote",
+    startDate: "March 2026",
+    endDate: "June 2026",
+    highlights: [
+        "Quality Assurance Developer - Developed and executed comprehensive test plans for cybersecurity training platforms, ensuring high-quality user experiences.",
+        "Automated Testing - Implemented automated testing frameworks to streamline regression testing and improve efficiency.",
+        "Cross-Functional Collaboration - Worked closely with developers, product managers, and cybersecurity experts to identify and resolve issues.",
+        "Security Testing - Conducted security-focused testing to identify vulnerabilities and ensure robust defenses in training environments."
+    ],
+    summary:
+      "Quality assurance developer specializing in cybersecurity training platforms. Focused on developing test plans, automating testing processes, and collaborating with cross-functional teams to enhance platform quality and security.",
+    csRelated: true,
+    tags: ["Computer Science", "Quality Assurance", "Cybersecurity", "Automated Testing"]
+  },
   {
     type: "experience",
     institution: "TrueMark",
@@ -27,7 +45,7 @@ export const timelineData: TimelineItem[] = [
     ],
     summary:
       "Backend software developer focused on AWS cloud transformation and modernization. Worked extensively with existing customer codebases, implementing AWS services and AI agents while conducting manual refactoring to enhance system architecture and performance.",
-    isCSRelated: true,
+    csRelated: true,
     tags: ["Computer Science", "Backend Development", "AWS", "Cloud Computing", "AI"]
   },
   {
@@ -44,7 +62,7 @@ export const timelineData: TimelineItem[] = [
     ],
     summary:
       "Served in four concurrent student leadership and academic support roles, fostering a collaborative campus culture while mentoring peers and contributing to institutional excellence at Neumont College of Computer Science.",
-    isCSRelated: true,
+    csRelated: true,
     tags: ["Computer Science", "College", "Leadership"]
   },
   {
@@ -60,7 +78,7 @@ export const timelineData: TimelineItem[] = [
     ],
     summary:
       "Pursuing Bachelor of Science in Computer Science with perfect academic standing while actively contributing to campus leadership and hands-on software development projects.",
-    isCSRelated: true,
+    csRelated: true,
     tags: ["Computer Science", "College", "Bachelor's Degree"]
   },
   {
@@ -74,7 +92,7 @@ export const timelineData: TimelineItem[] = [
     ],
     summary:
       "Participated in dual enrollment program, earning transferable college credits and gaining early exposure to collegiate-level computer science curriculum, which accelerated academic progression.",
-    isCSRelated: true,
+    csRelated: true,
     tags: ["Computer Science", "College", "Dual Enrollment"]
   },
   {
@@ -90,7 +108,7 @@ export const timelineData: TimelineItem[] = [
     ],
     summary:
       "Completed comprehensive computer science CTE program throughout high school, earning IT certifications and a computer science scholarship for college. Built strong foundation in programming, networking, and technical problem-solving.",
-    isCSRelated: true,
+    csRelated: true,
     tags: ["Computer Science", "High School", "CTE", "Certifications"]
   }
 ]

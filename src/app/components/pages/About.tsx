@@ -42,16 +42,13 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     const container = cardsScrollContainerRef.current
     if (!container) return
 
-    const track = container.firstElementChild as HTMLElement | null
-    const firstCard = track?.firstElementChild as HTMLElement | null
-
-    if (firstCard) {
-      // Keep About rails on the same snap grid from the first card render.
-      firstCard.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" })
-      return
+    // Use smooth scrolling to the left when filters/sorts change
+    try {
+      container.scrollTo({ left: 0, behavior: "smooth" })
+    } catch {
+      // Fallback for environments that don't support scrollTo with options
+      container.scrollLeft = 0
     }
-
-    container.scrollTo({ left: 0, behavior: "auto" })
   }, [])
 
   useEffect(() => {
@@ -151,7 +148,10 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     event.stopPropagation()
     setSelectedTag(tag)
     setShowTagsMenu(true)
-    requestAnimationFrame(scrollToCards)
+    requestAnimationFrame(() => {
+      resetCardsScrollPosition()
+      scrollToCards()
+    })
   }
 
   const renderFilterTags = (tags: string[]) => {
@@ -250,14 +250,14 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
   }
 
   const renderSkillCard = (item: Skill) => {
-    const { name, icon: Icon, highlight, url } = item
-    const cardTags = Array.from(new Set([highlight ? "Hard Skills" : "Soft Skills", ...(item.tags ?? [])]))
+    const { name, icon: Icon, hardSkill, url } = item
+    const cardTags = Array.from(new Set([hardSkill ? "Hard Skills" : "Soft Skills", ...(item.tags ?? [])]))
     const card = (
       <div className={`group relative z-0 hover:z-10 flex h-full flex-col overflow-hidden bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
         <div className="flex items-start gap-4 min-w-0">
           <div
             className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
-              highlight ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
+              hardSkill ? "bg-gradient-to-br from-red-500/80 to-red-700/80" : "bg-red-600/40 group-hover:bg-red-600/50"
             }`}
           >
             <Icon className="text-white text-xl" />
@@ -358,8 +358,8 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
       const matchesSearch = skill.name.toLowerCase().includes(search.toLowerCase())
       const matchesTag = !selectedTag ||
         skill.tags?.includes(selectedTag) ||
-        (selectedTag === "Hard Skills" && skill.highlight === true) ||
-        (selectedTag === "Soft Skills" && skill.highlight !== true)
+        (selectedTag === "Hard Skills" && skill.hardSkill === true) ||
+        (selectedTag === "Soft Skills" && skill.hardSkill !== true)
       return matchesSearch && matchesTag
     })
   ), [search, selectedTag])
@@ -367,17 +367,17 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
   const sortedSkills = useMemo(() => (
     [...filteredSkills].sort((a, b) => {
       if (sortBy === "hard-soft") {
-        if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
-        return a.highlight ? -1 : 1
+        if (a.hardSkill === b.hardSkill) return a.name.localeCompare(b.name)
+        return a.hardSkill ? -1 : 1
       }
       if (sortBy === "soft-hard") {
-        if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
-        return a.highlight ? 1 : -1
+        if (a.hardSkill === b.hardSkill) return a.name.localeCompare(b.name)
+        return a.hardSkill ? 1 : -1
       }
       if (sortBy === "name-asc") return a.name.localeCompare(b.name)
       if (sortBy === "name-desc") return b.name.localeCompare(a.name)
-      if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
-      return a.highlight ? -1 : 1
+      if (a.hardSkill === b.hardSkill) return a.name.localeCompare(b.name)
+      return a.hardSkill ? -1 : 1
     })
   ), [filteredSkills, sortBy])
 
@@ -388,6 +388,10 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
   const handleFilterChange = (value: string) => {
     setSortBy(value)
     setShowFilterMenu(false)
+    requestAnimationFrame(() => {
+      resetCardsScrollPosition()
+      scrollToCards()
+    })
   }
 
   const handleJump = (page: string, tab: string | null) => {
@@ -415,11 +419,24 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     })
   }
 
+  // Compute stable keys for the sorted items to detect meaningful changes
+  const sortedCertsKey = useMemo(() => {
+    return sortedCertifications
+      .map((cert) => `${cert.name}-${cert.year}`)
+      .join("|")
+  }, [sortedCertifications])
+
+  const sortedSkillsKey = useMemo(() => {
+    return sortedSkills
+      .map((skill) => `${skill.name}`)
+      .join("|")
+  }, [sortedSkills])
+
+  // When visible items change (due to tag/filter/sort), reset scroll to left with smooth animation
   useEffect(() => {
     if (cardsLoading) return
-    // Ensure each subtab render starts from the first card position.
     requestAnimationFrame(() => resetCardsScrollPosition())
-  }, [activeSubsection, cardsLoading, resetCardsScrollPosition])
+  }, [activeSubsection, cardsLoading, sortedCertsKey, sortedSkillsKey, resetCardsScrollPosition])
 
   return (
     <>
@@ -523,7 +540,10 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
               showFilterMenu={showFilterMenu}
               setShowFilterMenu={setShowFilterMenu}
               defaultSort={activeSubsection === "certifications" ? "newest" : "hard-soft"}
-              onFilterInteraction={scrollToCards}
+              onFilterInteraction={() => {
+                resetCardsScrollPosition()
+                scrollToCards()
+              }}
             />
 
             {resultsCount && (

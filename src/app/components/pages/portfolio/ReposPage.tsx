@@ -1,17 +1,17 @@
 "use client"
 
-import React, { useState, useEffect, useRef, useCallback } from "react"
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { FaProjectDiagram, FaGithub as FaGithubIcon } from "react-icons/fa"
 import { FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
 import { useExternalLink } from "../../ExternalLinkHandler"
 import TooltipWrapper from "../../ToolTipWrapper"
 
-import { manualProjects } from "../../../data/portfolioProjects"
+import { manualProjects } from "@/app/data/portfolioProjects"
 import SearchFilterBar from "../../SearchFilterBar"
-import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
-import { scrollElementIntoViewWithNavbarOffset } from "../../../utils/scrollWithNavbarOffset"
+import { scrollElementIntoViewWithNavbarOffset } from "@/app/utils/scrollWithNavbarOffset"
 import PageTabs from "../../PageTabs"
 import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
+import { getTimedItem, setTimedItem, removeTimedItem } from "@/app/utils/timedStorage"
 
 interface Project {
   id: number
@@ -58,6 +58,8 @@ const getCTAIcon = (icon?: string) => {
 }
 
 const repoBadgeBaseClass = "text-xs font-semibold px-2 py-1 rounded-none cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600"
+const DEFAULT_SORT = "newest"
+const DEFAULT_SELECTED_TAG = "Computer Science"
 
 interface ReposPageProps {
   onTabChange: (page: string, tab: string | null) => void
@@ -72,23 +74,23 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
   const activeId = activeTab ?? "repos"
   const [projects, setProjects] = useState<Project[]>([])
   const [search, setSearch] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return getTimedItem<string>('reposSearch') || ""
+    if (typeof window !== "undefined") {
+      return getTimedItem<string>("reposSearch") || ""
     }
     return ""
   })
   const [sortBy, setSortBy] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return getTimedItem<string>('reposSortBy') || "newest"
+    if (typeof window !== "undefined") {
+      return getTimedItem<string>("reposSortBy") || DEFAULT_SORT
     }
-    return "newest"
+    return DEFAULT_SORT
   })
   const [selectedTag, setSelectedTag] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = getTimedItem<string>('reposSelectedTag')
-      return saved !== null ? saved : "Computer Science"
+    if (typeof window !== "undefined") {
+      const saved = getTimedItem<string>("reposSelectedTag")
+      return saved !== null ? saved : DEFAULT_SELECTED_TAG
     }
-    return "Computer Science"
+    return DEFAULT_SELECTED_TAG
   })
   const [showTagsMenu, setShowTagsMenu] = useState(false)
   const [tags, setTags] = useState<string[]>(["Computer Science"])
@@ -98,26 +100,27 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setTimedItem('reposSearch', search)
+    if (typeof window !== "undefined") {
+      setTimedItem("reposSearch", search)
     }
   }, [search])
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setTimedItem('reposSortBy', sortBy)
+    if (typeof window !== "undefined") {
+      setTimedItem("reposSortBy", sortBy)
     }
   }, [sortBy])
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       if (selectedTag !== null) {
-        setTimedItem('reposSelectedTag', selectedTag)
+        setTimedItem("reposSelectedTag", selectedTag)
       } else {
-        removeTimedItem('reposSelectedTag')
+        removeTimedItem("reposSelectedTag")
       }
     }
   }, [selectedTag])
+
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -149,7 +152,10 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
         if (!response.ok || !contentType?.includes("application/json")) {
           const errorText = await response.text()
           console.error("Non-JSON GitHub response:", errorText.slice(0, 200))
-          throw new Error("GitHub API did not return valid JSON")
+          if (!hasValidCache) {
+            processProjects([])
+          }
+          return
         }
         const data = await response.json()
         localStorage.setItem(CACHE_KEY, JSON.stringify(data))
@@ -207,7 +213,20 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
     const target = document.getElementById("repositories-cards")
     scrollElementIntoViewWithNavbarOffset(target)
   }, [])
-  
+
+  const resetCardsScrollPosition = useCallback(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+
+    // Use smooth scrolling to the left when filters/sorts change
+    try {
+      container.scrollTo({ left: 0, behavior: "smooth" })
+    } catch {
+      // Fallback for environments that don't support scrollTo with options
+      container.scrollLeft = 0
+    }
+  }, [])
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -221,12 +240,17 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
   const handleFilterChange = (value: string) => {
     setSortBy(value)
     setShowFilterMenu(false)
+    requestAnimationFrame(() => {
+      resetCardsScrollPosition()
+      scrollToCards()
+    })
   }
 
   const handleTagClick = (tag: string) => {
     setSelectedTag(tag)
     setShowTagsMenu(true)
     setTimeout(() => {
+      resetCardsScrollPosition()
       scrollToCards()
     }, 50)
   }
@@ -289,6 +313,19 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
             project.source?.toLowerCase() === selectedTag
         )
 
+  // Compute a stable key for tagFilteredProjects to detect meaningful changes
+  const tagFilteredProjectsKey = useMemo(() => {
+    return tagFilteredProjects
+      .map((project) => `${project.id}-${project.name}`)
+      .join("|")
+  }, [tagFilteredProjects])
+
+  // When filtered projects change (due to tag/filter/sort), reset scroll to left with smooth animation
+  useEffect(() => {
+    if (loading) return
+    requestAnimationFrame(() => resetCardsScrollPosition())
+  }, [loading, tagFilteredProjectsKey, resetCardsScrollPosition])
+
   const resultsCount = `Showing ${tagFilteredProjects.length} Repositor${tagFilteredProjects.length !== 1 ? "ies" : "y"}`
 
   return (
@@ -326,7 +363,10 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                 showFilterMenu={showFilterMenu}
                 setShowFilterMenu={setShowFilterMenu}
                 defaultSort="newest"
-                onFilterInteraction={scrollToCards}
+                onFilterInteraction={() => {
+                  resetCardsScrollPosition()
+                  scrollToCards()
+                }}
               />
 
               {resultsCount && (

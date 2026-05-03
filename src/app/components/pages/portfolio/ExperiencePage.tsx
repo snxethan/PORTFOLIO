@@ -2,11 +2,11 @@
 
 import React, { useEffect, useRef, useState } from "react"
 import { FaBriefcase, FaGraduationCap } from "react-icons/fa"
-import { timelineData } from "../../../data/timelineData"
+import { timelineData } from "@/app/data/timelineData"
 import Timeline from "../../Timeline"
 import SearchFilterBar from "../../SearchFilterBar"
-import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
-import { scrollElementIntoViewWithNavbarOffset } from "../../../utils/scrollWithNavbarOffset"
+import { getTimedItem, setTimedItem, removeTimedItem } from "@/app/utils/timedStorage"
+import { scrollElementIntoViewWithNavbarOffset } from "@/app/utils/scrollWithNavbarOffset"
 import PageTabs from "../../PageTabs"
 import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
 
@@ -122,7 +122,7 @@ const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePa
 
     if (!newValue) {
       const itemsToHide = sortedTimeline
-        .filter(item => !item.isCSRelated)
+        .filter(item => !item.csRelated)
         .map(item => `${item.institution}-${item.startDate}`)
       setDisappearingItems(new Set(itemsToHide))
       setTimeout(() => {
@@ -130,7 +130,7 @@ const ExperiencePage = ({ onTabChange, activeTab, onContentReady }: ExperiencePa
       }, 300)
     } else {
       const newItems = sortedTimeline
-        .filter(item => !item.isCSRelated)
+        .filter(item => !item.csRelated)
         .map(item => `${item.institution}-${item.startDate}`)
       setAnimatingItems(new Set(newItems))
       setTimeout(() => setAnimatingItems(new Set()), 500)

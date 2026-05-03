@@ -46,4 +46,22 @@ export const projectsTimelineData: TimelineItem[] = [
     topics: ["aws", "cloud", "devops", "modernization", "infrastructure"],
     tags: ["Computer Science", "Cloud Computing", "DevOps"],
   },
+    // change to ccr development of MITRE platform
+  // {
+  //   type: "project",
+  //   name: "CloudCyberRange Quality Assurance",
+  //   startDate: "March 2026",
+  //   endDate: "June 2026",
+  //   highlights: [
+  //       "Quality Assurance on production & development pipelines",
+  //       "Refactoring & scaling secure cloud solutions to meet requirements",
+  //       "Testing and validating cloud-based cybersecurity solutions for reliability and performance",
+  //   ],
+  //   summary:
+  //   "Enterprise project focused on Quality Assurance and testing CloudRangeCyber's production & developement environments, ensuring reliability and performance of cloud-based cybersecurity solutions.",
+  //   language: "Quality Assurance",
+  //   topics: ["cloud", "cybersecurity", "quality assurance", "testing"],
+  //   tags: ["Computer Science", "Cybersecurity", "Quality Assurance"],
+  // },
+  // pocketrn goes here
 ]

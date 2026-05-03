@@ -127,7 +127,7 @@ const EducationPage = ({ onTabChange, activeTab, onContentReady }: EducationPage
 
     if (!newValue) {
       const itemsToHide = sortedTimeline
-        .filter(item => !item.isCSRelated)
+        .filter(item => !item.csRelated)
         .map(item => `${item.institution}-${item.startDate}`)
       setDisappearingItems(new Set(itemsToHide))
       setTimeout(() => {
@@ -135,7 +135,7 @@ const EducationPage = ({ onTabChange, activeTab, onContentReady }: EducationPage
       }, 300)
     } else {
       const newItems = sortedTimeline
-        .filter(item => !item.isCSRelated)
+        .filter(item => !item.csRelated)
         .map(item => `${item.institution}-${item.startDate}`)
       setAnimatingItems(new Set(newItems))
       setTimeout(() => setAnimatingItems(new Set()), 500)

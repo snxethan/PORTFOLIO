@@ -25,7 +25,7 @@ import {
 export interface Skill {
   name: string
   icon: IconType
-  highlight?: boolean
+  hardSkill?: boolean
   url?: string
   tags?: string[]
 }
@@ -43,34 +43,31 @@ export const skills: Skill[] = [
   { name: "React", icon: FaReact, url: "https://reactjs.org/", tags: ["Computer Science", "Web Development"] },
   { name: "JavaScript", icon: SiJavascript, url: "https://www.javascript.com/", tags: ["Computer Science", "Web Development"] },
   { name: "TypeScript", icon: SiTypescript, url: "https://www.typescriptlang.org/", tags: ["Computer Science", "Web Development"] },
-  { name: "Node.js", icon: FaNodeJs, highlight: true, url: "https://nodejs.org/en/", tags: ["Computer Science", "Backend"] },
+  { name: "Node.js", icon: FaNodeJs, hardSkill: true, url: "https://nodejs.org/en/", tags: ["Computer Science", "Backend"] },
   { name: "Next.js", icon: SiNextdotjs, url: "https://nextjs.org/", tags: ["Computer Science", "Web Development"] },
   { name: "Tailwind CSS", icon: SiTailwindcss, url: "https://tailwindcss.com/", tags: ["Computer Science", "Web Development"] },
-  { name: "MongoDB", icon: SiMongodb, highlight: true, url: "https://www.mongodb.com/", tags: ["Computer Science", "Database"] },
+  { name: "MongoDB", icon: SiMongodb, hardSkill: true, url: "https://www.mongodb.com/", tags: ["Computer Science", "Database"] },
   { name: "Python", icon: FaPython, url: "https://www.python.org/", tags: ["Computer Science"] },
-  { name: "Git", icon: FaGitAlt, highlight: true, url: "https://git-scm.com/", tags: ["Computer Science", "DevOps"] },
-  { name: "Docker", icon: SiDocker, highlight: true, url: "https://www.docker.com/", tags: ["Computer Science", "DevOps"] },
-  { name: "Java", icon: FaJava, highlight: true, url: "https://www.java.com/en/", tags: ["Computer Science"] },
-  { name: "C#", icon: SiDotnet, highlight: true, url: "https://dotnet.microsoft.com/en-us/languages/csharp", tags: ["Computer Science"] },
+  { name: "Git", icon: FaGitAlt, hardSkill: true, url: "https://git-scm.com/", tags: ["Computer Science", "DevOps"] },
+  { name: "Docker", icon: SiDocker, hardSkill: true, url: "https://www.docker.com/", tags: ["Computer Science", "DevOps"] },
+  { name: "Java", icon: FaJava, hardSkill: true, url: "https://www.java.com/en/", tags: ["Computer Science"] },
+  { name: "C#", icon: SiDotnet, hardSkill: true, url: "https://dotnet.microsoft.com/en-us/languages/csharp", tags: ["Computer Science"] },
   { name: "HTML", icon: SiHtml5, url: "https://html.spec.whatwg.org/multipage/", tags: ["Computer Science", "Web Development"] },
   { name: "C++", icon: SiC, url: "https://isocpp.org/", tags: ["Computer Science"] },
-  { name: "SQL", icon: SiMysql, highlight: true, url: "https://www.mysql.com/", tags: ["Computer Science", "Database"] },
-  { name: "Neo4J", icon: GiSharpLips, highlight: true, url: "https://neo4j.com/", tags: ["Computer Science", "Database"] },
+  { name: "SQL", icon: SiMysql, hardSkill: true, url: "https://www.mysql.com/", tags: ["Computer Science", "Database"] },
+  { name: "Neo4J", icon: GiSharpLips, hardSkill: true, url: "https://neo4j.com/", tags: ["Computer Science", "Database"] },
   { name: "Unity", icon: BsUnity, url: "https://unity.com/", tags: ["Computer Science", "Game Development"] },
-  { name: "Postman", icon: SiPostman, highlight: true, url: "https://www.postman.com/", tags: ["Computer Science", "API"] },
+  { name: "Postman", icon: SiPostman, hardSkill: true, url: "https://www.postman.com/", tags: ["Computer Science", "API"] },
   { name: "Flutter", icon: SiFlutter, url: "https://flutter.dev/", tags: ["Computer Science", "Mobile"] },
   { name: "Blazor", icon: SiBlazor, url: "https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor", tags: ["Computer Science", "Web Development"] },
-  { name: "Nginx", icon: SiNginx, highlight: true, url: "https://nginx.org/", tags: ["Computer Science", "Web Server", "DevOps"] },
-  { name: "Kafka", icon: SiApachekafka, highlight: true, url: "https://kafka.apache.org/", tags: ["Computer Science", "Streaming", "Backend"] },
+  { name: "Nginx", icon: SiNginx, hardSkill: true, url: "https://nginx.org/", tags: ["Computer Science", "Web Server", "DevOps"] },
+  { name: "Kafka", icon: SiApachekafka, hardSkill: true, url: "https://kafka.apache.org/", tags: ["Computer Science", "Streaming", "Backend"] },
   { name: "Docker Compose", icon: SiDocker, url: "https://docs.docker.com/compose/", tags: ["Computer Science", "DevOps", "Containerization"] },
-  { name: "AWS", icon: FaAws, highlight: true, url: "https://aws.amazon.com/", tags: ["Computer Science", "Cloud", "DevOps"] },
-  { name: "AWS Modernization", icon: FaAws, highlight: true, url: "https://aws.amazon.com/modernization/", tags: ["Computer Science", "Cloud", "Migration", "Modernization"] },
-  { name: ".NET", icon: SiDotnet, highlight: true, url: "https://dotnet.microsoft.com/", tags: ["Computer Science", "Backend", "Framework"] },
-  {name: "Prometheus", icon: SiPrometheus, highlight: true, url: "https://prometheus.io/", tags: ["Computer Science", "Monitoring", "DevOps"]},
-  {name: "Grafana", icon: SiGrafana, highlight: true, url: "https://grafana.com/", tags: ["Computer Science", "Monitoring", "DevOps"]},
-]
-
-export const unrelatedSkills: Skill[] = [
+  { name: "AWS", icon: FaAws, hardSkill: true, url: "https://aws.amazon.com/", tags: ["Computer Science", "Cloud", "DevOps"] },
+  { name: "AWS Modernization", icon: FaAws, hardSkill: true, url: "https://aws.amazon.com/modernization/", tags: ["Computer Science", "Cloud", "Migration", "Modernization"] },
+  { name: ".NET", icon: SiDotnet, hardSkill: true, url: "https://dotnet.microsoft.com/", tags: ["Computer Science", "Backend", "Framework"] },
+  { name: "Prometheus", icon: SiPrometheus, hardSkill: true, url: "https://prometheus.io/", tags: ["Computer Science", "Monitoring", "DevOps"]},
+  { name: "Grafana", icon: SiGrafana, hardSkill: true, url: "https://grafana.com/", tags: ["Computer Science", "Monitoring", "DevOps"]},
 ]
 
 export const certifications: Certification[] = [

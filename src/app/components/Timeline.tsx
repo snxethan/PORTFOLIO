@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef, useCallback } from "react"
+import React, { useState, useRef, useCallback, useEffect, useMemo } from "react"
 import { FaExternalLinkAlt, FaChevronLeft, FaChevronRight, FaGithub } from "react-icons/fa"
 import TooltipWrapper from "./ToolTipWrapper"
 import { useExternalLink } from "./ExternalLinkHandler"
@@ -174,6 +174,94 @@ const Timeline: React.FC<TimelineProps> = ({
   const isHorizontal = layout === "horizontal"
   const horizontalScrollRef = useRef<HTMLDivElement>(null)
   const { handleExternalClick } = useExternalLink()
+
+  // Compute a stable key for the items so we can detect meaningful changes
+  // (filters/sorts/tags will typically change the items array or their order).
+  const itemsKey = useMemo(() => {
+    return items
+      .map((item) => `${item.institution || item.name}-${item.startDate}-${item.endDate}`)
+      .join("|")
+  }, [items])
+
+  // When the visible items change (due to tag/filter/sort), reset horizontal
+  // scroller to the left/start so the first card(s) are visible. This handles
+  // all sections that use this Timeline component (career, education, projects, etc.).
+  useEffect(() => {
+    if (!isHorizontal || !horizontalScrollRef.current) return
+
+    const el = horizontalScrollRef.current
+
+    // Delay scrolling until the browser has applied layout for the new items.
+    // Use requestAnimationFrame then a microsetTimeout as a robust approach so
+    // the smooth scroll isn't overridden by subsequent layout changes.
+    let rafA: number | null = null
+    let rafB: number | null = null
+
+    const doScroll = () => {
+      // Temporarily disable scroll snapping so the smooth scroll can land at
+      // the exact left position instead of being overridden by snap-center.
+      const prevSnap = el.style.scrollSnapType
+      try {
+        el.style.scrollSnapType = "none"
+      } catch {
+        // ignore
+      }
+
+      try {
+        // Prefer scrolling the first card into view to better respect the
+        // snapping grid and to avoid layout races that can reset container
+        // scroll position. Use inline:start so the first card aligns to the
+        // left of the container.
+        const track = el.firstElementChild as HTMLElement | null
+        const firstCard = track?.firstElementChild as HTMLElement | null
+        if (firstCard) {
+          firstCard.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" })
+        } else {
+          el.scrollTo({ left: 0, behavior: "smooth" })
+        }
+      } catch {
+        el.scrollLeft = 0
+      }
+
+      // Restore snap after animation finishes. Use ~600ms which covers most
+      // smooth scroll durations; if necessary we can expose this as a prop.
+      const restoreId = window.setTimeout(() => {
+        try {
+          el.style.scrollSnapType = prevSnap || "x mandatory"
+        } catch {
+          // ignore
+        }
+      }, 600)
+
+      return restoreId
+    }
+
+    // Keep a handle to the restore timeout so we can clear it on unmount.
+    let restoreTimeout: number | null = null
+
+    const cleanup = () => {
+      if (rafA !== null) cancelAnimationFrame(rafA)
+      if (rafB !== null) cancelAnimationFrame(rafB)
+      if (restoreTimeout !== null) clearTimeout(restoreTimeout)
+      // Make sure snap is restored immediately in cleanup
+      try {
+        el.style.scrollSnapType = "x mandatory"
+      } catch {
+        // ignore
+      }
+    }
+
+    // Double requestAnimationFrame to ensure layout and CSS snap settle first,
+    // then perform scroll while capturing the restore timeout so cleanup can
+    // cancel it if needed.
+    rafA = requestAnimationFrame(() => {
+      rafB = requestAnimationFrame(() => {
+        restoreTimeout = doScroll()
+      })
+    })
+
+    return cleanup
+  }, [isHorizontal, itemsKey])
 
   const handleCardClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
     if (!isHorizontal || !horizontalScrollRef.current) return
