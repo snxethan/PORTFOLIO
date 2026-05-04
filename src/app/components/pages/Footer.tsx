@@ -3,11 +3,13 @@ import React, { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import TooltipWrapper from "../ToolTipWrapper"
+import HealthModal from "../HealthModal"
 import * as Icons from "react-icons/fa"
 import { socialLinks } from "../../data/socialLinks"
 
 const Footer = () => {
   const [loading, setLoading] = useState(true)
+  const [showHealth, setShowHealth] = useState(false)
 
   useEffect(() => {
     setLoading(false)
@@ -72,13 +74,19 @@ const Footer = () => {
 
           {/* Center: Logo & Name */}
           <div className="order-1 lg:order-2 flex items-center gap-2">
-            <Image
-              src="/images/avatar/snex.png"
-              alt="Ethan Townsend"
-              width={32}
-              height={32}
-              className="rounded-full transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:scale-105"
-            />
+            <button
+              onClick={() => setShowHealth(true)}
+              aria-label="Show API health"
+              className="p-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+            >
+              <Image
+                src="/images/avatar/snex.png"
+                alt="Ethan Townsend"
+                width={32}
+                height={32}
+                className="rounded-full transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:scale-105"
+              />
+            </button>
             <TooltipWrapper label="My Portfolio">
               <a href="https://ethantownsend.dev" className="inline-flex items-center text-sm text-gray-400 hover:text-red-600 transition-all duration-200 ease-out hover:scale-105 active:scale-100 focus-visible:outline-none focus-visible:text-red-500 focus-visible:scale-105">
                 Ethan Townsend &copy; {new Date().getFullYear()}
@@ -101,6 +109,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
+      {showHealth && <HealthModal onClose={() => setShowHealth(false)} />}
     </footer>
   )
 }
