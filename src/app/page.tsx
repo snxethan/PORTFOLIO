@@ -5,12 +5,15 @@ import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import HomeClient from "./components/pages/HomeClient"
 import SecurityPolicyModal from "./components/SecurityPolicyModal"
+import { warmResumePdfCache } from "./data/resumeCache"
 
 function PageContent() {
   const [showSecurityPolicy, setShowSecurityPolicy] = useState(false)
 
   useEffect(() => {
     if (typeof window === "undefined") return
+
+    void warmResumePdfCache()
 
     const hash = window.location.hash.toLowerCase()
 

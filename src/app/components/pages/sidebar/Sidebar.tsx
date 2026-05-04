@@ -1,10 +1,12 @@
 "use client"
 
 import SpotifyWidget from "./SpotifyWidget"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import * as Icons from "react-icons/fa"
 import { FaFilePdf } from "react-icons/fa"
 import { socialLinks } from "@/app/data/socialLinks"
+import { RESUME_PDF_URL } from "@/app/data/resume"
+import { getCachedResumePdfUrl, warmResumePdfCache } from "@/app/data/resumeCache"
 import Avatar from "./Avatar"
 import TooltipWrapper from "../../ToolTipWrapper"
 import PDFModalViewer from "../../PDFModalViewer"
@@ -12,6 +14,25 @@ import PDFModalViewer from "../../PDFModalViewer"
 const Sidebar = ({ className = "" }: { className?: string }) => {
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
+  const [resumePreviewUrl, setResumePreviewUrl] = useState(() => getCachedResumePdfUrl() ?? RESUME_PDF_URL)
+
+  useEffect(() => {
+    let isActive = true
+
+    void warmResumePdfCache().then((cachedUrl) => {
+      if (!isActive || !cachedUrl) return
+      setResumePreviewUrl(cachedUrl)
+    })
+
+    const cachedUrl = getCachedResumePdfUrl()
+    if (cachedUrl) {
+      setResumePreviewUrl(cachedUrl)
+    }
+
+    return () => {
+      isActive = false
+    }
+  }, [])
 
   const handleAvatarClick = () => {
     clickSoundRef.current?.play()
@@ -41,9 +62,9 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
 
         {/* View Resume Button */}
         <div className="mt-6 flex justify-center">
-          <TooltipWrapper label="View Resume" url="/resume/EthanTownsend_Resume_march2026.pdf">
+          <TooltipWrapper label="View Resume" url={resumePreviewUrl}>
             <button
-              onClick={() => setSelectedPDF('/resume/EthanTownsend_Resume_march2026.pdf')}
+              onClick={() => setSelectedPDF(resumePreviewUrl)}
               aria-label="View Resume"
               className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm font-medium shadow-lg shadow-red-600/40"
             >

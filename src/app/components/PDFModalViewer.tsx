@@ -6,6 +6,7 @@ import { FaExternalLinkAlt } from "react-icons/fa";
 import ReactDOM from "react-dom"
 import Image from "next/image"
 import { isPdfPreviewSupported } from "../utils/pdfSupport"
+import { RESUME_DOWNLOAD_FILENAME } from "@/app/data/resume"
 
 interface PDFModalViewerProps {
   pdfUrl?: string | null
@@ -25,8 +26,31 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({
   const [isLoading, setIsLoading] = useState(true)
   const lastOpenedPdfRef = useRef<string | null>(null)
 
-  const openPdfInNewTab = useCallback((url: string) => {
+  const openInNewTab = useCallback((url: string) => {
     window.open(url, "_blank", "noopener,noreferrer")
+  }, [])
+
+  const downloadPdf = useCallback((url: string) => {
+    if (url.startsWith("blob:")) {
+      const link = document.createElement("a")
+      link.href = url
+      link.download = RESUME_DOWNLOAD_FILENAME
+      link.rel = "noopener noreferrer"
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      return
+    }
+
+    const parsedUrl = new URL(url, window.location.origin)
+    const downloadUrl = `${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.search ? "&" : "?"}download=1`
+    const link = document.createElement("a")
+    link.href = downloadUrl
+    link.download = ""
+    link.rel = "noopener noreferrer"
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
   }, [])
 
   const initiateClose = useCallback(() => {
@@ -51,7 +75,7 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({
     if (pdfUrl && !isPdfPreviewSupported()) {
       if (lastOpenedPdfRef.current !== pdfUrl) {
         lastOpenedPdfRef.current = pdfUrl
-        openPdfInNewTab(pdfUrl)
+        openInNewTab(pdfUrl)
       }
       onClose()
       return
@@ -73,7 +97,7 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({
       document.body.style.overflow = originalOverflow
       window.removeEventListener("keydown", handleEscKey)
     }
-  }, [activeUrl, pdfUrl, initiateClose, onClose, openPdfInNewTab])
+  }, [activeUrl, pdfUrl, initiateClose, onClose, openInNewTab])
 
   if (!activeUrl || !isVisible) return null
 
@@ -98,12 +122,12 @@ const PDFModalViewer: React.FC<PDFModalViewerProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-3 sm:p-4 border-b border-[#333]">
           <button
-            onClick={() => openPdfInNewTab(activeUrl || "")}
+            onClick={() => (pdfUrl ? downloadPdf(pdfUrl) : openInNewTab(activeUrl || ""))}
             className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all"
-            aria-label="Download or open in new tab"
+            aria-label={pdfUrl ? "Download PDF" : "Open in new tab"}
           >
             <FaExternalLinkAlt size={16} />
-            <span className="hidden sm:inline">Open in new tab</span>
+            <span className="hidden sm:inline">{pdfUrl ? "Download" : "Open in new tab"}</span>
           </button>
           <button
             onClick={initiateClose}

@@ -24,6 +24,16 @@ interface PdfThumbnailTooltipProps {
 const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif", ".svg"]
 const TOOLTIP_ANIMATION_MS = 300
 
+const getUrlPathname = (value?: string) => {
+  if (!value) return ""
+
+  try {
+    return new URL(value, typeof window !== "undefined" ? window.location.origin : "http://localhost").pathname
+  } catch {
+    return value.split("?")[0]?.split("#")[0] ?? value
+  }
+}
+
 const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: PdfThumbnailTooltipProps) => {
   const [visible, setVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
@@ -38,10 +48,14 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
   const closeTimerRef = useRef<NodeJS.Timeout | null>(null)
   const isHovering = useRef(false)
 
-  const isPdf = useMemo(() => url?.toLowerCase().endsWith(".pdf") ?? false, [url])
+  const normalizedPath = useMemo(() => getUrlPathname(url).toLowerCase(), [url])
+  const isPdf = useMemo(
+    () => normalizedPath.endsWith(".pdf") || url?.startsWith("blob:") || false,
+    [normalizedPath, url]
+  )
   const isImage = useMemo(
-    () => !!imageUrl || IMAGE_EXTENSIONS.some(ext => url?.toLowerCase().endsWith(ext)),
-    [url, imageUrl]
+    () => !!imageUrl || IMAGE_EXTENSIONS.some(ext => normalizedPath.endsWith(ext)),
+    [normalizedPath, imageUrl]
   )
   // Prefer explicit imageUrl, fall back to url if it's an image extension
   const resolvedImageUrl = imageUrl ?? (isImage && !isPdf ? url : undefined)
