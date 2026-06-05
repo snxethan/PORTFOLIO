@@ -88,43 +88,43 @@ export default function HealthModal({ onClose }: HealthModalProps) {
   if (!mounted) return null
 
   return createPortal(
-    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={(e) => { if (e.target === e.currentTarget) handleClose() }}>
-      <div className={`bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 relative max-w-2xl w-full max-h-[80vh] overflow-y-auto ${isAnimatingOut ? "animate-fade-out-down" : "animate-fade-in-up"}`} onClick={(e) => e.stopPropagation()}>
-        <div className="relative mb-4">
-          <h1 className="text-3xl font-bold text-white mb-4 relative text-center">
+    <div className="fixed inset-0 bg-black/60 z-50 flex items-start justify-center p-2 sm:items-center sm:p-4" onClick={(e) => { if (e.target === e.currentTarget) handleClose() }}>
+      <div className={`bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-4 sm:p-6 relative w-full max-w-2xl max-h-[calc(100dvh-1rem)] sm:max-h-[80vh] overflow-hidden flex flex-col ${isAnimatingOut ? "animate-fade-out-down" : "animate-fade-in-up"}`} onClick={(e) => e.stopPropagation()}>
+        <div className="relative mb-4 sm:mb-5 flex items-start justify-between gap-3">
+          <h1 className="relative pr-16 text-left text-2xl font-bold text-white sm:pr-0 sm:text-center sm:text-3xl">
             API & Route Health
-            <span className="absolute bottom-[-8px] left-0 w-full h-1 bg-gradient-to-r from-red-600 to-red-500"></span>
+            <span className="absolute bottom-[-8px] left-0 h-1 w-full bg-gradient-to-r from-red-600 to-red-500"></span>
           </h1>
 
-          <div className="absolute top-0 right-0 flex items-center gap-2">
+          <div className="absolute right-0 top-0 flex items-center gap-1 sm:gap-2">
             <button
               onClick={runChecks}
               aria-label="Refresh checks"
-              className="inline-flex items-center justify-center p-1 text-gray-400 hover:text-red-600 transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded-full"
+              className="inline-flex items-center justify-center rounded-full p-1 text-gray-400 transition-all duration-200 ease-out hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
             >
-              <FaSyncAlt size={20} className={checking ? "animate-spin" : ""} />
+              <FaSyncAlt size={18} className={checking ? "animate-spin sm:h-5 sm:w-5" : "sm:h-5 sm:w-5"} />
             </button>
 
             <button
               onClick={handleClose}
               aria-label="Close"
-              className="inline-flex items-center justify-center p-1 text-gray-400 hover:text-red-600 transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded-full"
+              className="inline-flex items-center justify-center rounded-full p-1 text-gray-400 transition-all duration-200 ease-out hover:text-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
             >
-              <X size={24} />
+              <X size={20} className="sm:h-6 sm:w-6" />
             </button>
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto pr-1 sm:pr-2">
           {checking && (
             <div className="space-y-2">
               {[1,2,3].map(i => (
-                <div key={i} className="flex items-center justify-between bg-[#1b1b1b] p-3 rounded border border-[#333333] animate-pulse">
-                  <div className="flex items-center gap-3">
-                    <div className="w-48 h-4 bg-[#333333] rounded" />
-                    <div className="w-32 h-3 bg-[#2b2b2b] rounded" />
+                <div key={i} className="flex flex-col gap-3 rounded border border-[#333333] bg-[#1b1b1b] p-3 animate-pulse sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                    <div className="h-4 w-40 rounded bg-[#333333] sm:w-48" />
+                    <div className="h-3 w-28 rounded bg-[#2b2b2b] sm:w-32" />
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 self-start sm:self-auto">
                     <div className="w-12 h-3 bg-[#2b2b2b] rounded" />
                     <div className="w-4 h-4 bg-[#333333] rounded-full" />
                   </div>
@@ -140,14 +140,18 @@ export default function HealthModal({ onClose }: HealthModalProps) {
           {!checking && results.map(r => (
             <div
               key={r.path}
-              className="group flex items-center justify-between bg-[#1b1b1b] p-3 rounded border border-[#333333] transition-all duration-200 ease-out hover:scale-[1.01] hover:border-red-600 hover:shadow-[0_0_20px_rgba(220,38,38,0.12)]"
+              className="group flex flex-col gap-3 rounded border border-[#333333] bg-[#1b1b1b] p-3 transition-all duration-200 ease-out hover:border-red-600 hover:shadow-[0_0_20px_rgba(220,38,38,0.12)] sm:flex-row sm:items-center sm:justify-between sm:hover:scale-[1.01]"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-48 text-sm text-gray-200">{r.path}</div>
-                <div className="text-xs text-gray-400">{r.status ? `${r.status} ${r.statusText}` : r.error ?? "No response"}</div>
+              <div className="flex min-w-0 flex-col gap-1 sm:flex-1 sm:flex-row sm:items-center sm:gap-3">
+                <div className="w-full break-all text-sm text-gray-200 sm:w-48 sm:break-normal">
+                  {r.path}
+                </div>
+                <div className="text-xs text-gray-400">
+                  {r.status ? `${r.status} ${r.statusText}` : r.error ?? "No response"}
+                </div>
                 {r.contentType && <div className="text-xs text-gray-400">· {r.contentType}</div>}
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 self-start sm:self-auto">
                 <div className="text-xs text-gray-400">{r.latencyMs !== undefined ? `${r.latencyMs}ms` : "-"}</div>
                 {r.ok ? (
                   <FaCheckCircle className="text-green-500" />

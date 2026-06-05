@@ -12,7 +12,21 @@ interface TimelineItem {
 }
 
 export const timelineData: TimelineItem[] = [
-  // pocketrn goes here
+    {
+      type:"experience",
+      institution: "PocketRN",
+      location: "Remote",
+      startDate: "May 2026",
+      endDate: "Present",
+      highlights: [
+        "Full-stack Software Engineer - Built scalable frontend and backend systems with React and TypeScript to support high-impact healthcare solutions.",
+        "HIPAA and encryption compliance - Implemented secure handling of encrypted healthcare records, protecting platform integrity and patient privacy."
+      ],
+      summary:
+      "Full-stack Software Engineer contributing to high-impact healthcare solutions by developing scalable frontend and backend systems using React & TypeScript. Collaborating within a cross-functional engineering team on internal workflows and implementing secure data handling practices for encrypted healthcare records, ensuring platform integrity and patient privacy.",
+      csRelated: true,
+      tags: ["Computer Science", "Full-stack Development", "Healthcare", "React", "TypeScript", "HIPAA", "Encryption"],
+    },
     {
     type: "experience",
     institution: "Cloud Range Cybersecurity",
@@ -21,14 +35,14 @@ export const timelineData: TimelineItem[] = [
     endDate: "June 2026",
     highlights: [
         "Quality Assurance Developer - Developed and executed comprehensive test plans for cybersecurity training platforms, ensuring high-quality user experiences.",
-        "Automated Testing - Implemented automated testing frameworks to streamline regression testing and improve efficiency.",
         "Cross-Functional Collaboration - Worked closely with developers, product managers, and cybersecurity experts to identify and resolve issues.",
-        "Security Testing - Conducted security-focused testing to identify vulnerabilities and ensure robust defenses in training environments."
+        "Security Testing - Conducted security-focused testing to identify vulnerabilities and ensure robust defenses in training environments.",
+        "Company Audit - Performed a full-scale audit of technical performance, practices, and security across training environments and platforms, providing actionable insights for improvement."
     ],
     summary:
       "Quality assurance developer specializing in cybersecurity training platforms. Focused on developing test plans, automating testing processes, and collaborating with cross-functional teams to enhance platform quality and security.",
     csRelated: true,
-    tags: ["Computer Science", "Quality Assurance", "Cybersecurity", "Automated Testing"]
+    tags: ["Computer Science", "Quality Assurance", "Cybersecurity", "Automated Testing", "Audit"],
   },
   {
     type: "experience",

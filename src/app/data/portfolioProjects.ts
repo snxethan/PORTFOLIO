@@ -111,5 +111,17 @@ export const manualProjects: Project[] = [
     ctaLabel: "This repository is private",
     ctaIcon: "private",
     tags: ["Computer Science", "Cloud", "Modernization", "AWS", "AI"]
+  },
+  {
+    id: 8,
+    name: "CSC270-HOTDOG_DELIVERY",
+    description: "Contributed and built & designed a mock Web-store using Python & Django",
+    html_url: "https://github.com/JBrincefield/CSC270-STACK",
+    language: "Python",
+    topics: ["python","django","neumont", "web"],
+    created_at: "2026-05-12T00:00:00Z",
+    updated_at: "2026-06-04T00:00:00Z",
+    source: "github",
+    ctaLabel: "This repository is private",
   }
 ]

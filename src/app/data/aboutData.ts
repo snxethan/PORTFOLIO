@@ -19,7 +19,7 @@ import {
   SiNginx,
   SiApachekafka,
   SiPrometheus,
-  SiGrafana
+  SiGrafana, SiPython
 } from "react-icons/si"
 
 export interface Skill {
@@ -48,6 +48,7 @@ export const skills: Skill[] = [
   { name: "Tailwind CSS", icon: SiTailwindcss, url: "https://tailwindcss.com/", tags: ["Computer Science", "Web Development"] },
   { name: "MongoDB", icon: SiMongodb, hardSkill: true, url: "https://www.mongodb.com/", tags: ["Computer Science", "Database"] },
   { name: "Python", icon: FaPython, url: "https://www.python.org/", tags: ["Computer Science"] },
+  { name: "Django", icon: SiPython, url: "https://www.djangoproject.com/", tags: ["Computer Science", "Web Development", "Framework"] },
   { name: "Git", icon: FaGitAlt, hardSkill: true, url: "https://git-scm.com/", tags: ["Computer Science", "DevOps"] },
   { name: "Docker", icon: SiDocker, hardSkill: true, url: "https://www.docker.com/", tags: ["Computer Science", "DevOps"] },
   { name: "Java", icon: FaJava, hardSkill: true, url: "https://www.java.com/en/", tags: ["Computer Science"] },
@@ -60,7 +61,7 @@ export const skills: Skill[] = [
   { name: "Postman", icon: SiPostman, hardSkill: true, url: "https://www.postman.com/", tags: ["Computer Science", "API"] },
   { name: "Flutter", icon: SiFlutter, url: "https://flutter.dev/", tags: ["Computer Science", "Mobile"] },
   { name: "Blazor", icon: SiBlazor, url: "https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor", tags: ["Computer Science", "Web Development"] },
-  { name: "Nginx", icon: SiNginx, hardSkill: true, url: "https://nginx.org/", tags: ["Computer Science", "Web Server", "DevOps"] },
+  { name: "Nginx", icon: SiNginx, hardSkill: true, url: "https://nginx.org/", tags: ["Computer Science", "Web Development", "DevOps"] },
   { name: "Kafka", icon: SiApachekafka, hardSkill: true, url: "https://kafka.apache.org/", tags: ["Computer Science", "Streaming", "Backend"] },
   { name: "Docker Compose", icon: SiDocker, url: "https://docs.docker.com/compose/", tags: ["Computer Science", "DevOps", "Containerization"] },
   { name: "AWS", icon: FaAws, hardSkill: true, url: "https://aws.amazon.com/", tags: ["Computer Science", "Cloud", "DevOps"] },
