@@ -123,5 +123,19 @@ export const manualProjects: Project[] = [
     updated_at: "2026-06-04T00:00:00Z",
     source: "github",
     ctaLabel: "This repository is private",
+  },
+  {
+    id: 9,
+    name: "SOAR-HF_EMAIL_SCORER",
+    description: "Built and deployed a custom agentic email-scorer for a Soar.com customer client, scoring email drafts sentence-by-sentence against a messaging framework and returning an AI-rewritten version. Python/FastAPI on AWS Lambda, provisioned with Terraform.",
+    html_url: "https://github.com/Workplace-AI-Inc/hf-emailer-scorer",
+    language: "Python",
+    topics: ["python", "fastapi", "aws", "lambda", "terraform", "agentic-ai", "llm", "soar"],
+    created_at: "2026-07-08T00:00:00Z",
+    updated_at: "2026-08-18T00:00:00Z",
+    source: "github",
+    ctaLabel: "This repository is private",
+    ctaIcon: "private",
+    tags: ["Computer Science", "Artificial Intelligence", "Cloud", "AWS", "AI"]
   }
 ]

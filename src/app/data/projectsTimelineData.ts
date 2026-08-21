@@ -3,6 +3,45 @@ import { TimelineItem } from "../components/Timeline"
 export const projectsTimelineData: TimelineItem[] = [
   {
     type: "project",
+    name: "High Focus Email Scorer",
+    startDate: "July 2026",
+    endDate: "Present",
+    highlights: [
+      "Agentic email-scoring service that classifies a draft sentence-by-sentence and returns an AI-rewritten version",
+      "Python/FastAPI service on AWS Lambda behind an API Gateway HTTP API, serving the UI and the API from a single origin",
+      "Model-agnostic classifier with swappable provider adapters, validated against a hand-authored corpus at 98% sentence accuracy",
+      "Layered prompt-injection and input guarding in front of every paid model call",
+      "Infrastructure as code with Terraform and an OIDC-authenticated GitHub Actions deploy pipeline",
+    ],
+    summary:
+      "A custom agentic email-scorer built at Soar.com for a customer client and deployed for the public. Paste an email draft and it is scored sentence-by-sentence against the High FOCUS messaging framework, then rewritten by the model with an explanation of what changed. Built as a Python/FastAPI Lambda with least-privilege IAM, cost-aware model routing, and a parity test suite guarding the scoring formula across implementations.",
+    language: "Python",
+    topics: ["python", "fastapi", "aws", "lambda", "terraform", "agentic-ai", "llm", "soar"],
+    tags: ["Computer Science", "Artificial Intelligence", "Cloud Computing", "Backend"],
+    links: [
+      { url: "https://github.com/Workplace-AI-Inc/hf-emailer-scorer", label: "Repository (Private)", icon: "github" }
+    ],
+  },
+  {
+    type: "project",
+    name: "Meetings Admin Dashboard",
+    startDate: "May 2026",
+    endDate: "Present",
+    highlights: [
+      "Admin dashboard built with React and TypeScript for managing meetings across the PocketRN telehealth platform",
+      "Designed and shipped a new endpoint exposing all user meetings to administrators, previously unavailable in a single view",
+      "Search and filtering across the full meeting set, so admins can find a session without paging through records",
+      "Configure, modify, and join meetings directly from the dashboard",
+      "HIPAA-compliant handling of encrypted meeting and patient data, with access controls gating the admin-only surface",
+    ],
+    summary:
+      "An administrative dashboard for PocketRN's telehealth platform, built in React and TypeScript. Backed by a new endpoint that surfaces every user meeting to administrators, the dashboard lets admins view, search, filter, configure, modify, and join meetings from one place — while keeping encrypted patient and meeting data within HIPAA-compliant access and data-handling paths.",
+    language: "TypeScript",
+    topics: ["react", "typescript", "healthcare", "hipaa", "dashboard", "encryption", "api", "admin"],
+    tags: ["Computer Science", "Healthcare", "Web Development", "Full-stack Development"],
+  },
+  {
+    type: "project",
     name: "Portfoli-YOU",
     startDate: "July 2025",
     endDate: "January 2026",

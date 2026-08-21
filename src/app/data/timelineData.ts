@@ -13,6 +13,22 @@ interface TimelineItem {
 
 export const timelineData: TimelineItem[] = [
     {
+      type: "experience",
+      institution: "Soar.com",
+      location: "Remote",
+      startDate: "June 2026",
+      endDate: "Present",
+      highlights: [
+        "Artificial Intelligence Software Engineer - Built and deployed custom agentic AI workflows across multiple customer client projects.",
+        "Agentic Email Scorer - Designed and shipped a custom agentic email-scoring system deployed for the public.",
+        "Cross-Team Delivery - Collaborated across teams on larger multi-engineer deliveries."
+      ],
+      summary:
+      "Built and deployed custom agentic AI workflows across multiple customer client projects, including a custom agentic email-scorer system deployed for the public; collaborated across teams on larger multi-engineer deliveries.",
+      csRelated: true,
+      tags: ["Computer Science", "Artificial Intelligence", "Agentic AI", "Python", "AWS", "Backend"],
+    },
+    {
       type:"experience",
       institution: "PocketRN",
       location: "Remote",

@@ -6,6 +6,7 @@ import TooltipWrapper from "./ToolTipWrapper"
 import { useExternalLink } from "./ExternalLinkHandler"
 import Image from "next/image"
 import PDFModalViewer from "./PDFModalViewer"
+import ScrollArrows from "./ScrollArrows"
 import { IconType } from "react-icons"
 
 export type TimelineLinkIcon = "external" | "github" | "website"
@@ -306,6 +307,7 @@ const Timeline: React.FC<TimelineProps> = ({
 
   // Full timeline mode - Full width card layout
   return (
+    <div className={isHorizontal ? "relative" : undefined}>
     <div
       ref={isHorizontal ? horizontalScrollRef : undefined}
       className={isHorizontal
@@ -315,7 +317,7 @@ const Timeline: React.FC<TimelineProps> = ({
       data-timeline-type={type ?? "mixed"}
       data-show-all-content={showAllContent ? "true" : "false"}
     >
-      <div className={isHorizontal ? "relative flex w-full min-w-full flex-nowrap items-stretch gap-6 px-3 pr-12 py-4" : "relative flex flex-col gap-6"}>
+      <div className={isHorizontal ? "relative flex w-full min-w-full flex-nowrap items-stretch gap-6 px-3 py-4" : "relative flex flex-col gap-6"}>
         {/* Timeline vertical line - centered */}
         {showLine && !isHorizontal && (
           <div className="absolute left-1/2 -translate-x-1/2 top-6 bottom-6 w-0.5 bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
@@ -339,6 +341,7 @@ const Timeline: React.FC<TimelineProps> = ({
             <div
               key={itemKey}
               onClick={handleCardClick}
+              data-timeline-card={isHorizontal ? "true" : undefined}
               className={`group relative z-0 hover:z-10 flex h-full min-h-[520px] self-stretch flex-col overflow-hidden bg-[#151515] hover:bg-[#252525] p-6 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${
                 isHorizontal ? "shrink-0 w-full snap-center" : "w-full"
               } ${
@@ -464,8 +467,16 @@ const Timeline: React.FC<TimelineProps> = ({
           )
         })}
 
-        {isHorizontal && <div aria-hidden className="shrink-0 w-8" />}
       </div>
+    </div>
+
+    {isHorizontal && (
+      <ScrollArrows
+        containerRef={horizontalScrollRef}
+        cardSelector="[data-timeline-card='true']"
+        resetKey={itemsKey}
+      />
+    )}
     </div>
   )
 }

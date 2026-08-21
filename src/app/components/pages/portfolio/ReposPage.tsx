@@ -11,6 +11,7 @@ import SearchFilterBar from "../../SearchFilterBar"
 import { scrollElementIntoViewWithNavbarOffset } from "@/app/utils/scrollWithNavbarOffset"
 import PageTabs from "../../PageTabs"
 import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
+import ScrollArrows from "../../ScrollArrows"
 import { getTimedItem, setTimedItem, removeTimedItem } from "@/app/utils/timedStorage"
 
 interface Project {
@@ -55,6 +56,45 @@ const getCTAIcon = (icon?: string) => {
     case "private": return <FaLock className="w-5 h-5" />
     default: return <FaGithubIcon className="w-5 h-5" />
   }
+}
+
+/**
+ * Repo name with ellipsis truncation. Only wraps in a tooltip when the text
+ * actually overflows, so short names don't sprout a redundant popup.
+ */
+const RepoTitle = ({ name }: { name: string }) => {
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  const [isTruncated, setIsTruncated] = useState(false)
+
+  useEffect(() => {
+    const el = headingRef.current
+    if (!el) return
+
+    // 1px slack keeps sub-pixel text metrics from reporting a false overflow.
+    const check = () => setIsTruncated(el.scrollWidth > el.clientWidth + 1)
+
+    check()
+    const observer = new ResizeObserver(check)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [name])
+
+  const heading = (
+    <h3
+      ref={headingRef}
+      className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 truncate"
+    >
+      {name}
+    </h3>
+  )
+
+  if (!isTruncated) return heading
+
+  return (
+    <TooltipWrapper label={name} fullWidth>
+      {heading}
+    </TooltipWrapper>
+  )
 }
 
 const repoBadgeBaseClass = "text-xs font-semibold px-2 py-1 rounded-none cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600"
@@ -398,23 +438,22 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
             )}
           />
         ) : (
-          <div key={`repos-loaded-${activeId}`} className="animate-skeleton-pop">
+          <div key={`repos-loaded-${activeId}`} className="animate-skeleton-pop relative">
               <div
                 ref={scrollContainerRef}
                 className="scroll-edge-fade w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain py-4 snap-x snap-mandatory"
               >
-                <div className="relative flex w-full min-w-full flex-nowrap items-stretch gap-6 px-4 pr-16 py-4 lg:px-6 lg:pr-20">
+                <div className="relative flex w-full min-w-full flex-nowrap items-stretch gap-6 px-4 py-4 lg:px-6">
                   {tagFilteredProjects.map((project) => (
                     <div
                       key={project.id}
                       onClick={handleCardClick}
+                      data-repo-card="true"
                       className="group relative z-0 hover:z-10 bg-[#151515] hover:bg-[#252525] rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 flex flex-col shrink-0 snap-center min-w-[260px] w-[calc(100%-2rem)] sm:w-[calc((100%-3.5rem)/2)] lg:w-[calc((100%-6rem)/3)]"
                     >
                        <div className="p-6 flex-grow">
                          <div className="mb-2">
-                           <h3 className="text-xl font-semibold text-white group-hover:text-[#dc2626] transition-colors duration-300 mb-1 truncate">
-                             {project.name}
-                           </h3>
+                           <RepoTitle name={project.name} />
                            <div className="flex flex-wrap items-center gap-2">
                              {project.source === "manual" && (
                                <span
@@ -495,6 +534,11 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                    ))}
                 </div>
               </div>
+              <ScrollArrows
+                containerRef={scrollContainerRef}
+                cardSelector="[data-repo-card='true']"
+                resetKey={tagFilteredProjectsKey}
+              />
           </div>
         )}
       </div>

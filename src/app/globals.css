@@ -244,8 +244,10 @@ button:disabled {
   position: relative;
   isolation: isolate;
   --scroll-edge-fade-size: clamp(1.25rem, 3vw, 3rem);
-  padding-inline-start: var(--scroll-edge-fade-size);
-  scroll-padding-inline-start: var(--scroll-edge-fade-size);
+  /* Padding is applied to BOTH ends. A start-only inset shifted every card
+     right, so the snap-centred card never actually looked centred. */
+  padding-inline: var(--scroll-edge-fade-size);
+  scroll-padding-inline: var(--scroll-edge-fade-size);
   -webkit-mask-image: linear-gradient(
     to right,
     transparent,

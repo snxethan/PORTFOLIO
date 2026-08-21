@@ -504,6 +504,10 @@ export default function HomeClient() {
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return
+          // Each layout variant renders its own copy of the sections and the
+          // inactive one collapses to zero height; ignore it so a hidden
+          // section cannot claim the active nav item.
+          if (entry.boundingClientRect.height === 0) return
           const section = entry.target.getAttribute("data-section") as SectionKey | null
           if (section) {
             if (observerLockSectionRef.current && Date.now() < observerLockUntilRef.current) {
@@ -514,12 +518,21 @@ export default function HomeClient() {
           }
         })
       },
-      { rootMargin: "-30% 0px -55% 0px", threshold: 0.1 }
+      // threshold must stay 0: rootMargin leaves a band only ~15% of the
+      // viewport tall, so a section taller than ~1.5 viewports can never put
+      // 10% of itself inside it. On mobile that silently broke the nav for
+      // the tallest sections (projects measured a 0.097 ceiling against a
+      // 0.1 threshold). Any overlap with the band is the signal we want.
+      { rootMargin: "-30% 0px -55% 0px", threshold: 0 }
     )
 
     sectionOrder.forEach((section) => {
-      const target = document.getElementById(SECTION_IDS[section])
-      if (target) observer.observe(target)
+      // Observe every copy rather than getElementById's first match: the ids
+      // are duplicated across layout variants, so the first match can be the
+      // hidden one, which would never intersect.
+      document
+        .querySelectorAll(`[data-section="${section}"]`)
+        .forEach((target) => observer.observe(target))
     })
 
     return () => observer.disconnect()

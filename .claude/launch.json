@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "portfolio-dev",
+      "runtimeExecutable": "C:/Users/Ethan/AppData/Roaming/fnm/node-versions/v24.0.2/installation/node.exe",
+      "runtimeArgs": [
+        "node_modules/next/dist/bin/next",
+        "dev",
+        "--turbopack"
+      ],
+      "port": 3000
+    }
+  ]
+}
