@@ -19,6 +19,7 @@ export const projectsTimelineData: TimelineItem[] = [
     topics: ["python", "fastapi", "aws", "lambda", "terraform", "agentic-ai", "llm", "soar"],
     tags: ["Computer Science", "Artificial Intelligence", "Cloud Computing", "Backend"],
     links: [
+      { url: "https://highfocus.ai", label: "Website", icon: "website" },
       { url: "https://github.com/Workplace-AI-Inc/hf-emailer-scorer", label: "Repository (Private)", icon: "github" }
     ],
   },
@@ -26,7 +27,7 @@ export const projectsTimelineData: TimelineItem[] = [
     type: "project",
     name: "Meetings Admin Dashboard",
     startDate: "May 2026",
-    endDate: "Present",
+    endDate: "August 2026",
     highlights: [
       "Admin dashboard built with React and TypeScript for managing meetings across the PocketRN telehealth platform",
       "Designed and shipped a new endpoint exposing all user meetings to administrators, previously unavailable in a single view",
