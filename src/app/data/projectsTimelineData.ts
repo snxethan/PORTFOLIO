@@ -5,7 +5,7 @@ export const projectsTimelineData: TimelineItem[] = [
     type: "project",
     name: "High Focus Email Scorer",
     startDate: "July 2026",
-    endDate: "Present",
+    endDate: "September 2026",
     highlights: [
       "Agentic email-scoring service that classifies a draft sentence-by-sentence and returns an AI-rewritten version",
       "Python/FastAPI service on AWS Lambda behind an API Gateway HTTP API, serving the UI and the API from a single origin",
