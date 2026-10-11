@@ -12,12 +12,28 @@ interface TimelineItem {
 }
 
 export const timelineData: TimelineItem[] = [
+      {
+      type:"experience",
+      institution: "PocketRN",
+      location: "Remote",
+      startDate: "August 2026",
+      endDate: "Present",
+      highlights: [
+        "Data Engineer at PocketRN. - Built scalable ETL/ELT pipelines and data models that turn raw data into reliable, production-ready assets.",
+        "Collaborating cross-functionally to deliver secure, well-governed data that drives real business value.",
+        "Resolved critical customer-facing issues and ticket backlogs while optimizing core data workflows. Successfully debugged and overhauled error-handling logic within the Email Ingestion Pipeline, eliminating systemic ingestion failures and improving data pipeline resilience."
+      ],
+      summary:
+"Data Engineer building scalable ETL/ELT pipelines and data models that turn raw data into reliable, production-ready assets. Collaborating cross-functionally to deliver secure, well-governed data that drives real business value."
+      csRelated: true,
+      tags: ["Computer Science", "Data Engineer", "Healthcare", "SQL","Python","Cursor","Codex", "TypeScript", "HIPAA",],
+    },
     {
       type: "experience",
       institution: "Soar.com",
       location: "Remote",
       startDate: "June 2026",
-      endDate: "Present",
+      endDate: "September 2026",
       highlights: [
         "Artificial Intelligence Software Engineer - Built and deployed custom agentic AI workflows across multiple customer client projects.",
         "Agentic Email Scorer - Designed and shipped a custom agentic email-scoring system deployed for the public.",
@@ -26,14 +42,14 @@ export const timelineData: TimelineItem[] = [
       summary:
       "Built and deployed custom agentic AI workflows across multiple customer client projects, including a custom agentic email-scorer system deployed for the public; collaborated across teams on larger multi-engineer deliveries.",
       csRelated: true,
-      tags: ["Computer Science", "Artificial Intelligence", "Agentic AI", "Python", "AWS", "Backend"],
+      tags: ["Computer Science", "Artificial Intelligence", "Agentic AI", "Python", "AWS", "Backend", "Claude"],
     },
     {
       type:"experience",
       institution: "PocketRN",
       location: "Remote",
       startDate: "May 2026",
-      endDate: "Present",
+      endDate: "August 2026",
       highlights: [
         "Full-stack Software Engineer - Built scalable frontend and backend systems with React and TypeScript to support high-impact healthcare solutions.",
         "HIPAA and encryption compliance - Implemented secure handling of encrypted healthcare records, protecting platform integrity and patient privacy."
@@ -41,7 +57,7 @@ export const timelineData: TimelineItem[] = [
       summary:
       "Full-stack Software Engineer contributing to high-impact healthcare solutions by developing scalable frontend and backend systems using React & TypeScript. Collaborating within a cross-functional engineering team on internal workflows and implementing secure data handling practices for encrypted healthcare records, ensuring platform integrity and patient privacy.",
       csRelated: true,
-      tags: ["Computer Science", "Full-stack Development", "Healthcare", "React", "TypeScript", "HIPAA", "Encryption"],
+      tags: ["Computer Science", "Full-stack Development", "Healthcare", "React", "TypeScript", "HIPAA", "Encryption", "Codex"],
     },
     {
     type: "experience",
