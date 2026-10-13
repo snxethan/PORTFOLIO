@@ -89,7 +89,7 @@ const Footer = () => {
             </button>
             <TooltipWrapper label="My Portfolio">
               <a href="https://ethantownsend.dev" className="inline-flex items-center text-sm text-gray-400 hover:text-red-600 transition-all duration-200 ease-out hover:scale-105 active:scale-100 focus-visible:outline-none focus-visible:text-red-500 focus-visible:scale-105">
-                Ethan Townsend &copy; {new Date().getFullYear()}
+                snxethan &copy; {new Date().getFullYear()}
               </a>
             </TooltipWrapper>
           </div>
