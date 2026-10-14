@@ -12,8 +12,8 @@ interface TimelineItem {
 }
 
 export const timelineData: TimelineItem[] = [
-      {
-      type:"experience",
+    {
+      type: "experience",
       institution: "PocketRN",
       location: "Remote",
       startDate: "August 2026",
@@ -24,9 +24,9 @@ export const timelineData: TimelineItem[] = [
         "Resolved critical customer-facing issues and ticket backlogs while optimizing core data workflows. Successfully debugged and overhauled error-handling logic within the Email Ingestion Pipeline, eliminating systemic ingestion failures and improving data pipeline resilience."
       ],
       summary:
-"Data Engineer building scalable ETL/ELT pipelines and data models that turn raw data into reliable, production-ready assets. Collaborating cross-functionally to deliver secure, well-governed data that drives real business value."
+      "Data Engineer building scalable ETL/ELT pipelines and data models that turn raw data into reliable, production-ready assets. Collaborating cross-functionally to deliver secure, well-governed data that drives real business value.",
       csRelated: true,
-      tags: ["Computer Science", "Data Engineer", "Healthcare", "SQL","Python","Cursor","Codex", "TypeScript", "HIPAA",],
+      tags: ["Computer Science", "Data Engineer", "Healthcare", "SQL", "Python", "Cursor", "Codex", "TypeScript", "HIPAA"],
     },
     {
       type: "experience",
