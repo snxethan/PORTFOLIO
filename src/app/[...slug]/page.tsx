@@ -1,6 +1,7 @@
 ﻿import Page from "../page"
 import { notFound } from "next/navigation"
 import { findProjectBySlug } from "../data/projectsTimelineData"
+import { findCareerBySlug } from "../data/timelineData"
 
 type SlugPageProps = {
   params: Promise<{
@@ -24,9 +25,11 @@ export default async function SlugPage({ params }: SlugPageProps) {
   }
 
   const allowedSubsections = ALLOWED_PATHS[section]
-  // /projects/<slug> opens that project's detail popup on the home page.
-  const isProjectDetail = section === "projects" && findProjectBySlug(subsection) !== null
-  if (!allowedSubsections || (!allowedSubsections.has(subsection) && !isProjectDetail)) {
+  // /projects/<slug> and /career/<slug> open that entry's detail popup on the home page.
+  const isDetail =
+    (section === "projects" && findProjectBySlug(subsection) !== null) ||
+    (section === "career" && findCareerBySlug(subsection) !== null)
+  if (!allowedSubsections || (!allowedSubsections.has(subsection) && !isDetail)) {
     notFound()
   }
 

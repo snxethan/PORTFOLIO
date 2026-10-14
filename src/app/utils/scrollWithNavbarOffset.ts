@@ -17,3 +17,14 @@
   })
 }
 
+
+/**
+ * Scrolls a section's filter panel (SectionHeader `<id>-filters`) into view,
+ * after the tag panel has started opening so the target position is final.
+ */
+export const scrollToSectionFilters = (headerId: string) => {
+  if (typeof window === "undefined") return
+  window.setTimeout(() => {
+    scrollElementIntoViewWithNavbarOffset(document.getElementById(`${headerId}-filters`), 16)
+  }, 80)
+}

@@ -2,12 +2,12 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react"
 import { FaBriefcase, FaGraduationCap } from "react-icons/fa"
-import { timelineData } from "@/app/data/timelineData"
-import TimelineCard from "../../TimelineCard"
+import { timelineData, getCareerSlug } from "@/app/data/timelineData"
+import DetailCard from "../../detail/DetailCard"
 import SearchFilterBar from "../../SearchFilterBar"
 import SectionHeader from "../../SectionHeader"
 import CardCollection from "../../CardCollection"
-import { scrollElementIntoViewWithNavbarOffset } from "@/app/utils/scrollWithNavbarOffset"
+import { scrollElementIntoViewWithNavbarOffset, scrollToSectionFilters } from "@/app/utils/scrollWithNavbarOffset"
 import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
 import { DATE_AND_NAME_SORT_OPTIONS } from "@/app/utils/sortOptions"
 import { matchesSelectedTags } from "@/app/utils/tagFilter"
@@ -41,10 +41,12 @@ interface CareerPageProps {
   kind: CareerKind
   onTabChange: (page: string, tab: string | null) => void
   onContentReady?: () => void
+  /** Opens a career entry's detail popup (HomeClient owns it and the URL). */
+  onOpenCareer: (slug: string) => void
 }
 
 /** The Career section; `kind` picks the Experience or Education tab. */
-const CareerPage = ({ kind, onTabChange, onContentReady }: CareerPageProps) => {
+const CareerPage = ({ kind, onTabChange, onContentReady, onOpenCareer }: CareerPageProps) => {
   const filters = useSectionFilters(kind, { sort: DEFAULT_SORT, tags: DEFAULT_TAGS })
   const entries = useMemo(() => timelineData.filter((item) => item.type === kind), [kind])
   const { viewMode, setViewMode, autoScroll, setAutoScroll } = useSectionView(kind, entries.length)
@@ -79,11 +81,12 @@ const CareerPage = ({ kind, onTabChange, onContentReady }: CareerPageProps) => {
     scrollElementIntoViewWithNavbarOffset(document.getElementById(cardsId))
   }, [cardsId])
 
-  const { setSelectedTags, setShowTagsMenu } = filters
+  // A tag on a card: filter by it, stop auto-scroll, and bring the filter
+  // panel into view so the visitor sees what changed.
   const handleTagClick = (tag: string) => {
-    setSelectedTags([tag])
-    setShowTagsMenu(true)
-    setTimeout(scrollToCards, 50)
+    filters.focusTag(tag)
+    setAutoScroll(false)
+    scrollToSectionFilters(`${kind}-page-header`)
   }
 
   const allTags = useMemo(() => {
@@ -181,12 +184,14 @@ const CareerPage = ({ kind, onTabChange, onContentReady }: CareerPageProps) => {
           <div key={`${kind}-loaded`} className="animate-skeleton-pop">
             <CardCollection
               items={visibleEntries}
-              getKey={(item) => `${item.institution}-${item.startDate}`}
+              getKey={getCareerSlug}
               viewMode={viewMode}
               autoScroll={autoScroll}
-              size="wide"
+              size="standard"
               label={kind === "experience" ? "Experience" : "Education"}
-              renderCard={(item) => <TimelineCard item={item} onTagClick={handleTagClick} />}
+              renderCard={(item) => (
+                <DetailCard item={item} onOpen={() => onOpenCareer(getCareerSlug(item))} onTagClick={handleTagClick} />
+              )}
             />
           </div>
         )}

@@ -6,7 +6,7 @@ import PageTabs, { PageTabDefinition } from "./PageTabs"
 interface SectionHeaderProps {
   id?: string
   title: string
-  description?: string
+  description?: ReactNode
   /** Extra content between the title and the description (About's intro). */
   intro?: ReactNode
   tabs: PageTabDefinition[]
@@ -35,12 +35,21 @@ const SectionHeader = ({
       {title}
     </h2>
     {intro}
-    {description && <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-gray-400">{description}</p>}
+    {description &&
+      (typeof description === "string" ? (
+        <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-gray-400">{description}</p>
+      ) : (
+        <div className="mx-auto mb-4 max-w-3xl">{description}</div>
+      ))}
     <div className="flex justify-center mb-4">
       <PageTabs tabs={tabs} activeId={activeTabId} onChange={onTabChange} />
     </div>
 
-    <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4 shadow-lg shadow-black/20">
+    <div
+      id={id ? `${id}-filters` : undefined}
+      className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4 shadow-lg shadow-black/20"
+      style={{ scrollMarginTop: "calc(var(--navbar-height, 0px) + 1rem)" }}
+    >
       <div className="container mx-auto">
         {children}
         <div className="text-sm text-gray-400 mt-2" aria-live="polite">

@@ -9,8 +9,9 @@ import ProjectsPage from "./portfolio/ProjectsPage"
 import ReposPage from "./portfolio/ReposPage"
 import Footer from "./Footer"
 import About from "./About"
-import ProjectDetailModal from "../projects/ProjectDetailModal"
+import DetailModal from "../detail/DetailModal"
 import { findProjectBySlug } from "../../data/projectsTimelineData"
+import { findCareerBySlug } from "../../data/timelineData"
 
 const SECTION_IDS = {
   about: "section-about",
@@ -48,12 +49,22 @@ const parsePathSegments = (path: string) =>
       }
     })
 
-/** `/projects/<slug>` for a real project: that project's detail popup is open. */
-const getProjectSlugFromPath = (path: string | null) => {
+type DetailRoute = { kind: "project" | "career"; slug: string }
+
+/**
+ * `/projects/<slug>` or `/career/<slug>` for a real entry means that entry's
+ * detail popup is open.
+ */
+const getDetailFromPath = (path: string | null): DetailRoute | null => {
   if (!path) return null
   const [section, subsection] = parsePathSegments(path)
-  return section === "projects" && findProjectBySlug(subsection) ? subsection : null
+  if (section === "projects" && findProjectBySlug(subsection)) return { kind: "project", slug: subsection }
+  if (section === "career" && findCareerBySlug(subsection)) return { kind: "career", slug: subsection }
+  return null
 }
+
+/** How long a card stays outlined after jumping to it. */
+const HIGHLIGHT_MS = 2600
 
 export default function HomeClient() {
   const [activeSection, setActiveSection] = useState<SectionKey>("about")
@@ -78,8 +89,9 @@ export default function HomeClient() {
 
   const pathname = usePathname()
   const lastHandledPathRef = useRef<string | null>(null)
-  const openedProjectWithPushRef = useRef(false)
-  const openProjectSlug = getProjectSlugFromPath(pathname)
+  const openedDetailWithPushRef = useRef(false)
+  const openDetailRoute = getDetailFromPath(pathname)
+  const [highlightedProjectSlug, setHighlightedProjectSlug] = useState<string | null>(null)
 
   const getSectionTop = useCallback((section: SectionKey) => {
     if (typeof window === "undefined") return null
@@ -482,6 +494,12 @@ export default function HomeClient() {
         handleAboutJump("career", subsection)
         return
       }
+      // A career link: show the right tab behind its popup.
+      const careerItem = findCareerBySlug(subsection)
+      if (careerItem) {
+        handleAboutJump("career", careerItem.type)
+        return
+      }
       handleNavChange("career")
     }
   }, [handleAboutJump, handleNavChange])
@@ -576,31 +594,76 @@ export default function HomeClient() {
 
     // Leaving a project popup (close button or browser Back) returns to where
     // the visitor already was; it must not scroll the page anywhere.
-    if (getProjectSlugFromPath(previousPath)) return
+    if (getDetailFromPath(previousPath)) return
     if (pathname === "/") return
 
     const segments = parsePathSegments(pathname)
     requestAnimationFrame(() => handlePathSegments(segments))
   }, [handlePathSegments, pathname])
 
-  // The project popup lives at /projects/<slug> so it can be linked to, but
-  // opening it only changes the URL; the page never navigates.
-  const openProject = useCallback((slug: string) => {
-    const path = `/projects/${slug}`
+  // Detail popups live at /projects/<slug> and /career/<slug> so they can be
+  // linked to, but opening one only changes the URL; the page never navigates.
+  const openDetail = useCallback((kind: DetailRoute["kind"], slug: string) => {
+    const path = `/${kind === "project" ? "projects" : "career"}/${slug}`
     lastHandledPathRef.current = path
-    openedProjectWithPushRef.current = true
+    openedDetailWithPushRef.current = true
     window.history.pushState(null, "", path)
   }, [])
 
-  const closeProject = useCallback(() => {
-    if (openedProjectWithPushRef.current) {
-      openedProjectWithPushRef.current = false
+  const openProject = useCallback((slug: string) => openDetail("project", slug), [openDetail])
+  const openCareer = useCallback((slug: string) => openDetail("career", slug), [openDetail])
+
+  const closeDetail = useCallback(() => {
+    const section = openDetailRoute?.kind === "career" ? "/career" : "/projects"
+    if (openedDetailWithPushRef.current) {
+      openedDetailWithPushRef.current = false
       window.history.back()
       return
     }
-    // Arrived on the project link directly: there is no page to go back to.
-    window.history.replaceState(null, "", "/projects")
+    // Arrived on the detail link directly: there is no page to go back to.
+    window.history.replaceState(null, "", section)
+  }, [openDetailRoute?.kind])
+
+  // From a career popup's "Related projects": the popup has already closed;
+  // show the Projects tab, scroll to that project's card and outline it. If
+  // the current filters hide the card, open the project's popup instead.
+  const highlightTimerRef = useRef<number | null>(null)
+  const showRelatedProject = useCallback((slug: string) => {
+    setProjectsTab("projects")
+    setActiveSection("projects")
+    lockObserverToSection("projects")
+
+    let attempts = 0
+    const reveal = () => {
+      const card = document.getElementById(`project-card-${slug}`)
+      if (!card) {
+        attempts += 1
+        if (attempts < 20) {
+          requestAnimationFrame(reveal)
+        } else {
+          openProject(slug)
+        }
+        return
+      }
+      card.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
+      setHighlightedProjectSlug(slug)
+      if (highlightTimerRef.current !== null) window.clearTimeout(highlightTimerRef.current)
+      highlightTimerRef.current = window.setTimeout(() => setHighlightedProjectSlug(null), HIGHLIGHT_MS)
+    }
+    // Let Back finish restoring the URL before moving the page.
+    window.setTimeout(() => requestAnimationFrame(reveal), 60)
+  }, [lockObserverToSection, openProject])
+
+  useEffect(() => () => {
+    if (highlightTimerRef.current !== null) window.clearTimeout(highlightTimerRef.current)
   }, [])
+
+  const openProjectItem = openDetailRoute?.kind === "project" ? findProjectBySlug(openDetailRoute.slug) : null
+  const openCareerItem = openDetailRoute?.kind === "career" ? findCareerBySlug(openDetailRoute.slug) : null
+  const relatedProjects = (openCareerItem?.relatedProjects ?? []).flatMap((slug) => {
+    const item = findProjectBySlug(slug)
+    return item ? [{ slug, item }] : []
+  })
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
@@ -671,6 +734,7 @@ export default function HomeClient() {
                     onTabChange={handleSectionTabChange}
                     activeTab={projectsTab}
                     onOpenProject={openProject}
+                    highlightedSlug={highlightedProjectSlug}
                     key={`projects-${projectsRefreshKey}`}
                   />
                 ) : (
@@ -690,6 +754,7 @@ export default function HomeClient() {
               >
                 <CareerPage
                   kind={careerTab}
+                  onOpenCareer={openCareer}
                   onTabChange={handleSectionTabChange}
                   onContentReady={careerTab === "experience" ? handleExperienceContentReady : handleEducationContentReady}
                   key={`${careerTab}-${careerRefreshKey}`}
@@ -700,7 +765,14 @@ export default function HomeClient() {
         </div>
       </main>
       <Footer />
-      <ProjectDetailModal project={findProjectBySlug(openProjectSlug)} onClose={closeProject} />
+      <DetailModal kind="project" item={openProjectItem} onClose={closeDetail} />
+      <DetailModal
+        kind="career"
+        item={openCareerItem}
+        onClose={closeDetail}
+        relatedProjects={relatedProjects}
+        onSelectRelatedProject={showRelatedProject}
+      />
     </div>
   )
 }

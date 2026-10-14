@@ -9,8 +9,9 @@ import TooltipWrapper from "../../ToolTipWrapper"
 import { manualProjects } from "@/app/data/portfolioProjects"
 import SearchFilterBar from "../../SearchFilterBar"
 import SectionHeader from "../../SectionHeader"
+import GitHubContributionChart from "../../GitHubContributionChart"
 import CardCollection from "../../CardCollection"
-import { scrollElementIntoViewWithNavbarOffset } from "@/app/utils/scrollWithNavbarOffset"
+import { scrollElementIntoViewWithNavbarOffset, scrollToSectionFilters } from "@/app/utils/scrollWithNavbarOffset"
 import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
 import { DATE_AND_NAME_SORT_OPTIONS } from "@/app/utils/sortOptions"
 import { matchesSelectedTags } from "@/app/utils/tagFilter"
@@ -96,7 +97,7 @@ const RepoTitle = ({ name }: { name: string }) => {
 }
 
 const repoBadgeBaseClass =
-  "text-xs font-semibold px-2 py-1 rounded-none cursor-pointer transition-shadow duration-200 hover:shadow-lg hover:shadow-red-600/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+  "text-xs font-semibold px-2 py-1 rounded-none cursor-pointer transition-[scale,transform,box-shadow] duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
 const DEFAULT_SORT = "newest"
 // Every repository is a computer-science repository, so this tag matches them all.
 const WILDCARD_TAG = "Computer Science"
@@ -216,11 +217,12 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
     scrollElementIntoViewWithNavbarOffset(document.getElementById("repositories-cards"))
   }, [])
 
-  const { setSelectedTags, setShowTagsMenu } = filters
+  // A tag on a card: filter by it, stop auto-scroll, and bring the filter
+  // panel into view so the visitor sees what changed.
   const handleTagClick = (tag: string) => {
-    setSelectedTags([tag.toLowerCase()])
-    setShowTagsMenu(true)
-    setTimeout(scrollToCards, 50)
+    filters.focusTag(tag.toLowerCase())
+    setAutoScroll(false)
+    scrollToSectionFilters("repos-page-header")
   }
 
   const { search, sortBy, selectedTags, tagMatchMode } = filters
@@ -267,7 +269,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
         : project.ctaLabel ?? "View Repository"
 
     return (
-      <div className="group flex h-full w-full flex-col bg-[#151515] hover:bg-[#1c1c1c] rounded-none border border-[#333333] hover:border-red-600/50 transition-colors duration-300 hover:shadow-lg hover:shadow-red-600/20">
+      <div className="group relative flex h-full w-full flex-col bg-[#151515] hover:bg-[#1c1c1c] rounded-none border border-[#333333] hover:border-red-600/50 transition-[scale,transform,background-color,border-color,box-shadow] duration-300 ease-out hover:z-10 hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/25">
         <div className="p-6 flex-grow">
           <div className="mb-2">
             <RepoTitle name={project.name} />
@@ -312,7 +314,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
                 type="button"
                 key={tag}
                 onClick={() => handleTagClick(tag)}
-                className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap max-w-full min-w-0 truncate transition-colors duration-200 border border-transparent hover:bg-[#444444] hover:border-red-600 hover:text-[#dc2626] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+                className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap max-w-full min-w-0 truncate transition-[scale,transform,color,background-color,border-color] duration-200 hover:scale-105 border border-transparent hover:bg-[#444444] hover:border-red-600 hover:text-[#dc2626] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
               >
                 {tag.toUpperCase()}
               </button>
@@ -346,7 +348,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
       <SectionHeader
         id="repos-page-header"
         title="Projects"
-        description="Search through my GitHub repositories and shipped work."
+        description={<GitHubContributionChart />}
         tabs={tabs}
         activeTabId={activeId}
         onTabChange={(tab) => onTabChange("projects", tab)}

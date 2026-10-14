@@ -45,7 +45,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
 
         {/* Avatar */}
         <div
-          className="relative w-32 h-32 mx-auto rounded-full overflow-hidden group cursor-pointer transition-transform duration-300 ease-out"
+          className="relative w-32 h-32 mx-auto rounded-full overflow-hidden group cursor-pointer transition-transform duration-300 ease-out hover:scale-105"
           onClick={handleAvatarClick}
         >
           <div className="absolute -inset-0.5 rounded-full opacity-0 blur-sm transition duration-300 group-hover:opacity-5 group-hover:bg-gradient-to-r group-hover:from-red-700 group-hover:to-red-500"></div>
@@ -88,7 +88,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className={`inline-flex items-center justify-center ${isLinkedIn ? "rounded-none" : "rounded-full"} p-1 text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] hover:shadow-[0_0_14px_rgba(220,38,38,0.14)] focus-visible:outline-none focus-visible:text-red-500 focus-visible:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] focus-visible:shadow-[0_0_14px_rgba(220,38,38,0.14)]`}
+                    className={`inline-flex items-center justify-center ${isLinkedIn ? "rounded-none" : "rounded-full"} p-1 text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] hover:shadow-[0_0_14px_rgba(220,38,38,0.14)] focus-visible:outline-none focus-visible:text-red-500 focus-visible:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] focus-visible:shadow-[0_0_14px_rgba(220,38,38,0.14)]`}
                   >
                     <Icon />
                   </a>

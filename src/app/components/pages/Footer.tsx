@@ -10,7 +10,7 @@ import { useExternalLink } from "../ExternalLinkHandler"
 
 const LICENSE_URL = "https://github.com/snxethan/PORTFOLIO/blob/main/LICENSE.md"
 const domainLinkClass =
-  "inline-flex items-center rounded-md px-2 py-1.5 hover:text-red-600 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:text-red-500"
+  "inline-flex items-center rounded-md px-2 py-1.5 hover:text-red-600 transition-[color,transform] duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:text-red-500"
 
 const Footer = () => {
   const [loading, setLoading] = useState(true)
@@ -68,7 +68,7 @@ const Footer = () => {
                       target="_blank"
                       rel="noreferrer"
                       aria-label={label}
-                      className={`inline-flex items-center justify-center ${isLinkedIn ? "rounded-none" : "rounded-full"} p-1 text-gray-400 hover:text-red-600 text-xl transition-all duration-200 ease-out hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] hover:shadow-[0_0_14px_rgba(220,38,38,0.14)] focus-visible:outline-none focus-visible:text-red-500 focus-visible:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] focus-visible:shadow-[0_0_14px_rgba(220,38,38,0.14)]`}
+                      className={`inline-flex items-center justify-center ${isLinkedIn ? "rounded-none" : "rounded-full"} p-1 text-gray-400 hover:text-red-600 text-xl transition-all duration-200 ease-out hover:scale-125 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] hover:shadow-[0_0_14px_rgba(220,38,38,0.14)] focus-visible:outline-none focus-visible:text-red-500 focus-visible:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] focus-visible:shadow-[0_0_14px_rgba(220,38,38,0.14)]`}
                     >
                       <Icon />
                     </a>
@@ -83,14 +83,14 @@ const Footer = () => {
             <button
               onClick={() => setShowHealth(true)}
               aria-label="Show API health"
-              className="p-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+              className="group p-0 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
             >
               <Image
                 src="/images/avatar/snex.png"
                 alt="Ethan Townsend"
                 width={32}
                 height={32}
-                className="rounded-full"
+                className="rounded-full transition-transform duration-300 ease-out group-hover:-translate-y-1 group-hover:scale-105"
               />
             </button>
             <TooltipWrapper label="License & copyright notice">
@@ -100,7 +100,7 @@ const Footer = () => {
                   event.preventDefault()
                   handleExternalClick(LICENSE_URL, true)
                 }}
-                className="inline-flex items-center rounded-md px-2 py-1.5 text-sm text-gray-400 hover:text-red-600 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:text-red-500"
+                className="inline-flex items-center rounded-md px-2 py-1.5 text-sm text-gray-400 hover:text-red-600 transition-[color,transform] duration-200 ease-out hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:text-red-500"
               >
                 snxethan &copy; {new Date().getFullYear()}
               </a>

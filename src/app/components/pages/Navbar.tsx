@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { FaThumbtack, FaUser, FaBriefcase, FaFolderOpen, FaProjectDiagram, FaGithub, FaCertificate, FaTools, FaGraduationCap } from "react-icons/fa"
 
+/**
+ * Fire this on `window` to make the navbar bounce in place, e.g. when copy
+ * elsewhere on the page points at it.
+ */
+export const NAVBAR_ATTENTION_EVENT = "navbar:attention"
+
 interface NavbarProps {
   onTabChange: (page: string, tab: string | null) => void
   activePage: string | null
@@ -18,7 +24,7 @@ interface ContextMenuItem {
 }
 
 const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPopups = true }: NavbarProps) => {
-  const CONTEXT_MENU_ANIMATION_MS = 300
+  const CONTEXT_MENU_ANIMATION_MS = 150 // matches .animate-menu-out
 
   // Only show loading state if page data hasn't been initialized (undefined), not if it's explicitly null (homepage)
   const isLoading = activePage === undefined || activeTab === undefined
@@ -224,6 +230,16 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
     return () => clearTimeout(timer)
   }, [isPinAnimating])
 
+  useEffect(() => {
+    const handleAttention = () => {
+      // Restart the bounce even if one is already playing.
+      setIsPinAnimating(false)
+      requestAnimationFrame(() => setIsPinAnimating(true))
+    }
+    window.addEventListener(NAVBAR_ATTENTION_EVENT, handleAttention)
+    return () => window.removeEventListener(NAVBAR_ATTENTION_EVENT, handleAttention)
+  }, [])
+
   const handlePinToggle = () => {
     setIsNavPinned((prev) => !prev)
     setIsPinAnimating(true)
@@ -405,7 +421,7 @@ function ContextMenuPopup({ contextMenuRef, page, anchorId, subItems, onTabChang
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       className={`fixed z-[9999] min-w-[140px] max-w-[220px] rounded-lg border border-[#333333] bg-[#1e1e1e] py-1.5 shadow-2xl shadow-black/40 ${
-        isClosing ? "animate-fade-out-down" : "animate-fade-in-up"
+        isClosing ? "animate-menu-out" : "animate-menu-in"
       }`}
       style={pos ? { left: pos.left, top: pos.top } : { visibility: "hidden", left: 0, top: 0 }}
     >

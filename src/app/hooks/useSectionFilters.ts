@@ -35,7 +35,14 @@ export function useSectionFilters(storagePrefix: string, defaults: SectionFilter
     setShowTagsMenu(false)
   }, [defaults.sort, defaults.tags, setSearch, setSelectedTags, setSortBy, setTagMatchMode])
 
+  /** A tag clicked on a card: filter by just that tag and show the tag panel. */
+  const focusTag = useCallback((tag: string) => {
+    setSelectedTags([tag])
+    setShowTagsMenu(true)
+  }, [setSelectedTags])
+
   return {
+    focusTag,
     search,
     setSearch,
     sortBy,

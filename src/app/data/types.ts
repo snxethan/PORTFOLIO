@@ -36,4 +36,8 @@ export interface TimelineItem {
   why?: string
   /** Project detail popup: how it was built. Falls back to `highlights`. */
   how?: string[]
+  /** Career entries: slugs of projects built in this role or program. */
+  relatedProjects?: string[]
+  /** Career entries: shown when the "Computer Science" focus applies. */
+  csRelated?: boolean
 }

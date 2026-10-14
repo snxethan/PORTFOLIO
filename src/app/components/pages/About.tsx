@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import { FaFilePdf, FaExternalLinkAlt, FaCertificate, FaTools, FaBriefcase, FaGraduationCap, FaFolderOpen, FaGithub } from "react-icons/fa"
+import { FaFilePdf, FaExternalLinkAlt, FaCertificate, FaTools, FaCompass } from "react-icons/fa"
+import { NAVBAR_ATTENTION_EVENT } from "./Navbar"
 
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
@@ -10,7 +11,7 @@ import SearchFilterBar from "../SearchFilterBar"
 import SectionHeader from "../SectionHeader"
 import CardCollection from "../CardCollection"
 import ResponsiveCardSkeletonGrid from "../ResponsiveCardSkeletonGrid"
-import { scrollElementIntoViewWithNavbarOffset } from "../../utils/scrollWithNavbarOffset"
+import { scrollElementIntoViewWithNavbarOffset, scrollToSectionFilters } from "../../utils/scrollWithNavbarOffset"
 import { DATE_AND_NAME_SORT_OPTIONS, SKILL_SORT_OPTIONS } from "../../utils/sortOptions"
 import { matchesSelectedTags } from "../../utils/tagFilter"
 import { useSectionFilters } from "../../hooks/useSectionFilters"
@@ -33,11 +34,8 @@ const tabs = [
   { id: "skills", label: "Skills", icon: <FaTools /> },
 ]
 
-const jumpLinkClass =
-  "text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-colors duration-200"
-
 const cardClass =
-  "group flex h-full w-full flex-col overflow-hidden bg-[#151515] hover:bg-[#1c1c1c] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-colors duration-300 hover:shadow-lg hover:shadow-red-600/20"
+  "group relative flex h-full w-full flex-col overflow-hidden bg-[#151515] hover:bg-[#1c1c1c] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-[scale,transform,background-color,border-color,box-shadow] duration-300 ease-out hover:z-10 hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/25"
 
 const cardButtonClass =
   "flex h-full w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
@@ -118,9 +116,9 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
   const handleCardTagClick = (event: React.SyntheticEvent<HTMLElement>, tag: string) => {
     event.preventDefault()
     event.stopPropagation()
-    filters.setSelectedTags([tag])
-    filters.setShowTagsMenu(true)
-    requestAnimationFrame(scrollToCards)
+    filters.focusTag(tag)
+    setAutoScroll(false)
+    scrollToSectionFilters("about-page-header")
   }
 
   const renderFilterTags = (tags: string[]) => {
@@ -143,7 +141,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
                 handleCardTagClick(event, tag)
               }
             }}
-            className="inline-flex items-center text-xs px-3 py-1 rounded-full whitespace-nowrap transition-colors duration-200 border cursor-pointer bg-[#3a3a3a] text-gray-300 border-transparent hover:bg-[#444444] hover:border-red-600 hover:text-[#dc2626]"
+            className="inline-flex items-center text-xs px-3 py-1 rounded-full whitespace-nowrap transition-[scale,transform,color,background-color,border-color] duration-200 hover:scale-105 border cursor-pointer bg-[#3a3a3a] text-gray-300 border-transparent hover:bg-[#444444] hover:border-red-600 hover:text-[#dc2626]"
           >
             {tag.toUpperCase()}
           </span>
@@ -291,13 +289,6 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     ? `Showing ${sortedCertifications.length} Certification${sortedCertifications.length !== 1 ? "s" : ""}`
     : `Showing ${sortedSkills.length} Skill${sortedSkills.length !== 1 ? "s" : ""}`
 
-  const handleJump = (page: string, tab: string | null) => {
-    if (page === "about" && (tab === "certifications" || tab === "skills")) {
-      setActiveSubsection(tab)
-    }
-    onTabChange?.(page, tab)
-  }
-
   const handleAboutTabChange = (tab: string | null) => {
     const nextTab = tab === "skills" ? "skills" : "certifications"
     // Always call parent — HomeClient detects same-tab re-clicks and increments the refresh key
@@ -307,42 +298,36 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     requestAnimationFrame(scrollToCards)
   }
 
+  // Points visitors at the navbar instead of listing every section here.
+  // Hovering or clicking "navigation bar" makes the navbar bounce in place;
+  // a click also brings it into view if it is off-screen.
+  const callNavbarAttention = (scrollToNavbar: boolean) => {
+    window.dispatchEvent(new CustomEvent(NAVBAR_ATTENTION_EVENT))
+    if (!scrollToNavbar) return
+    const nav = document.querySelector("nav[aria-label='Main navigation']")
+    const rect = nav?.getBoundingClientRect()
+    if (nav && rect && (rect.bottom < 0 || rect.top > window.innerHeight)) {
+      nav.scrollIntoView({ behavior: "smooth", block: "center" })
+    }
+  }
+
   const intro = (
     <p className="text-gray-300 max-w-2xl mx-auto text-center mb-6">
       I am Ethan Townsend, a Full-Stack Software Engineer with a passion for back-end development.
       <br />
       <br />
-      Jump to my{" "}
-      <button type="button" onClick={() => handleJump("about", "certifications")} className={jumpLinkClass}>
-        <FaCertificate className="text-base" />
-        Certifications
-      </button>
-      ,{" "}
-      <button type="button" onClick={() => handleJump("about", "skills")} className={jumpLinkClass}>
-        <FaTools className="text-base" />
-        Skills
-      </button>
-      ,{" "}
-      <button type="button" onClick={() => handleJump("career", "experience")} className={jumpLinkClass}>
-        <FaBriefcase className="text-base" />
-        Experience
-      </button>
-      ,{" "}
-      <button type="button" onClick={() => handleJump("career", "education")} className={jumpLinkClass}>
-        <FaGraduationCap className="text-base" />
-        Education
-      </button>
-      , and{" "}
-      <button type="button" onClick={() => handleJump("projects", "projects")} className={jumpLinkClass}>
-        <FaFolderOpen className="text-base" />
-        Projects
-      </button>
-      ,{" "}
-      <button type="button" onClick={() => handleJump("projects", "repos")} className={jumpLinkClass}>
-        <FaGithub className="text-base" />
-        Repositories
-      </button>
-      .
+      Use the{" "}
+      <button
+        type="button"
+        onMouseEnter={() => callNavbarAttention(false)}
+        onFocus={() => callNavbarAttention(false)}
+        onClick={() => callNavbarAttention(true)}
+        className="inline-flex items-center gap-1 font-medium text-red-500 underline decoration-red-500/40 decoration-2 underline-offset-4 transition-colors duration-200 hover:text-red-400 hover:decoration-red-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 rounded-sm"
+      >
+        <FaCompass className="text-base" aria-hidden="true" />
+        navigation bar
+      </button>{" "}
+      to explore my certifications, skills, projects, and career.
     </p>
   )
 
@@ -350,6 +335,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     <>
       <div className="animate-fadeInScale">
         <SectionHeader
+          id="about-page-header"
           title="Welcome to My Portfolio"
           intro={intro}
           description="Quick highlights of my certifications and technical skillset."

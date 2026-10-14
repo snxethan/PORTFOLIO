@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import ScrollArrows, { scrollRailByCard } from "./ScrollArrows"
 import type { ViewMode } from "../hooks/useSectionView"
 
@@ -93,6 +93,17 @@ function CardCollection<T>({
   const scrollerRef = useRef<HTMLDivElement>(null)
   const itemsKey = items.map(getKey).join("|")
   const previousItemsKeyRef = useRef(itemsKey)
+  // Pop animation when the visitor switches grid <-> scroll (not on first render).
+  const previousViewModeRef = useRef(viewMode)
+  const [hasSwappedView, setHasSwappedView] = useState(false)
+
+  useEffect(() => {
+    if (previousViewModeRef.current === viewMode) return
+    previousViewModeRef.current = viewMode
+    setHasSwappedView(true)
+  }, [viewMode])
+
+  const swapClass = hasSwappedView ? "animate-view-swap" : ""
   // The rail only mounts once there is something to show; re-arm auto-scroll then.
   const hasItems = items.length > 0
 
@@ -192,9 +203,10 @@ function CardCollection<T>({
   if (viewMode === "grid") {
     return (
       <div
+        key="grid"
         role="list"
         aria-label={label}
-        className="grid gap-6 px-1 py-4"
+        className={`grid gap-6 px-1 py-4 ${swapClass}`}
         style={{
           // auto-fill (not auto-fit) keeps empty tracks, so a filtered result
           // of two cards keeps normal card widths and the normal gap instead
@@ -213,7 +225,7 @@ function CardCollection<T>({
   }
 
   return (
-    <div ref={wrapperRef} className="relative">
+    <div key="rail" ref={wrapperRef} className={`relative ${swapClass}`}>
       <div
         ref={scrollerRef}
         role="region"

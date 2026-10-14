@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { FaFilter, FaSort, FaTh, FaExchangeAlt } from "react-icons/fa";
+import { FaFilter, FaSort, FaExchangeAlt } from "react-icons/fa";
+import { MdGridView, MdViewCarousel } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { scrollElementIntoViewWithNavbarOffset } from "../utils/scrollWithNavbarOffset";
 import type { SortOption } from "../utils/sortOptions";
@@ -68,7 +69,7 @@ export default function SearchFilterBar({
 }: SearchFilterBarProps) {
   const sortedTags = [...tags].sort();
   const FILTER_MENU_CLOSE_DURATION = 220;
-  const TAG_MENU_CLOSE_DURATION = 220;
+  const TAG_MENU_CLOSE_DURATION = 260; // matches .collapse-panel transition
   const sortButtonRef = useRef<HTMLButtonElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
@@ -78,6 +79,9 @@ export default function SearchFilterBar({
   const [isFilterMenuClosing, setIsFilterMenuClosing] = useState(false);
   const [isTagsMenuRendered, setIsTagsMenuRendered] = useState(showTagsMenu);
   const [isTagsMenuClosing, setIsTagsMenuClosing] = useState(false);
+  // The panel mounts collapsed and expands one frame later, so the browser
+  // has a collapsed state to transition from.
+  const [isTagsPanelExpanded, setIsTagsPanelExpanded] = useState(false);
   const filterMenuTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tagsMenuTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -143,6 +147,15 @@ export default function SearchFilterBar({
       }
     };
   }, [showTagsMenu, isTagsMenuRendered]);
+
+  useEffect(() => {
+    if (!isTagsMenuRendered || isTagsMenuClosing) {
+      setIsTagsPanelExpanded(false);
+      return;
+    }
+    const frame = requestAnimationFrame(() => setIsTagsPanelExpanded(true));
+    return () => cancelAnimationFrame(frame);
+  }, [isTagsMenuRendered, isTagsMenuClosing]);
 
   // Auto-scroll to tags section when it opens
   useEffect(() => {
@@ -212,6 +225,13 @@ export default function SearchFilterBar({
     }
   }, [showFilterMenu, setShowFilterMenu]);
 
+  // Narrowing the cards with filters stops auto-scroll, so the results stay
+  // put while the visitor reads them. They can turn it back on.
+  const changeTags = (next: string[]) => {
+    setSelectedTags(next);
+    if (autoScroll) onAutoScrollChange?.(false);
+  };
+
   const hasViewToggle = viewMode !== undefined && onViewModeChange !== undefined;
   const hasAutoScrollToggle = autoScroll !== undefined && onAutoScrollChange !== undefined;
   const isGrid = viewMode === "grid";
@@ -230,43 +250,8 @@ export default function SearchFilterBar({
           className={`w-full p-4 ${hasViewToggle || hasAutoScrollToggle ? "pr-44" : "pr-24"} bg-[#1e1e1e] border border-[#333333] rounded-lg text-white text-ellipsis shadow-[0_10px_24px_rgba(0,0,0,0.24)] focus:border-red-600 focus:outline-none transition-colors hover:border-red-600/70`}
         />
 
-        {/* View, Filter & Sort Buttons */}
+        {/* Filter & sort on the left, layout controls on the right */}
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
-          {hasAutoScrollToggle && (
-            <button
-              type="button"
-              onClick={() => onAutoScrollChange?.(!autoScroll)}
-              disabled={isGrid}
-              aria-pressed={isAutoScrollOn}
-              className={`${iconButtonClass} ${iconButtonStateClass(isAutoScrollOn)}`}
-              title={
-                isGrid
-                  ? "Auto-scroll works in scroll view"
-                  : autoScroll
-                    ? "Auto-scroll on (click to stop)"
-                    : "Auto-scroll off (click to start)"
-              }
-            >
-              <FaExchangeAlt className="h-4 w-4" />
-            </button>
-          )}
-
-          {hasViewToggle && (
-            <button
-              type="button"
-              onClick={() => onViewModeChange?.(isGrid ? "rail" : "grid")}
-              aria-pressed={isGrid}
-              className={`${iconButtonClass} ${iconButtonStateClass(isGrid)}`}
-              title={isGrid ? "Grid view (click for scroll view)" : "Scroll view (click for grid view)"}
-            >
-              <FaTh className="h-4 w-4" />
-            </button>
-          )}
-
-          {(hasViewToggle || hasAutoScrollToggle) && (
-            <span className="mx-1 h-5 w-px bg-[#333333]" aria-hidden="true" />
-          )}
-
           {/* Filter Options Button - Shows Tags */}
           <button
             type="button"
@@ -300,6 +285,36 @@ export default function SearchFilterBar({
           >
             <SortIcon className="h-[18px] w-[18px]" />
           </button>
+
+          {(hasViewToggle || hasAutoScrollToggle) && (
+            <span className="mx-1 h-5 w-px bg-[#333333]" aria-hidden="true" />
+          )}
+
+          {/* The icon shows the view you would switch to. */}
+          {hasViewToggle && (
+            <button
+              type="button"
+              onClick={() => onViewModeChange?.(isGrid ? "rail" : "grid")}
+              className={`${iconButtonClass} ${iconButtonStateClass(false)}`}
+              title={isGrid ? "Switch to scroll view" : "Switch to grid view"}
+              aria-label={isGrid ? "Switch to scroll view" : "Switch to grid view"}
+            >
+              {isGrid ? <MdViewCarousel className="h-5 w-5" /> : <MdGridView className="h-5 w-5" />}
+            </button>
+          )}
+
+          {/* Auto-scroll only exists in scroll view. */}
+          {hasAutoScrollToggle && !isGrid && (
+            <button
+              type="button"
+              onClick={() => onAutoScrollChange?.(!autoScroll)}
+              aria-pressed={isAutoScrollOn}
+              className={`${iconButtonClass} ${iconButtonStateClass(isAutoScrollOn)}`}
+              title={autoScroll ? "Auto-scroll on (click to stop)" : "Auto-scroll off (click to start)"}
+            >
+              <FaExchangeAlt className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -307,16 +322,17 @@ export default function SearchFilterBar({
       {isTagsMenuRendered && (
         <div
           ref={tagsRef}
-          className={`mb-4 overflow-hidden rounded-lg border border-[#333333] bg-[#1e1e1e] shadow-lg shadow-black/20 transition-all duration-200 ease-out origin-top ${
-            isTagsMenuClosing ? "animate-tag-hide pointer-events-none" : "animate-tag-extend"
-          }`}
+          data-open={isTagsPanelExpanded}
+          className={`collapse-panel mb-4 ${isTagsMenuClosing ? "pointer-events-none" : ""}`}
         >
+        <div className="rounded-lg border border-[#333333] bg-[#1e1e1e] shadow-lg shadow-black/20">
           <div className="flex items-center gap-2 border-b border-[#333333] px-3 py-2">
             <span className="text-xs text-gray-400">Match</span>
             <button
               type="button"
               onClick={() => {
                 setTagMatchMode(tagMatchMode === "any" ? "all" : "any");
+                if (autoScroll) onAutoScrollChange?.(false);
                 onFilterInteraction?.();
               }}
               className="rounded-md border border-[#3a3a3a] bg-[#2a2a2a] px-2.5 py-1 text-xs font-semibold tracking-wide text-gray-200 transition-colors hover:border-red-600 hover:text-[#dc2626] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
@@ -335,7 +351,7 @@ export default function SearchFilterBar({
               <button
                 type="button"
                 onClick={() => {
-                  setSelectedTags([]);
+                  changeTags([]);
                   setSearch("");
                   onFilterInteraction?.();
                 }}
@@ -355,11 +371,11 @@ export default function SearchFilterBar({
                   type="button"
                   key={tag}
                   onClick={() => {
-                    setSelectedTags(toggleTag(selectedTags, tag));
+                    changeTags(toggleTag(selectedTags, tag));
                     onFilterInteraction?.();
                   }}
                   aria-pressed={isSelected}
-                  className={`px-3 py-1 rounded-full text-sm transition-colors duration-200 border ${
+                  className={`px-3 py-1 rounded-full text-sm transition-[scale,transform,color,background-color,border-color] duration-200 hover:scale-105 border ${
                     isSelected
                       ? "bg-red-600 text-white border-red-500 shadow-lg shadow-red-600/40"
                       : "bg-[#3a3a3a] text-gray-300 border-transparent hover:bg-[#444444] hover:border-red-600 hover:text-[#dc2626]"
@@ -371,14 +387,15 @@ export default function SearchFilterBar({
             })}
           </div>
         </div>
+        </div>
       )}
 
       {/* Sort Dropdown Portal - Rendered outside component hierarchy to escape z-index constraints */}
       {mounted && isFilterMenuRendered && createPortal(
         <div
           ref={dropdownRef}
-          className={`fixed z-[9999] min-w-[200px] rounded-lg border border-[#333333] bg-[#1e1e1e] shadow-lg origin-top-right ${
-            isFilterMenuClosing ? "animate-sort-menu-out pointer-events-none" : "animate-sort-menu-in"
+          className={`fixed z-[9999] min-w-[200px] rounded-lg border border-[#333333] bg-[#1e1e1e] shadow-lg ${
+            isFilterMenuClosing ? "animate-menu-out pointer-events-none" : "animate-menu-in"
           }`}
           style={{
             top: `${dropdownPosition.top}px`,

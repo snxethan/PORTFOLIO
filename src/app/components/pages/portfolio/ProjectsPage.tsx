@@ -5,8 +5,8 @@ import { projectsTimelineData, getProjectSlug } from "../../../data/projectsTime
 import SearchFilterBar from "../../SearchFilterBar"
 import SectionHeader from "../../SectionHeader"
 import CardCollection from "../../CardCollection"
-import ProjectCard from "../../projects/ProjectCard"
-import { scrollElementIntoViewWithNavbarOffset } from "../../../utils/scrollWithNavbarOffset"
+import DetailCard from "../../detail/DetailCard"
+import { scrollElementIntoViewWithNavbarOffset, scrollToSectionFilters } from "../../../utils/scrollWithNavbarOffset"
 import { FaProjectDiagram, FaGithub } from "react-icons/fa"
 import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
 import { DATE_AND_NAME_SORT_OPTIONS } from "../../../utils/sortOptions"
@@ -29,9 +29,11 @@ interface ProjectsPageProps {
   activeTab: string | null
   /** Opens a project's detail popup (HomeClient owns it and the URL). */
   onOpenProject: (slug: string) => void
+  /** Project card to outline briefly (after jumping here from a related link). */
+  highlightedSlug?: string | null
 }
 
-const ProjectsPage = ({ onTabChange, activeTab, onOpenProject }: ProjectsPageProps) => {
+const ProjectsPage = ({ onTabChange, activeTab, onOpenProject, highlightedSlug = null }: ProjectsPageProps) => {
   const activeId = activeTab ?? "projects"
   const filters = useSectionFilters("projects", { sort: DEFAULT_SORT, tags: DEFAULT_TAGS })
   const { viewMode, setViewMode, autoScroll, setAutoScroll } = useSectionView("projects", projectsTimelineData.length)
@@ -45,6 +47,14 @@ const ProjectsPage = ({ onTabChange, activeTab, onOpenProject }: ProjectsPagePro
   const scrollToCards = React.useCallback(() => {
     scrollElementIntoViewWithNavbarOffset(document.getElementById("projects-cards"))
   }, [])
+
+  // A tag on a card: filter by it, stop auto-scroll, and bring the filter
+  // panel into view so the visitor sees what changed.
+  const handleCardTagClick = (tag: string) => {
+    filters.focusTag(tag)
+    setAutoScroll(false)
+    scrollToSectionFilters("projects-page-header")
+  }
 
   const allTags = useMemo(() => {
     const tagSet = new Set<string>()
@@ -152,9 +162,18 @@ const ProjectsPage = ({ onTabChange, activeTab, onOpenProject }: ProjectsPagePro
               autoScroll={autoScroll}
               size="standard"
               label="Projects"
-              renderCard={(project) => (
-                <ProjectCard project={project} onOpen={() => onOpenProject(getProjectSlug(project))} />
-              )}
+              renderCard={(project) => {
+                const slug = getProjectSlug(project)
+                return (
+                  <DetailCard
+                    item={project}
+                    id={`project-card-${slug}`}
+                    onOpen={() => onOpenProject(slug)}
+                    onTagClick={handleCardTagClick}
+                    highlighted={highlightedSlug === slug}
+                  />
+                )
+              }}
             />
           </div>
         )}
