@@ -2,18 +2,23 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { FaFilter, FaSort } from "react-icons/fa";
+import { FaFilter, FaSort, FaTh, FaExchangeAlt } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { scrollElementIntoViewWithNavbarOffset } from "../utils/scrollWithNavbarOffset";
+import type { SortOption } from "../utils/sortOptions";
+import { toggleTag, type TagMatchMode } from "../utils/tagFilter";
+import type { ViewMode } from "../hooks/useSectionView";
 
 interface SearchFilterBarProps {
   search: string;
   setSearch: (value: string) => void;
   placeholder: string;
   tags: string[];
-  selectedTag: string | null;
-  setSelectedTag: (tag: string | null) => void;
-  sortOptions: { label: string; value: string }[];
+  selectedTags: string[];
+  setSelectedTags: (tags: string[]) => void;
+  tagMatchMode: TagMatchMode;
+  setTagMatchMode: (mode: TagMatchMode) => void;
+  sortOptions: SortOption[];
   selectedSort: string;
   setSelectedSort: (value: string) => void;
   showTagsMenu: boolean;
@@ -22,15 +27,31 @@ interface SearchFilterBarProps {
   setShowFilterMenu: (show: boolean) => void;
   defaultSort?: string; // Optional default sort value for the page
   onFilterInteraction?: () => void;
+  /** Grid vs. horizontal rail. Omit both view props to hide the toggle. */
+  viewMode?: ViewMode;
+  onViewModeChange?: (mode: ViewMode) => void;
+  /** Rail auto-scroll. Omit both props to hide the toggle. */
+  autoScroll?: boolean;
+  onAutoScrollChange?: (enabled: boolean) => void;
 }
+
+// Icon buttons inside the search field. They change colour on hover but never
+// size or position, so the target stays exactly where the pointer is.
+const iconButtonClass =
+  "relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-transparent transition-colors duration-200 hover:border-red-600/60 hover:bg-[#2a2a2a] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-transparent disabled:hover:bg-transparent";
+
+const iconButtonStateClass = (isActive: boolean) =>
+  isActive ? "text-[#dc2626]" : "text-gray-400 hover:text-[#dc2626]";
 
 export default function SearchFilterBar({
   search,
   setSearch,
   placeholder,
   tags,
-  selectedTag,
-  setSelectedTag,
+  selectedTags,
+  setSelectedTags,
+  tagMatchMode,
+  setTagMatchMode,
   sortOptions,
   selectedSort,
   setSelectedSort,
@@ -40,6 +61,10 @@ export default function SearchFilterBar({
   setShowFilterMenu,
   defaultSort,
   onFilterInteraction,
+  viewMode,
+  onViewModeChange,
+  autoScroll,
+  onAutoScrollChange,
 }: SearchFilterBarProps) {
   const sortedTags = [...tags].sort();
   const FILTER_MENU_CLOSE_DURATION = 220;
@@ -152,6 +177,9 @@ export default function SearchFilterBar({
   // Determine if sort is at default value (use first option if defaultSort not provided)
   const effectiveDefaultSort = defaultSort || sortOptions[0]?.value;
   const isSortActive = mounted && selectedSort !== effectiveDefaultSort;
+  const activeSortOption = sortOptions.find((option) => option.value === selectedSort);
+  const SortIcon = activeSortOption?.icon ?? FaSort;
+  const hasSelectedTags = selectedTags.length > 0;
 
   // Calculate dropdown position when it opens
   useEffect(() => {
@@ -159,7 +187,7 @@ export default function SearchFilterBar({
       const rect = sortButtonRef.current.getBoundingClientRect();
       setDropdownPosition({
         top: rect.bottom + 8,
-        left: rect.right - 200, // Align right edge (200px is min-width of dropdown)
+        left: Math.max(8, rect.right - 200), // Align right edge (200px is min-width of dropdown)
       });
     }
   }, [showFilterMenu]);
@@ -184,6 +212,11 @@ export default function SearchFilterBar({
     }
   }, [showFilterMenu, setShowFilterMenu]);
 
+  const hasViewToggle = viewMode !== undefined && onViewModeChange !== undefined;
+  const hasAutoScrollToggle = autoScroll !== undefined && onAutoScrollChange !== undefined;
+  const isGrid = viewMode === "grid";
+  const isAutoScrollOn = Boolean(autoScroll) && !isGrid;
+
   return (
     <div className="bg-transparent p-4 rounded-lg mb-2">
       {/* Search Bar with Buttons */}
@@ -191,40 +224,81 @@ export default function SearchFilterBar({
         <input
           type="text"
           placeholder={placeholder}
+          aria-label={placeholder}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full p-4 pr-32 bg-[#1e1e1e] border border-[#333333] rounded-lg text-white shadow-[0_10px_24px_rgba(0,0,0,0.24)] focus:border-red-600 focus:outline-none transition-all hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/20 hover:scale-[1.01]"
+          className={`w-full p-4 ${hasViewToggle || hasAutoScrollToggle ? "pr-44" : "pr-24"} bg-[#1e1e1e] border border-[#333333] rounded-lg text-white text-ellipsis shadow-[0_10px_24px_rgba(0,0,0,0.24)] focus:border-red-600 focus:outline-none transition-colors hover:border-red-600/70`}
         />
-        
-        {/* Filter & Sort Buttons Container */}
-        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+
+        {/* View, Filter & Sort Buttons */}
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
+          {hasAutoScrollToggle && (
+            <button
+              type="button"
+              onClick={() => onAutoScrollChange?.(!autoScroll)}
+              disabled={isGrid}
+              aria-pressed={isAutoScrollOn}
+              className={`${iconButtonClass} ${iconButtonStateClass(isAutoScrollOn)}`}
+              title={
+                isGrid
+                  ? "Auto-scroll works in scroll view"
+                  : autoScroll
+                    ? "Auto-scroll on (click to stop)"
+                    : "Auto-scroll off (click to start)"
+              }
+            >
+              <FaExchangeAlt className="h-4 w-4" />
+            </button>
+          )}
+
+          {hasViewToggle && (
+            <button
+              type="button"
+              onClick={() => onViewModeChange?.(isGrid ? "rail" : "grid")}
+              aria-pressed={isGrid}
+              className={`${iconButtonClass} ${iconButtonStateClass(isGrid)}`}
+              title={isGrid ? "Grid view (click for scroll view)" : "Scroll view (click for grid view)"}
+            >
+              <FaTh className="h-4 w-4" />
+            </button>
+          )}
+
+          {(hasViewToggle || hasAutoScrollToggle) && (
+            <span className="mx-1 h-5 w-px bg-[#333333]" aria-hidden="true" />
+          )}
+
           {/* Filter Options Button - Shows Tags */}
           <button
+            type="button"
             onClick={() => {
               setShowTagsMenu(!showTagsMenu);
               setShowFilterMenu(false);
             }}
-            className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent ${
-              showTagsMenu ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
-            }`}
-            title="Filter Options"
+            aria-expanded={showTagsMenu}
+            className={`${iconButtonClass} ${iconButtonStateClass(showTagsMenu || hasSelectedTags)}`}
+            title={hasSelectedTags ? `Filter (${selectedTags.length} selected)` : "Filter by tags"}
           >
-            <FaFilter className={`w-5 h-5 transition-colors ${showTagsMenu ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
+            <FaFilter className="h-4 w-4" />
+            {hasSelectedTags && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold leading-none text-white">
+                {selectedTags.length}
+              </span>
+            )}
           </button>
 
-          {/* Sort Options Button - No wrapper needed */}
+          {/* Sort Options Button - icon mirrors the active sort */}
           <button
+            type="button"
             ref={sortButtonRef}
             onClick={() => {
               setShowFilterMenu(!showFilterMenu);
               setShowTagsMenu(false);
             }}
-            className={`group p-2 rounded-lg transition-all duration-200 hover:border-red-600/70 hover:shadow-lg hover:shadow-red-600/30 hover:scale-105 border border-transparent focus:outline-none ${
-              showFilterMenu || isSortActive ? "text-[#dc2626]" : "text-gray-400 hover:text-gray-300"
-            }`}
-            title="Sort Options"
+            aria-expanded={showFilterMenu}
+            className={`${iconButtonClass} ${iconButtonStateClass(showFilterMenu || isSortActive)}`}
+            title={activeSortOption ? `Sort: ${activeSortOption.label}` : "Sort options"}
           >
-            <FaSort className={`w-5 h-5 transition-colors ${showFilterMenu || isSortActive ? "text-[#dc2626]" : "group-hover:text-[#dc2626]"}`} />
+            <SortIcon className="h-[18px] w-[18px]" />
           </button>
         </div>
       </div>
@@ -237,43 +311,71 @@ export default function SearchFilterBar({
             isTagsMenuClosing ? "animate-tag-hide pointer-events-none" : "animate-tag-extend"
           }`}
         >
-          <div className="flex max-h-[220px] flex-wrap content-start gap-2 overflow-y-auto p-3 pr-1">
-            {selectedTag && (
+          <div className="flex items-center gap-2 border-b border-[#333333] px-3 py-2">
+            <span className="text-xs text-gray-400">Match</span>
+            <button
+              type="button"
+              onClick={() => {
+                setTagMatchMode(tagMatchMode === "any" ? "all" : "any");
+                onFilterInteraction?.();
+              }}
+              className="rounded-md border border-[#3a3a3a] bg-[#2a2a2a] px-2.5 py-1 text-xs font-semibold tracking-wide text-gray-200 transition-colors hover:border-red-600 hover:text-[#dc2626] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+              title={
+                tagMatchMode === "any"
+                  ? "Showing items with ANY selected tag (click to require ALL)"
+                  : "Showing items with ALL selected tags (click to allow ANY)"
+              }
+            >
+              {tagMatchMode === "any" ? "ANY" : "ALL"}
+            </button>
+            <span className="truncate text-xs text-gray-500">
+              {hasSelectedTags ? `${selectedTags.length} selected` : "No tags selected"}
+            </span>
+            {hasSelectedTags && (
               <button
+                type="button"
                 onClick={() => {
-                  setSelectedTag(null);
+                  setSelectedTags([]);
                   setSearch("");
                   onFilterInteraction?.();
                 }}
-                className="text-gray-400 hover:text-red-600 transition-colors hover:scale-110 transition-all duration-200 p-1"
+                className="ml-auto rounded-md p-1 text-gray-400 transition-colors hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
                 title="Clear filters"
+                aria-label="Clear filters"
               >
                 <IoMdClose className="w-5 h-5" />
               </button>
             )}
-            {sortedTags.map((tag) => (
-              <button
-                key={tag}
-                onClick={() => {
-                  setSelectedTag(selectedTag === tag ? null : tag);
-                  onFilterInteraction?.();
-                }}
-                className={`px-3 py-1 rounded-full text-sm transition-all duration-200 border border-transparent ${
-                  selectedTag === tag
-                    ? "bg-red-600 text-white shadow-lg shadow-red-600/40"
-                    : "bg-[#3a3a3a] text-gray-300 hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626]"
-                }`}
-              >
-                {tag.toUpperCase()}
-              </button>
-            ))}
+          </div>
+          <div className="flex max-h-[220px] flex-wrap content-start gap-2 overflow-y-auto p-3 pr-1">
+            {sortedTags.map((tag) => {
+              const isSelected = selectedTags.includes(tag);
+              return (
+                <button
+                  type="button"
+                  key={tag}
+                  onClick={() => {
+                    setSelectedTags(toggleTag(selectedTags, tag));
+                    onFilterInteraction?.();
+                  }}
+                  aria-pressed={isSelected}
+                  className={`px-3 py-1 rounded-full text-sm transition-colors duration-200 border ${
+                    isSelected
+                      ? "bg-red-600 text-white border-red-500 shadow-lg shadow-red-600/40"
+                      : "bg-[#3a3a3a] text-gray-300 border-transparent hover:bg-[#444444] hover:border-red-600 hover:text-[#dc2626]"
+                  }`}
+                >
+                  {tag.toUpperCase()}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
 
       {/* Sort Dropdown Portal - Rendered outside component hierarchy to escape z-index constraints */}
       {mounted && isFilterMenuRendered && createPortal(
-        <div 
+        <div
           ref={dropdownRef}
           className={`fixed z-[9999] min-w-[200px] rounded-lg border border-[#333333] bg-[#1e1e1e] shadow-lg origin-top-right ${
             isFilterMenuClosing ? "animate-sort-menu-out pointer-events-none" : "animate-sort-menu-in"
@@ -283,23 +385,28 @@ export default function SearchFilterBar({
             left: `${dropdownPosition.left}px`,
           }}
         >
-          {sortOptions.map((option) => (
-            <button
-              key={option.value}
-              onClick={() => {
-                setSelectedSort(option.value);
-                setShowFilterMenu(false);
-                onFilterInteraction?.();
-              }}
-              className={`w-full text-left px-4 py-2 transition-colors first:rounded-t-lg last:rounded-b-lg ${
-                selectedSort === option.value
-                  ? "bg-red-600 text-white"
-                  : "text-gray-300 hover:bg-[#2a2a2a] hover:text-[#dc2626]"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
+          {sortOptions.map((option) => {
+            const OptionIcon = option.icon;
+            return (
+              <button
+                type="button"
+                key={option.value}
+                onClick={() => {
+                  setSelectedSort(option.value);
+                  setShowFilterMenu(false);
+                  onFilterInteraction?.();
+                }}
+                className={`flex w-full items-center gap-3 text-left px-4 py-2 transition-colors first:rounded-t-lg last:rounded-b-lg ${
+                  selectedSort === option.value
+                    ? "bg-red-600 text-white"
+                    : "text-gray-300 hover:bg-[#2a2a2a] hover:text-[#dc2626]"
+                }`}
+              >
+                <OptionIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                {option.label}
+              </button>
+            );
+          })}
         </div>,
         document.body
       )}

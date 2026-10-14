@@ -1,55 +1,66 @@
 "use client"
-import React, { useEffect, useMemo, useRef, useState, useCallback } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { FaFilePdf, FaExternalLinkAlt, FaCertificate, FaTools, FaBriefcase, FaGraduationCap, FaFolderOpen, FaGithub } from "react-icons/fa"
 
 import { useExternalLink } from "../ExternalLinkHandler"
 import TooltipWrapper from "../ToolTipWrapper"
-import PDFModalViewer from "../PDFModalViewer"
+import MediaModal from "../MediaModal"
 import { skills, certifications, Skill, Certification } from "../../data/aboutData"
-import PageTabs from "../PageTabs"
 import SearchFilterBar from "../SearchFilterBar"
+import SectionHeader from "../SectionHeader"
+import CardCollection from "../CardCollection"
 import ResponsiveCardSkeletonGrid from "../ResponsiveCardSkeletonGrid"
 import { scrollElementIntoViewWithNavbarOffset } from "../../utils/scrollWithNavbarOffset"
+import { DATE_AND_NAME_SORT_OPTIONS, SKILL_SORT_OPTIONS } from "../../utils/sortOptions"
+import { matchesSelectedTags } from "../../utils/tagFilter"
+import { useSectionFilters } from "../../hooks/useSectionFilters"
+import { useSectionView } from "../../hooks/useSectionView"
 
-const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, refreshSignal }: { onTabChange?: (page: string, tab: string | null) => void; externalSubsection?: string | null; onExternalSubsectionConsumed?: () => void; refreshSignal?: number }) => {
+type AboutSubsection = "certifications" | "skills"
+
+const DEFAULT_TAGS = ["Computer Science"]
+const DEFAULT_SORT: Record<AboutSubsection, string> = {
+  certifications: "newest",
+  skills: "hard-soft",
+}
+const STORAGE_PREFIX: Record<AboutSubsection, string> = {
+  certifications: "aboutCertifications",
+  skills: "aboutSkills",
+}
+
+const tabs = [
+  { id: "certifications", label: "Certifications", icon: <FaCertificate /> },
+  { id: "skills", label: "Skills", icon: <FaTools /> },
+]
+
+const jumpLinkClass =
+  "text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-colors duration-200"
+
+const cardClass =
+  "group flex h-full w-full flex-col overflow-hidden bg-[#151515] hover:bg-[#1c1c1c] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-colors duration-300 hover:shadow-lg hover:shadow-red-600/20"
+
+const cardButtonClass =
+  "flex h-full w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+
+interface AboutProps {
+  onTabChange?: (page: string, tab: string | null) => void
+  externalSubsection?: string | null
+  onExternalSubsectionConsumed?: () => void
+  refreshSignal?: number
+}
+
+const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, refreshSignal }: AboutProps) => {
   const [selectedPDF, setSelectedPDF] = useState<string | null>(null)
-  const [activeSubsection, setActiveSubsection] = useState<"certifications" | "skills">("certifications")
-  const [search, setSearch] = useState("")
-  const [sortBy, setSortBy] = useState("newest")
-  const [selectedTag, setSelectedTag] = useState<string | null>("Computer Science")
-  const [showFilterMenu, setShowFilterMenu] = useState(false)
-  const [showTagsMenu, setShowTagsMenu] = useState(false)
+  const [activeSubsection, setActiveSubsection] = useState<AboutSubsection>("certifications")
   const [cardsLoading, setCardsLoading] = useState(true)
-  const cardsScrollContainerRef = useRef<HTMLDivElement>(null)
   const { handleExternalClick } = useExternalLink()
 
-  const shouldRevealCardFirst = useCallback((cardElement: HTMLElement) => {
-    const container = cardsScrollContainerRef.current
-    if (!container) return false
-
-    const cardRect = cardElement.getBoundingClientRect()
-    const containerRect = container.getBoundingClientRect()
-    const isClippedLeft = cardRect.left < containerRect.left + 8
-    const isClippedRight = cardRect.right > containerRect.right - 8
-
-    if (!isClippedLeft && !isClippedRight) return false
-
-    cardElement.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
-    return true
-  }, [])
-
-  const resetCardsScrollPosition = useCallback(() => {
-    const container = cardsScrollContainerRef.current
-    if (!container) return
-
-    // Use smooth scrolling to the left when filters/sorts change
-    try {
-      container.scrollTo({ left: 0, behavior: "smooth" })
-    } catch {
-      // Fallback for environments that don't support scrollTo with options
-      container.scrollLeft = 0
-    }
-  }, [])
+  const filters = useSectionFilters(STORAGE_PREFIX[activeSubsection], {
+    sort: DEFAULT_SORT[activeSubsection],
+    tags: DEFAULT_TAGS,
+  })
+  const itemCount = activeSubsection === "certifications" ? certifications.length : skills.length
+  const { viewMode, setViewMode, autoScroll, setAutoScroll } = useSectionView(activeSubsection, itemCount)
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -58,6 +69,10 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
       setActiveSubsection(savedTab)
     }
   }, [])
+
+  useEffect(() => {
+    localStorage.setItem("aboutActiveTab", activeSubsection)
+  }, [activeSubsection])
 
   // Respond to external sub-section override (e.g. from navbar context menu)
   useEffect(() => {
@@ -69,63 +84,18 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
 
   // Reset content when the same tab is re-clicked (refreshSignal increments)
   const isFirstRender = useRef(true)
+  const { reset: resetFilters } = filters
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false
       return
     }
-    setSearch("")
-    setSortBy(activeSubsection === "certifications" ? "newest" : "hard-soft")
-    setSelectedTag("Computer Science")
-    setShowFilterMenu(false)
-    setShowTagsMenu(false)
+    resetFilters()
     setCardsLoading(true)
     const rafId = requestAnimationFrame(() => setCardsLoading(false))
     return () => cancelAnimationFrame(rafId)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshSignal])
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("aboutActiveTab", activeSubsection)
-    }
-
-    const savedSearch = localStorage.getItem(`about-${activeSubsection}-search`)
-    const savedSort = localStorage.getItem(`about-${activeSubsection}-sort`)
-    const savedTag = localStorage.getItem(`about-${activeSubsection}-tag`)
-
-    setSearch(savedSearch ?? "")
-    setSortBy(savedSort ?? (activeSubsection === "certifications" ? "newest" : "hard-soft"))
-    setSelectedTag(savedTag !== null ? savedTag : "Computer Science")
-    setShowFilterMenu(false)
-    setShowTagsMenu(false)
-  }, [activeSubsection])
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("aboutSearch", search)
-      localStorage.setItem(`about-${activeSubsection}-search`, search)
-    }
-  }, [search, activeSubsection])
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("aboutSortBy", sortBy)
-      localStorage.setItem(`about-${activeSubsection}-sort`, sortBy)
-    }
-  }, [sortBy, activeSubsection])
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (selectedTag !== null) {
-        localStorage.setItem("aboutSelectedTag", selectedTag)
-        localStorage.setItem(`about-${activeSubsection}-tag`, selectedTag)
-      } else {
-        localStorage.removeItem("aboutSelectedTag")
-        localStorage.removeItem(`about-${activeSubsection}-tag`)
-      }
-    }
-  }, [selectedTag, activeSubsection])
 
   useEffect(() => {
     let isCancelled = false
@@ -141,17 +111,16 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     }
   }, [activeSubsection])
 
-  const cardSizeClass = "min-h-[180px] h-full min-w-[260px] 2xl:min-w-[220px] w-[calc(100%-2.5rem)] sm:w-[calc((100%-4.5rem)/2)] lg:w-[calc((100%-8rem)/3)] 2xl:w-[calc((100%-14rem)/4)] shrink-0 snap-center"
+  const scrollToCards = () => {
+    scrollElementIntoViewWithNavbarOffset(document.getElementById("about-cards"))
+  }
 
-  const handleCardTagClick = (event: React.MouseEvent<HTMLElement>, tag: string) => {
+  const handleCardTagClick = (event: React.SyntheticEvent<HTMLElement>, tag: string) => {
     event.preventDefault()
     event.stopPropagation()
-    setSelectedTag(tag)
-    setShowTagsMenu(true)
-    requestAnimationFrame(() => {
-      resetCardsScrollPosition()
-      scrollToCards()
-    })
+    filters.setSelectedTags([tag])
+    filters.setShowTagsMenu(true)
+    requestAnimationFrame(scrollToCards)
   }
 
   const renderFilterTags = (tags: string[]) => {
@@ -162,12 +131,19 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
         {tags.map((tag, index) => (
           <span
             key={`${tag}-${index}`}
+            role="button"
+            tabIndex={0}
             onMouseDown={(event) => {
               event.preventDefault()
               event.stopPropagation()
             }}
             onClick={(event) => handleCardTagClick(event, tag)}
-            className="inline-flex items-center text-xs px-3 py-1 rounded-full whitespace-nowrap transition-all duration-200 border cursor-pointer active:scale-95 bg-[#3a3a3a] text-gray-300 border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626]"
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                handleCardTagClick(event, tag)
+              }
+            }}
+            className="inline-flex items-center text-xs px-3 py-1 rounded-full whitespace-nowrap transition-colors duration-200 border cursor-pointer bg-[#3a3a3a] text-gray-300 border-transparent hover:bg-[#444444] hover:border-red-600 hover:text-[#dc2626]"
           >
             {tag.toUpperCase()}
           </span>
@@ -178,9 +154,8 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
 
   const renderCertificationCard = (item: Certification) => {
     const { name, icon: Icon, highlight, url, year } = item
-    const cardTags = item.tags ?? []
     const card = (
-      <div className={`group relative z-0 hover:z-10 flex h-full flex-col overflow-hidden bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
+      <div className={cardClass}>
         <div className="flex items-start gap-4 min-w-0">
           <div
             className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
@@ -196,7 +171,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
             {year && <span className="text-gray-400 text-sm">{year}</span>}
           </div>
         </div>
-        <div className="mt-4 w-full min-w-0">{renderFilterTags(cardTags)}</div>
+        <div className="mt-4 w-full min-w-0">{renderFilterTags(item.tags ?? [])}</div>
         {url && (
           <div className="mt-auto pt-3 flex justify-end text-gray-400 group-hover:text-[#dc2626] transition-colors duration-300">
             {url.endsWith(".pdf") ? <FaFilePdf size={14} aria-label="View Certification" /> : <FaExternalLinkAlt size={14} aria-label="Open external link" />}
@@ -205,47 +180,19 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
       </div>
     )
 
-    if (url?.endsWith(".pdf")) {
-      return (
-        <TooltipWrapper key={name} label="View Certification" url={url}>
-          <button
-            type="button"
-            onClick={(event) => {
-              if (shouldRevealCardFirst(event.currentTarget)) return
-              setSelectedPDF(url)
-            }}
-            className="text-left"
-          >
-            {card}
-          </button>
-        </TooltipWrapper>
-      )
-    }
+    if (!url) return card
 
-    return url ? (
-      <TooltipWrapper key={name} label={url}>
+    const isPdf = url.endsWith(".pdf")
+    return (
+      <TooltipWrapper label={isPdf ? "View Certification" : url} url={isPdf ? url : undefined} fullWidth className="flex h-full">
         <button
           type="button"
-          onClick={(event) => {
-            if (shouldRevealCardFirst(event.currentTarget)) return
-            handleExternalClick(url, true)
-          }}
-          className="text-left"
+          onClick={() => (isPdf ? setSelectedPDF(url) : handleExternalClick(url, true))}
+          className={cardButtonClass}
         >
           {card}
         </button>
       </TooltipWrapper>
-    ) : (
-      <button
-        key={name}
-        type="button"
-        onClick={(event) => {
-          shouldRevealCardFirst(event.currentTarget)
-        }}
-        className="text-left"
-      >
-        {card}
-      </button>
     )
   }
 
@@ -253,7 +200,7 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     const { name, icon: Icon, hardSkill, url } = item
     const cardTags = Array.from(new Set([hardSkill ? "Hard Skills" : "Soft Skills", ...(item.tags ?? [])]))
     const card = (
-      <div className={`group relative z-0 hover:z-10 flex h-full flex-col overflow-hidden bg-[#151515] hover:bg-[#252525] p-5 rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 ${cardSizeClass}`}>
+      <div className={cardClass}>
         <div className="flex items-start gap-4 min-w-0">
           <div
             className={`flex-shrink-0 p-3 rounded-lg shadow-lg ${
@@ -277,37 +224,16 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
       </div>
     )
 
-    return url ? (
-      <TooltipWrapper key={name} label={url}>
-        <button
-          type="button"
-          onClick={(event) => {
-            if (shouldRevealCardFirst(event.currentTarget)) return
-            handleExternalClick(url, true)
-          }}
-          className="text-left"
-        >
+    if (!url) return card
+
+    return (
+      <TooltipWrapper label={url} fullWidth className="flex h-full">
+        <button type="button" onClick={() => handleExternalClick(url, true)} className={cardButtonClass}>
           {card}
         </button>
       </TooltipWrapper>
-    ) : (
-      <button
-        key={name}
-        type="button"
-        onClick={(event) => {
-          shouldRevealCardFirst(event.currentTarget)
-        }}
-        className="text-left"
-      >
-        {card}
-      </button>
     )
   }
-
-  const tabs = [
-    { id: "certifications", label: "Certifications", icon: <FaCertificate /> },
-    { id: "skills", label: "Skills", icon: <FaTools /> },
-  ]
 
   const tagOptions = useMemo(() => {
     const tagSet = new Set<string>()
@@ -322,77 +248,48 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     return tags
   }, [activeSubsection])
 
-  const filterOptions = activeSubsection === "certifications" ? [
-    { value: "newest", label: "Newest" },
-    { value: "oldest", label: "Oldest" },
-    { value: "name-asc", label: "Name (A–Z)" },
-    { value: "name-desc", label: "Name (Z–A)" },
-  ] : [
-    { value: "hard-soft", label: "Skills (Hard-Soft)" },
-    { value: "soft-hard", label: "Skills (Soft-Hard)" },
-    { value: "name-asc", label: "Name (A–Z)" },
-    { value: "name-desc", label: "Name (Z–A)" },
-  ]
+  const { search, sortBy, selectedTags, tagMatchMode } = filters
 
-  const filteredCertifications = useMemo(() => (
-    certifications.filter((cert) => {
-      const matchesSearch = cert.name.toLowerCase().includes(search.toLowerCase())
-      const matchesTag = !selectedTag || cert.tags?.includes(selectedTag)
-      return matchesSearch && matchesTag
-    })
-  ), [search, selectedTag])
+  const sortedCertifications = useMemo(() => {
+    const query = search.toLowerCase()
+    return certifications
+      .filter((cert) =>
+        cert.name.toLowerCase().includes(query) &&
+        matchesSelectedTags(selectedTags, tagMatchMode, (tag) => Boolean(cert.tags?.includes(tag)))
+      )
+      .sort((a, b) => {
+        if (sortBy === "name-asc") return a.name.localeCompare(b.name)
+        if (sortBy === "name-desc") return b.name.localeCompare(a.name)
+        if (sortBy === "oldest") return a.year - b.year
+        if (sortBy === "newest") return b.year - a.year
+        if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
+        return a.highlight ? -1 : 1
+      })
+  }, [search, selectedTags, sortBy, tagMatchMode])
 
-  const sortedCertifications = useMemo(() => (
-    [...filteredCertifications].sort((a, b) => {
-      if (sortBy === "name-asc") return a.name.localeCompare(b.name)
-      if (sortBy === "name-desc") return b.name.localeCompare(a.name)
-      if (sortBy === "oldest") return a.year - b.year
-      if (sortBy === "newest") return b.year - a.year
-      if (a.highlight === b.highlight) return a.name.localeCompare(b.name)
-      return a.highlight ? -1 : 1
-    })
-  ), [filteredCertifications, sortBy])
-
-  const filteredSkills = useMemo(() => (
-    skills.filter((skill) => {
-      const matchesSearch = skill.name.toLowerCase().includes(search.toLowerCase())
-      const matchesTag = !selectedTag ||
-        skill.tags?.includes(selectedTag) ||
-        (selectedTag === "Hard Skills" && skill.hardSkill === true) ||
-        (selectedTag === "Soft Skills" && skill.hardSkill !== true)
-      return matchesSearch && matchesTag
-    })
-  ), [search, selectedTag])
-
-  const sortedSkills = useMemo(() => (
-    [...filteredSkills].sort((a, b) => {
-      if (sortBy === "hard-soft") {
+  const sortedSkills = useMemo(() => {
+    const query = search.toLowerCase()
+    return skills
+      .filter((skill) =>
+        skill.name.toLowerCase().includes(query) &&
+        matchesSelectedTags(selectedTags, tagMatchMode, (tag) =>
+          Boolean(skill.tags?.includes(tag)) ||
+          (tag === "Hard Skills" && skill.hardSkill === true) ||
+          (tag === "Soft Skills" && skill.hardSkill !== true)
+        )
+      )
+      .sort((a, b) => {
+        if (sortBy === "name-asc") return a.name.localeCompare(b.name)
+        if (sortBy === "name-desc") return b.name.localeCompare(a.name)
         if (a.hardSkill === b.hardSkill) return a.name.localeCompare(b.name)
+        if (sortBy === "soft-hard") return a.hardSkill ? 1 : -1
         return a.hardSkill ? -1 : 1
-      }
-      if (sortBy === "soft-hard") {
-        if (a.hardSkill === b.hardSkill) return a.name.localeCompare(b.name)
-        return a.hardSkill ? 1 : -1
-      }
-      if (sortBy === "name-asc") return a.name.localeCompare(b.name)
-      if (sortBy === "name-desc") return b.name.localeCompare(a.name)
-      if (a.hardSkill === b.hardSkill) return a.name.localeCompare(b.name)
-      return a.hardSkill ? -1 : 1
-    })
-  ), [filteredSkills, sortBy])
+      })
+  }, [search, selectedTags, sortBy, tagMatchMode])
 
-  const resultsCount = activeSubsection === "certifications"
+  const resultsText = activeSubsection === "certifications"
     ? `Showing ${sortedCertifications.length} Certification${sortedCertifications.length !== 1 ? "s" : ""}`
     : `Showing ${sortedSkills.length} Skill${sortedSkills.length !== 1 ? "s" : ""}`
-
-  const handleFilterChange = (value: string) => {
-    setSortBy(value)
-    setShowFilterMenu(false)
-    requestAnimationFrame(() => {
-      resetCardsScrollPosition()
-      scrollToCards()
-    })
-  }
 
   const handleJump = (page: string, tab: string | null) => {
     if (page === "about" && (tab === "certifications" || tab === "skills")) {
@@ -401,162 +298,96 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
     onTabChange?.(page, tab)
   }
 
-  const scrollToCards = () => {
-    if (typeof window === "undefined") return
-    const target = document.getElementById("about-cards")
-    scrollElementIntoViewWithNavbarOffset(target)
-  }
-
   const handleAboutTabChange = (tab: string | null) => {
     const nextTab = tab === "skills" ? "skills" : "certifications"
     // Always call parent — HomeClient detects same-tab re-clicks and increments the refresh key
     onTabChange?.("about", nextTab)
     // Also update internal state immediately so the switch is instant
     setActiveSubsection(nextTab)
-    requestAnimationFrame(() => {
-      resetCardsScrollPosition()
-      scrollToCards()
-    })
+    requestAnimationFrame(scrollToCards)
   }
 
-  // Compute stable keys for the sorted items to detect meaningful changes
-  const sortedCertsKey = useMemo(() => {
-    return sortedCertifications
-      .map((cert) => `${cert.name}-${cert.year}`)
-      .join("|")
-  }, [sortedCertifications])
-
-  const sortedSkillsKey = useMemo(() => {
-    return sortedSkills
-      .map((skill) => `${skill.name}`)
-      .join("|")
-  }, [sortedSkills])
-
-  // When visible items change (due to tag/filter/sort), reset scroll to left with smooth animation
-  useEffect(() => {
-    if (cardsLoading) return
-    requestAnimationFrame(() => resetCardsScrollPosition())
-  }, [activeSubsection, cardsLoading, sortedCertsKey, sortedSkillsKey, resetCardsScrollPosition])
+  const intro = (
+    <p className="text-gray-300 max-w-2xl mx-auto text-center mb-6">
+      I am Ethan Townsend, a Full-Stack Software Engineer with a passion for back-end development.
+      <br />
+      <br />
+      Jump to my{" "}
+      <button type="button" onClick={() => handleJump("about", "certifications")} className={jumpLinkClass}>
+        <FaCertificate className="text-base" />
+        Certifications
+      </button>
+      ,{" "}
+      <button type="button" onClick={() => handleJump("about", "skills")} className={jumpLinkClass}>
+        <FaTools className="text-base" />
+        Skills
+      </button>
+      ,{" "}
+      <button type="button" onClick={() => handleJump("career", "experience")} className={jumpLinkClass}>
+        <FaBriefcase className="text-base" />
+        Experience
+      </button>
+      ,{" "}
+      <button type="button" onClick={() => handleJump("career", "education")} className={jumpLinkClass}>
+        <FaGraduationCap className="text-base" />
+        Education
+      </button>
+      , and{" "}
+      <button type="button" onClick={() => handleJump("projects", "projects")} className={jumpLinkClass}>
+        <FaFolderOpen className="text-base" />
+        Projects
+      </button>
+      ,{" "}
+      <button type="button" onClick={() => handleJump("projects", "repos")} className={jumpLinkClass}>
+        <FaGithub className="text-base" />
+        Repositories
+      </button>
+      .
+    </p>
+  )
 
   return (
     <>
-      <div className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg shadow-black/20 p-6 mb-6 animate-fadeInScale">
-        <div className="mb-5 text-center">
-          <h2 className="text-3xl font-bold text-center mb-2 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent transition-transform">
-            Welcome to My Portfolio
-          </h2>
-        </div>
-
-        <p className="mt-4 text-gray-300 max-w-2xl mx-auto text-center">
-          I am Ethan Townsend, a Full-Stack Software Engineer with a passion for back-end development.
-          <br />
-          <br />
-          Jump to my{" "}
-          <button
-            type="button"
-            onClick={() => handleJump("about", "certifications")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
-          >
-            <FaCertificate className="text-base" />
-            Certifications
-          </button>
-          ,{" "}
-          <button
-            type="button"
-            onClick={() => handleJump("about", "skills")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
-          >
-            <FaTools className="text-base" />
-            Skills
-          </button>
-          ,{" "}
-          <button
-            type="button"
-            onClick={() => handleJump("career", "experience")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
-          >
-            <FaBriefcase className="text-base" />
-            Experience
-          </button>
-          ,{" "}
-          <button
-            type="button"
-            onClick={() => handleJump("career", "education")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
-          >
-            <FaGraduationCap className="text-base" />
-            Education
-          </button>
-          , and{" "}
-          <button
-            type="button"
-            onClick={() => handleJump("projects", "projects")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
-          >
-            <FaFolderOpen className="text-base" />
-            Projects
-          </button>
-          ,{" "}
-          <button
-            type="button"
-            onClick={() => handleJump("projects", "repos")}
-            className="text-red-500 hover:text-red-300 underline-offset-4 hover:underline decoration-red-400/70 decoration-2 inline-flex items-center gap-1 transition-all duration-200 hover:scale-[1.02]"
-          >
-            <FaGithub className="text-base" />
-            Repositories
-          </button>
-          .
-          <br />
-          <br />
-        </p>
-
-        <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-gray-400">
-          Quick highlights of my certifications and technical skillset.
-        </p>
-
-        <div className="flex justify-center mb-4">
-          <PageTabs
-            tabs={tabs}
-            activeId={activeSubsection}
-            onChange={handleAboutTabChange}
+      <div className="animate-fadeInScale">
+        <SectionHeader
+          title="Welcome to My Portfolio"
+          intro={intro}
+          description="Quick highlights of my certifications and technical skillset."
+          tabs={tabs}
+          activeTabId={activeSubsection}
+          onTabChange={handleAboutTabChange}
+          resultsText={resultsText}
+        >
+          <SearchFilterBar
+            search={filters.search}
+            setSearch={filters.setSearch}
+            placeholder={`Search ${activeSubsection} by name or tags...`}
+            tags={tagOptions}
+            selectedTags={filters.selectedTags}
+            setSelectedTags={filters.setSelectedTags}
+            tagMatchMode={filters.tagMatchMode}
+            setTagMatchMode={filters.setTagMatchMode}
+            sortOptions={activeSubsection === "certifications" ? DATE_AND_NAME_SORT_OPTIONS : SKILL_SORT_OPTIONS}
+            selectedSort={filters.sortBy}
+            setSelectedSort={filters.setSortBy}
+            showTagsMenu={filters.showTagsMenu}
+            setShowTagsMenu={filters.setShowTagsMenu}
+            showFilterMenu={filters.showFilterMenu}
+            setShowFilterMenu={filters.setShowFilterMenu}
+            defaultSort={DEFAULT_SORT[activeSubsection]}
+            onFilterInteraction={scrollToCards}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            autoScroll={autoScroll}
+            onAutoScrollChange={setAutoScroll}
           />
-
-        </div>
-
-        <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4 shadow-lg shadow-black/20">
-          <div className="container mx-auto">
-            <SearchFilterBar
-              search={search}
-              setSearch={setSearch}
-              placeholder={`Search ${activeSubsection} by name or tags...`}
-              tags={tagOptions}
-              selectedTag={selectedTag}
-              setSelectedTag={setSelectedTag}
-              sortOptions={filterOptions}
-              selectedSort={sortBy}
-              setSelectedSort={handleFilterChange}
-              showTagsMenu={showTagsMenu}
-              setShowTagsMenu={setShowTagsMenu}
-              showFilterMenu={showFilterMenu}
-              setShowFilterMenu={setShowFilterMenu}
-              defaultSort={activeSubsection === "certifications" ? "newest" : "hard-soft"}
-              onFilterInteraction={() => {
-                resetCardsScrollPosition()
-                scrollToCards()
-              }}
-            />
-
-            {resultsCount && (
-              <div className="text-sm text-gray-400 mt-2 text-center sm:text-left">{resultsCount}</div>
-            )}
-          </div>
-        </div>
+        </SectionHeader>
       </div>
 
       <div
         id="about-cards"
         className="mt-0 w-full max-w-full overflow-visible"
-        style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
+        style={{ scrollMarginTop: "calc(var(--navbar-height, 0px) + 1rem)" }}
       >
         {cardsLoading ? (
           <ResponsiveCardSkeletonGrid
@@ -581,20 +412,32 @@ const About = ({ onTabChange, externalSubsection, onExternalSubsectionConsumed, 
           />
         ) : (
           <div key={`about-loaded-${activeSubsection}-${refreshSignal ?? 0}`} className="animate-skeleton-pop">
-            <div ref={cardsScrollContainerRef} className="scroll-edge-fade w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain py-4 snap-x snap-mandatory">
-              <div className="relative flex w-full min-w-full flex-nowrap items-stretch gap-6 px-5 py-4 lg:px-7 2xl:px-9">
-                {activeSubsection === "certifications"
-                  ? sortedCertifications.map(renderCertificationCard)
-                  : sortedSkills.map(renderSkillCard)}
-              </div>
-            </div>
+            {activeSubsection === "certifications" ? (
+              <CardCollection
+                items={sortedCertifications}
+                getKey={(cert) => `${cert.name}-${cert.year}`}
+                viewMode={viewMode}
+                autoScroll={autoScroll}
+                size="compact"
+                label="Certifications"
+                renderCard={renderCertificationCard}
+              />
+            ) : (
+              <CardCollection
+                items={sortedSkills}
+                getKey={(skill) => skill.name}
+                viewMode={viewMode}
+                autoScroll={autoScroll}
+                size="compact"
+                label="Skills"
+                renderCard={renderSkillCard}
+              />
+            )}
           </div>
         )}
       </div>
 
-      {selectedPDF && (
-        <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />
-      )}
+      <MediaModal src={selectedPDF} kind="pdf" alt="Certification" onClose={() => setSelectedPDF(null)} />
     </>
   )
 }

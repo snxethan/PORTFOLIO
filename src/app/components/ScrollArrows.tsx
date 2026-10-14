@@ -15,11 +15,37 @@ interface ScrollArrowsProps {
   resetKey?: string
 }
 
+/**
+ * Scrolls a card rail by one card in `direction`. Shared by the arrow buttons
+ * and auto-scroll so both move by exactly the same step.
+ *
+ * The step is one card plus the row's real gap, read from CSS rather than
+ * hard-coded, so it stays right if the gap changes.
+ */
+export const scrollRailByCard = (
+  container: HTMLElement,
+  cardSelector: string,
+  direction: 1 | -1,
+  behavior: ScrollBehavior = "smooth"
+) => {
+  const card = container.querySelector<HTMLElement>(cardSelector)
+  if (!card) {
+    container.scrollBy({ left: container.clientWidth * 0.8 * direction, behavior })
+    return
+  }
+
+  const row = card.parentElement
+  const gap = row ? Number.parseFloat(getComputedStyle(row).columnGap) || 0 : 0
+  const step = card.getBoundingClientRect().width + gap
+
+  container.scrollBy({ left: step * direction, behavior })
+}
+
 // Translucent and backdrop-blurred so the arrow reads as sitting *in* the edge
 // gradient rather than as a hard chip stamped on top of it. Shown on mobile
 // too — touch users have the same trouble reaching the next card.
 const arrowBaseClass =
-  "absolute top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#151515]/60 backdrop-blur-sm text-gray-300 border border-white/10 shadow-md shadow-black/30 transition-all duration-200 hover:bg-[#252525]/90 hover:border-red-600/60 hover:text-[#dc2626] hover:scale-105 active:scale-95 disabled:opacity-0 disabled:pointer-events-none"
+  "absolute top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#151515]/60 backdrop-blur-sm text-gray-300 border border-white/10 shadow-md shadow-black/30 transition-colors duration-200 hover:bg-[#252525]/90 hover:border-red-600/60 hover:text-[#dc2626] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 disabled:opacity-0 disabled:pointer-events-none"
 
 /**
  * Prev/next controls for a horizontal card scroller.
@@ -82,18 +108,10 @@ const ScrollArrows = ({ containerRef, cardSelector, resetKey }: ScrollArrowsProp
     }
   }, [containerRef, cardSelector, resetKey])
 
-  // Advance by one card plus the flex gap, so each press lands on the next card.
   const scrollByCard = useCallback(
     (direction: 1 | -1) => {
       const el = containerRef.current
-      if (!el) return
-
-      const card = el.querySelector(cardSelector)
-      const step = card
-        ? (card as HTMLElement).getBoundingClientRect().width + 24
-        : el.clientWidth * 0.8
-
-      el.scrollBy({ left: step * direction, behavior: "smooth" })
+      if (el) scrollRailByCard(el, cardSelector, direction)
     },
     [containerRef, cardSelector]
   )

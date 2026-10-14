@@ -11,6 +11,8 @@ interface Project {
   ctaLabel?: string
   ctaIcon?: "github" | "external" | "youtube" | "private" | undefined
   tags?: string[]
+  /** Read-only on GitHub. Repos from the API carry this automatically. */
+  archived?: boolean
 }
 
 export const manualProjects: Project[] = [

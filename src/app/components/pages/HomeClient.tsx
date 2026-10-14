@@ -4,13 +4,13 @@ import { useEffect, useMemo, useState, useCallback, useRef } from "react"
 import { usePathname } from "next/navigation"
 import Sidebar from "./sidebar/Sidebar"
 import Navbar from "./Navbar"
-import ExperiencePage from "./portfolio/ExperiencePage"
-import EducationPage from "./portfolio/EducationPage"
+import CareerPage from "./portfolio/CareerPage"
 import ProjectsPage from "./portfolio/ProjectsPage"
 import ReposPage from "./portfolio/ReposPage"
 import Footer from "./Footer"
 import About from "./About"
-import SectionScrollRail from "./SectionScrollRail"
+import ProjectDetailModal from "../projects/ProjectDetailModal"
+import { findProjectBySlug } from "../../data/projectsTimelineData"
 
 const SECTION_IDS = {
   about: "section-about",
@@ -36,6 +36,25 @@ type ProjectsTab = "projects" | "repos"
 
 type CareerTab = "experience" | "education"
 
+const parsePathSegments = (path: string) =>
+  path
+    .split("/")
+    .filter(Boolean)
+    .map((segment) => {
+      try {
+        return decodeURIComponent(segment).toLowerCase()
+      } catch {
+        return segment.toLowerCase()
+      }
+    })
+
+/** `/projects/<slug>` for a real project: that project's detail popup is open. */
+const getProjectSlugFromPath = (path: string | null) => {
+  if (!path) return null
+  const [section, subsection] = parsePathSegments(path)
+  return section === "projects" && findProjectBySlug(subsection) ? subsection : null
+}
+
 export default function HomeClient() {
   const [activeSection, setActiveSection] = useState<SectionKey>("about")
   const [projectsTab, setProjectsTab] = useState<ProjectsTab>("projects")
@@ -45,14 +64,8 @@ export default function HomeClient() {
   const [projectsRefreshKey, setProjectsRefreshKey] = useState(0)
   const [careerRefreshKey, setCareerRefreshKey] = useState(0)
   const [aboutRefreshKey, setAboutRefreshKey] = useState(0)
-  const [hasStartedScrolling, setHasStartedScrolling] = useState(false)
   const [hasScrolledOnce, setHasScrolledOnce] = useState(false)
-  const scrollActivityTimeoutRef = useRef<number | null>(null)
-  const [sectionMarkerPositions, setSectionMarkerPositions] = useState<Record<SectionKey, number>>({
-    about: 0,
-    projects: 0.5,
-    career: 1,
-  })
+  const leftColumnRef = useRef<HTMLDivElement>(null)
 
   const observerLockSectionRef = useRef<SectionKey | null>(null)
   const observerLockUntilRef = useRef(0)
@@ -62,40 +75,11 @@ export default function HomeClient() {
   const userNavigatedToCareerRef = useRef(false)
 
   const sectionOrder = useMemo<SectionKey[]>(() => ["about", "projects", "career"], [])
-  const sectionRailItems = useMemo(
-    () => [
-      { id: "about" as const, label: "About" },
-      { id: "projects" as const, label: "Projects" },
-      { id: "career" as const, label: "Career" },
-    ],
-    []
-  )
 
   const pathname = usePathname()
   const lastHandledPathRef = useRef<string | null>(null)
-
-  const computeSectionMarkerPositions = useCallback(() => {
-    if (typeof window === "undefined") return
-
-    const doc = document.documentElement
-    const maxScrollTop = Math.max(1, doc.scrollHeight - window.innerHeight)
-
-    const nextPositions: Record<SectionKey, number> = {
-      about: 0,
-      projects: 0.5,
-      career: 1,
-    }
-
-    sectionOrder.forEach((section) => {
-      const target = document.getElementById(SECTION_IDS[section])
-      if (!target) return
-      const rawTop = target.getBoundingClientRect().top + window.scrollY
-      const normalized = Math.max(0, Math.min(1, rawTop / maxScrollTop))
-      nextPositions[section] = normalized
-    })
-
-    setSectionMarkerPositions(nextPositions)
-  }, [sectionOrder])
+  const openedProjectWithPushRef = useRef(false)
+  const openProjectSlug = getProjectSlugFromPath(pathname)
 
   const getSectionTop = useCallback((section: SectionKey) => {
     if (typeof window === "undefined") return null
@@ -484,6 +468,11 @@ export default function HomeClient() {
         handleAboutJump("projects", subsection)
         return
       }
+      // A project link: show the projects list behind its popup.
+      if (findProjectBySlug(subsection)) {
+        handleAboutJump("projects", "projects")
+        return
+      }
       handleNavChange("projects")
       return
     }
@@ -546,115 +535,75 @@ export default function HomeClient() {
     return () => clearObserverLock()
   }, [clearObserverLock])
 
+  // Navbar hover popups only start once the visitor has scrolled a little, so
+  // they don't pop open while the pointer rests on the nav at page load.
   useEffect(() => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined" || hasScrolledOnce) return
 
-    const clearScrollActivityTimeout = () => {
-      if (scrollActivityTimeoutRef.current !== null) {
-        window.clearTimeout(scrollActivityTimeoutRef.current)
-        scrollActivityTimeoutRef.current = null
-      }
+    const onScroll = () => {
+      if (window.scrollY > 48) setHasScrolledOnce(true)
     }
 
-    const updateScrollState = () => {
-      if (window.scrollY <= 0) {
-        setHasStartedScrolling(false)
-        clearScrollActivityTimeout()
-        return
-      }
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [hasScrolledOnce])
 
-      if (window.scrollY > 48) {
-        setHasScrolledOnce(true)
-      }
+  // The left column (sidebar + unpinned nav) is sticky on desktop. When it is
+  // taller than the window, a plain `top` would hide its bottom (the nav)
+  // forever, so CSS min() sticks it by its bottom edge instead; that needs
+  // the column's height, kept here as a CSS variable.
+  useEffect(() => {
+    const column = leftColumnRef.current
+    if (!column) return
 
-      setHasStartedScrolling(true)
-      clearScrollActivityTimeout()
-      scrollActivityTimeoutRef.current = window.setTimeout(() => {
-        setHasStartedScrolling(false)
-        scrollActivityTimeoutRef.current = null
-      }, 260)
+    const update = () => {
+      column.style.setProperty("--left-column-height", `${column.offsetHeight}px`)
     }
 
-    updateScrollState()
-    window.addEventListener("scroll", updateScrollState, { passive: true })
-
-    return () => {
-      window.removeEventListener("scroll", updateScrollState)
-      clearScrollActivityTimeout()
-    }
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(column)
+    return () => observer.disconnect()
   }, [])
 
   useEffect(() => {
-    if (typeof window === "undefined") return
-
-    computeSectionMarkerPositions()
-
-    const onViewportChange = () => computeSectionMarkerPositions()
-    const onScroll = () => computeSectionMarkerPositions()
-    window.addEventListener("resize", onViewportChange)
-    window.addEventListener("scroll", onScroll, { passive: true })
-
-    const sectionElements = sectionOrder
-      .map((section) => document.getElementById(SECTION_IDS[section]))
-      .filter((el): el is HTMLElement => el !== null)
-
-    const sectionObserver = new ResizeObserver(() => computeSectionMarkerPositions())
-    sectionElements.forEach((el) => sectionObserver.observe(el))
-
-    const rafId = requestAnimationFrame(computeSectionMarkerPositions)
-    const timeoutId = window.setTimeout(computeSectionMarkerPositions, 700)
-
-    return () => {
-      window.removeEventListener("resize", onViewportChange)
-      window.removeEventListener("scroll", onScroll)
-      sectionObserver.disconnect()
-      cancelAnimationFrame(rafId)
-      window.clearTimeout(timeoutId)
-    }
-  }, [
-    aboutRefreshKey,
-    careerRefreshKey,
-    careerTab,
-    computeSectionMarkerPositions,
-    isNavPinned,
-    sectionOrder,
-    projectsRefreshKey,
-    projectsTab,
-  ])
-
-  useEffect(() => {
-    if (!pathname || pathname === "/") return
+    if (!pathname) return
     if (lastHandledPathRef.current === pathname) return
 
-    const segments = pathname
-      .split("/")
-      .filter(Boolean)
-      .map((segment) => {
-        try {
-          return decodeURIComponent(segment).toLowerCase()
-        } catch {
-          return segment.toLowerCase()
-        }
-      })
-
+    const previousPath = lastHandledPathRef.current
     lastHandledPathRef.current = pathname
+
+    // Leaving a project popup (close button or browser Back) returns to where
+    // the visitor already was; it must not scroll the page anywhere.
+    if (getProjectSlugFromPath(previousPath)) return
+    if (pathname === "/") return
+
+    const segments = parsePathSegments(pathname)
     requestAnimationFrame(() => handlePathSegments(segments))
   }, [handlePathSegments, pathname])
 
-  const isSectionRailEnabled = !isNavPinned
+  // The project popup lives at /projects/<slug> so it can be linked to, but
+  // opening it only changes the URL; the page never navigates.
+  const openProject = useCallback((slug: string) => {
+    const path = `/projects/${slug}`
+    lastHandledPathRef.current = path
+    openedProjectWithPushRef.current = true
+    window.history.pushState(null, "", path)
+  }, [])
+
+  const closeProject = useCallback(() => {
+    if (openedProjectWithPushRef.current) {
+      openedProjectWithPushRef.current = false
+      window.history.back()
+      return
+    }
+    // Arrived on the project link directly: there is no page to go back to.
+    window.history.replaceState(null, "", "/projects")
+  }, [])
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#1a1a1a] via-[#121212] to-[#0d0d0d] text-white font-sans min-w-[360px]">
-      <SectionScrollRail
-        items={sectionRailItems}
-        activeSection={activeSection}
-        visible={isSectionRailEnabled && hasStartedScrolling}
-        positions={sectionMarkerPositions}
-        onSelect={(section) => handleNavChange(section)}
-        onTabChange={handleNavbarTabChange}
-        enableHoverPopups={isSectionRailEnabled}
-        enabled={isSectionRailEnabled}
-      />
       <main
         className="flex-grow"
         style={
@@ -665,16 +614,28 @@ export default function HomeClient() {
       >
         <div className="container mx-auto px-4 lg:px-3 xl:px-2 pt-4 min-w-[360px]">
           <div className="flex flex-col lg:flex-row gap-8">
-            <div className="flex flex-col gap-6 mb-12 lg:items-center lg:mx-auto lg:w-fit">
+            {/* Mobile spacing matches the old layout exactly: 7rem from the
+                sidebar to the unpinned nav, 2.5rem from the nav to About. */}
+            <div className={`flex flex-col lg:items-center lg:mx-auto lg:w-fit ${isNavPinned ? "mb-12" : "mb-2 lg:mb-12"}`}>
               <div
-                className="lg:sticky"
-                style={
-                  isNavPinned
-                    ? { top: "calc(var(--navbar-height, 6rem) + 1rem)" }
-                    : { top: "1rem" }
-                }
+                ref={leftColumnRef}
+                className="flex flex-col lg:sticky lg:z-40"
+                style={{
+                  top: "min(calc(var(--navbar-height, 0px) + 1rem), calc(100vh - var(--left-column-height, 0px) - 1rem))",
+                }}
               >
                 <Sidebar className="" />
+                {/* Pinned, the navbar is position: fixed and this wrapper is
+                    empty; unpinned, it is its own box under the sidebar. */}
+                <div className={isNavPinned ? "" : "mt-20 lg:mt-6"}>
+                  <Navbar
+                    onTabChange={handleNavbarTabChange}
+                    activePage={activeSection}
+                    activeTab={null}
+                    onPinChange={setIsNavPinned}
+                    enableHoverPopups={hasScrolledOnce}
+                  />
+                </div>
               </div>
             </div>
 
@@ -682,16 +643,6 @@ export default function HomeClient() {
               id="page-content-top"
               className="flex-1 min-w-0 flex flex-col gap-10 pb-32"
             >
-              <div className="rounded-xl overflow-visible">
-                <Navbar
-                  onTabChange={handleNavbarTabChange}
-                  activePage={activeSection}
-                  activeTab={null}
-                  onPinChange={setIsNavPinned}
-                  enableHoverPopups={hasScrolledOnce}
-                />
-              </div>
-
               <section
                 id={SECTION_IDS.about}
                 data-section="about"
@@ -716,7 +667,12 @@ export default function HomeClient() {
                 }}
               >
                 {projectsTab === "projects" ? (
-                  <ProjectsPage onTabChange={handleSectionTabChange} activeTab={projectsTab} key={`projects-${projectsRefreshKey}`} />
+                  <ProjectsPage
+                    onTabChange={handleSectionTabChange}
+                    activeTab={projectsTab}
+                    onOpenProject={openProject}
+                    key={`projects-${projectsRefreshKey}`}
+                  />
                 ) : (
                   <ReposPage onTabChange={handleSectionTabChange} activeTab={projectsTab} key={`repos-${projectsRefreshKey}`} />
                 )}
@@ -732,27 +688,19 @@ export default function HomeClient() {
                     : "1rem",
                 }}
               >
-                {careerTab === "experience" ? (
-                  <ExperiencePage
-                    onTabChange={handleSectionTabChange}
-                    activeTab={careerTab}
-                    onContentReady={handleExperienceContentReady}
-                    key={`experience-${careerRefreshKey}`}
-                  />
-                ) : (
-                  <EducationPage
-                    onTabChange={handleSectionTabChange}
-                    activeTab={careerTab}
-                    onContentReady={handleEducationContentReady}
-                    key={`education-${careerRefreshKey}`}
-                  />
-                )}
+                <CareerPage
+                  kind={careerTab}
+                  onTabChange={handleSectionTabChange}
+                  onContentReady={careerTab === "experience" ? handleExperienceContentReady : handleEducationContentReady}
+                  key={`${careerTab}-${careerRefreshKey}`}
+                />
               </section>
             </section>
           </div>
         </div>
       </main>
       <Footer />
+      <ProjectDetailModal project={findProjectBySlug(openProjectSlug)} onClose={closeProject} />
     </div>
   )
 }

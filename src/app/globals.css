@@ -244,9 +244,10 @@ button:disabled {
   position: relative;
   isolation: isolate;
   --scroll-edge-fade-size: clamp(1.25rem, 3vw, 3rem);
-  /* Padding is applied to BOTH ends. A start-only inset shifted every card
-     right, so the snap-centred card never actually looked centred. */
-  padding-inline: var(--scroll-edge-fade-size);
+  /* The inset that keeps the first and last card clear of the fade is padding
+     on the card row (.card-rail-row), not here: padding on the scroller ends
+     where its in-flow child ends, so cards overflowing that child ran under
+     the fade at the far end. */
   scroll-padding-inline: var(--scroll-edge-fade-size);
   -webkit-mask-image: linear-gradient(
     to right,
@@ -290,6 +291,27 @@ button:disabled {
     right: 0;
     background: linear-gradient(to left, #222222 0%, rgba(34, 34, 34, 0) 100%);
   }
+}
+
+/* Card rails (CardCollection). The scroller is a size container, so 100cqw is
+   the rail's visible width and --per-view (set per container breakpoint) is
+   how many cards fit in it. */
+.card-rail {
+  --rail-gap: 1.5rem;
+}
+
+.card-rail-row {
+  gap: var(--rail-gap);
+  padding-inline: var(--scroll-edge-fade-size);
+}
+
+.rail-card {
+  flex: 0 0 auto;
+  width: calc(
+    (100cqw - 2 * var(--scroll-edge-fade-size) - (var(--per-view, 1) - 1) * var(--rail-gap)) /
+      var(--per-view, 1)
+  );
+  min-width: 13rem;
 }
 
 /* Navbar horizontal scroll - red scrollbar visible only when scrolling */
