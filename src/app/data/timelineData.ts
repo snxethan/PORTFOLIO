@@ -1,17 +1,12 @@
-interface TimelineItem {
+import type { TimelineItem } from "./types"
+import { toSlug } from "../utils/slug"
+
+export type CareerItem = TimelineItem & {
   type: "experience" | "education"
   institution: string
-  location: string
-  startDate: string
-  endDate: string | "Present"
-  highlights: string[]
-  summary: string
-  csRelated: boolean
-  tags?: string[]
-  language?: string
 }
 
-export const timelineData: TimelineItem[] = [
+export const timelineData: CareerItem[] = [
     {
       type: "experience",
       institution: "PocketRN",
@@ -33,6 +28,7 @@ export const timelineData: TimelineItem[] = [
       institution: "Soar.com",
       location: "Remote",
       startDate: "June 2026",
+      relatedProjects: ["high-focus-email-scorer"],
       endDate: "September 2026",
       highlights: [
         "Artificial Intelligence Software Engineer - Built and deployed custom agentic AI workflows across multiple customer client projects.",
@@ -49,6 +45,7 @@ export const timelineData: TimelineItem[] = [
       institution: "PocketRN",
       location: "Remote",
       startDate: "May 2026",
+      relatedProjects: ["meetings-admin-dashboard"],
       endDate: "August 2026",
       highlights: [
         "Full-stack Software Engineer - Built scalable frontend and backend systems with React and TypeScript to support high-impact healthcare solutions.",
@@ -64,6 +61,7 @@ export const timelineData: TimelineItem[] = [
     institution: "Cloud Range Cybersecurity",
     location: "Remote",
     startDate: "March 2026",
+    relatedProjects: ["cloudrange-company-audit"],
     endDate: "June 2026",
     highlights: [
         "Quality Assurance Developer - Developed and executed comprehensive test plans for cybersecurity training platforms, ensuring high-quality user experiences.",
@@ -81,6 +79,7 @@ export const timelineData: TimelineItem[] = [
     institution: "TrueMark",
     location: "Remote",
     startDate: "January 2026",
+    relatedProjects: ["truemark-customer-aws-transform-modernization"],
     endDate: "March 2026",
     highlights: [
       "Backend Software Developer – Engineered scalable backend solutions for enterprise customers.",
@@ -116,6 +115,7 @@ export const timelineData: TimelineItem[] = [
     institution: "Neumont College of Computer Science",
     location: "Salt Lake City, UT",
     startDate: "September 2023",
+    relatedProjects: ["portfoli-you"],
     endDate: "September 2026",
     highlights: [
       "Bachelor of Science in Computer Science – Maintaining 4.0 GPA",
@@ -158,3 +158,9 @@ export const timelineData: TimelineItem[] = [
     tags: ["Computer Science", "High School", "CTE", "Certifications"]
   }
 ]
+
+/** URL-safe id: `/career/<slug>` opens that entry's detail popup. */
+export const getCareerSlug = (item: CareerItem) => toSlug(`${item.institution}-${item.startDate}`)
+
+export const findCareerBySlug = (slug: string | null | undefined) =>
+  slug ? timelineData.find((item) => getCareerSlug(item) === slug) ?? null : null

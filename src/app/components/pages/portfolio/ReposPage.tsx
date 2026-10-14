@@ -1,18 +1,22 @@
 "use client"
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
-import { FaProjectDiagram, FaGithub as FaGithubIcon } from "react-icons/fa"
+import { FaProjectDiagram, FaGithub as FaGithubIcon, FaArchive } from "react-icons/fa"
 import { FaExternalLinkAlt, FaYoutube, FaLock } from "react-icons/fa"
 import { useExternalLink } from "../../ExternalLinkHandler"
 import TooltipWrapper from "../../ToolTipWrapper"
 
 import { manualProjects } from "@/app/data/portfolioProjects"
 import SearchFilterBar from "../../SearchFilterBar"
-import { scrollElementIntoViewWithNavbarOffset } from "@/app/utils/scrollWithNavbarOffset"
-import PageTabs from "../../PageTabs"
+import SectionHeader from "../../SectionHeader"
+import GitHubContributionChart from "../../GitHubContributionChart"
+import CardCollection from "../../CardCollection"
+import { scrollElementIntoViewWithNavbarOffset, scrollToSectionFilters } from "@/app/utils/scrollWithNavbarOffset"
 import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
-import ScrollArrows from "../../ScrollArrows"
-import { getTimedItem, setTimedItem, removeTimedItem } from "@/app/utils/timedStorage"
+import { DATE_AND_NAME_SORT_OPTIONS } from "@/app/utils/sortOptions"
+import { matchesSelectedTags } from "@/app/utils/tagFilter"
+import { useSectionFilters } from "@/app/hooks/useSectionFilters"
+import { useSectionView } from "@/app/hooks/useSectionView"
 
 interface Project {
   id: number
@@ -27,6 +31,7 @@ interface Project {
   ctaLabel?: string
   ctaIcon?: "github" | "external" | "youtube" | "private" | undefined
   stargazers_count?: number
+  archived?: boolean
 }
 
 interface GitHubApiProject {
@@ -39,14 +44,8 @@ interface GitHubApiProject {
   created_at: string
   updated_at: string
   stargazers_count?: number
+  archived?: boolean
 }
-
-const filterOptions = [
-  { value: "newest", label: "Newest" },
-  { value: "oldest", label: "Oldest" },
-  { value: "name-asc", label: "Name (A–Z)" },
-  { value: "name-desc", label: "Name (Z–A)" },
-]
 
 const getCTAIcon = (icon?: string) => {
   switch (icon) {
@@ -97,9 +96,21 @@ const RepoTitle = ({ name }: { name: string }) => {
   )
 }
 
-const repoBadgeBaseClass = "text-xs font-semibold px-2 py-1 rounded-none cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600"
+const repoBadgeBaseClass =
+  "text-xs font-semibold px-2 py-1 rounded-none cursor-pointer transition-[scale,transform,box-shadow] duration-200 hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
 const DEFAULT_SORT = "newest"
-const DEFAULT_SELECTED_TAG = "Computer Science"
+// Every repository is a computer-science repository, so this tag matches them all.
+const WILDCARD_TAG = "Computer Science"
+const DEFAULT_TAGS = [WILDCARD_TAG]
+const ARCHIVED_TAG = "archived"
+
+const tabs = [
+  { id: "projects", label: "Projects", tabValue: "projects", icon: <FaProjectDiagram /> },
+  { id: "repos", label: "Repositories", tabValue: "repos", icon: <FaGithubIcon /> },
+]
+
+const formatDate = (value: string) =>
+  new Date(value).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
 
 interface ReposPageProps {
   onTabChange: (page: string, tab: string | null) => void
@@ -107,60 +118,13 @@ interface ReposPageProps {
 }
 
 const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
-  const tabs = [
-    { id: "projects", label: "Projects", tabValue: "projects", icon: <FaProjectDiagram /> },
-    { id: "repos", label: "Repositories", tabValue: "repos", icon: <FaGithubIcon /> },
-  ]
   const activeId = activeTab ?? "repos"
   const [projects, setProjects] = useState<Project[]>([])
-  const [search, setSearch] = useState(() => {
-    if (typeof window !== "undefined") {
-      return getTimedItem<string>("reposSearch") || ""
-    }
-    return ""
-  })
-  const [sortBy, setSortBy] = useState(() => {
-    if (typeof window !== "undefined") {
-      return getTimedItem<string>("reposSortBy") || DEFAULT_SORT
-    }
-    return DEFAULT_SORT
-  })
-  const [selectedTag, setSelectedTag] = useState<string | null>(() => {
-    if (typeof window !== "undefined") {
-      const saved = getTimedItem<string>("reposSelectedTag")
-      return saved !== null ? saved : DEFAULT_SELECTED_TAG
-    }
-    return DEFAULT_SELECTED_TAG
-  })
-  const [showTagsMenu, setShowTagsMenu] = useState(false)
-  const [tags, setTags] = useState<string[]>(["Computer Science"])
+  const [tags, setTags] = useState<string[]>([WILDCARD_TAG])
   const [loading, setLoading] = useState(true)
-  const [showFilterMenu, setShowFilterMenu] = useState(false)
+  const filters = useSectionFilters("repos", { sort: DEFAULT_SORT, tags: DEFAULT_TAGS })
+  const { viewMode, setViewMode, autoScroll, setAutoScroll } = useSectionView("repos", projects.length)
   const { handleExternalClick } = useExternalLink()
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setTimedItem("reposSearch", search)
-    }
-  }, [search])
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setTimedItem("reposSortBy", sortBy)
-    }
-  }, [sortBy])
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (selectedTag !== null) {
-        setTimedItem("reposSelectedTag", selectedTag)
-      } else {
-        removeTimedItem("reposSelectedTag")
-      }
-    }
-  }, [selectedTag])
-
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -213,7 +177,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
     const processProjects = (data: GitHubApiProject[]) => {
       const githubProjects: Project[] = data.map((project: GitHubApiProject) => {
         const isPortfoliyouProject = project.name.toLowerCase().includes('portfoliyou')
-        
+
         return {
           id: project.id,
           name: project.name,
@@ -225,6 +189,7 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
           updated_at: project.updated_at,
           source: "github",
           stargazers_count: project.stargazers_count,
+          archived: Boolean(project.archived),
           ctaLabel: isPortfoliyouProject ? "View my Capstone" : "View Repository",
           ctaIcon: isPortfoliyouProject ? "external" : "github",
         }
@@ -235,13 +200,12 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
     }
 
     const extractTags = (allProjects: Project[]) => {
-      const uniqueTags = new Set<string>(["Computer Science"])
+      const uniqueTags = new Set<string>([WILDCARD_TAG])
       allProjects.forEach((project) => {
-        const projectTags = new Set<string>()
-        if (project.language) projectTags.add(project.language.toLowerCase())
-        if (project.source) projectTags.add(project.source.toLowerCase())
-        project.topics?.forEach((tag) => projectTags.add(tag.toLowerCase()))
-        projectTags.forEach((tag) => uniqueTags.add(tag))
+        if (project.language) uniqueTags.add(project.language.toLowerCase())
+        if (project.source) uniqueTags.add(project.source.toLowerCase())
+        if (project.archived) uniqueTags.add(ARCHIVED_TAG)
+        project.topics?.forEach((tag) => uniqueTags.add(tag.toLowerCase()))
       })
       setTags(Array.from(uniqueTags))
     }
@@ -250,177 +214,175 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
   }, [])
 
   const scrollToCards = useCallback(() => {
-    const target = document.getElementById("repositories-cards")
-    scrollElementIntoViewWithNavbarOffset(target)
+    scrollElementIntoViewWithNavbarOffset(document.getElementById("repositories-cards"))
   }, [])
 
-  const resetCardsScrollPosition = useCallback(() => {
-    const container = scrollContainerRef.current
-    if (!container) return
-
-    // Use smooth scrolling to the left when filters/sorts change
-    try {
-      container.scrollTo({ left: 0, behavior: "smooth" })
-    } catch {
-      // Fallback for environments that don't support scrollTo with options
-      container.scrollLeft = 0
-    }
-  }, [])
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setShowFilterMenu(false)
-      }
-    }
-    document.addEventListener("keydown", handleEscape)
-    return () => document.removeEventListener("keydown", handleEscape)
-  }, [])
-  
-  const handleFilterChange = (value: string) => {
-    setSortBy(value)
-    setShowFilterMenu(false)
-    requestAnimationFrame(() => {
-      resetCardsScrollPosition()
-      scrollToCards()
-    })
-  }
-
+  // A tag on a card: filter by it, stop auto-scroll, and bring the filter
+  // panel into view so the visitor sees what changed.
   const handleTagClick = (tag: string) => {
-    setSelectedTag(tag)
-    setShowTagsMenu(true)
-    setTimeout(() => {
-      resetCardsScrollPosition()
-      scrollToCards()
-    }, 50)
+    filters.focusTag(tag.toLowerCase())
+    setAutoScroll(false)
+    scrollToSectionFilters("repos-page-header")
   }
 
-  const handleRepoBadgeClick = (tag: string) => {
-    handleTagClick(tag.toLowerCase())
-  }
+  const { search, sortBy, selectedTags, tagMatchMode } = filters
+  const visibleProjects = useMemo(() => {
+    const query = search.toLowerCase()
+    const filtered = projects.filter((project) => {
+      const matchesSearch =
+        project.name.toLowerCase().includes(query) ||
+        (project.description?.toLowerCase().includes(query) ?? false) ||
+        (project.topics?.some((tag) => tag.toLowerCase().includes(query)) ?? false) ||
+        (project.source?.toLowerCase().includes(query) ?? false)
 
-  const handleCardClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    const container = scrollContainerRef.current
-    if (!container) return
+      const matchesTags = matchesSelectedTags(selectedTags, tagMatchMode, (tag) =>
+        tag === WILDCARD_TAG ||
+        project.topics.includes(tag) ||
+        project.language?.toLowerCase() === tag ||
+        project.source?.toLowerCase() === tag ||
+        (tag === ARCHIVED_TAG && Boolean(project.archived))
+      )
 
-    const target = event.target as HTMLElement | null
-    if (target?.closest("a, button, input, select, textarea, [role='button'], [data-skip-card-scroll='true']")) {
-      return
-    }
+      return matchesSearch && matchesTags
+    })
 
-    const card = event.currentTarget
-    const cardRect = card.getBoundingClientRect()
-    const containerRect = container.getBoundingClientRect()
-    const isClippedLeft = cardRect.left < containerRect.left + 8
-    const isClippedRight = cardRect.right > containerRect.right - 8
+    return filtered.sort((a, b) => {
+      const aDate = new Date(a.created_at).getTime()
+      const bDate = new Date(b.created_at).getTime()
+      switch (sortBy) {
+        case "name-asc": return a.name.localeCompare(b.name)
+        case "name-desc": return b.name.localeCompare(a.name)
+        case "oldest": return aDate - bDate
+        case "newest": return bDate - aDate
+        default: return 0
+      }
+    })
+  }, [projects, search, selectedTags, sortBy, tagMatchMode])
 
-    if (isClippedLeft || isClippedRight) {
-      card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
-    }
-  }, [])
+  const sortedTags = useMemo(() => tags.slice().sort((a, b) => a.localeCompare(b)), [tags])
 
-  const filteredProjects = projects.filter((project) => {
-    const nameMatch = project.name.toLowerCase().includes(search.toLowerCase())
-    const descMatch = project.description?.toLowerCase().includes(search.toLowerCase()) ?? false
-    const tagMatch = project.topics?.some((tag) => tag.toLowerCase().includes(search.toLowerCase())) ?? false
-    const sourceMatch = project.source?.toLowerCase().includes(search.toLowerCase()) ?? false
-    return nameMatch || descMatch || tagMatch || sourceMatch
-  })
+  const renderRepoCard = (project: Project) => {
+    const ctaLabel = project.archived
+      ? "This Repository is Archived"
+      : project.name.toLowerCase() === "portfolio"
+        ? "View Repository (This site!)"
+        : project.ctaLabel ?? "View Repository"
 
-  const sortedProjects = [...filteredProjects].sort((a, b) => {
-    const aDate = new Date(a.created_at).getTime()
-    const bDate = new Date(b.created_at).getTime()
-    switch (sortBy) {
-      case "name-asc": return a.name.localeCompare(b.name)
-      case "name-desc": return b.name.localeCompare(a.name)
-      case "oldest": return aDate - bDate
-      case "newest": return bDate - aDate
-      default: return 0
-    }
-  })
-
-  const sortedTags = React.useMemo(() =>
-    tags.slice().sort((a, b) => a.localeCompare(b)),
-  [tags])
-
-  const tagFilteredProjects =
-    selectedTag === null || selectedTag === "Computer Science"
-      ? sortedProjects
-      : sortedProjects.filter(
-          (project) =>
-            project.topics.includes(selectedTag) ||
-            project.language?.toLowerCase() === selectedTag ||
-            project.source?.toLowerCase() === selectedTag
-        )
-
-  // Compute a stable key for tagFilteredProjects to detect meaningful changes
-  const tagFilteredProjectsKey = useMemo(() => {
-    return tagFilteredProjects
-      .map((project) => `${project.id}-${project.name}`)
-      .join("|")
-  }, [tagFilteredProjects])
-
-  // When filtered projects change (due to tag/filter/sort), reset scroll to left with smooth animation
-  useEffect(() => {
-    if (loading) return
-    requestAnimationFrame(() => resetCardsScrollPosition())
-  }, [loading, tagFilteredProjectsKey, resetCardsScrollPosition])
-
-  const resultsCount = `Showing ${tagFilteredProjects.length} Repositor${tagFilteredProjects.length !== 1 ? "ies" : "y"}`
-
-  return (
-    <>
-      <div id="repos-page-header" className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg shadow-black/20 p-6 mb-6">
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Projects
-          </h2>
-          <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-gray-400">
-            Search through my GitHub repositories and shipped work.
-          </p>
-          <div className="flex justify-center mb-4">
-            <PageTabs
-              tabs={tabs}
-              activeId={activeId}
-              onChange={(tab) => onTabChange("projects", tab)}
-            />
-          </div>
-
-          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4 shadow-lg shadow-black/20">
-            <div className="container mx-auto">
-              <SearchFilterBar
-                search={search}
-                setSearch={setSearch}
-                placeholder="Search by name, description, or tags..."
-                tags={sortedTags}
-                selectedTag={selectedTag}
-                setSelectedTag={setSelectedTag}
-                sortOptions={filterOptions}
-                selectedSort={sortBy}
-                setSelectedSort={handleFilterChange}
-                showTagsMenu={showTagsMenu}
-                setShowTagsMenu={setShowTagsMenu}
-                showFilterMenu={showFilterMenu}
-                setShowFilterMenu={setShowFilterMenu}
-                defaultSort="newest"
-                onFilterInteraction={() => {
-                  resetCardsScrollPosition()
-                  scrollToCards()
-                }}
-              />
-
-              {resultsCount && (
-                <div className="text-sm text-gray-400 mt-2">{resultsCount}</div>
+    return (
+      <div className="group relative flex h-full w-full flex-col bg-[#151515] hover:bg-[#1c1c1c] rounded-none border border-[#333333] hover:border-red-600/50 transition-[scale,transform,background-color,border-color,box-shadow] duration-300 ease-out hover:z-10 hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/25">
+        <div className="p-6 flex-grow">
+          <div className="mb-2">
+            <RepoTitle name={project.name} />
+            <div className="flex flex-wrap items-center gap-2">
+              {project.source === "manual" && (
+                <button type="button" onClick={() => handleTagClick("manual")} className={`${repoBadgeBaseClass} bg-green-600 text-white border border-green-500`}>
+                  MANUAL
+                </button>
+              )}
+              {project.source === "github" && (
+                <button type="button" onClick={() => handleTagClick("github")} className={`${repoBadgeBaseClass} bg-purple-600 text-white border border-purple-500`}>
+                  GITHUB
+                </button>
+              )}
+              {project.topics.includes("neumont") && (
+                <button type="button" onClick={() => handleTagClick("neumont")} className={`${repoBadgeBaseClass} bg-yellow-600 text-white border border-yellow-500`}>
+                  NEU
+                </button>
+              )}
+              {project.archived && (
+                <button
+                  type="button"
+                  onClick={() => handleTagClick(ARCHIVED_TAG)}
+                  className={`${repoBadgeBaseClass} inline-flex items-center gap-1 bg-gray-600 text-white border border-gray-500`}
+                >
+                  <FaArchive className="h-3 w-3" aria-hidden="true" />
+                  ARCHIVED
+                </button>
               )}
             </div>
           </div>
+          <p className="text-gray-300 mb-2 break-words whitespace-normal">{project.description}</p>
+          <p className="text-sm text-gray-400 mb-1">
+            <span className="font-bold">Created On:</span> {formatDate(project.created_at)}
+          </p>
+          <p className="text-sm text-gray-400 mb-2">
+            <span className="font-bold">Last Updated:</span> {formatDate(project.updated_at)}
+          </p>
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
+            {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
+              <button
+                type="button"
+                key={tag}
+                onClick={() => handleTagClick(tag)}
+                className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap max-w-full min-w-0 truncate transition-[scale,transform,color,background-color,border-color] duration-200 hover:scale-105 border border-transparent hover:bg-[#444444] hover:border-red-600 hover:text-[#dc2626] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
+              >
+                {tag.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="px-6 py-4 border-t border-[#333333] bg-[#151515]">
+          <TooltipWrapper label={project.html_url} fullWidth>
+            <button
+              type="button"
+              onClick={() => handleExternalClick(project.html_url, true)}
+              className={`flex items-center justify-center gap-2 w-full p-3 min-h-[48px] text-white rounded-lg transition-colors duration-200 text-sm sm:text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
+                project.archived
+                  ? "bg-gradient-to-r from-[#3a3a3a] to-[#333333] text-gray-200 hover:from-[#454545] hover:to-[#3d3d3d]"
+                  : "bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400"
+              }`}
+            >
+              {project.archived
+                ? <FaArchive className="w-5 h-5" />
+                : getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
+              <span className="flex-1 break-words text-center leading-tight">{ctaLabel}</span>
+            </button>
+          </TooltipWrapper>
         </div>
       </div>
-      
+    )
+  }
+
+  return (
+    <>
+      <SectionHeader
+        id="repos-page-header"
+        title="Projects"
+        description={<GitHubContributionChart />}
+        tabs={tabs}
+        activeTabId={activeId}
+        onTabChange={(tab) => onTabChange("projects", tab)}
+        resultsText={`Showing ${visibleProjects.length} Repositor${visibleProjects.length !== 1 ? "ies" : "y"}`}
+      >
+        <SearchFilterBar
+          search={filters.search}
+          setSearch={filters.setSearch}
+          placeholder="Search by name, description, or tags..."
+          tags={sortedTags}
+          selectedTags={filters.selectedTags}
+          setSelectedTags={filters.setSelectedTags}
+          tagMatchMode={filters.tagMatchMode}
+          setTagMatchMode={filters.setTagMatchMode}
+          sortOptions={DATE_AND_NAME_SORT_OPTIONS}
+          selectedSort={filters.sortBy}
+          setSelectedSort={filters.setSortBy}
+          showTagsMenu={filters.showTagsMenu}
+          setShowTagsMenu={filters.setShowTagsMenu}
+          showFilterMenu={filters.showFilterMenu}
+          setShowFilterMenu={filters.setShowFilterMenu}
+          defaultSort={DEFAULT_SORT}
+          onFilterInteraction={scrollToCards}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          autoScroll={autoScroll}
+          onAutoScrollChange={setAutoScroll}
+        />
+      </SectionHeader>
+
       <div
         id="repositories-cards"
         className="text-white"
-        style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
+        style={{ scrollMarginTop: "calc(var(--navbar-height, 0px) + 1rem)" }}
       >
         {loading ? (
           <ResponsiveCardSkeletonGrid
@@ -438,107 +400,16 @@ const ReposPage = ({ onTabChange, activeTab }: ReposPageProps) => {
             )}
           />
         ) : (
-          <div key={`repos-loaded-${activeId}`} className="animate-skeleton-pop relative">
-              <div
-                ref={scrollContainerRef}
-                className="scroll-edge-fade w-full max-w-full overflow-x-auto overflow-y-visible overscroll-x-contain py-4 snap-x snap-mandatory"
-              >
-                <div className="relative flex w-full min-w-full flex-nowrap items-stretch gap-6 px-4 py-4 lg:px-6">
-                  {tagFilteredProjects.map((project) => (
-                    <div
-                      key={project.id}
-                      onClick={handleCardClick}
-                      data-repo-card="true"
-                      className="group relative z-0 hover:z-10 bg-[#151515] hover:bg-[#252525] rounded-none border border-[#333333] hover:border-red-600/50 transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-red-600/30 flex flex-col shrink-0 snap-center min-w-[260px] w-[calc(100%-2rem)] sm:w-[calc((100%-3.5rem)/2)] lg:w-[calc((100%-6rem)/3)]"
-                    >
-                       <div className="p-6 flex-grow">
-                         <div className="mb-2">
-                           <RepoTitle name={project.name} />
-                           <div className="flex flex-wrap items-center gap-2">
-                             {project.source === "manual" && (
-                               <span
-                                 onClick={() => handleRepoBadgeClick("manual")}
-                                  data-skip-card-scroll="true"
-                                 className={`${repoBadgeBaseClass} bg-green-600 text-white border border-green-500`}
-                               >
-                                 MANUAL
-                               </span>
-                             )}
-                             {project.source === "github" && (
-                               <span
-                                 onClick={() => handleRepoBadgeClick("github")}
-                                  data-skip-card-scroll="true"
-                                 className={`${repoBadgeBaseClass} bg-purple-600 text-white border border-purple-500`}
-                               >
-                                 GITHUB
-                               </span>
-                             )}
-                             {project.topics.includes("neumont") && (
-                               <span
-                                 onClick={() => handleRepoBadgeClick("neumont")}
-                                  data-skip-card-scroll="true"
-                                 className={`${repoBadgeBaseClass} bg-yellow-600 text-white border border-yellow-500`}
-                               >
-                                 NEU
-                               </span>
-                             )}
-                           </div>
-                         </div>
-                         <p className="text-gray-300 mb-2 break-words whitespace-normal">{project.description}</p>
-                         <p className="text-sm text-gray-400 mb-1">
-                           <span className="font-bold">Created On:</span>{" "}
-                           {new Date(project.created_at).toLocaleDateString("en-US", {
-                             year: "numeric",
-                             month: "short",
-                             day: "numeric",
-                           })}
-                         </p>
-                         <p className="text-sm text-gray-400 mb-2">
-                           <span className="font-bold">Last Updated:</span>{" "}
-                           {new Date(project.updated_at).toLocaleDateString("en-US", {
-                             year: "numeric",
-                             month: "short",
-                             day: "numeric",
-                           })}
-                         </p>
-                         <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3">
-                           {[...new Set([...project.topics, project.language].filter(Boolean).map((t) => t.toLowerCase()))].map((tag) => (
-                             <span
-                               key={tag}
-                               onClick={() => handleTagClick(tag)}
-                                data-skip-card-scroll="true"
-                               className="bg-[#3a3a3a] text-gray-300 text-xs px-3 py-1 rounded-full whitespace-nowrap max-w-full min-w-0 truncate transition-all duration-200 border border-transparent hover:bg-[#444444] hover:scale-105 hover:shadow-lg hover:shadow-red-600/30 hover:border-red-600 hover:text-[#dc2626] cursor-pointer active:scale-95"
-                             >
-                               {tag.toUpperCase()}
-                             </span>
-                           ))}
-                         </div>
-                       </div>
-                       <div className="px-6 py-4 border-t border-[#333333] bg-[#151515]">
-                         <TooltipWrapper label={project.html_url} fullWidth>
-                           <button
-                             onClick={() => handleExternalClick(project.html_url, true)}
-                              data-skip-card-scroll="true"
-                             className="flex items-center justify-center gap-2 w-full p-3 min-h-[48px] bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm sm:text-base"
-                           >
-                             {getCTAIcon(project.ctaIcon ?? (project.source === "github" ? "github" : undefined))}
-                             <span className="flex-1 break-words text-center leading-tight">
-                               {project.name.toLowerCase() === "portfolio"
-                                 ? "View Repository (This site!)"
-                                 : project.ctaLabel ?? "View Repository"}
-                             </span>
-                           </button>
-                         </TooltipWrapper>
-                       </div>
-                     </div>
-                   ))}
-                </div>
-              </div>
-              <ScrollArrows
-                containerRef={scrollContainerRef}
-                cardSelector="[data-repo-card='true']"
-                resetKey={tagFilteredProjectsKey}
-              />
+          <div key={`repos-loaded-${activeId}`} className="animate-skeleton-pop">
+            <CardCollection
+              items={visibleProjects}
+              getKey={(project) => `${project.source}-${project.id}`}
+              viewMode={viewMode}
+              autoScroll={autoScroll}
+              size="standard"
+              label="Repositories"
+              renderCard={renderRepoCard}
+            />
           </div>
         )}
       </div>

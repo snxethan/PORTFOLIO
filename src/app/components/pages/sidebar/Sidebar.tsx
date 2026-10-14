@@ -9,7 +9,7 @@ import { RESUME_PDF_URL } from "@/app/data/resume"
 import { getCachedResumePdfUrl, warmResumePdfCache } from "@/app/data/resumeCache"
 import Avatar from "./Avatar"
 import TooltipWrapper from "../../ToolTipWrapper"
-import PDFModalViewer from "../../PDFModalViewer"
+import MediaModal from "../../MediaModal"
 
 const Sidebar = ({ className = "" }: { className?: string }) => {
   const clickSoundRef = useRef<HTMLAudioElement | null>(null)
@@ -40,12 +40,12 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
 
   return (
     <>
-      <aside className={`w-full lg:w-[22rem] xl:w-96 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 lg:sticky lg:top-2 my-8 ${className}`}>
+      <aside className={`w-full lg:w-[22rem] xl:w-96 bg-[#222222] rounded-xl border border-[#333333] shadow-lg p-6 self-start relative z-10 mt-8 mb-8 lg:mb-0 ${className}`}>
         <audio ref={clickSoundRef} src="/sounds/yippe.mp3" preload="auto" />
 
         {/* Avatar */}
         <div
-          className="relative w-32 h-32 mx-auto rounded-full overflow-hidden group cursor-pointer transition-transform duration-300 ease-out hover:scale-105 active:scale-100"
+          className="relative w-32 h-32 mx-auto rounded-full overflow-hidden group cursor-pointer transition-transform duration-300 ease-out hover:scale-105"
           onClick={handleAvatarClick}
         >
           <div className="absolute -inset-0.5 rounded-full opacity-0 blur-sm transition duration-300 group-hover:opacity-5 group-hover:bg-gradient-to-r group-hover:from-red-700 group-hover:to-red-500"></div>
@@ -66,7 +66,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
             <button
               onClick={() => setSelectedPDF(resumePreviewUrl)}
               aria-label="View Resume"
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out hover:scale-105 active:scale-95 text-sm font-medium shadow-lg shadow-red-600/40"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white rounded-lg transition-all duration-200 ease-out text-sm font-medium shadow-lg shadow-red-600/40"
             >
               <FaFilePdf />
               <span>View Resume</span>
@@ -88,7 +88,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className={`inline-flex items-center justify-center ${isLinkedIn ? "rounded-none" : "rounded-full"} p-1 text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 active:scale-100 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] hover:shadow-[0_0_14px_rgba(220,38,38,0.14)] focus-visible:outline-none focus-visible:text-red-500 focus-visible:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] focus-visible:shadow-[0_0_14px_rgba(220,38,38,0.14)]`}
+                    className={`inline-flex items-center justify-center ${isLinkedIn ? "rounded-none" : "rounded-full"} p-1 text-gray-300 hover:text-red-600 text-2xl transition-all duration-200 ease-out hover:scale-125 hover:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] hover:shadow-[0_0_14px_rgba(220,38,38,0.14)] focus-visible:outline-none focus-visible:text-red-500 focus-visible:drop-shadow-[0_0_10px_rgba(220,38,38,0.48)] focus-visible:shadow-[0_0_14px_rgba(220,38,38,0.14)]`}
                   >
                     <Icon />
                   </a>
@@ -104,7 +104,7 @@ const Sidebar = ({ className = "" }: { className?: string }) => {
         </div>
       </aside>
 
-      {selectedPDF && <PDFModalViewer pdfUrl={selectedPDF} onClose={() => setSelectedPDF(null)} />}
+      <MediaModal src={selectedPDF} kind="pdf" alt="Resume" onClose={() => setSelectedPDF(null)} />
     </>
   )
 }

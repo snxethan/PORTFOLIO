@@ -1,9 +1,12 @@
-import { TimelineItem } from "../components/Timeline"
+import type { TimelineItem } from "./types"
+import { toSlug } from "../utils/slug"
 
 export const projectsTimelineData: TimelineItem[] = [
   {
     type: "project",
     name: "High Focus Email Scorer",
+    why:
+      "Soar.com's customer client needed a public tool that scores email drafts against the High FOCUS messaging framework and shows the writer exactly what to change, sentence by sentence.",
     startDate: "July 2026",
     endDate: "September 2026",
     highlights: [
@@ -26,6 +29,8 @@ export const projectsTimelineData: TimelineItem[] = [
   {
     type: "project",
     name: "Meetings Admin Dashboard",
+    why:
+      "Administrators on PocketRN's telehealth platform had no single view of every user meeting. This dashboard gives them one place to find, configure and join meetings, while keeping patient data inside HIPAA-compliant access paths.",
     startDate: "May 2026",
     endDate: "August 2026",
     highlights: [
@@ -44,6 +49,8 @@ export const projectsTimelineData: TimelineItem[] = [
   {
     type: "project",
     name: "Portfoli-YOU",
+    why:
+      "To make it easy for anyone to create and customize a professional portfolio from modular components, on the web or as a cross-platform desktop app.",
     startDate: "July 2025",
     endDate: "January 2026",
     highlights: [
@@ -73,6 +80,8 @@ export const projectsTimelineData: TimelineItem[] = [
   {
     type: "project",
     name: "TrueMark Customer AWS Transform Modernization",
+    why:
+      "TrueMark's customer infrastructure needed to move from legacy systems to a scalable, secure, cloud-native AWS architecture.",
     startDate: "January 2026",
     endDate: "March 2026",
     highlights: [
@@ -89,6 +98,8 @@ export const projectsTimelineData: TimelineItem[] = [
   {
     type: "project",
     name: "CloudRange Company Audit",
+    why:
+      "CloudRangeCyber needed confidence that its production and development environments, and the cloud-based cybersecurity training platforms they run, are reliable, performant and secure.",
     startDate: "March 2026",
     endDate: "June 2026",
     highlights: [
@@ -103,3 +114,9 @@ export const projectsTimelineData: TimelineItem[] = [
     tags: ["Computer Science", "Cybersecurity", "Quality Assurance"],
   },
 ]
+
+/** URL-safe id for a project: `/projects/<slug>` opens its detail popup. */
+export const getProjectSlug = (project: TimelineItem) => toSlug(project.name ?? "")
+
+export const findProjectBySlug = (slug: string | null | undefined) =>
+  slug ? projectsTimelineData.find((project) => getProjectSlug(project) === slug) ?? null : null

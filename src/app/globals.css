@@ -244,9 +244,10 @@ button:disabled {
   position: relative;
   isolation: isolate;
   --scroll-edge-fade-size: clamp(1.25rem, 3vw, 3rem);
-  /* Padding is applied to BOTH ends. A start-only inset shifted every card
-     right, so the snap-centred card never actually looked centred. */
-  padding-inline: var(--scroll-edge-fade-size);
+  /* The inset that keeps the first and last card clear of the fade is padding
+     on the card row (.card-rail-row), not here: padding on the scroller ends
+     where its in-flow child ends, so cards overflowing that child ran under
+     the fade at the far end. */
   scroll-padding-inline: var(--scroll-edge-fade-size);
   -webkit-mask-image: linear-gradient(
     to right,
@@ -290,6 +291,27 @@ button:disabled {
     right: 0;
     background: linear-gradient(to left, #222222 0%, rgba(34, 34, 34, 0) 100%);
   }
+}
+
+/* Card rails (CardCollection). The scroller is a size container, so 100cqw is
+   the rail's visible width and --per-view (set per container breakpoint) is
+   how many cards fit in it. */
+.card-rail {
+  --rail-gap: 1.5rem;
+}
+
+.card-rail-row {
+  gap: var(--rail-gap);
+  padding-inline: var(--scroll-edge-fade-size);
+}
+
+.rail-card {
+  flex: 0 0 auto;
+  width: calc(
+    (100cqw - 2 * var(--scroll-edge-fade-size) - (var(--per-view, 1) - 1) * var(--rail-gap)) /
+      var(--per-view, 1)
+  );
+  min-width: 13rem;
 }
 
 /* Navbar horizontal scroll - red scrollbar visible only when scrolling */
@@ -427,22 +449,90 @@ button:disabled {
 }
 
 @keyframes pin-bounce {
-  0% {
-    transform: translateY(0);
-  }
-  35% {
-    transform: translateY(-6px);
-  }
-  70% {
-    transform: translateY(0);
-  }
-  85% {
-    transform: translateY(-3px);
-  }
-  100% {
-    transform: translateY(0);
-  }
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-6px); }
+  55%  { transform: translateY(0); }
+  72%  { transform: translateY(-2.5px); }
+  88%, 100% { transform: translateY(0); }
 }
 .animate-pin-bounce {
-  animation: pin-bounce 0.38s ease-out;
+  animation: pin-bounce 0.55s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   Popup motion. One easing curve (fast start, long soft settle) and short
+   distances, so menus and dialogs feel like they settle into place rather
+   than spring in from far away.
+   --------------------------------------------------------------------------- */
+:root {
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes menu-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes menu-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(-4px) scale(0.97); }
+}
+.animate-menu-in  { animation: menu-in 180ms var(--ease-out-soft) both; transform-origin: top center; }
+.animate-menu-out { animation: menu-out 140ms ease-in both; transform-origin: top center; }
+
+@keyframes backdrop-in  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+.animate-backdrop-in  { animation: backdrop-in 200ms ease-out both; }
+.animate-backdrop-out { animation: backdrop-out 250ms ease-in both; }
+
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes dialog-out {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to   { opacity: 0; transform: translateY(8px) scale(0.98); }
+}
+.animate-dialog-in  { animation: dialog-in 280ms var(--ease-out-soft) both; }
+.animate-dialog-out { animation: dialog-out 250ms ease-in both; }
+
+/* Grid <-> scroll swap: a quick pop, like the navbar's pin bounce. */
+@keyframes view-swap-pop {
+  0%   { opacity: 0; transform: scale(0.96); }
+  60%  { opacity: 1; transform: scale(1.012); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-view-swap { animation: view-swap-pop 380ms var(--ease-out-soft) both; }
+
+/* Card the visitor just jumped to (e.g. a related project). */
+@keyframes card-highlight {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  30%      { box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.55), 0 0 28px rgba(220, 38, 38, 0.35); }
+  65%      { box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.35), 0 0 18px rgba(220, 38, 38, 0.2); }
+}
+.animate-card-highlight { animation: card-highlight 1.2s ease-in-out 2; }
+
+/* Filter tag panel: expands its real height (grid rows 0fr -> 1fr) instead of
+   scaling, so content below slides down smoothly rather than jumping. */
+.collapse-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 260ms var(--ease-out-soft), opacity 200ms ease-out;
+}
+.collapse-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.collapse-panel > * {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-menu-in, .animate-menu-out, .animate-dialog-in, .animate-dialog-out,
+  .animate-view-swap, .animate-card-highlight {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
+  }
+  .collapse-panel { transition: none; }
 }

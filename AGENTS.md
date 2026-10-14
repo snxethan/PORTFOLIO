@@ -8,14 +8,20 @@
 
 ## Core UI architecture (what to preserve)
 - `HomeClient.tsx` coordinates top-level sections (`about/projects/career`), sub-tabs, smooth scrolling offsets, and observer locking during programmatic scroll.
-- Navbar pin state persists in `localStorage` (`navbarPinned`) and updates CSS var `--navbar-height` in `src/app/components/pages/Navbar.tsx`; many scroll helpers depend on this offset.
-- Projects/Repos split is a tabbed subview (`src/app/components/pages/portfolio/ProjectsPage.tsx`, `src/app/components/pages/portfolio/ReposPage.tsx`) using shared `PageTabs`.
+- Navbar pin state persists in `localStorage` (`navbarPinned`). Pinned, it is a fixed top bar and sets CSS var `--navbar-height` to its height; unpinned, it renders under the sidebar in the sticky left column and sets the var to `0px`. Scroll helpers and sticky offsets depend on this var. Mobile spacing in `HomeClient.tsx` deliberately matches the pre-revamp layout.
+- Projects/Repos split is a tabbed subview (`src/app/components/pages/portfolio/ProjectsPage.tsx`, `src/app/components/pages/portfolio/ReposPage.tsx`) using shared `PageTabs`. Experience/Education are one `CareerPage` with a `kind` prop.
+- Every section renders cards through `src/app/components/CardCollection.tsx` (rail or grid, equal card sizes, arrows, auto-scroll) and its header through `SectionHeader` + `SearchFilterBar`. Don't hand-roll a new horizontal scroller.
+- Project and career cards are `DetailCard`s that open `DetailModal`; the URL becomes `/projects/<slug>` or `/career/<slug>` via `window.history.pushState` (no navigation). `HomeClient` derives the open entry from the pathname, and the slug allowlist accepts both. Career entries list `relatedProjects` (project slugs); choosing one closes the popup, scrolls to that project card and outlines it.
+- Hover motion: cards, chips, footer items and icons may scale up on hover; rectangular buttons don't. Nothing shrinks on press (`active:scale-*`): it can move the target out from under the pointer and drop the click. Tailwind v4 `scale-*` sets the CSS `scale` property, so arbitrary transitions must list `scale`, not just `transform`.
+- All file previews (PDF and image) use `MediaModal`. Stacked popups use `useModalLayer` so Escape closes only the top one. Layering: navbar z-50, project popup z-[60], media popup z-[70], external-link warning z-[80].
 - External links should go through `useExternalLink().handleExternalClick(...)` (`src/app/components/ExternalLinkHandler.tsx`) rather than raw `window.open` to keep warning modal behavior consistent.
 
 ## Data and state patterns used in this repo
 - Static profile data is centralized in `src/app/data/*.ts` (not fetched server-side).
 - Repo cards merge GitHub API data with manual entries from `src/app/data/portfolioProjects.ts` inside `ReposPage.tsx`.
-- Short-lived UI persistence uses `src/app/utils/timedStorage.ts` (`getTimedItem/setTimedItem`) with default 10-minute expiry.
+- Short-lived UI persistence uses `src/app/utils/timedStorage.ts` (`getTimedItem/setTimedItem`) with default 10-minute expiry, usually through `useTimedState` / `useSectionFilters` (search, sort, multi-tag selection + any/all mode per section).
+- Per-section grid/rail and auto-scroll choices persist permanently in `localStorage` (`sectionView:<key>`) via `useSectionView`; sections with fewer than 6 items default to grid.
+- The Repositories header shows a contribution heatmap from `GET /api/github/contributions`, which fetches and parses `github.com/users/snxethan/contributions` (`src/app/utils/githubContributions.ts`), caching successes for an hour and never caching failures.
 - `ReposPage.tsx` also keeps a separate 5-minute raw GitHub cache in `localStorage` keys `githubProjectsCache` + `githubProjectsExpiry`.
 
 ## API boundaries and integrations
@@ -37,3 +43,13 @@
 - Tailwind styling is heavily utility-first with project-specific dark palette (`#1a1a1a`, `#222222`, `#333333`) and red accent (`#dc2626`).
 - For new tab/section routes, update both slug allowlist (`src/app/[...slug]/page.tsx`) and UI tab mappings in `HomeClient.tsx`/`Navbar.tsx` to avoid navigation drift.
 
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

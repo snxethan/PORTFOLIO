@@ -19,6 +19,8 @@ interface PdfThumbnailTooltipProps {
   url?: string
   imageUrl?: string
   fullWidth?: boolean
+  /** Extra classes for the wrapper, e.g. "h-full" so a wrapped card can fill its slot. */
+  className?: string
 }
 
 const IMAGE_EXTENSIONS = [".png", ".jpg", ".jpeg", ".gif", ".webp", ".avif", ".svg"]
@@ -34,7 +36,7 @@ const getUrlPathname = (value?: string) => {
   }
 }
 
-const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: PdfThumbnailTooltipProps) => {
+const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false, className = "" }: PdfThumbnailTooltipProps) => {
   const [visible, setVisible] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const [thumbnailLoading, setThumbnailLoading] = useState(false)
@@ -350,7 +352,7 @@ const TooltipWrapper = ({ label, children, url, imageUrl, fullWidth = false }: P
   return (
     <div
       ref={triggerRef}
-      className={`relative group ${fullWidth ? "w-full" : "inline-block"}`}
+      className={`relative group ${fullWidth ? "w-full" : "inline-block"} ${className}`.trim()}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
