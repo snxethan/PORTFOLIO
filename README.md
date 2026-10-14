@@ -461,11 +461,14 @@ git push origin feature/amazing-feature
 
 ## 📄 License
 
-This project is **open source** and available for personal and educational use. Please respect the original author's work and provide attribution when using or adapting this code.
+This repository is licensed in two parts. The full terms are in [LICENSE.md](LICENSE.md).
 
-**Copyright © 2024 Ethan Townsend**
+- **Source code** is **open source under the MIT License**. You're welcome to fork it, learn from it and adapt it for your own portfolio, as long as you keep the copyright notice (credit) in your copy.
+- **Personal content** (the author's profile data, resume, certificates, avatars, logos and other personal information) is **all rights reserved** and may not be used in other projects. If you use this repo as a template, replace it with your own.
 
-If you'd like to use this project as a template for your own portfolio, feel free to fork it and customize it to your needs. Consider giving this repository a ⭐ if you found it helpful!
+**Copyright © 2024-2026 snxethan (Ethan Townsend)**
+
+Consider giving this repository a ⭐ if you found it helpful!
 
 ---
 
