@@ -27,6 +27,11 @@ interface SearchFilterBarProps {
   showFilterMenu: boolean;
   setShowFilterMenu: (show: boolean) => void;
   defaultSort?: string; // Optional default sort value for the page
+  /**
+   * Called after a sort is chosen (pages scroll to their cards). Not called
+   * for tag changes: visitors often pick several tags in a row, and moving
+   * the page after each one pulls the panel away from under them.
+   */
   onFilterInteraction?: () => void;
   /** Grid vs. horizontal rail. Omit both view props to hide the toggle. */
   viewMode?: ViewMode;
@@ -333,7 +338,6 @@ export default function SearchFilterBar({
               onClick={() => {
                 setTagMatchMode(tagMatchMode === "any" ? "all" : "any");
                 if (autoScroll) onAutoScrollChange?.(false);
-                onFilterInteraction?.();
               }}
               className="rounded-md border border-[#3a3a3a] bg-[#2a2a2a] px-2.5 py-1 text-xs font-semibold tracking-wide text-gray-200 transition-colors hover:border-red-600 hover:text-[#dc2626] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
               title={
@@ -353,7 +357,6 @@ export default function SearchFilterBar({
                 onClick={() => {
                   changeTags([]);
                   setSearch("");
-                  onFilterInteraction?.();
                 }}
                 className="ml-auto rounded-md p-1 text-gray-400 transition-colors hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600"
                 title="Clear filters"
@@ -372,7 +375,6 @@ export default function SearchFilterBar({
                   key={tag}
                   onClick={() => {
                     changeTags(toggleTag(selectedTags, tag));
-                    onFilterInteraction?.();
                   }}
                   aria-pressed={isSelected}
                   className={`px-3 py-1 rounded-full text-sm transition-[scale,transform,color,background-color,border-color] duration-200 hover:scale-105 border ${
