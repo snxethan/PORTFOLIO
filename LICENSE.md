@@ -1,4 +1,4 @@
-# Portfolio (snxethan.dev)
+# Portfolio (ethantownsend.dev)
 
 Copyright (c) 2024-2026 snxethan (Ethan Townsend). Some rights reserved.
 
