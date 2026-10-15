@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { FaThumbtack, FaUser, FaBriefcase, FaFolderOpen, FaProjectDiagram, FaGithub, FaCertificate, FaTools, FaGraduationCap } from "react-icons/fa"
 
+/**
+ * Fire this on `window` to make the navbar bounce in place, e.g. when copy
+ * elsewhere on the page points at it.
+ */
+export const NAVBAR_ATTENTION_EVENT = "navbar:attention"
+
 interface NavbarProps {
   onTabChange: (page: string, tab: string | null) => void
   activePage: string | null
@@ -18,7 +24,7 @@ interface ContextMenuItem {
 }
 
 const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPopups = true }: NavbarProps) => {
-  const CONTEXT_MENU_ANIMATION_MS = 300
+  const CONTEXT_MENU_ANIMATION_MS = 150 // matches .animate-menu-out
 
   // Only show loading state if page data hasn't been initialized (undefined), not if it's explicitly null (homepage)
   const isLoading = activePage === undefined || activeTab === undefined
@@ -31,21 +37,28 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
   const navRef = useRef<HTMLElement>(null)
   const navContentRef = useRef<HTMLDivElement>(null)
 
+  // --navbar-height is the space a pinned (fixed) navbar takes from the top of
+  // the window; scroll offsets and sticky positions subtract it. Unpinned, the
+  // navbar sits in the page flow and takes no such space, so it is 0.
   useEffect(() => {
-    if (!navRef.current || typeof window === "undefined") return
+    const nav = navRef.current
+    if (!nav || typeof window === "undefined") return
+
+    if (!isNavPinned) {
+      document.documentElement.style.setProperty("--navbar-height", "0px")
+      return
+    }
 
     const updateHeight = () => {
-      if (!navRef.current) return
-      const height = navRef.current.getBoundingClientRect().height
-      document.documentElement.style.setProperty("--navbar-height", `${height}px`)
+      document.documentElement.style.setProperty("--navbar-height", `${nav.getBoundingClientRect().height}px`)
     }
 
     updateHeight()
     const observer = new ResizeObserver(updateHeight)
-    observer.observe(navRef.current)
+    observer.observe(nav)
 
     return () => observer.disconnect()
-  }, [])
+  }, [isNavPinned])
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -217,45 +230,64 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
     return () => clearTimeout(timer)
   }, [isPinAnimating])
 
+  useEffect(() => {
+    const handleAttention = () => {
+      // Restart the bounce even if one is already playing.
+      setIsPinAnimating(false)
+      requestAnimationFrame(() => setIsPinAnimating(true))
+    }
+    window.addEventListener(NAVBAR_ATTENTION_EVENT, handleAttention)
+    return () => window.removeEventListener(NAVBAR_ATTENTION_EVENT, handleAttention)
+  }, [])
+
   const handlePinToggle = () => {
     setIsNavPinned((prev) => !prev)
     setIsPinAnimating(true)
   }
 
+  // Pinned: a full-width bar fixed to the top (row layout on desktop).
+  // Unpinned: its own box under the sidebar, stacked at every width; on
+  // desktop that column is narrow, so the tab buttons put icon over label.
+  const isPinnedBar = isNavPinned
+  const pinButton = (extraClass: string) => (
+    <button
+      type="button"
+      onClick={handlePinToggle}
+      className={`p-1.5 rounded-md transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-600 ${extraClass} ${
+        isNavPinned ? "text-red-600" : "text-gray-400 hover:text-red-500"
+      }`}
+      aria-label={isNavPinned ? "Unpin navigation (navbar will not follow scroll)" : "Pin navigation (navbar will follow scroll)"}
+      aria-pressed={isNavPinned}
+      title={isNavPinned ? "Click to unpin" : "Click to pin"}
+    >
+      <FaThumbtack size={18} className={`transition-transform duration-300 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
+    </button>
+  )
+
   return (
     <>
     <nav
       ref={navRef}
-      className={`isolate w-full bg-[#222222] py-4 px-4 md:px-6 lg:px-7 ${
+      aria-label="Main navigation"
+      className={`isolate w-full bg-[#222222] py-4 px-4 ${isPinnedBar ? "md:px-6 lg:px-7" : "md:px-6 lg:px-4"} ${
         isNavPinned
           ? 'fixed z-50 ring-1 ring-[#2a2a2a] shadow-lg shadow-black/20 border-b border-[#333333] md:border-0'
           : 'relative z-20 rounded-xl border border-[#333333] shadow-lg shadow-black/20'
       } top-0 left-0 transition-all duration-300 ease-in-out ${isPinAnimating ? "animate-pin-bounce" : ""}`}
     >
       <div className="container mx-auto">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-          <div className="flex items-center justify-center lg:justify-start">
-            <h1 className="w-full text-2xl font-bold text-center lg:text-left bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+        <div className={`flex flex-col gap-3 ${isPinnedBar ? "lg:flex-row lg:items-center" : ""}`}>
+          <div className={`flex items-center justify-center ${isPinnedBar ? "lg:justify-start" : ""}`}>
+            <h1 className={`w-full text-2xl font-bold text-center bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent ${isPinnedBar ? "lg:text-left" : ""}`}>
               ethantownsend.dev
             </h1>
-            <button
-              onClick={handlePinToggle}
-              className={`lg:hidden p-1 transition-all duration-300 hover:scale-110 ${
-                isNavPinned
-                  ? "text-red-600"
-                  : "text-gray-400 hover:text-red-500"
-              }`}
-              aria-label={isNavPinned ? "Unpin navigation (navbar will not follow scroll)" : "Pin navigation (navbar will follow scroll)"}
-              title={isNavPinned ? "Click to unpin" : "Click to pin"}
-            >
-              <FaThumbtack size={18} className={`transition-transform duration-300 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
-            </button>
+            {pinButton(isPinnedBar ? "lg:hidden" : "")}
           </div>
 
-          <div className="flex items-center gap-3 lg:ml-auto lg:justify-end w-full lg:w-auto">
+          <div className={`flex items-center gap-3 w-full ${isPinnedBar ? "lg:ml-auto lg:justify-end lg:w-auto" : ""}`}>
             <div
               ref={navContentRef}
-              className="flex gap-3 transition-all duration-500 ease-in-out w-full lg:w-auto flex-wrap justify-center lg:justify-end"
+              className={`flex gap-3 transition-all duration-500 ease-in-out w-full flex-wrap justify-center ${isPinnedBar ? "lg:w-auto lg:justify-end" : ""}`}
             >
               {isLoading ? (
                 <div className="flex space-x-4 animate-pulse justify-center w-full">
@@ -264,14 +296,16 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
                   ))}
                 </div>
               ) : (
-                <div className="relative isolate bg-[#1e1e1e] border border-[#333333] rounded-xl py-3 px-4 flex items-center gap-2 flex-wrap justify-center lg:justify-end w-full lg:w-auto">
+                <div className={`relative isolate bg-[#1e1e1e] border border-[#333333] rounded-xl py-3 px-4 flex items-center gap-2 flex-wrap justify-center w-full ${isPinnedBar ? "lg:justify-end lg:w-auto" : "lg:flex-nowrap lg:px-3"}`}>
                   {mainTabs.map((tab) => {
                     const isActive = activePage === tab.id
 
                     return (
                       <button
                         key={tab.id}
+                        type="button"
                         id={`nav-btn-${tab.id}`}
+                        aria-current={isActive ? "true" : undefined}
                         onClick={() => handleClick(tab.id)}
                         onMouseEnter={() => {
                           if (enableHoverPopups) scheduleOpen(tab.id)
@@ -300,9 +334,11 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
                             longPressTimerRef.current = null
                           }
                         }}
-                        className={`relative z-0 inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105 hover:z-10 focus:z-10 focus-visible:z-10 border focus:outline-none focus-visible:outline-none ${
+                        className={`relative z-0 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg text-sm font-medium transition-colors duration-200 hover:z-10 focus:z-10 border focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
+                          isPinnedBar ? "" : "lg:flex-1 lg:flex-col lg:gap-1 lg:px-2 lg:py-2.5"
+                        } ${
                           isActive
-                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white scale-105 shadow-lg shadow-red-600/40 cursor-pointer border-transparent"
+                            ? "bg-gradient-to-r from-red-600 to-red-500 text-white shadow-lg shadow-red-600/40 cursor-pointer border-transparent"
                             : "bg-[#2a2a2a] text-gray-300 hover:bg-[#333333] hover:text-[#dc2626] hover:border-red-600 hover:shadow-lg hover:shadow-red-600/30 cursor-pointer border-transparent"
                         }`}
                       >
@@ -315,18 +351,7 @@ const Navbar = ({ onTabChange, activePage, activeTab, onPinChange, enableHoverPo
               )}
             </div>
 
-            <button
-              onClick={handlePinToggle}
-              className={`hidden lg:inline-flex p-1 transition-all duration-300 hover:scale-110 ${
-                isNavPinned
-                  ? "text-red-600"
-                  : "text-gray-400 hover:text-red-500"
-              }`}
-              aria-label={isNavPinned ? "Unpin navigation (navbar will not follow scroll)" : "Pin navigation (navbar will follow scroll)"}
-              title={isNavPinned ? "Click to unpin" : "Click to pin"}
-            >
-              <FaThumbtack size={18} className={`transition-transform duration-300 ${isNavPinned ? "rotate-0" : "rotate-45"}`} />
-            </button>
+            {isPinnedBar && pinButton("hidden lg:inline-flex")}
           </div>
         </div>
       </div>
@@ -396,7 +421,7 @@ function ContextMenuPopup({ contextMenuRef, page, anchorId, subItems, onTabChang
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       className={`fixed z-[9999] min-w-[140px] max-w-[220px] rounded-lg border border-[#333333] bg-[#1e1e1e] py-1.5 shadow-2xl shadow-black/40 ${
-        isClosing ? "animate-fade-out-down" : "animate-fade-in-up"
+        isClosing ? "animate-menu-out" : "animate-menu-in"
       }`}
       style={pos ? { left: pos.left, top: pos.top } : { visibility: "hidden", left: 0, top: 0 }}
     >

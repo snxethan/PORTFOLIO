@@ -140,7 +140,7 @@ export default function HealthModal({ onClose }: HealthModalProps) {
           {!checking && results.map(r => (
             <div
               key={r.path}
-              className="group flex flex-col gap-3 rounded border border-[#333333] bg-[#1b1b1b] p-3 transition-all duration-200 ease-out hover:border-red-600 hover:shadow-[0_0_20px_rgba(220,38,38,0.12)] sm:flex-row sm:items-center sm:justify-between sm:hover:scale-[1.01]"
+              className="group flex flex-col gap-3 rounded border border-[#333333] bg-[#1b1b1b] p-3 transition-all duration-200 ease-out hover:border-red-600 hover:shadow-[0_0_20px_rgba(220,38,38,0.12)] sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="flex min-w-0 flex-col gap-1 sm:flex-1 sm:flex-row sm:items-center sm:gap-3">
                 <div className="w-full break-all text-sm text-gray-200 sm:w-48 sm:break-normal">

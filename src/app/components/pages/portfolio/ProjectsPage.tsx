@@ -1,226 +1,140 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import { projectsTimelineData } from "../../../data/projectsTimelineData"
-import Timeline from "../../Timeline"
+import React, { useEffect, useMemo, useState } from "react"
+import { projectsTimelineData, getProjectSlug } from "../../../data/projectsTimelineData"
 import SearchFilterBar from "../../SearchFilterBar"
-import { getTimedItem, setTimedItem, removeTimedItem } from "../../../utils/timedStorage"
-import { scrollElementIntoViewWithNavbarOffset } from "../../../utils/scrollWithNavbarOffset"
-import PageTabs from "../../PageTabs"
+import SectionHeader from "../../SectionHeader"
+import CardCollection from "../../CardCollection"
+import DetailCard from "../../detail/DetailCard"
+import { scrollElementIntoViewWithNavbarOffset, scrollToSectionFilters } from "../../../utils/scrollWithNavbarOffset"
 import { FaProjectDiagram, FaGithub } from "react-icons/fa"
 import ResponsiveCardSkeletonGrid from "../../ResponsiveCardSkeletonGrid"
+import { DATE_AND_NAME_SORT_OPTIONS } from "../../../utils/sortOptions"
+import { matchesSelectedTags } from "../../../utils/tagFilter"
+import { useSectionFilters } from "../../../hooks/useSectionFilters"
+import { useSectionView } from "../../../hooks/useSectionView"
 
-const filterOptions = [
-  { value: "newest", label: "Newest" },
-  { value: "oldest", label: "Oldest" },
-  { value: "name-asc", label: "Name (A–Z)" },
-  { value: "name-desc", label: "Name (Z–A)" },
+const DEFAULT_SORT = "newest"
+// Every project is a computer-science project, so this tag matches them all.
+const WILDCARD_TAG = "Computer Science"
+const DEFAULT_TAGS = [WILDCARD_TAG]
+
+const tabs = [
+  { id: "projects", label: "Projects", tabValue: "projects", icon: <FaProjectDiagram /> },
+  { id: "repos", label: "Repositories", tabValue: "repos", icon: <FaGithub /> },
 ]
 
 interface ProjectsPageProps {
   onTabChange: (page: string, tab: string | null) => void
   activeTab: string | null
+  /** Opens a project's detail popup (HomeClient owns it and the URL). */
+  onOpenProject: (slug: string) => void
+  /** Project card to outline briefly (after jumping here from a related link). */
+  highlightedSlug?: string | null
 }
 
-const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
-  const tabs = [
-    { id: "projects", label: "Projects", tabValue: "projects", icon: <FaProjectDiagram /> },
-    { id: "repos", label: "Repositories", tabValue: "repos", icon: <FaGithub /> },
-  ]
+const ProjectsPage = ({ onTabChange, activeTab, onOpenProject, highlightedSlug = null }: ProjectsPageProps) => {
   const activeId = activeTab ?? "projects"
-  const [search, setSearch] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return getTimedItem<string>('projectsSearch') || ""
-    }
-    return ""
-  })
-  const [sortBy, setSortBy] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return getTimedItem<string>('projectsSortBy') || "newest"
-    }
-    return "newest"
-  })
-  const [showFilterMenu, setShowFilterMenu] = useState(false)
-  const [showTagsMenu, setShowTagsMenu] = useState(false)
-  const [selectedTag, setSelectedTag] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = getTimedItem<string>('projectsSelectedTag')
-      return saved !== null ? saved : "Computer Science"
-    }
-    return "Computer Science"
-  })
+  const filters = useSectionFilters("projects", { sort: DEFAULT_SORT, tags: DEFAULT_TAGS })
+  const { viewMode, setViewMode, autoScroll, setAutoScroll } = useSectionView("projects", projectsTimelineData.length)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setTimedItem('projectsSearch', search)
-    }
-  }, [search])
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setTimedItem('projectsSortBy', sortBy)
-    }
-  }, [sortBy])
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (selectedTag !== null) {
-        setTimedItem('projectsSelectedTag', selectedTag)
-      } else {
-        removeTimedItem('projectsSelectedTag')
-      }
-    }
-  }, [selectedTag])
-
-  useEffect(() => {
     const rafId = requestAnimationFrame(() => setLoading(false))
-
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setShowFilterMenu(false)
-      }
-    }
-
-    document.addEventListener("keydown", handleEscape)
-    
-    return () => {
-      cancelAnimationFrame(rafId)
-      document.removeEventListener("keydown", handleEscape)
-    }
+    return () => cancelAnimationFrame(rafId)
   }, [])
 
   const scrollToCards = React.useCallback(() => {
-    const target = document.getElementById("projects-cards")
-    scrollElementIntoViewWithNavbarOffset(target)
+    scrollElementIntoViewWithNavbarOffset(document.getElementById("projects-cards"))
   }, [])
 
-  const handleSortChange = (value: string) => {
-    setSortBy(value)
-    setTimedItem('projectsSortBy', value)
-    setShowFilterMenu(false)
+  // A tag on a card: filter by it, stop auto-scroll, and bring the filter
+  // panel into view so the visitor sees what changed.
+  const handleCardTagClick = (tag: string) => {
+    filters.focusTag(tag)
+    setAutoScroll(false)
+    scrollToSectionFilters("projects-page-header")
   }
 
-  const handleTagClick = (tag: string) => {
-    setSelectedTag(tag)
-    setShowTagsMenu(true)
-    setTimeout(() => {
-      scrollToCards()
-    }, 50)
-  }
-
-  const allTags = React.useMemo(() => {
+  const allTags = useMemo(() => {
     const tagSet = new Set<string>()
-    projectsTimelineData.forEach(item => {
-      item.tags?.forEach(tag => tagSet.add(tag))
-      item.topics?.forEach(topic => tagSet.add(topic))
+    projectsTimelineData.forEach((item) => {
+      item.tags?.forEach((tag) => tagSet.add(tag))
+      item.topics?.forEach((topic) => tagSet.add(topic))
       if (item.language) tagSet.add(item.language)
     })
     return Array.from(tagSet).sort((a, b) => a.localeCompare(b))
   }, [])
 
-  const filteredTimelineProjects = projectsTimelineData.filter((project) => {
-    const matchesSearch = !search || 
-      project.name?.toLowerCase().includes(search.toLowerCase()) ||
-      project.summary?.toLowerCase().includes(search.toLowerCase()) ||
-      project.language?.toLowerCase().includes(search.toLowerCase()) ||
-      project.topics?.some((topic) => topic.toLowerCase().includes(search.toLowerCase())) ||
-      project.tags?.some((tag) => tag.toLowerCase().includes(search.toLowerCase()))
-    
-    const matchesTag = !selectedTag || selectedTag === "Computer Science" ||
-      project.tags?.includes(selectedTag) ||
-      project.topics?.includes(selectedTag) ||
-      project.language?.toLowerCase() === selectedTag.toLowerCase()
+  const { search, sortBy, selectedTags, tagMatchMode } = filters
+  const sortedProjects = useMemo(() => {
+    const query = search.toLowerCase()
+    const filtered = projectsTimelineData.filter((project) => {
+      const matchesSearch = !query ||
+        project.name?.toLowerCase().includes(query) ||
+        project.summary?.toLowerCase().includes(query) ||
+        project.language?.toLowerCase().includes(query) ||
+        project.topics?.some((topic) => topic.toLowerCase().includes(query)) ||
+        project.tags?.some((tag) => tag.toLowerCase().includes(query))
 
-    return matchesSearch && matchesTag
-  })
-
-  const sortedProjects = [...filteredTimelineProjects].sort((a, b) => {
-    if (sortBy === "name-asc") {
-      return (a.name || "").localeCompare(b.name || "")
-    }
-    if (sortBy === "name-desc") {
-      return (b.name || "").localeCompare(a.name || "")
-    }
-    if (sortBy === "oldest") {
-      return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-    }
-    if (sortBy === "newest") {
-      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-    }
-    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-  })
-
-  const renderTimeline = () => {
-    if (sortedProjects.length === 0) {
-      return (
-        <div className="text-center text-gray-400 py-8">
-          <p>No items match your current filters.</p>
-        </div>
+      const matchesTags = matchesSelectedTags(selectedTags, tagMatchMode, (tag) =>
+        tag === WILDCARD_TAG ||
+        Boolean(project.tags?.includes(tag)) ||
+        Boolean(project.topics?.includes(tag)) ||
+        project.language?.toLowerCase() === tag.toLowerCase()
       )
-    }
 
-    return (
-      <Timeline
-        items={sortedProjects}
-        type="project"
-        onTagClick={handleTagClick}
-        layout="horizontal"
-        showLine={false}
-      />
-    )
-  }
+      return matchesSearch && matchesTags
+    })
+
+    return filtered.sort((a, b) => {
+      if (sortBy === "name-asc") return (a.name || "").localeCompare(b.name || "")
+      if (sortBy === "name-desc") return (b.name || "").localeCompare(a.name || "")
+      if (sortBy === "oldest") return new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    })
+  }, [search, selectedTags, sortBy, tagMatchMode])
 
   return (
     <>
-      <div id="projects-page-header" className="bg-[#222222] rounded-xl border border-[#333333] shadow-lg shadow-black/20 p-6 mb-6">
-        <div className="mb-6">
-          <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
-            Projects
-          </h2>
-          <p className="mx-auto mb-4 max-w-2xl text-center text-sm text-gray-400">
-            Featured builds and milestones from my project timeline.
-          </p>
-          <div className="flex justify-center mb-4">
-            <PageTabs
-              tabs={tabs}
-              activeId={activeId}
-              onChange={(tab) => onTabChange("projects", tab)}
-            />
-          </div>
-
-          <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl py-4 px-4 shadow-lg shadow-black/20">
-            <div className="container mx-auto">
-              <SearchFilterBar
-                search={search}
-                setSearch={setSearch}
-                placeholder="Search by name, description, or tags..."
-                tags={allTags}
-                selectedTag={selectedTag}
-                setSelectedTag={setSelectedTag}
-                sortOptions={filterOptions}
-                selectedSort={sortBy}
-                setSelectedSort={handleSortChange}
-                showTagsMenu={showTagsMenu}
-                setShowTagsMenu={setShowTagsMenu}
-                showFilterMenu={showFilterMenu}
-                setShowFilterMenu={setShowFilterMenu}
-                defaultSort="newest"
-                onFilterInteraction={scrollToCards}
-              />
-
-              <div className="text-sm text-gray-400 mt-2">
-                Showing {sortedProjects.length} Project{sortedProjects.length !== 1 ? "s" : ""}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <SectionHeader
+        id="projects-page-header"
+        title="Projects"
+        description="Featured builds and milestones. Open a project for the why and the how."
+        tabs={tabs}
+        activeTabId={activeId}
+        onTabChange={(tab) => onTabChange("projects", tab)}
+        resultsText={`Showing ${sortedProjects.length} Project${sortedProjects.length !== 1 ? "s" : ""}`}
+      >
+        <SearchFilterBar
+          search={filters.search}
+          setSearch={filters.setSearch}
+          placeholder="Search by name, description, or tags..."
+          tags={allTags}
+          selectedTags={filters.selectedTags}
+          setSelectedTags={filters.setSelectedTags}
+          tagMatchMode={filters.tagMatchMode}
+          setTagMatchMode={filters.setTagMatchMode}
+          sortOptions={DATE_AND_NAME_SORT_OPTIONS}
+          selectedSort={filters.sortBy}
+          setSelectedSort={filters.setSortBy}
+          showTagsMenu={filters.showTagsMenu}
+          setShowTagsMenu={filters.setShowTagsMenu}
+          showFilterMenu={filters.showFilterMenu}
+          setShowFilterMenu={filters.setShowFilterMenu}
+          defaultSort={DEFAULT_SORT}
+          onFilterInteraction={scrollToCards}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          autoScroll={autoScroll}
+          onAutoScrollChange={setAutoScroll}
+        />
+      </SectionHeader>
 
       <div
         id="projects-cards"
         className="text-white"
-        style={{ scrollMarginTop: "calc(var(--navbar-height, 6rem) + 1rem)" }}
+        style={{ scrollMarginTop: "calc(var(--navbar-height, 0px) + 1rem)" }}
       >
         {loading ? (
           <ResponsiveCardSkeletonGrid
@@ -241,7 +155,26 @@ const ProjectsPage = ({ onTabChange, activeTab }: ProjectsPageProps) => {
           />
         ) : (
           <div key={`projects-loaded-${activeId}`} className="animate-skeleton-pop">
-            {renderTimeline()}
+            <CardCollection
+              items={sortedProjects}
+              getKey={getProjectSlug}
+              viewMode={viewMode}
+              autoScroll={autoScroll}
+              size="standard"
+              label="Projects"
+              renderCard={(project) => {
+                const slug = getProjectSlug(project)
+                return (
+                  <DetailCard
+                    item={project}
+                    id={`project-card-${slug}`}
+                    onOpen={() => onOpenProject(slug)}
+                    onTagClick={handleCardTagClick}
+                    highlighted={highlightedSlug === slug}
+                  />
+                )
+              }}
+            />
           </div>
         )}
       </div>
