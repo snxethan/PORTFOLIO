@@ -12,7 +12,7 @@ export const timelineData: CareerItem[] = [
       institution: "PocketRN",
       location: "Remote",
       startDate: "August 2026",
-      endDate: "Present",
+      endDate: "November 2026",
       highlights: [
         "Data Engineer at PocketRN. - Built scalable ETL/ELT pipelines and data models that turn raw data into reliable, production-ready assets.",
         "Collaborating cross-functionally to deliver secure, well-governed data that drives real business value.",
